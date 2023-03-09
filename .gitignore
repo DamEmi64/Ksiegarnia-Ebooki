@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/Ksiegarnia/.vs
+/Ksiegarnia/Domain/obj
+/Ksiegarnia/Domain/.vs
