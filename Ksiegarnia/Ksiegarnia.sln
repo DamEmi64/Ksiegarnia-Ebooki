@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ksiegarnia", "Ksiegarnia\Ksiegarnia.csproj", "{15ED8489-3734-495D-B3A5-6EB7827D3967}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Ksiegarnia\Application.csproj", "{15ED8489-3734-495D-B3A5-6EB7827D3967}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{9F1D8C5C-FDAD-4CCA-8B2F-C5154C5762E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{2642EEA2-0B1F-4329-B188-67CC2AC75252}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{15ED8489-3734-495D-B3A5-6EB7827D3967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15ED8489-3734-495D-B3A5-6EB7827D3967}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15ED8489-3734-495D-B3A5-6EB7827D3967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F1D8C5C-FDAD-4CCA-8B2F-C5154C5762E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F1D8C5C-FDAD-4CCA-8B2F-C5154C5762E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F1D8C5C-FDAD-4CCA-8B2F-C5154C5762E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F1D8C5C-FDAD-4CCA-8B2F-C5154C5762E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2642EEA2-0B1F-4329-B188-67CC2AC75252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2642EEA2-0B1F-4329-B188-67CC2AC75252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2642EEA2-0B1F-4329-B188-67CC2AC75252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2642EEA2-0B1F-4329-B188-67CC2AC75252}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
