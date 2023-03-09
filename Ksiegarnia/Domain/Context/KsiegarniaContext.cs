@@ -11,7 +11,7 @@ namespace Domain.Context
         public KsiegarniaContext(DbContextOptions<KsiegarniaContext> options)
             : base(options)
         {
-        //    Database.EnsureCreated();
+     //       Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -21,9 +21,11 @@ namespace Domain.Context
             new UserEntityConfiguration().Configure(builder.Entity<User>());
         }
 
-        public DbSet<EBook> Document { get; set; } = default!;
+        public DbSet<EBook> Ebooks { get; set; } = default!;
 
         public DbSet<EBookReader> Readers { get; set; }
+
+        public DbSet<Transaction> Transactions { get; set; }
 
     }
 }

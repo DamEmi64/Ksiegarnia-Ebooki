@@ -51,16 +51,16 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Genre",
+                name: "Transactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genre", x => x.Id);
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,28 +170,22 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Ebooks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(86)", maxLength: 86, nullable: false),
                     Content = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Genre = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Ebooks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Document_AspNetUsers_AuthorId",
+                        name: "FK_Ebooks_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Document_Genre_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genre",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -202,7 +196,9 @@ namespace Domain.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EBookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EBookId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,9 +210,14 @@ namespace Domain.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Readers_Document_EBookId",
+                        name: "FK_Readers_Ebooks_EBookId",
                         column: x => x.EBookId,
-                        principalTable: "Document",
+                        principalTable: "Ebooks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Readers_Transactions_TransactionId",
+                        column: x => x.TransactionId,
+                        principalTable: "Transactions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -261,19 +262,20 @@ namespace Domain.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_AuthorId",
-                table: "Document",
+                name: "IX_Ebooks_AuthorId",
+                table: "Ebooks",
                 column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Document_GenreId",
-                table: "Document",
-                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Readers_EBookId",
                 table: "Readers",
                 column: "EBookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Readers_TransactionId",
+                table: "Readers",
+                column: "TransactionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Readers_UserId",
@@ -305,13 +307,13 @@ namespace Domain.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Ebooks");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Genre");
         }
     }
 }

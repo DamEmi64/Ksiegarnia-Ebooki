@@ -36,8 +36,8 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<Guid>("GenreId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Genre")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -48,9 +48,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("Document");
+                    b.ToTable("Ebooks");
                 });
 
             modelBuilder.Entity("Domain.Entitites.EBookReader", b =>
@@ -59,7 +57,13 @@ namespace Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EBookId")
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("EBookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TransactionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
@@ -70,28 +74,29 @@ namespace Domain.Migrations
 
                     b.HasIndex("EBookId");
 
+                    b.HasIndex("TransactionId")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Readers");
                 });
 
-            modelBuilder.Entity("Domain.Entitites.Genre", b =>
+            modelBuilder.Entity("Domain.Entitites.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Domain.Entitites.User", b =>
@@ -310,22 +315,18 @@ namespace Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entitites.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Author");
-
-                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("Domain.Entitites.EBookReader", b =>
                 {
                     b.HasOne("Domain.Entitites.EBook", "EBook")
                         .WithMany("Readers")
-                        .HasForeignKey("EBookId")
+                        .HasForeignKey("EBookId");
+
+                    b.HasOne("Domain.Entitites.Transaction", "Transaction")
+                        .WithOne("EBookReader")
+                        .HasForeignKey("Domain.Entitites.EBookReader", "TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -336,6 +337,8 @@ namespace Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("EBook");
+
+                    b.Navigation("Transaction");
 
                     b.Navigation("User");
                 });
@@ -394,6 +397,12 @@ namespace Domain.Migrations
             modelBuilder.Entity("Domain.Entitites.EBook", b =>
                 {
                     b.Navigation("Readers");
+                });
+
+            modelBuilder.Entity("Domain.Entitites.Transaction", b =>
+                {
+                    b.Navigation("EBookReader")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entitites.User", b =>

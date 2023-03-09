@@ -1,5 +1,7 @@
 ﻿using Domain.Context;
 using Domain.Entitites;
+using Domain.Repositories;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +13,10 @@ namespace Infrastructure
     {
         public static void Configure(this WebApplicationBuilder webApplicationBuilder)
         {
-          webApplicationBuilder.ConfigureIdentity();
+            webApplicationBuilder.ConfigureIdentity();
+            webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
+                                    .AddScoped<IEBookRepository, EbookRepository>()
+                                    .AddScoped<IEBookReaderRepository, EBookReaderRepository>();
         }
 
         /// <summary>

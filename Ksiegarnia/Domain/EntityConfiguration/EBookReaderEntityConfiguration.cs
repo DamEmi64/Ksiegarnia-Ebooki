@@ -9,6 +9,8 @@ namespace Domain.EntityConfiguration
         public void Configure(EntityTypeBuilder<EBookReader> builder)
         {
             builder.HasKey(x=>x.Id);
+            builder.HasOne(x => x.Transaction).WithOne(x => x.EBookReader).HasForeignKey<EBookReader>(x=>x.TransactionId).OnDelete(DeleteBehavior.Cascade);
+         //   builder.HasOne(x => x.EBook).WithMany(x => x.Readers).HasForeignKey(x=>x.BookId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
