@@ -29,9 +29,13 @@ namespace Infrastructure.Repositories
             return await _context.Set<EBook>().ToListAsync();
         }
 
-        public void RemoveEbook(EBook book)
+        public async Task RemoveEbook(Guid bookId)
         {
-            _context.Set<EBook>().Remove(book);
+            var book = await _context.Set<EBook>().FirstOrDefaultAsync(x => x.Id == bookId);
+            if(book != null)
+            {
+                _context.Set<EBook>().Remove(book);
+            }
         }
 
         public async Task SaveChanges()

@@ -13,10 +13,11 @@ namespace Infrastructure
     {
         public static void Configure(this WebApplicationBuilder webApplicationBuilder)
         {
-            webApplicationBuilder.ConfigureIdentity();
             webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookRepository, EbookRepository>()
+                                    .AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookReaderRepository, EBookReaderRepository>();
+            webApplicationBuilder.ConfigureIdentity();
         }
 
         /// <summary>
@@ -26,8 +27,7 @@ namespace Infrastructure
         private static WebApplicationBuilder ConfigureIdentity(this WebApplicationBuilder builder)
         {
             builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<KsiegarniaContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<KsiegarniaContext>();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {

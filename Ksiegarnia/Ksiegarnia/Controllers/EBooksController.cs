@@ -2,159 +2,142 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using System.Net;
+using Domain.Enums;
 
 namespace Application.Controllers
 {
-    [Route("Ebooks")]
+    /// <summary>
+    ///     Ebook Controller
+    /// </summary>
+    [Route("Books")]
     [ApiController]
     public class EBooksController : Controller
     {
-        private readonly IEBookRepository _repository;
+        private readonly IEBookRepository _bookRepository;
+        private readonly IEBookReaderRepository eBookReaderRepository;
+
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="repository">Repo</param>
         public EBooksController(IEBookRepository repository)
         {
-            _repository = repository;
-        }
-        // GET: EBooks
-        /// <summary>
-        ///     Get Ebooks list
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("index", Name = "Pobranie listy ebooków")]
-        public async Task<List<EBook>> Index()
-        {
-            return await _repository.GetEBooks();
+            _bookRepository = repository;
         }
 
         /// <summary>
-        ///     Get Ebook by id
+        ///     Get books list via paramereters
+        /// </summary>
+        /// <param name="authorName">Author name</param>
+        /// <param name="genre">Genre</param>
+        /// <returns>List of books</returns>
+        [HttpGet("search")]
+        public async Task<List<EBook>> Index([FromQuery] string authorName, [FromQuery] string genre)
+        {
+            var books = await _bookRepository.GetEBooks();
+
+            if (Enum.TryParse(genre, out Genre genreEnum))
+            {
+                books = books.Where(x => x.Genre == genreEnum).ToList();
+            }
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                books = books.Where(x => x.Author.UserName == authorName).ToList();
+            }
+
+            return books;
+        }
+
+        /// <summary>
+        ///     Get Ebook details by id
         /// </summary>
         /// <param name="id">Ebook Id</param>
         /// <returns></returns>
-        [HttpGet("{id}", Name = "Pobranie ebooka")]
+        [HttpGet("/{id}")]
         public async Task<EBook> Details(Guid? id)
         {
-            if (id == null)
+            var ebook = await _bookRepository.GetEbook(id ?? Guid.Empty);
+            if (ebook == null)
             {
-                return new EBook();
+                throw new Exception("Ebook not found");
             }
 
-            var eBook = await _repository.GetEbook((Guid)id);
-            if (eBook == null)
+            return ebook;
+        }
+        /// <summary>
+        ///     Get Ebook content by id
+        /// </summary>
+        /// <param name="id">Ebook Id</param>
+        /// <returns></returns>
+        [HttpGet("/{id}/read")]
+        public async Task<byte[]> Read(Guid? id)
+        {
+            var ebook = await _bookRepository.GetEbook(id ?? Guid.Empty);
+            if (ebook == null)
             {
-                return new EBook();
+                throw new Exception("Ebook not found");
             }
 
-            return eBook;
+            return ebook.Content;
         }
 
-        // POST: EBooks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost("/create", Name ="Stworzenie ebooka")]
+        /// <summary>
+        ///     Create book
+        /// </summary>
+        /// <param name="eBook">Ebook</param>
+        /// <returns></returns>
+        [HttpPost("create")]
         [ValidateAntiForgeryToken]
-        public async Task<HttpStatusCode> Create(EBook eBook)
+        public async Task<HttpStatusCode> Create([FromBody] EBook eBook)
         {
             if (ModelState.IsValid)
             {
                 eBook.Id = Guid.NewGuid();
-                await _repository.AddEbook(eBook);
-                await _repository.SaveChanges();
+                await _bookRepository.AddEbook(eBook);
+                await _bookRepository.SaveChanges();
                 return HttpStatusCode.Created;
             }
             return HttpStatusCode.BadRequest;
         }
 
-/*        // GET: EBooks/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null || _context.EBook == null)
-            {
-                return NotFound();
-            }
-
-            var eBook = await _context.EBook.FindAsync(id);
-            if (eBook == null)
-            {
-                return NotFound();
-            }
-            return View(eBook);
-        }*/
-/*
-        // POST: EBooks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        /// <summary>
+        ///     Update book
+        /// </summary>
+        /// <param name="eBook">Ebook</param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Content,Genre")] EBook eBook)
+        public async Task<HttpStatusCode> Edit([FromBody] EBook eBook)
         {
-            if (id != eBook.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(eBook);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EBookExists(eBook.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _bookRepository.RemoveEbook(eBook.Id);
+                await _bookRepository.SaveChanges();
+                await _bookRepository.AddEbook(eBook);
+                await _bookRepository.SaveChanges();
+                return HttpStatusCode.OK;
             }
-            return View(eBook);
+            return HttpStatusCode.BadRequest;
         }
 
-        // GET: EBooks/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        /// <summary>
+        ///     Delete Ebook by id
+        /// </summary>
+        /// <param name="id">Ebook Id</param>
+        /// <returns></returns>
+        [HttpDelete("/{id}")]
+        public async Task<HttpStatusCode> Delete(string id)
         {
-            if (id == null || _context.EBook == null)
+            var book = await _bookRepository.GetEbook(new Guid(id));
+            
+            if (book != null)
             {
-                return NotFound();
+                await _bookRepository.RemoveEbook(book.Id);
+
+                return HttpStatusCode.OK;
             }
 
-            var eBook = await _context.EBook
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (eBook == null)
-            {
-                return NotFound();
-            }
-
-            return View(eBook);
+            return HttpStatusCode.NotFound;
         }
-
-        // POST: EBooks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            if (_context.EBook == null)
-            {
-                return Problem("Entity set 'ApplicationContext.EBook'  is null.");
-            }
-            var eBook = await _context.EBook.FindAsync(id);
-            if (eBook != null)
-            {
-                _context.EBook.Remove(eBook);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EBookExists(Guid id)
-        {
-            return _context.EBook.Any(e => e.Id == id);
-        }*/
     }
 }
