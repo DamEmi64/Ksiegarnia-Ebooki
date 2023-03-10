@@ -11,8 +11,7 @@ builder.Services.AddDbContext<KsiegarniaContext>(options =>
 
 // Add services to the container.
 builder.Services.AddSwaggerGen(options =>
-{ 
-    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+{
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -37,7 +36,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseExceptionHandler("/Error");
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -45,6 +43,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html"); ;
 

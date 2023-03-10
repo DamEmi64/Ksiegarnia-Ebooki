@@ -20,14 +20,13 @@ namespace Domain.Entitites
         /// <summary>
         ///     Email
         /// </summary>
-        public override string Email { get; set; }
+        public override string? Email { get; set; }
 
         /// <summary>
         ///     Phone No
         /// </summary>
         public override string? PhoneNumber { get; set; }
 
-        public string Nick { get;set; }
         /// <summary>
         ///     Documents
         /// </summary>

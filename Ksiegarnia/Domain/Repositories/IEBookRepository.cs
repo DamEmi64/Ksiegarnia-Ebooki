@@ -6,7 +6,7 @@ namespace Domain.Repositories
     {
         Task<List<EBook>> GetEBooks();
 
-        Task RemoveEbook(Guid bookId);
+        void RemoveEbook(EBook book);
 
         Task AddEbook(EBook book);
 

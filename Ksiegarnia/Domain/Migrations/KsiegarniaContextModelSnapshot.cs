@@ -32,9 +32,9 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Content")
+                    b.Property<byte[]>("Content")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("Genre")
                         .HasColumnType("int");
@@ -132,10 +132,6 @@ namespace Domain.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Nick")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
