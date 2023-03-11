@@ -41,7 +41,7 @@ namespace Application.Controllers
         {
             foreach (var bookId in buyer.BookIds)
             {
-                var book = await _eBookRepository.GetEbook(new Guid(bookId));
+                var book = await _eBookRepository.Get(new Guid(bookId));
                 if (ModelState.IsValid && book != null)
                 {
                     var currencyEnum = Currency.PLN;
@@ -65,7 +65,7 @@ namespace Application.Controllers
                         Transaction = transaction
                     };
 
-                    await _eBookReaderRepository.CreateTransaction(transaction);
+                    await _eBookReaderRepository.Add(transaction);
                     await _eBookReaderRepository.SaveChanges();
                 }
             }
@@ -79,9 +79,9 @@ namespace Application.Controllers
         /// <param name="id">transaction Id</param>
         /// <returns>Transaction data</returns>
         [HttpGet("{id}")]
-        public async Task<Transaction> Details(Guid id)
+        public async Task<TransactionDto> Details(Guid id)
         {
-            return (await _eBookReaderRepository.GetTransaction(id));
+            return (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
         }
 
     }

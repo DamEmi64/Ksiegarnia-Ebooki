@@ -50,13 +50,13 @@ namespace Infrastructure.Repositories
         {
             return await _userStore.FindByIdAsync(id, CancellationToken.None);
         }
-        public async Task Delete(string id)
+        public async Task Remove(string id)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
             await _userManager.DeleteAsync(user);
         }
 
-        public async Task<string> Login(string email, string password)
+        public async Task<User> Login(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories
             var result = await _signInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: true);
             if (result.Succeeded)
             {
-                return user.Id;
+                return user;
             }
 
             if (result.IsLockedOut)
@@ -79,7 +79,7 @@ namespace Infrastructure.Repositories
             throw new Exception("Login Failed");
         }
 
-        public async Task<string> Register(RegisterDto userData, string password)
+        public async Task<User> Register(RegisterDto userData, string password)
         {
             var user = CreateUser();
             user.FirstName = userData.FirstName;
@@ -92,7 +92,7 @@ namespace Infrastructure.Repositories
 
             if (result.Succeeded)
             {
-                return user.Id;
+                return user;
             }
 
             throw new Exception("Register Failed");

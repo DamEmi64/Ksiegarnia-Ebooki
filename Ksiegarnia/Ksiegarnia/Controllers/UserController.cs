@@ -1,5 +1,4 @@
 ﻿using Domain.DTOs;
-using Domain.Entitites;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,17 +27,17 @@ namespace Application.Controllers
         /// <param name="id">id</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<User> Details(string id)
+        public async Task<UserDto> Details(string id)
         {
-            return await _userRepository.Get(id);
+            return (await _userRepository.Get(id)).ToDTO();
         }
 
         // POST: UserController/Create
         [HttpPost("Register")]
         [ValidateAntiForgeryToken]
-        public async Task<string> Register([FromBody] RegisterDto user)
+        public async Task<UserDto> Register([FromBody] RegisterDto user)
         {
-            return await _userRepository.Register(user, string.Empty);
+            return (await _userRepository.Register(user, string.Empty)).ToDTO();
         }
 
         /// <summary>
@@ -47,9 +46,9 @@ namespace Application.Controllers
         /// <param name="data">Login data</param>
         /// <returns></returns>
         [HttpPost("login")]
-        public async Task<string> Login([FromBody] LoginDto data)
+        public async Task<UserDto> Login([FromBody] LoginDto data)
         {
-            return await _userRepository.Login(data.Email, data.Password);
+            return (await _userRepository.Login(data.Email, data.Password)).ToDTO();
         }
 
         /// <summary>
@@ -104,7 +103,7 @@ namespace Application.Controllers
         [HttpDelete("{id}")]
         public async Task Delete(string id)
         {
-            await _userRepository.Delete(id);
+            await _userRepository.Remove(id);
         }
     }
 }

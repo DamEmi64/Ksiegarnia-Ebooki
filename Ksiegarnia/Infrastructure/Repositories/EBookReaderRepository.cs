@@ -13,7 +13,7 @@ namespace Infrastructure.Repositories
         {
             _context = ksiegarniaContext;
         }
-        public async Task CreateTransaction(Transaction transaction)
+        public async Task Add(Transaction transaction)
         {
            await _context.Set<Transaction>().AddAsync(transaction);
         }

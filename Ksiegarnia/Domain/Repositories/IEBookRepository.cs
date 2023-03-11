@@ -6,11 +6,11 @@ namespace Domain.Repositories
     {
         Task<List<EBook>> GetEBooks();
 
-        Task RemoveEbook(Guid bookId);
+        Task Remove(Guid bookId);
 
-        Task AddEbook(EBook book);
+        Task Add(EBook book);
 
-        Task<EBook?> GetEbook(Guid id);
+        Task<EBook?> Get(Guid id);
 
         Task SaveChanges();
 

@@ -14,12 +14,12 @@ namespace Infrastructure.Repositories
             _context = ksiegarniaContext;
         }
 
-        public async Task AddEbook(EBook book)
+        public async Task Add(EBook book)
         {
             await _context.Set<EBook>().AddAsync(book);
         }
 
-        public async Task<EBook?> GetEbook(Guid id)
+        public async Task<EBook?> Get(Guid id)
         {
             return await _context.Set<EBook>().FirstOrDefaultAsync(m => m.Id == id);
         }
@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
             return await _context.Set<EBook>().ToListAsync();
         }
 
-        public async Task RemoveEbook(Guid bookId)
+        public async Task Remove(Guid bookId)
         {
             var book = await _context.Set<EBook>().FirstOrDefaultAsync(x => x.Id == bookId);
             if(book != null)
