@@ -4,9 +4,10 @@ namespace Domain.Repositories
 {
     public interface IEBookReaderRepository
     {
-        Task CreateTransaction(Transaction transaction);
+        Task Add(Transaction transaction);
         Task<EBookReader> Get(Guid id);
         Task<Transaction> GetTransaction(Guid id);
+        IEnumerable<Transaction> GetTransactions(string id);
         Task SaveChanges();
 
 

@@ -2,7 +2,7 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using System.Net;
-using Domain.Enums;
+using Domain.DTOs;
 
 namespace Application.Controllers
 {
@@ -14,15 +14,18 @@ namespace Application.Controllers
     public class EBooksController : Controller
     {
         private readonly IEBookRepository _bookRepository;
-        private readonly IEBookReaderRepository eBookReaderRepository;
+        private readonly IEBookReaderRepository _eBookReaderRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public EBooksController(IEBookRepository repository)
+        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IEBookReaderRepository eBookReaderRepository)
         {
             _bookRepository = repository;
+            _userRepository = userRepository;
+            _eBookReaderRepository = eBookReaderRepository;
         }
 
         /// <summary>
@@ -32,20 +35,16 @@ namespace Application.Controllers
         /// <param name="genre">Genre</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
-        public async Task<List<EBook>> Index([FromQuery] string authorName, [FromQuery] string genre)
+        public async Task<List<BookDto>> Index([FromQuery] string authorName, [FromQuery] string genre)
         {
             var books = await _bookRepository.GetEBooks();
-
-            if (Enum.TryParse(genre, out Genre genreEnum))
-            {
-                books = books.Where(x => x.Genre == genreEnum).ToList();
-            }
+            books = books.Where(x => x.Genre.Name == genre).ToList();
             if (!string.IsNullOrEmpty(authorName))
             {
                 books = books.Where(x => x.Author.UserName == authorName).ToList();
             }
 
-            return books;
+            return books.ToDTOs().ToList();
         }
 
         /// <summary>
@@ -53,26 +52,26 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">Ebook Id</param>
         /// <returns></returns>
-        [HttpGet("/{id}")]
-        public async Task<EBook> Details(Guid? id)
+        [HttpGet("{id}")]
+        public async Task<BookDto> Details(Guid? id)
         {
-            var ebook = await _bookRepository.GetEbook(id ?? Guid.Empty);
+            var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
                 throw new Exception("Ebook not found");
             }
 
-            return ebook;
+            return ebook.ToDTO();
         }
         /// <summary>
         ///     Get Ebook content by id
         /// </summary>
         /// <param name="id">Ebook Id</param>
         /// <returns></returns>
-        [HttpGet("/{id}/read")]
+        [HttpGet("{id}/read")]
         public async Task<byte[]> Read(Guid? id)
         {
-            var ebook = await _bookRepository.GetEbook(id ?? Guid.Empty);
+            var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
                 throw new Exception("Ebook not found");
@@ -86,14 +85,27 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="eBook">Ebook</param>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPost("")]
         [ValidateAntiForgeryToken]
-        public async Task<HttpStatusCode> Create([FromBody] EBook eBook)
+        public async Task<HttpStatusCode> Create([FromBody] CreateBookDto eBook)
         {
             if (ModelState.IsValid)
             {
-                eBook.Id = Guid.NewGuid();
-                await _bookRepository.AddEbook(eBook);
+                var author = await _userRepository.Get(eBook.Author.Id);
+                if (author == null)
+                {
+                    throw new Exception("User Not Found");
+                }
+                var book = new EBook()
+                {
+                    Id = Guid.NewGuid(),
+                    Author = author,
+                    Content = eBook.Content,
+                    Description = eBook.Description,
+                    PageNumber = eBook.PageNumber,
+                    Title = eBook.Title
+                };
+                await _bookRepository.Add(book);
                 await _bookRepository.SaveChanges();
                 return HttpStatusCode.Created;
             }
@@ -107,13 +119,14 @@ namespace Application.Controllers
         /// <returns></returns>
         [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<HttpStatusCode> Edit([FromBody] EBook eBook)
+        public async Task<HttpStatusCode> Edit([FromBody] CreateBookDto eBook, Guid id)
         {
             if (ModelState.IsValid)
             {
-                await _bookRepository.RemoveEbook(eBook.Id);
-                await _bookRepository.SaveChanges();
-                await _bookRepository.AddEbook(eBook);
+                var book = await _bookRepository.Get(id);
+                book.Content = eBook.Content;
+                book.Description = eBook.Description;
+                book.Title = eBook.Title;
                 await _bookRepository.SaveChanges();
                 return HttpStatusCode.OK;
             }
@@ -128,11 +141,11 @@ namespace Application.Controllers
         [HttpDelete("/{id}")]
         public async Task<HttpStatusCode> Delete(string id)
         {
-            var book = await _bookRepository.GetEbook(new Guid(id));
-            
+            var book = await _bookRepository.Get(new Guid(id));
+
             if (book != null)
             {
-                await _bookRepository.RemoveEbook(book.Id);
+                await _bookRepository.Remove(book.Id);
 
                 return HttpStatusCode.OK;
             }

@@ -32,16 +32,15 @@ namespace Application.Controllers
         ///     Buy book
         /// </summary>
         /// <param name="buyer">Buyer</param>
-        /// <param name="bookIds">Ebook Ids</param>
         /// <param name="currency">Currency (optional)</param>
         /// <returns>Status code</returns>
-        [HttpPost("Buy/{bookId}")]
+        [HttpPost("")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
         {
             foreach (var bookId in buyer.BookIds)
             {
-                var book = await _eBookRepository.GetEbook(new Guid(bookId));
+                var book = await _eBookRepository.Get(new Guid(bookId));
                 if (ModelState.IsValid && book != null)
                 {
                     var currencyEnum = Currency.PLN;
@@ -65,7 +64,7 @@ namespace Application.Controllers
                         Transaction = transaction
                     };
 
-                    await _eBookReaderRepository.CreateTransaction(transaction);
+                    await _eBookReaderRepository.Add(transaction);
                     await _eBookReaderRepository.SaveChanges();
                 }
             }
@@ -74,14 +73,25 @@ namespace Application.Controllers
         }
 
         /// <summary>
+        ///     Get all transactions
+        /// </summary>
+        /// <param name="userId">User id, WARNING!!! User shouldn't have access to that</param>
+        /// <returns></returns>
+        [HttpGet("")]
+        public  List<TransactionDto> GetAll( [FromQuery] string userId)
+        {
+            return _eBookReaderRepository.GetTransactions(userId).ToDTOs().ToList();
+        }
+
+        /// <summary>
         ///     Get details about transaction by id
         /// </summary>
         /// <param name="id">transaction Id</param>
         /// <returns>Transaction data</returns>
         [HttpGet("{id}")]
-        public async Task<Transaction> Details(Guid id)
+        public async Task<TransactionDto> Details(Guid id)
         {
-            return (await _eBookReaderRepository.GetTransaction(id));
+            return (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
         }
 
     }

@@ -10,8 +10,9 @@ namespace Domain.EntityConfiguration
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Title).HasMaxLength(86).IsRequired();
-            builder.Property(x => x.Genre).IsRequired();
             builder.Property(x => x.Content).HasColumnType("TEXT");
+            builder.Property(x => x.Description).HasMaxLength(255);
+            builder.HasOne(x=>x.Genre).WithMany(x=>x.Books).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.Author).WithMany(x => x.Publications).OnDelete(DeleteBehavior.Cascade);
         }
     }
