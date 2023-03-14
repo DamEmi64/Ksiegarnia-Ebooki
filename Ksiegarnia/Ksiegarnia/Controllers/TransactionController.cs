@@ -32,10 +32,9 @@ namespace Application.Controllers
         ///     Buy book
         /// </summary>
         /// <param name="buyer">Buyer</param>
-        /// <param name="bookIds">Ebook Ids</param>
         /// <param name="currency">Currency (optional)</param>
         /// <returns>Status code</returns>
-        [HttpPost("Buy/{bookId}")]
+        [HttpPost("")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
         {
@@ -71,6 +70,17 @@ namespace Application.Controllers
             }
 
             return HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        ///     Get all transactions
+        /// </summary>
+        /// <param name="userId">User id, WARNING!!! User shouldn't have access to that</param>
+        /// <returns></returns>
+        [HttpGet("")]
+        public  List<TransactionDto> GetAll( [FromQuery] string userId)
+        {
+            return _eBookReaderRepository.GetTransactions(userId).ToDTOs().ToList();
         }
 
         /// <summary>

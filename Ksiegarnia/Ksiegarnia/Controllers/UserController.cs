@@ -56,7 +56,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">user id</param>
         /// <returns></returns>
-        [HttpPost("{id}/passwordResetToken")]
+        [HttpGet("{id}/passwordResetToken")]
         [ValidateAntiForgeryToken]
         public Task<string> SendToken(string id)
         {

@@ -85,7 +85,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="eBook">Ebook</param>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPost("")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Create([FromBody] CreateBookDto eBook)
         {

@@ -27,6 +27,15 @@ namespace Infrastructure.Repositories
             return (await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
         }
 
+        public IEnumerable<Transaction> GetTransactions(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return _context.Set<Transaction>().Where(x => x.EBookReader.User.Id == id);
+            }
+            return _context.Set<Transaction>().ToList();
+        }
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();

@@ -43,7 +43,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="genreDto">Genre data</param>
         /// <returns></returns>
-        [HttpPost("create")]
+        [HttpPost("")]
         public async Task<HttpStatusCode> Create(GenreDto genreDto)
         {
             var genre = new Genre()
