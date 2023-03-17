@@ -3,6 +3,7 @@ using Domain.Entitites;
 using Domain.Repositories;
 using System.Net;
 using Domain.DTOs;
+using Infrastructure.Services.Interfaces;
 
 namespace Application.Controllers
 {
@@ -16,16 +17,18 @@ namespace Application.Controllers
         private readonly IEBookRepository _bookRepository;
         private readonly IEBookReaderRepository _eBookReaderRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICopyLeaksService _copyLeaksService;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IEBookReaderRepository eBookReaderRepository)
+        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IEBookReaderRepository eBookReaderRepository, ICopyLeaksService copyLeaksService)
         {
             _bookRepository = repository;
             _userRepository = userRepository;
             _eBookReaderRepository = eBookReaderRepository;
+            _copyLeaksService = copyLeaksService;
         }
 
         /// <summary>

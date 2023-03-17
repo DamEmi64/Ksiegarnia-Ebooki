@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Application.Controllers
 {
@@ -104,6 +105,22 @@ namespace Application.Controllers
         public async Task Delete(string id)
         {
             await _userRepository.Remove(id);
+        }
+
+        /// <summary>
+        ///     Verify user
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="UserName">username from verification data (optional)</param>
+        /// <returns></returns>
+        [HttpPost("{id}/verify")]
+        public async Task<HttpStatusCode> Verify(string id, [FromQuery] string UserName)
+        {
+            var user = await _userRepository.Get(id);
+            user.UserVerify = true;
+            user.UserName = UserName;
+
+            return HttpStatusCode.OK;
         }
     }
 }
