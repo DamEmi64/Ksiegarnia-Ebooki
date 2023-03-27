@@ -14,5 +14,7 @@
         public User Author { get; set; }
 
         public DateTime Date { get; set; }
+
+        public bool Verified { get; set; }
     }
 }

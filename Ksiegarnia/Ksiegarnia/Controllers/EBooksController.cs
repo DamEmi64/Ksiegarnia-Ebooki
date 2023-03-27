@@ -45,14 +45,14 @@ namespace Application.Controllers
         /// <param name="page">Page</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
-        public async Task<List<BookDto>> Index([FromQuery] string authorName,
-                                                [FromQuery] string genre1,
-                                                [FromQuery] string genre2,
-                                                [FromQuery] string genre3,
-                                                [FromQuery] decimal maxPrize,
-                                                [FromQuery] decimal minPrize,
+        public async Task<List<BookDto>> Index([FromQuery] string? authorName,
+                                                [FromQuery] string? genre1,
+                                                [FromQuery] string? genre2,
+                                                [FromQuery] string? genre3,
                                                 [FromQuery] SortType sort,
-                                                [FromQuery] int page)
+                                                [FromQuery] decimal? maxPrize = 0,
+                                                [FromQuery] decimal? minPrize = 0,
+                                                [FromQuery] int page = 0)
         {
             var books = await _bookRepository.GetEBooks();
             books = books.Where(x => x.Prize > minPrize
@@ -201,6 +201,19 @@ namespace Application.Controllers
             }
 
             return HttpStatusCode.NotFound;
+        }
+
+        /// <summary>
+        ///     Verify book
+        /// </summary>
+        /// <param name="id">Book id</param>
+        /// <param name="verifyName">Verification Data (name)</param>
+        /// <returns></returns>
+        [HttpGet("/{id}/verify")]
+        public async Task<HttpStatusCode> Verify(Guid id, [FromQuery] string verifyName)
+        {
+            await _bookRepository.Verify(id, verifyName);
+            return HttpStatusCode.OK;
         }
     }
 }

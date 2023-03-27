@@ -7,6 +7,7 @@ using Copyleaks.SDK.V3.API.Models.Responses;
 using Copyleaks.SDK.V3.API.Models.Types;
 using Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace Infrastructure.Services.PlagiatSystem
 {
@@ -14,9 +15,18 @@ namespace Infrastructure.Services.PlagiatSystem
     {
         private CopyleaksScansApi _APIClient { get; set; }
         private CopyleaksIdentityApi _IdentityClient { get; set; }
+        private  HttpClient _HttpClient { get; set; }
 
         public CopyLeaksService()
         {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+
+            };
+            _HttpClient = new HttpClient(handler);
+            _IdentityClient = new CopyleaksIdentityApi(_HttpClient);
+            _APIClient = new CopyleaksScansApi(_HttpClient);
             Task.Run(async () => await Login());
         }
 

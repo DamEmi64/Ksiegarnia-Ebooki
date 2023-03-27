@@ -27,7 +27,7 @@ namespace Application.Controllers
         [Route("/submit")]
         public async Task<IActionResult> Submit(byte[] content)
         {
-            _copyLeaksService.Submit(content);
+            await _copyLeaksService.Submit(content);
             
             return Ok();
         }
