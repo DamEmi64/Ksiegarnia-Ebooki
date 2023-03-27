@@ -4,6 +4,7 @@ using Domain.Repositories;
 using System.Net;
 using Domain.DTOs;
 using Infrastructure.Services.Interfaces;
+using Domain.Enums;
 
 namespace Application.Controllers
 {
@@ -35,19 +36,65 @@ namespace Application.Controllers
         ///     Get books list via paramereters
         /// </summary>
         /// <param name="authorName">Author name</param>
-        /// <param name="genre">Genre</param>
+        /// <param name="genre1">Genre</param>
+        /// <param name="genre2">Genre</param>
+        /// <param name="genre3">Genre</param>
+        /// <param name="maxPrize">Max Prize</param>
+        /// <param name="minPrize">Min prize</param>
+        /// <param name="sort">Sorting order</param>
+        /// <param name="page">Page</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
-        public async Task<List<BookDto>> Index([FromQuery] string authorName, [FromQuery] string genre)
+        public async Task<List<BookDto>> Index([FromQuery] string authorName,
+                                                [FromQuery] string genre1,
+                                                [FromQuery] string genre2,
+                                                [FromQuery] string genre3,
+                                                [FromQuery] decimal maxPrize,
+                                                [FromQuery] decimal minPrize,
+                                                [FromQuery] SortType sort,
+                                                [FromQuery] int page)
         {
             var books = await _bookRepository.GetEBooks();
-            books = books.Where(x => x.Genre.Name == genre).ToList();
+            books = books.Where(x => x.Prize > minPrize
+                            && (x.Genre.Name == genre1
+                            || x.Genre.Name == genre2
+                            || x.Genre.Name == genre3)).ToList();
+
             if (!string.IsNullOrEmpty(authorName))
             {
                 books = books.Where(x => x.Author.UserName == authorName).ToList();
             }
 
-            return books.ToDTOs().ToList();
+            if (maxPrize > 0)
+            {
+                books = books.Where(x => x.Prize < maxPrize).ToList();
+            }
+
+            var bookDtos = sort switch
+            {
+                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
+                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByDate => books.OrderBy(x => x.Date).ToDTOs().ToList(),
+                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
+                SortType.AscByPrize => books.OrderBy(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByName => books.OrderByDescending(x => x.Title).ToDTOs().ToList(),
+                SortType.AscByName => books.OrderBy(x => x.Title).ToDTOs().ToList(),
+                _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
+            };
+
+            var count = bookDtos.Count() - page * 100;
+
+            if (count > 100)
+            {
+                return bookDtos.GetRange(page * 100, 100);
+            }
+            else
+            {
+                return bookDtos.GetRange(page * 100, count);
+            }
         }
 
         /// <summary>

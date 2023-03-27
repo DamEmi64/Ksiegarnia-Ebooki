@@ -1,8 +1,10 @@
 ﻿using Domain.Context;
 using Infrastructure;
+using Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddDbContext<KsiegarniaContext>(options =>
 builder.Services.AddSwaggerGen(options =>
 { 
     options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+    options.SchemaFilter<EnumSchemaFilter>();
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -24,7 +27,10 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions( options => {
+
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Configure();
 

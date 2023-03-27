@@ -2,6 +2,7 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Repositories;
+using Infrastructure.Services.Auth;
 using Infrastructure.Services.Interfaces;
 using Infrastructure.Services.PlagiatSystem;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -21,7 +22,8 @@ namespace Infrastructure
                                     .AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookReaderRepository, EBookReaderRepository>();
             //Services
-            webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>();
+            webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
+                                        .AddScoped<IAuthService, AuthService>();
 
             webApplicationBuilder.ConfigureIdentity()
                                  .ConfigureConst();

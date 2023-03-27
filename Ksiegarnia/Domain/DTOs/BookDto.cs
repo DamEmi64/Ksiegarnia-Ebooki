@@ -31,6 +31,11 @@ namespace Domain.DTOs
         /// User simplified data 
         /// </summary>
         public UserDto Author { get; set; }
+
+        /// <summary>
+        ///     Book picture / cover
+        /// </summary>
+        public byte[] Picture { get; set; }
     }
 
     public static class BookConvert
