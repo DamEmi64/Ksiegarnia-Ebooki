@@ -3,13 +3,12 @@ using Domain.DTOs;
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Security.Policy;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Infrastructure.Repositories
 {
@@ -21,6 +20,7 @@ namespace Infrastructure.Repositories
         private readonly IUserStore<User> _userStore;
         private readonly IUserEmailStore<User> _emailStore;
         private readonly IAuthService _authService;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public UserRepository(KsiegarniaContext ksiegarniaContext, SignInManager<User> signInManager, UserManager<User> userManager, IUserStore<User> userStore, IAuthService authService)
         {
@@ -32,11 +32,17 @@ namespace Infrastructure.Repositories
             _authService = authService;
         }
 
-        public async Task<string> GeneratePasswordToken(string id)
+        public async Task<SendTokenDto> GeneratePasswordToken(string id)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
-            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
+            return new()
+            {
+                Email = user.Email,
+                Id = user.Id,
+                Token = token
+            };
         }
 
         public async Task ResetPassword(string id, string token, string newPassword)
@@ -88,7 +94,7 @@ namespace Infrastructure.Repositories
             throw new Exception("Login Failed");
         }
 
-        public async Task<User> Register(RegisterDto userData, string password)
+        public async Task<SendTokenDto> Register(RegisterDto userData, string password)
         {
             var user = CreateUser();
             user.FirstName = userData.FirstName;
@@ -104,11 +110,12 @@ namespace Infrastructure.Repositories
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 await _userManager.ConfirmEmailAsync(user, code);
-/*                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = UrlHelper.Action(new() { Action= ""}"ConfirmEmail", new { userId = user.Id, code = code });
-
-                _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.", user.Email);*/
-                return user;
+                return new()
+                {
+                    Email = user.Email,
+                    Id = user.Id,
+                    Token = code
+                };
             }
 
             throw new Exception("Register Failed");
@@ -128,7 +135,15 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task Confirm(string id, string token)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
 
+            if (user != null)
+            {
+                await _userManager.ConfirmEmailAsync(user, token);
+            }
+        }
     }
 }
 

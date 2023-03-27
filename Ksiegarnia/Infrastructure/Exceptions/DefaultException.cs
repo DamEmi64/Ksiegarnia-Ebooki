@@ -4,6 +4,10 @@ namespace Infrastructure.Exceptions
 {
     public class DefaultException : Exception
     {
+        public DefaultException()
+        {
+
+        }
         public DefaultException(HttpStatusCode statusCode, string title, string description = "")
         {
             StatusCode = statusCode;
