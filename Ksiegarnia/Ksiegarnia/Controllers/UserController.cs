@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Application.Controllers
 {

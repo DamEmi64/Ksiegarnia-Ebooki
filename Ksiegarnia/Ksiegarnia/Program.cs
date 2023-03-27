@@ -1,8 +1,12 @@
 ﻿using Domain.Context;
 using Infrastructure;
+using Infrastructure.Converters;
+using Infrastructure.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +15,9 @@ builder.Services.AddDbContext<KsiegarniaContext>(options =>
 
 // Add services to the container.
 builder.Services.AddSwaggerGen(options =>
-{ 
+{
     options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+    options.SchemaFilter<EnumSchemaFilter>();
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -24,7 +29,11 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Configure();
 
@@ -37,14 +46,27 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseExceptionHandler("/Error");
+app.UseExceptionHandler(a => a.Run(async context =>
+{
+    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+    var exception = exceptionHandlerPathFeature.Error;
+    if (exception is DefaultException defaultException)
+    {
+        await context.Response.WriteAsJsonAsync(new { Status = defaultException.StatusCode, Title = defaultException.Title, Description = defaultException.Description });
+    }
+    else
+    {
+        await context.Response.WriteAsJsonAsync(new { error = exception.Message });
+    }
+
+}));
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.MapControllers();
 
 app.MapFallbackToFile("index.html"); ;
 

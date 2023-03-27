@@ -16,6 +16,7 @@ namespace Infrastructure.Repositories
 
         public async Task Add(EBook book)
         {
+            book.Date = DateTime.UtcNow;
             await _context.Set<EBook>().AddAsync(book);
         }
 
@@ -41,6 +42,15 @@ namespace Infrastructure.Repositories
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task Verify(Guid id, string data)
+        {
+            var book = await Get(id);
+            if (book != null && book.Author.Nick == data)
+            {
+                book.Verified = true;
+            }
         }
     }
 }

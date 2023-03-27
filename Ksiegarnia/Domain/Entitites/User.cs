@@ -27,7 +27,11 @@ namespace Domain.Entitites
         /// </summary>
         public override string? PhoneNumber { get; set; }
 
+        /// <summary>
+        ///     User name
+        /// </summary>
         public string Nick { get;set; }
+
         /// <summary>
         ///     Documents
         /// </summary>

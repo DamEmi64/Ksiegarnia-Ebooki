@@ -14,5 +14,7 @@ namespace Domain.Repositories
 
         Task SaveChanges();
 
+        Task Verify(Guid id, string data);
+
     }
 }

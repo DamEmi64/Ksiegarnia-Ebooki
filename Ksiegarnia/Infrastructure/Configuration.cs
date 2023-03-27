@@ -2,6 +2,9 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Repositories;
+using Infrastructure.Services.Auth;
+using Infrastructure.Services.Interfaces;
+using Infrastructure.Services.PlagiatSystem;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +16,25 @@ namespace Infrastructure
     {
         public static void Configure(this WebApplicationBuilder webApplicationBuilder)
         {
+            //Repos
             webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookRepository, EbookRepository>()
                                     .AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookReaderRepository, EBookReaderRepository>();
-            webApplicationBuilder.ConfigureIdentity();
+            //Services
+            webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
+                                        .AddScoped<IAuthService, AuthService>();
+
+            webApplicationBuilder.ConfigureIdentity()
+                                 .ConfigureConst();
+        }
+        private static void ConfigureConst(this WebApplicationBuilder builder)
+        {
+            ConfigurationConst.CopyLeaksToken = builder.Configuration["CopyLeaksToken"] ?? String.Empty;
+            ConfigurationConst.Email = builder.Configuration["CopyLeaksEmail"] ?? String.Empty;
+            ConfigurationConst.CopyLeaksAPIKey = builder.Configuration["CopyLeaksAPIKey"] ?? String.Empty;
+            ConfigurationConst.WebHookHost = new Uri(builder.Configuration["WebHookHost"] ?? "https://localhost:7270");
+            ConfigurationConst.ServerName = builder.Configuration["ServerName"] ?? String.Empty;
         }
 
         /// <summary>
