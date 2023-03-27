@@ -1,4 +1,4 @@
-﻿using Domain.Context;
+using Domain.Context;
 using Infrastructure;
 using Infrastructure.Converters;
 using Infrastructure.Exceptions;
