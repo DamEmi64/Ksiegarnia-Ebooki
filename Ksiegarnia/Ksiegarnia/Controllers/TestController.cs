@@ -15,7 +15,7 @@ namespace Application.Controllers
         [HttpGet("exception")]
         public IActionResult Index()
         {
-            throw new DefaultException(System.Net.HttpStatusCode.NoContent, "TEST", "DESC");
+            throw new DefaultException(System.Net.HttpStatusCode.NotFound, "TEST", "DESC");
         }
     }
 }

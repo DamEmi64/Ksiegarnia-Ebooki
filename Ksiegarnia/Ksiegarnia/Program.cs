@@ -50,9 +50,11 @@ app.UseExceptionHandler(a => a.Run(async context =>
 {
     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
     var exception = exceptionHandlerPathFeature.Error;
+
     if (exception is DefaultException defaultException)
     {
-        await context.Response.WriteAsJsonAsync(new { Status = defaultException.StatusCode, Title = defaultException.Title, Description = defaultException.Description });
+        context.Response.StatusCode =(int)defaultException.StatusCode;
+        await context.Response.WriteAsJsonAsync(new {Title = defaultException.Title, Description = defaultException.Description });
     }
     else
     {
