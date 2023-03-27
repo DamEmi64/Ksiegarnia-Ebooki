@@ -5,6 +5,8 @@ using System.Net;
 using Domain.DTOs;
 using Infrastructure.Services.Interfaces;
 using Domain.Enums;
+using Infrastructure.Exceptions.Books;
+using Infrastructure.Exceptions.Users;
 
 namespace Application.Controllers
 {
@@ -108,7 +110,7 @@ namespace Application.Controllers
             var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
-                throw new Exception("Ebook not found");
+                throw new BookNotFoundException(id.ToString());
             }
 
             return ebook.ToDTO();
@@ -124,7 +126,7 @@ namespace Application.Controllers
             var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
-                throw new Exception("Ebook not found");
+                throw new BookNotFoundException(id.ToString());
             }
 
             return ebook.Content;
@@ -144,8 +146,14 @@ namespace Application.Controllers
                 var author = await _userRepository.Get(eBook.Author.Id);
                 if (author == null)
                 {
-                    throw new Exception("User Not Found");
+                    throw new UserNotFoundException(eBook.Author.Id);
                 }
+
+                if (await _bookRepository.CheckIfExist(eBook.Content))
+                {
+                    throw new BookHasThisContentException(eBook.Title);
+                }
+
                 var book = new EBook()
                 {
                     Id = Guid.NewGuid(),
@@ -174,6 +182,11 @@ namespace Application.Controllers
             if (ModelState.IsValid)
             {
                 var book = await _bookRepository.Get(id);
+                
+                if (book == null)
+                {
+                    throw new BookNotFoundException(id.ToString());
+                }
                 book.Content = eBook.Content;
                 book.Description = eBook.Description;
                 book.Title = eBook.Title;
@@ -200,7 +213,7 @@ namespace Application.Controllers
                 return HttpStatusCode.OK;
             }
 
-            return HttpStatusCode.NotFound;
+            throw new BookNotFoundException(id);
         }
 
         /// <summary>

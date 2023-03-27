@@ -16,5 +16,7 @@ namespace Domain.Repositories
 
         Task Verify(Guid id, string data);
 
+        Task<bool> CheckIfExist(byte[] data);
+
     }
 }

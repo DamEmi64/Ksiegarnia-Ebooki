@@ -1,7 +1,11 @@
 ﻿using Domain.DTOs;
 using Domain.Repositories;
+using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Net;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Application.Controllers
 {
@@ -13,13 +17,15 @@ namespace Application.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAuthService _authService;
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="userRepository"></param>
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IAuthService authService)
         {
             _userRepository = userRepository;
+            _authService = authService;
         }
 
         /// <summary>
@@ -33,12 +39,23 @@ namespace Application.Controllers
             return (await _userRepository.Get(id)).ToDTO();
         }
 
-        // POST: UserController/Create
+        /// <summary>
+        ///     Register
+        /// </summary>
+        /// <param name="data">register data</param>
+        /// <returns></returns>
         [HttpPost("Register")]
         [ValidateAntiForgeryToken]
-        public async Task<UserDto> Register([FromBody] RegisterDto user)
+        public async Task Register([FromBody] RegisterDto data)
         {
-            return (await _userRepository.Register(user, string.Empty)).ToDTO();
+            var user = await _userRepository.Register(data, string.Empty);
+            var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
+            var callbackUrl = Url.Page(
+                "/User/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code = token },
+                protocol: Request.Scheme);
+            _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.", user.Email);
         }
 
         /// <summary>
@@ -59,9 +76,16 @@ namespace Application.Controllers
         /// <returns></returns>
         [HttpGet("{id}/passwordResetToken")]
         [ValidateAntiForgeryToken]
-        public Task<string> SendToken(string id)
+        public async Task SendToken(string id)
         {
-            return _userRepository.GeneratePasswordToken(id);
+            var user = await _userRepository.GeneratePasswordToken(id);
+            var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
+            var callbackUrl = Url.Page(
+                "/User/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code = token },
+                protocol: Request.Scheme);
+            _authService.SendEmail($"Reset password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.", user.Email);
         }
 
         /// <summary>
@@ -87,8 +111,7 @@ namespace Application.Controllers
         ///     Change password
         /// </summary>
         /// <param name="id">user id</param>
-        /// <param name="token">refresh token</param>
-        /// <param name="newPassword">password</param>
+        /// <param name="passwordChange">Password change data</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [HttpPost("{id}/passwordChange")]
@@ -105,6 +128,18 @@ namespace Application.Controllers
         public async Task Delete(string id)
         {
             await _userRepository.Remove(id);
+        }
+
+        /// <summary>
+        ///     Email verification link
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <param name="token">Token</param>
+        /// <returns></returns>
+        [HttpGet("ConfirmEmail")]
+        public async Task EmailConfirm(string id, [FromQuery] string token)
+        {
+            await _userRepository.Confirm(id, token);
         }
     }
 }

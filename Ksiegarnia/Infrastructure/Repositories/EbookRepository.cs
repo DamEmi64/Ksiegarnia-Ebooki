@@ -20,6 +20,11 @@ namespace Infrastructure.Repositories
             await _context.Set<EBook>().AddAsync(book);
         }
 
+        public async Task<bool> CheckIfExist(byte[] data)
+        {
+            return await _context.Set<EBook>().AnyAsync(x => x.Content.SequenceEqual(data));
+        }
+
         public async Task<EBook?> Get(Guid id)
         {
             return await _context.Set<EBook>().FirstOrDefaultAsync(m => m.Id == id);
@@ -33,7 +38,7 @@ namespace Infrastructure.Repositories
         public async Task Remove(Guid bookId)
         {
             var book = await _context.Set<EBook>().FirstOrDefaultAsync(x => x.Id == bookId);
-            if(book != null)
+            if (book != null)
             {
                 _context.Set<EBook>().Remove(book);
             }
