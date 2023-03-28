@@ -48,6 +48,7 @@ namespace Application.Controllers
         public async Task Register([FromBody] RegisterDto data)
         {
             var user = await _userRepository.Register(data, data.Password);
+
             var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
             var callbackUrl = Url.Page(
                 "/User/ConfirmEmail",
