@@ -53,8 +53,8 @@ app.UseExceptionHandler(a => a.Run(async context =>
 
     if (exception is DefaultException defaultException)
     {
-        context.Response.StatusCode =(int)defaultException.StatusCode;
-        await context.Response.WriteAsJsonAsync(new {Title = defaultException.Title, Description = defaultException.Description });
+        context.Response.StatusCode = (int)defaultException.StatusCode;
+        await context.Response.WriteAsJsonAsync(new { Title = defaultException.Title, Description = defaultException.Description });
     }
     else
     {
@@ -67,9 +67,10 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseAuthentication();
 app.UseRouting();
 app.MapControllers();
-
+app.UseAuthorization();
 app.MapFallbackToFile("index.html"); ;
 
 app.Run();

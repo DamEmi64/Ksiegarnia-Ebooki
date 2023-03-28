@@ -101,8 +101,8 @@ namespace Infrastructure.Repositories
             user.LastName = userData.LastName;
             user.PhoneNumber = userData.PhoneNumber;
             user.Nick = userData.Nick;
-            await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, user.Email, CancellationToken.None);
+            await _userStore.SetUserNameAsync(user, userData.Nick, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, userData.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
