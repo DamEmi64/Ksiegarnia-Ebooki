@@ -113,6 +113,11 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString());
             }
 
+            if (!ebook.Verified)
+            {
+                throw new BookNotVerifiedException();
+            }
+
             return ebook.ToDTO();
         }
         /// <summary>
@@ -127,6 +132,11 @@ namespace Application.Controllers
             if (ebook == null)
             {
                 throw new BookNotFoundException(id.ToString());
+            }
+
+            if (!ebook.Verified)
+            {
+                throw new BookNotVerifiedException();
             }
 
             return ebook.Content;
@@ -182,7 +192,7 @@ namespace Application.Controllers
             if (ModelState.IsValid)
             {
                 var book = await _bookRepository.Get(id);
-                
+
                 if (book == null)
                 {
                     throw new BookNotFoundException(id.ToString());
