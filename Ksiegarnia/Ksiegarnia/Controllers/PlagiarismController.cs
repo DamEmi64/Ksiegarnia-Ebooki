@@ -1,4 +1,7 @@
 ﻿using Copyleaks.SDK.V3.API.Models.Callbacks;
+using Domain.DTOs;
+using Domain.Repositories;
+using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Infrastructure.Services.PlagiatSystem;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +13,12 @@ namespace Application.Controllers
     public class PlagiarismController : Controller
     {
         private readonly ICopyLeaksService _copyLeaksService;
+        private readonly IEBookRepository _eBookRepository;
 
-
-        public PlagiarismController(ICopyLeaksService copyLeaksService)
+        public PlagiarismController(ICopyLeaksService copyLeaksService, IEBookRepository eBookRepository)
         {
             _copyLeaksService = copyLeaksService;
+            _eBookRepository = eBookRepository;
         }
 
         /// <summary>
@@ -25,10 +29,10 @@ namespace Application.Controllers
 
         [HttpPost]
         [Route("/submit")]
-        public async Task<IActionResult> Submit(byte[] content)
+        public async Task<IActionResult> Submit([FromBody] PlagiarismDto content)
         {
             await _copyLeaksService.Submit(content);
-            
+
             return Ok();
         }
         /// <summary>
@@ -51,10 +55,28 @@ namespace Application.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("/{scanId}/completed")]
-        public IActionResult CompletedProcess(string scanId, [FromBody] CompletedCallback scanResults)
+        public async Task<IActionResult> CompletedProcess(string scanId, [FromBody] CompletedCallback scanResults)
         {
             // Do something with the scan results
             _copyLeaksService.SaveResults(scanResults, scanId);
+            try
+            {
+                var book = await _eBookRepository.Get(new Guid(scanId));
+                if (book != null)
+                {
+                    if (scanResults.Results.Score.AggregatedScore > 70)
+                    {
+                        book.Verified = false;
+                        await _eBookRepository.SaveChanges();
+
+                        throw new DefaultException(System.Net.HttpStatusCode.Conflict,
+                            "PLAGIAT",
+                            $"Wykryto plagiat na poziome {scanResults.Results.Score.AggregatedScore}");
+                    }
+                }
+            }
+            catch (Exception) { }
+
             return Ok();
         }
     }

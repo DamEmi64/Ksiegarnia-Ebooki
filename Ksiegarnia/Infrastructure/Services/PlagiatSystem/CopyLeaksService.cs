@@ -5,6 +5,7 @@ using Copyleaks.SDK.V3.API.Models.Requests;
 using Copyleaks.SDK.V3.API.Models.Requests.Properties;
 using Copyleaks.SDK.V3.API.Models.Responses;
 using Copyleaks.SDK.V3.API.Models.Types;
+using Domain.DTOs;
 using Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Net;
@@ -30,12 +31,12 @@ namespace Infrastructure.Services.PlagiatSystem
             Task.Run(async () => await Login());
         }
 
-        public async Task Submit(byte[] content)
+        public async Task Submit(PlagiarismDto plagiatData)
         {
-            string scanId = Guid.NewGuid().ToString();
+            
             var response = new CopyLeaksResponse()
             {
-                ScanId = scanId,
+                ScanId = plagiatData.BookId.ToString(),
                 Token = ConfigurationConst.CopyLeaksToken
             };
 
@@ -44,19 +45,19 @@ namespace Infrastructure.Services.PlagiatSystem
                 using (var api = new CopyleaksScansApi())
                 {
                     // Submit a file for scan in https://api.copyleaks.com
-                    await api.SubmitFileAsync(scanId, new FileDocument
+                    await api.SubmitFileAsync(plagiatData.BookId.ToString(), new FileDocument
                     {
                         // The text to scan in base64 format
-                        Base64 = Convert.ToBase64String(content),
+                        Base64 = Convert.ToBase64String(plagiatData.Content),
                         // The file name is it will appear in the scan result
                         Filename = "text.txt",
-                        PropertiesSection = GetScanProperties(scanId)
+                        PropertiesSection = GetScanProperties(plagiatData.BookId.ToString())
                     },
                     ConfigurationConst.CopyLeaksToken).ConfigureAwait(false);
                 }
                 var checkResult = new CopyLeaksResultResponse
                 {
-                    ScanId = scanId
+                    ScanId = plagiatData.BookId.ToString()
                 };
 
             }
