@@ -1,18 +1,19 @@
 ﻿using Domain.DTOs;
 using Domain.Entitites;
 using Domain.Repositories;
+using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Application.Controllers
 {
-    [Route("Genre")]
+    [Route("Genres")]
     [ApiController]
-    public class GenreController : Controller
+    public class GenresController : Controller
     {
         private readonly IGenreRepository _genreRepository;
 
-        public GenreController(IGenreRepository genreRepository)
+        public GenresController(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
         }
@@ -35,7 +36,14 @@ namespace Application.Controllers
         [HttpGet("{id}")]
         public async Task<GenreDto> Details(Guid id)
         {
-            return (await _genreRepository.Get(id)).ToDTO();
+            var genre = await _genreRepository.Get(id);
+
+            if (genre == null)
+            {
+                throw new GenreNotFoundException();
+            }
+
+            return genre.ToDTO();
         }
 
         /// <summary>
@@ -56,29 +64,49 @@ namespace Application.Controllers
             return HttpStatusCode.Created;
         }
 
-
+        /// <summary>
+        ///     Edit Genre
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <param name="genreDto">Genre Dto</param>
+        /// <returns></returns>
+        /// <exception cref="GenreNotFoundException"></exception>
         [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task Edit(Guid id, GenreDto genreDto)
+        public async Task<HttpStatusCode> Edit(Guid id, GenreDto genreDto)
         {
             var genre = await _genreRepository.Get(id);
             if (genre == null)
             {
-                throw new Exception("Genre not found");
+                throw new GenreNotFoundException();
             }
 
             genre.Name = genreDto.Name;
             genre.Description = genreDto.Description;
 
             _genreRepository.SaveChanges();
+
+            return HttpStatusCode.OK;
         }
 
-        // POST: GenreController/Delete/5
+        /// <summary>
+        ///     Delete Genre
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <returns></returns>
+        /// <exception cref="GenreNotFoundException"></exception>
         [HttpDelete("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task Delete(Guid id)
+        public async Task<HttpStatusCode> Delete(Guid id)
         {
+            if (_genreRepository.Get(id) == null)
+            {
+                throw new GenreNotFoundException();
+            }
+
             await _genreRepository.Remove(id);
+
+            return HttpStatusCode.OK;
         }
     }
 }

@@ -23,8 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\GenreController\" />
-    <Folder Include="Controllers\TransactionController\" />
     <Folder Include="Controllers\UserController\" />
   </ItemGroup>
 

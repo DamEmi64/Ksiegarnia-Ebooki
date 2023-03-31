@@ -4,6 +4,7 @@ using Domain.Repositories;
 using System.Net;
 using Domain.Enums;
 using Domain.DTOs;
+using Infrastructure.Exceptions;
 
 namespace Application.Controllers
 {
@@ -12,7 +13,7 @@ namespace Application.Controllers
     /// </summary>
     [Route("Transaction")]
     [ApiController]
-    public class TransactionController : Controller
+    public class TransactionsController : Controller
     {
         private readonly IEBookReaderRepository _eBookReaderRepository;
         private readonly IEBookRepository _eBookRepository;
@@ -21,7 +22,7 @@ namespace Application.Controllers
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public TransactionController(IEBookReaderRepository repository, IEBookRepository eBookRepository, IUserRepository userRepository)
+        public TransactionsController(IEBookReaderRepository repository, IEBookRepository eBookRepository, IUserRepository userRepository)
         {
             _eBookReaderRepository = repository;
             _eBookRepository = eBookRepository;
@@ -91,7 +92,14 @@ namespace Application.Controllers
         [HttpGet("{id}")]
         public async Task<TransactionDto> Details(Guid id)
         {
-            return (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
+            var transaction = await _eBookReaderRepository.GetTransaction(id);
+
+            if (transaction == null)
+            {
+                throw new TransactionNotFoundException();
+            }
+
+            return transaction.ToDTO();
         }
 
     }

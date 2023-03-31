@@ -165,11 +165,7 @@ namespace Application.Controllers
 
                 if (genre == null)
                 {
-                    genre = new Genre()
-                    {
-                        Name = eBook.Genre.Name,
-                        Id = eBook.Genre.Id
-                    };
+                    throw new GenreNotFoundException();
                 }
 
                 var book = new EBook()

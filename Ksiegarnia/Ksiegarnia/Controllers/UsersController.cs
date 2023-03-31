@@ -14,7 +14,7 @@ namespace Application.Controllers
     /// </summary>
     [Route("Users")]
     [ApiController]
-    public class UserController : Controller
+    public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthService _authService;
@@ -22,7 +22,7 @@ namespace Application.Controllers
         ///     Constructor
         /// </summary>
         /// <param name="userRepository"></param>
-        public UserController(IUserRepository userRepository, IAuthService authService)
+        public UsersController(IUserRepository userRepository, IAuthService authService)
         {
             _userRepository = userRepository;
             _authService = authService;
