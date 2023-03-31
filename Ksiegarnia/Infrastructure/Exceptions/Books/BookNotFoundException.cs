@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Infrastructure.Exceptions.Books
+namespace Infrastructure.Exceptions
 {
     public class BookNotFoundException : DefaultException
     {

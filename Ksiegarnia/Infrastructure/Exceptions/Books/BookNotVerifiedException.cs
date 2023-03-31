@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Exceptions.Books
+﻿namespace Infrastructure.Exceptions
 {
     public class BookNotVerifiedException : DefaultException
     {

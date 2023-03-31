@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Exceptions.Users
+﻿namespace Infrastructure.Exceptions
 {
     public class UserNotFoundException : DefaultException
     {

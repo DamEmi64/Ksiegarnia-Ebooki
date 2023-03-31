@@ -5,8 +5,7 @@ using System.Net;
 using Domain.DTOs;
 using Infrastructure.Services.Interfaces;
 using Domain.Enums;
-using Infrastructure.Exceptions.Books;
-using Infrastructure.Exceptions.Users;
+using Infrastructure.Exceptions;
 
 namespace Application.Controllers
 {
@@ -18,20 +17,18 @@ namespace Application.Controllers
     public class EBooksController : Controller
     {
         private readonly IEBookRepository _bookRepository;
-        private readonly IEBookReaderRepository _eBookReaderRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ICopyLeaksService _copyLeaksService;
+        private readonly IGenreRepository _genreRepository;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IEBookReaderRepository eBookReaderRepository, ICopyLeaksService copyLeaksService)
+        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IGenreRepository genreRepository)
         {
             _bookRepository = repository;
             _userRepository = userRepository;
-            _eBookReaderRepository = eBookReaderRepository;
-            _copyLeaksService = copyLeaksService;
+            _genreRepository = genreRepository;
         }
 
         /// <summary>
@@ -47,11 +44,11 @@ namespace Application.Controllers
         /// <param name="page">Page</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
-        public async Task<List<BookDto>> Index([FromQuery] string? authorName,
-                                                [FromQuery] string? genre1,
-                                                [FromQuery] string? genre2,
-                                                [FromQuery] string? genre3,
-                                                [FromQuery] SortType sort,
+        public async Task<List<BookDto>> Index([FromQuery] string? authorName = "",
+                                                [FromQuery] string? genre1 = "",
+                                                [FromQuery] string? genre2 = "",
+                                                [FromQuery] string? genre3 = "",
+                                                [FromQuery] SortType sort = default,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
                                                 [FromQuery] int page = 0)
@@ -164,6 +161,17 @@ namespace Application.Controllers
                     throw new BookHasThisContentException(eBook.Title);
                 }
 
+                var genre = await _genreRepository.Get(eBook.Genre.Id);
+
+                if (genre == null)
+                {
+                    genre = new Genre()
+                    {
+                        Name = eBook.Genre.Name,
+                        Id = eBook.Genre.Id
+                    };
+                }
+
                 var book = new EBook()
                 {
                     Id = Guid.NewGuid(),
@@ -171,7 +179,12 @@ namespace Application.Controllers
                     Content = eBook.Content,
                     Description = eBook.Description,
                     PageNumber = eBook.PageNumber,
-                    Title = eBook.Title
+                    Title = eBook.Title,
+                    Date = DateTime.UtcNow,
+                    Picture = eBook.Picture,
+                    Genre = genre,
+                    Prize = eBook.Prize,
+                    Verified = false
                 };
                 await _bookRepository.Add(book);
                 await _bookRepository.SaveChanges();
@@ -214,13 +227,16 @@ namespace Application.Controllers
         [HttpDelete("/{id}")]
         public async Task<HttpStatusCode> Delete(string id)
         {
-            var book = await _bookRepository.Get(new Guid(id));
-
-            if (book != null)
+            if (Guid.TryParse(id, out Guid bookId))
             {
-                await _bookRepository.Remove(book.Id);
+                var book = await _bookRepository.Get(bookId);
 
-                return HttpStatusCode.OK;
+                if (book != null)
+                {
+                    await _bookRepository.Remove(book.Id);
+
+                    return HttpStatusCode.OK;
+                }
             }
 
             throw new BookNotFoundException(id);

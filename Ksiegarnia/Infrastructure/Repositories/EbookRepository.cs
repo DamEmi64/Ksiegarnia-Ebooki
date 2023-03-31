@@ -52,7 +52,7 @@ namespace Infrastructure.Repositories
         public async Task Verify(Guid id, string data)
         {
             var book = await Get(id);
-            if (book != null && book.Author.Nick == data)
+            if (book != null)
             {
                 book.Verified = true;
             }
