@@ -5,8 +5,7 @@ using System.Net;
 using Domain.DTOs;
 using Infrastructure.Services.Interfaces;
 using Domain.Enums;
-using Infrastructure.Exceptions.Books;
-using Infrastructure.Exceptions.Users;
+using Infrastructure.Exceptions;
 
 namespace Application.Controllers
 {
@@ -18,20 +17,18 @@ namespace Application.Controllers
     public class EBooksController : Controller
     {
         private readonly IEBookRepository _bookRepository;
-        private readonly IEBookReaderRepository _eBookReaderRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ICopyLeaksService _copyLeaksService;
+        private readonly IGenreRepository _genreRepository;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IEBookReaderRepository eBookReaderRepository, ICopyLeaksService copyLeaksService)
+        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IGenreRepository genreRepository)
         {
             _bookRepository = repository;
             _userRepository = userRepository;
-            _eBookReaderRepository = eBookReaderRepository;
-            _copyLeaksService = copyLeaksService;
+            _genreRepository = genreRepository;
         }
 
         /// <summary>
@@ -47,11 +44,11 @@ namespace Application.Controllers
         /// <param name="page">Page</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
-        public async Task<List<BookDto>> Index([FromQuery] string? authorName,
-                                                [FromQuery] string? genre1,
-                                                [FromQuery] string? genre2,
-                                                [FromQuery] string? genre3,
-                                                [FromQuery] SortType sort,
+        public async Task<List<BookDto>> Index([FromQuery] string? authorName = "",
+                                                [FromQuery] string? genre1 = "",
+                                                [FromQuery] string? genre2 = "",
+                                                [FromQuery] string? genre3 = "",
+                                                [FromQuery] SortType sort = default,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
                                                 [FromQuery] int page = 0)
@@ -102,15 +99,22 @@ namespace Application.Controllers
         /// <summary>
         ///     Get Ebook details by id
         /// </summary>
-        /// <param name="id">Ebook Id</param>
-        /// <returns></returns>
+        /// <param name="id">Ebook id</param>
+        /// <returns>Ebook details</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="BookNotVerifiedException">When book is not verified...</exception>
         [HttpGet("{id}")]
         public async Task<BookDto> Details(Guid? id)
         {
             var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
-                throw new BookNotFoundException(id.ToString());
+                throw new BookNotFoundException(id.ToString() ?? String.Empty);
+            }
+
+            if (!ebook.Verified)
+            {
+                throw new BookNotVerifiedException();
             }
 
             if (!ebook.Verified)
@@ -124,14 +128,21 @@ namespace Application.Controllers
         ///     Get Ebook content by id
         /// </summary>
         /// <param name="id">Ebook Id</param>
-        /// <returns></returns>
+        /// <returns>Ebook content</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="BookNotVerifiedException">When book is not verified...</exception>
         [HttpGet("{id}/read")]
         public async Task<byte[]> Read(Guid? id)
         {
             var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
-                throw new BookNotFoundException(id.ToString());
+                throw new BookNotFoundException(id.ToString() ?? string.Empty);
+            }
+            
+            if (!ebook.Verified)
+            {
+                throw new BookNotVerifiedException();
             }
 
             if (!ebook.Verified)
@@ -147,6 +158,8 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="eBook">Ebook</param>
         /// <returns></returns>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
+        /// <exception cref="BookHasThisContentException">When book with same content exist...</exception>
         [HttpPost("")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Create([FromBody] CreateBookDto eBook)
@@ -164,6 +177,13 @@ namespace Application.Controllers
                     throw new BookHasThisContentException(eBook.Title);
                 }
 
+                var genre = await _genreRepository.Get(eBook.Genre.Id);
+
+                if (genre == null)
+                {
+                    throw new GenreNotFoundException();
+                }
+
                 var book = new EBook()
                 {
                     Id = Guid.NewGuid(),
@@ -171,7 +191,12 @@ namespace Application.Controllers
                     Content = eBook.Content,
                     Description = eBook.Description,
                     PageNumber = eBook.PageNumber,
-                    Title = eBook.Title
+                    Title = eBook.Title,
+                    Date = DateTime.UtcNow,
+                    Picture = eBook.Picture,
+                    Genre = genre,
+                    Prize = eBook.Prize,
+                    Verified = false
                 };
                 await _bookRepository.Add(book);
                 await _bookRepository.SaveChanges();
@@ -185,6 +210,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="eBook">Ebook</param>
         /// <returns></returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Edit([FromBody] CreateBookDto eBook, Guid id)
@@ -211,16 +237,20 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">Ebook Id</param>
         /// <returns></returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpDelete("/{id}")]
         public async Task<HttpStatusCode> Delete(string id)
         {
-            var book = await _bookRepository.Get(new Guid(id));
-
-            if (book != null)
+            if (Guid.TryParse(id, out Guid bookId))
             {
-                await _bookRepository.Remove(book.Id);
+                var book = await _bookRepository.Get(bookId);
 
-                return HttpStatusCode.OK;
+                if (book != null)
+                {
+                    await _bookRepository.Remove(book.Id);
+
+                    return HttpStatusCode.OK;
+                }
             }
 
             throw new BookNotFoundException(id);

@@ -5,6 +5,7 @@ using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -58,6 +59,7 @@ app.UseExceptionHandler(a => a.Run(async context =>
     }
     else
     {
+        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         await context.Response.WriteAsJsonAsync(new { error = exception.Message });
     }
 

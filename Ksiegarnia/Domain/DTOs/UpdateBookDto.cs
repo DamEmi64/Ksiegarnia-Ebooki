@@ -31,5 +31,15 @@
         ///     Author
         /// </summary>
         public UserDto Author { get; set; }
+
+        /// <summary>
+        ///     Book Picture
+        /// </summary>
+        public byte[] Picture { get; set; }
+
+        /// <summary>
+        ///     Book Prize
+        /// </summary>
+        public decimal Prize { get; set; }
     }
 }

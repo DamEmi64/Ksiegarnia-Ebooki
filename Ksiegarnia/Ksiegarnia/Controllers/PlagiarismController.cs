@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
 {
+    /// <summary>
+    ///     Plagiat System Controller
+    /// </summary>
     [Route("Plagiarism")]
     [ApiController]
     public class PlagiarismController : Controller
@@ -15,6 +18,11 @@ namespace Application.Controllers
         private readonly ICopyLeaksService _copyLeaksService;
         private readonly IEBookRepository _eBookRepository;
 
+        /// <summary>
+        ///     Controller
+        /// </summary>
+        /// <param name="copyLeaksService"></param>
+        /// <param name="eBookRepository"></param>
         public PlagiarismController(ICopyLeaksService copyLeaksService, IEBookRepository eBookRepository)
         {
             _copyLeaksService = copyLeaksService;
