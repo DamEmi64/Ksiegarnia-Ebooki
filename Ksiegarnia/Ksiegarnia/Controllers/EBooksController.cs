@@ -117,6 +117,11 @@ namespace Application.Controllers
                 throw new BookNotVerifiedException();
             }
 
+            if (!ebook.Verified)
+            {
+                throw new BookNotVerifiedException();
+            }
+
             return ebook.ToDTO();
         }
         /// <summary>
@@ -135,6 +140,11 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString() ?? string.Empty);
             }
             
+            if (!ebook.Verified)
+            {
+                throw new BookNotVerifiedException();
+            }
+
             if (!ebook.Verified)
             {
                 throw new BookNotVerifiedException();
