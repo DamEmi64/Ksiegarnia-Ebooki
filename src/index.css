@@ -1,3 +1,8 @@
 body {
   margin: 0;
 }
+
+.inputRounded .MuiOutlinedInput-root {
+  border-radius: 50px;
+  background-color: white;
+}
