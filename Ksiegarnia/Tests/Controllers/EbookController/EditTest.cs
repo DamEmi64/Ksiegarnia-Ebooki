@@ -35,7 +35,7 @@ namespace Tests.Controllers.EbookController
                 Content = new byte[1024]
             };
 
-            Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Edit(obj, Guid.Empty));
+             Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Edit(obj, Guid.Empty));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Tests.Controllers.EbookController
                 Content = new byte[1024]
             };
 
-            Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Edit(obj, Guid.NewGuid()));
+             Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Edit(obj, Guid.NewGuid()));
         }
 
         [Fact]

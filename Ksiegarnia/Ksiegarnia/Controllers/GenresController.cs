@@ -7,12 +7,19 @@ using System.Net;
 
 namespace Application.Controllers
 {
+    /// <summary>
+    ///     Genre Controller
+    /// </summary>
     [Route("Genres")]
     [ApiController]
     public class GenresController : Controller
     {
         private readonly IGenreRepository _genreRepository;
-
+        
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="genreRepository"></param>
         public GenresController(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
@@ -33,6 +40,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
+        /// <exception cref="GenreNotFoundException">When genre not found...</exception>
         [HttpGet("{id}")]
         public async Task<GenreDto> Details(Guid id)
         {
@@ -94,7 +102,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">Id</param>
         /// <returns></returns>
-        /// <exception cref="GenreNotFoundException"></exception>
+        /// <exception cref="GenreNotFoundException">When genre not found...</exception>
         [HttpDelete("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Delete(Guid id)

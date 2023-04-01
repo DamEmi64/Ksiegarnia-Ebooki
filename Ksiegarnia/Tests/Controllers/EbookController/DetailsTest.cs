@@ -23,9 +23,10 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true});
+            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true });
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+
 
             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Details(Guid.Empty));
         }
@@ -59,7 +60,7 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true , Genre = new Genre(), Author = new User() });
+            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true, Genre = new Genre(), Author = new User() });
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 

@@ -35,14 +35,28 @@ namespace Application.Controllers
         /// <param name="buyer">Buyer</param>
         /// <param name="currency">Currency (optional)</param>
         /// <returns>Status code</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpPost("")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
         {
             foreach (var bookId in buyer.BookIds)
             {
-                var book = await _eBookRepository.Get(new Guid(bookId));
-                if (ModelState.IsValid && book != null)
+                var book = await _eBookRepository.Get(Guid.TryParse(bookId,out Guid id) ? id : Guid.Empty);
+
+                if (book == null)
+                {
+                    throw new BookNotFoundException(bookId);
+                }
+
+                if (!book.Verified)
+                {
+                    throw new BookNotVerifiedException();
+                }
+
+                if (ModelState.IsValid)
                 {
                     var currencyEnum = Currency.PLN;
 
@@ -57,11 +71,18 @@ namespace Application.Controllers
                         Id = Guid.NewGuid()
                     };
 
+                    var client = await _userRepository.Get(buyer.BuyerId);
+
+                    if (client == null)
+                    {
+                        throw new UserNotFoundException(buyer.BuyerId);
+                    }
+
                     var reader = new EBookReader()
                     {
                         BookId = book.Id,
                         EBook = book,
-                        User = await _userRepository.Get(buyer.BuyerId),
+                        User = client,
                         Transaction = transaction
                     };
 
@@ -79,7 +100,7 @@ namespace Application.Controllers
         /// <param name="userId">User id, WARNING!!! User shouldn't have access to that</param>
         /// <returns></returns>
         [HttpGet("")]
-        public  List<TransactionDto> GetAll( [FromQuery] string userId)
+        public List<TransactionDto> GetAll([FromQuery] string userId)
         {
             return _eBookReaderRepository.GetTransactions(userId).ToDTOs().ToList();
         }
@@ -89,6 +110,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">transaction Id</param>
         /// <returns>Transaction data</returns>
+        /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         [HttpGet("{id}")]
         public async Task<TransactionDto> Details(Guid id)
         {

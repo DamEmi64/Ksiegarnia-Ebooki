@@ -27,7 +27,7 @@ namespace Tests.Controllers.EbookController
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
-            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Read(Guid.Empty));
+            await Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Read(Guid.Empty));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Tests.Controllers.EbookController
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
-            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Read(Guid.NewGuid()));
+             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Read(Guid.NewGuid()));
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace Tests.Controllers.EbookController
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
-            Assert.ThrowsAsync<BookNotVerifiedException>(async () => await controller.Read(Guid.NewGuid()));
+             Assert.ThrowsAsync<BookNotVerifiedException>(async () => await controller.Read(Guid.NewGuid()));
         }
 
         [Fact]

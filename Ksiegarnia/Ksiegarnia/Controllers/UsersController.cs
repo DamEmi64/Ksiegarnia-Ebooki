@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs;
 using Domain.Repositories;
+using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -36,7 +37,14 @@ namespace Application.Controllers
         [HttpGet("{id}")]
         public async Task<UserDto> Details(string id)
         {
-            return (await _userRepository.Get(id)).ToDTO();
+            var user = await _userRepository.Get(id);
+
+            if(user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+
+            return user.ToDTO();
         }
 
         /// <summary>
@@ -44,18 +52,24 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="data">register data</param>
         /// <returns></returns>
+        /// <exception cref="RegisterFailedException">when register fail...</exception>
         [HttpPost("Register")]
-        public async Task Register([FromBody] RegisterDto data)
-        {
-            var user = await _userRepository.Register(data, data.Password);
+        public async Task<HttpStatusCode> Register([FromBody] RegisterDto data)
+        {    
+            try
+            {
+                var user = await _userRepository.Register(data, data.Password);
+                var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
+                var callbackUrl = Url.Action("EmailConfirm", values: new { id = user.Id, token = token });
+                _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
 
-            var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
-            var callbackUrl = Url.Page(
-                "/User/ConfirmEmail",
-                pageHandler: null,
-                values: new { area = "Identity", userId = user.Id, code = token },
-                protocol: Request.Scheme);
-            _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.", user.Email);
+            }
+            catch (Exception)
+            {
+                throw new RegisterFailedException();
+            }
+            
+            return HttpStatusCode.Created;
         }
 
         /// <summary>
@@ -63,10 +77,17 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="data">Login data</param>
         /// <returns></returns>
+        /// <exception cref="LoginFailedException">when login fail...</exception>
         [HttpPost("login")]
         public async Task<UserDto> Login([FromBody] LoginDto data)
         {
-            return (await _userRepository.Login(data.Email, data.Password)).ToDTO();
+            var user = await _userRepository.Login(data.Email, data.Password);
+            if (user == null)
+            {
+                throw new LoginFailedException();
+            }
+
+            return user.ToDTO();
         }
 
         /// <summary>
@@ -74,18 +95,23 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">user id</param>
         /// <returns></returns>
+        /// <exception cref="UserNotFoundException">when user not found...</exception>
         [HttpGet("{id}/passwordResetToken")]
         [ValidateAntiForgeryToken]
-        public async Task SendToken(string id)
+        public async Task<HttpStatusCode> SendToken(string id)
         {
             var user = await _userRepository.GeneratePasswordToken(id);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+
             var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
-            var callbackUrl = Url.Page(
-                "/User/ConfirmEmail",
-                pageHandler: null,
-                values: new { area = "Identity", userId = user.Id, code = token },
-                protocol: Request.Scheme);
-            _authService.SendEmail($"Reset password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.", user.Email);
+            var callbackUrl = Url.Action("EmailConfirm", values: new { id = user.Id, token = token });
+            _authService.SendEmail($"Reset password by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
+
+            return HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -96,12 +122,13 @@ namespace Application.Controllers
         /// <param name="newPassword">password</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
+        /// <exception cref="TokenNotFoundException">when token is empty...</exception>
         [HttpPost("{id}/passwordReset")]
         public async Task PasswordReset(string id, [FromQuery] string token, [FromBody] string newPassword)
         {
             if (string.IsNullOrEmpty(token))
             {
-                throw new Exception("Token is not found");
+                throw new TokenNotFoundException();
             }
 
             await _userRepository.ResetPassword(id, token, newPassword);

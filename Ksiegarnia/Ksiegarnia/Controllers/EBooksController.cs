@@ -99,15 +99,17 @@ namespace Application.Controllers
         /// <summary>
         ///     Get Ebook details by id
         /// </summary>
-        /// <param name="id">Ebook Id</param>
-        /// <returns></returns>
+        /// <param name="id">Ebook id</param>
+        /// <returns>Ebook details</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="BookNotVerifiedException">When book is not verified...</exception>
         [HttpGet("{id}")]
         public async Task<BookDto> Details(Guid? id)
         {
             var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
-                throw new BookNotFoundException(id.ToString());
+                throw new BookNotFoundException(id.ToString() ?? String.Empty);
             }
 
             if (!ebook.Verified)
@@ -121,16 +123,18 @@ namespace Application.Controllers
         ///     Get Ebook content by id
         /// </summary>
         /// <param name="id">Ebook Id</param>
-        /// <returns></returns>
+        /// <returns>Ebook content</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="BookNotVerifiedException">When book is not verified...</exception>
         [HttpGet("{id}/read")]
         public async Task<byte[]> Read(Guid? id)
         {
             var ebook = await _bookRepository.Get(id ?? Guid.Empty);
             if (ebook == null)
             {
-                throw new BookNotFoundException(id.ToString());
+                throw new BookNotFoundException(id.ToString() ?? string.Empty);
             }
-
+            
             if (!ebook.Verified)
             {
                 throw new BookNotVerifiedException();
@@ -144,6 +148,8 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="eBook">Ebook</param>
         /// <returns></returns>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
+        /// <exception cref="BookHasThisContentException">When book with same content exist...</exception>
         [HttpPost("")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Create([FromBody] CreateBookDto eBook)
@@ -194,6 +200,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="eBook">Ebook</param>
         /// <returns></returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Edit([FromBody] CreateBookDto eBook, Guid id)
@@ -220,6 +227,7 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="id">Ebook Id</param>
         /// <returns></returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpDelete("/{id}")]
         public async Task<HttpStatusCode> Delete(string id)
         {

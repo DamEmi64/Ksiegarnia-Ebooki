@@ -19,7 +19,7 @@ namespace Tests.Controllers.GenreController
 
             var controller = new GenresController(repo.Object);
 
-            Assert.ThrowsAsync<GenreNotFoundException>(async () => await controller.Edit(Guid.Empty,new GenreDto()));
+             Assert.ThrowsAsync<GenreNotFoundException>(async () => await controller.Edit(Guid.Empty,new GenreDto()));
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Tests.Controllers.GenreController
 
             var controller = new GenresController(repo.Object);
 
-            Assert.ThrowsAsync<GenreNotFoundException>(async () => await controller.Edit(Guid.NewGuid(), new GenreDto()));
+             Assert.ThrowsAsync<GenreNotFoundException>(async () => await controller.Edit(Guid.NewGuid(), new GenreDto()));
         }
 
         [Fact]

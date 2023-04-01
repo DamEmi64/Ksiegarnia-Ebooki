@@ -31,10 +31,5 @@
         ///     Username
         /// </summary>
         public string Nick { get; set; }
-
-        /// <summary>
-        ///     Return url for email verification
-        /// </summary>
-        public string returnUrl { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Tests.Controllers.EbookController
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
-            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(String.Empty));
+             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(String.Empty));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Tests.Controllers.EbookController
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
-            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete("TEST"));
+             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete("TEST"));
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace Tests.Controllers.EbookController
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
-            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(Guid.NewGuid().ToString()));
+             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(Guid.NewGuid().ToString()));
         }
 
         [Fact]
