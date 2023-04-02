@@ -2,9 +2,9 @@
 
 const Content = (props: {children: React.ReactNode}) => {
     return (
-        <div>
+        <main style={{marginTop: 20}}>
             {props.children}
-        </div>
+        </main>
     )
 }
 

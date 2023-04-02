@@ -7,7 +7,8 @@ import Header from './layouts/Header';
 import Content from './layouts/Content';
 import Footer from './layouts/Footer';
 import { ThemeProvider } from '@emotion/react';
-import { createTheme, CssBaseline, makeStyles } from '@mui/material';
+import { createTheme, CssBaseline, Grid, makeStyles } from '@mui/material';
+import SideAd from './layouts/SideAd';
 
 const theme = createTheme({
   palette: {
@@ -38,13 +39,31 @@ function App() {
     <React.Fragment>
       <ThemeProvider theme={theme}>
         <CssBaseline/>
-        <Header/>
-        <Content>
-          <Routes>
-            <Route path="/" element={<Home/>}/>
-          </Routes>
-        </Content>
-        <Footer/>
+        <Grid container height="100%" direction="column" justifyContent="stretch">
+          <Grid item container justifySelf="start">
+            <Header/>
+          </Grid>
+          <Grid item container flexGrow={2}>
+            <Grid item xs={1} container justifyContent="center" alignItems="center">
+              <SideAd/>
+            </Grid>
+            <Grid item xs={10} container direction="column" justifyContent="space-between">
+              <Grid item>
+                <Content>
+                  <Routes>
+                    <Route path="/" element={<Home/>}/>
+                  </Routes>
+                </Content>
+              </Grid>
+              <Grid item>
+                <Footer/>
+              </Grid>
+            </Grid>
+            <Grid item xs={1} container justifyContent="center" alignItems="center">
+              <SideAd/>
+            </Grid>
+          </Grid>
+        </Grid>
       </ThemeProvider>
     </React.Fragment>
   );

@@ -2,7 +2,15 @@ body {
   margin: 0;
 }
 
+#root{
+  height: 100vh;
+}
+
 .inputRounded .MuiOutlinedInput-root {
   border-radius: 50px;
   background-color: white;
+}
+
+a{
+  text-decoration: none !important;
 }
