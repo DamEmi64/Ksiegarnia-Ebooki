@@ -20,8 +20,8 @@ namespace Infrastructure
             //Repos
             webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookRepository, EbookRepository>()
-                                    .AddScoped<IUserRepository, UserRepository>()
-                                    .AddScoped<IEBookReaderRepository, EBookReaderRepository>();
+                                    .AddScoped<IEBookReaderRepository, EBookReaderRepository>()
+                                    .AddScoped<IGenreRepository,GenreRepository>();
             //Services
             webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
                                         .AddScoped<IAuthService, AuthService>();
