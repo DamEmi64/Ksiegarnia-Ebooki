@@ -8,10 +8,8 @@ const Navbar = () => {
         <nav>
             <Grid container justifyContent="center" columnGap={5}>
                 {links.map((link: string, index: number) => (
-                    <Typography>
-                        <Link key={index} href={link}>
-                            {link}
-                        </Link>
+                    <Typography key={index} variant="h6" component={Link} href={link}>
+                        {link}
                     </Typography>
                 ))}
             </Grid>

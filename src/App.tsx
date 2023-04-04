@@ -39,7 +39,7 @@ function App() {
     <React.Fragment>
       <ThemeProvider theme={theme}>
         <CssBaseline/>
-        <Grid container height="100%" direction="column" justifyContent="stretch">
+        <Grid container minHeight="100%" direction="column" justifyContent="stretch">
           <Grid item container justifySelf="start">
             <Header/>
           </Grid>
@@ -55,7 +55,7 @@ function App() {
                   </Routes>
                 </Content>
               </Grid>
-              <Grid item>
+              <Grid item marginTop={12}>
                 <Footer/>
               </Grid>
             </Grid>

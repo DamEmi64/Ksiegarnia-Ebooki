@@ -14,3 +14,12 @@ body {
 a{
   text-decoration: none !important;
 }
+
+.pointer:hover{
+  cursor: pointer;
+}
+
+.maximixed-img{
+  width: 80%;
+  height: auto;
+}

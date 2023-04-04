@@ -3,21 +3,17 @@ import { Grid, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import LinksSidePanel from "./LinksSidePanel";
 import { useEffect, useState } from "react";
-import GenresService from "../services/GenresService";
+import GenreService from "../services/GenreService";
 import Genre from "../models/api/genre";
 import Navbar from "./Navbar";
 
 const CategoriesContent = (props: { children: React.ReactNode }) => {
-  const [genres, setGenres] = useState<Genre[]>([
-    {id: "2", name: "Podręczniki szkolne"},
-    {id: "3", name: "Biznes i ekonomia"},
-    {id: "4", name: "Dla dzieci"},
-  ]);
+  const [genres, setGenres] = useState<Genre[]>([]);
 
   useEffect(() => {
-    //GenresService.getAll().then((response) => {
-      //setGenres(response.data);
-    //});
+    GenreService.getAll().then((response) => {
+      setGenres(response.data);
+    });
   }, []);
 
   return (
