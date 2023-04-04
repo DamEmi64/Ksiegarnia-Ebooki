@@ -69,6 +69,7 @@ namespace Application.Controllers
                 Id = Guid.NewGuid()
             };
             await _genreRepository.Add(genre);
+            await _genreRepository.SaveChanges();
             return HttpStatusCode.Created;
         }
 
@@ -92,7 +93,7 @@ namespace Application.Controllers
             genre.Name = genreDto.Name;
             genre.Description = genreDto.Description;
 
-            _genreRepository.SaveChanges();
+            await _genreRepository.SaveChanges();
 
             return HttpStatusCode.OK;
         }
@@ -104,16 +105,15 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="GenreNotFoundException">When genre not found...</exception>
         [HttpDelete("{id}")]
-        [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Delete(Guid id)
         {
-            if (_genreRepository.Get(id) == null)
+            if (await _genreRepository.Get(id) == null)
             {
                 throw new GenreNotFoundException();
             }
 
             await _genreRepository.Remove(id);
-
+            await _genreRepository.SaveChanges();
             return HttpStatusCode.OK;
         }
     }
