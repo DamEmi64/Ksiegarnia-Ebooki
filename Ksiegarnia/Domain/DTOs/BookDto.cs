@@ -36,6 +36,11 @@ namespace Domain.DTOs
         ///     Book picture / cover
         /// </summary>
         public byte[] Picture { get; set; }
+
+        /// <summary>
+        ///     Prize
+        /// </summary>
+        public decimal Prize { get; set; }
     }
 
     public static class BookConvert
@@ -56,7 +61,8 @@ namespace Domain.DTOs
                 Title = eBook.Title,
                 Description = eBook.Description,
                 PageNumber = eBook.PageNumber,
-                Author = eBook.Author.ToDTO()
+                Author = eBook.Author.ToDTO(),
+                Prize = eBook.Prize
             };
         }
     }
