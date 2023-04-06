@@ -30,13 +30,15 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
-builder.Services.AddAntiforgery(options =>
+builder.Services.AddCors(options =>
+options.AddPolicy(name: "allowAll",
+policy =>
 {
-    // Set Cookie properties using CookieBuilder properties†.
-    options.FormFieldName = "KsiegarniaValidation";
-    options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
-    options.SuppressXFrameOptionsHeader = false;
-});
+    policy.AllowAnyHeader();
+    policy.AllowAnyOrigin();
+    policy.AllowAnyMethod();
+}));
+
 
 builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
@@ -75,7 +77,7 @@ app.UseExceptionHandler(a => a.Run(async context =>
 }));
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseCors("allowAll");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();
