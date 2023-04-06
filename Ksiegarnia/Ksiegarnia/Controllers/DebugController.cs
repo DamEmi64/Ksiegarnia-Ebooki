@@ -21,7 +21,7 @@ namespace Application.Controllers
 
 
         /// <summary>
-        ///     Konstruktor
+        ///     Constructor
         /// </summary>
         /// <param name="bookRepository"></param>
         /// <param name="genreRepository"></param>
