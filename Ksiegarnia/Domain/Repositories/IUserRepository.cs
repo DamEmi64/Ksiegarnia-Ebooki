@@ -1,6 +1,6 @@
 ﻿using Domain.DTOs;
 using Domain.Entitites;
-using Microsoft.AspNetCore.Identity;
+using Domain.Enums;
 
 namespace Domain.Repositories
 {
@@ -17,6 +17,8 @@ namespace Domain.Repositories
         Task<SendTokenDto> GeneratePasswordToken(string id);
 
         Task Remove(string id);
+
+        Task AddRole(string id, Roles role);
 
         Task Confirm(string id, string token);
     }
