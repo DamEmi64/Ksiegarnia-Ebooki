@@ -54,10 +54,11 @@ namespace Application.Controllers
                                                 [FromQuery] int page = 0)
         {
             var books = await _bookRepository.GetEBooks();
-            books = books.Where(x => x.Prize > minPrize
-                            && (x.Genre.Name == genre1
-                            || x.Genre.Name == genre2
-                            || x.Genre.Name == genre3)).ToList();
+
+            books = books.Where(x => x.Prize >= minPrize
+                            && ((string.IsNullOrEmpty(genre1) || x.Genre.Name == genre1)
+                            || (string.IsNullOrEmpty(genre2) || x.Genre.Name == genre2)
+                            || (string.IsNullOrEmpty(genre3) || x.Genre.Name == genre3))).ToList();
 
             if (!string.IsNullOrEmpty(authorName))
             {

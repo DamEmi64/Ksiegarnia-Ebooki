@@ -30,7 +30,15 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddAntiforgery(options =>
+{
+    // Set Cookie properties using CookieBuilder properties†.
+    options.FormFieldName = "KsiegarniaValidation";
+    options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
+    options.SuppressXFrameOptionsHeader = false;
+});
+
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
 
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

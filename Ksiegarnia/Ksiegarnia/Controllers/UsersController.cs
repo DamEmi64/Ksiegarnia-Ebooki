@@ -97,7 +97,6 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="UserNotFoundException">when user not found...</exception>
         [HttpGet("{id}/passwordResetToken")]
-        [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> SendToken(string id)
         {
             var user = await _userRepository.GeneratePasswordToken(id);

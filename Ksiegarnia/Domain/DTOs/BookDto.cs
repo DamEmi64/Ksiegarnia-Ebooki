@@ -57,12 +57,14 @@ namespace Domain.DTOs
         {
             return new BookDto()
             {
+                Id = eBook.Id,
                 Genre = eBook.Genre.ToDTO(),
                 Title = eBook.Title,
                 Description = eBook.Description,
                 PageNumber = eBook.PageNumber,
                 Author = eBook.Author.ToDTO(),
-                Prize = eBook.Prize
+                Prize = eBook.Prize,
+                Picture = eBook.Picture
             };
         }
     }

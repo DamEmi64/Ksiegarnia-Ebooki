@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Context
 {
-    public class KsiegarniaContext : IdentityDbContext<User>
+    public class KsiegarniaContext : IdentityDbContext<User,Role,string>
     {
         public KsiegarniaContext(DbContextOptions<KsiegarniaContext> options)
             : base(options)

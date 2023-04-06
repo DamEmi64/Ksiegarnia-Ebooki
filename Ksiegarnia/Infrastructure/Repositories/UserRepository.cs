@@ -1,12 +1,15 @@
 ﻿using Domain.Context;
 using Domain.DTOs;
 using Domain.Entitites;
+using Domain.Enums;
 using Domain.Repositories;
+using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -19,10 +22,16 @@ namespace Infrastructure.Repositories
         private readonly UserManager<User> _userManager;
         private readonly IUserStore<User> _userStore;
         private readonly IUserEmailStore<User> _emailStore;
+        private readonly IRoleStore<Role> _roleStore;
         private readonly IAuthService _authService;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserRepository(KsiegarniaContext ksiegarniaContext, SignInManager<User> signInManager, UserManager<User> userManager, IUserStore<User> userStore, IAuthService authService)
+        public UserRepository(KsiegarniaContext ksiegarniaContext,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            IUserStore<User> userStore,
+            IAuthService authService,
+            IRoleStore<Role> roleStore)
         {
             _context = ksiegarniaContext;
             _signInManager = signInManager;
@@ -30,6 +39,7 @@ namespace Infrastructure.Repositories
             _userStore = userStore;
             _emailStore = (IUserEmailStore<User>)userStore;
             _authService = authService;
+            _roleStore = roleStore;
         }
 
         public async Task<SendTokenDto> GeneratePasswordToken(string id)
@@ -101,7 +111,7 @@ namespace Infrastructure.Repositories
             user.LastName = userData.LastName;
             user.PhoneNumber = userData.PhoneNumber;
             user.Nick = userData.Nick;
-            await _userStore.SetUserNameAsync(user, userData.Nick, CancellationToken.None);
+            await _userStore.SetUserNameAsync(user, userData.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, userData.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, password);
 
@@ -110,6 +120,7 @@ namespace Infrastructure.Repositories
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 await _userManager.ConfirmEmailAsync(user, code);
+                await AddRole(user.Id, Roles.User);
                 return new()
                 {
                     Email = user.Email,
@@ -117,8 +128,15 @@ namespace Infrastructure.Repositories
                     Token = code
                 };
             }
-
-            throw new Exception("Register Failed");
+            else
+            {
+                var errorstr = "";
+                foreach (var error in result.Errors)
+                {
+                    errorstr += error.Description;
+                }
+                throw new DefaultException(HttpStatusCode.BadRequest, "Register Failed", errorstr);
+            }
         }
 
         private User CreateUser()
@@ -142,6 +160,48 @@ namespace Infrastructure.Repositories
             if (user != null)
             {
                 await _userManager.ConfirmEmailAsync(user, token);
+            }
+        }
+
+        public async Task AddRole(string id, Roles role)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
+            Role? roleDb;
+
+            switch (role)
+            {
+                case Roles.Admin:
+                    roleDb = await _roleStore.FindByNameAsync("admin", CancellationToken.None);
+                    if (roleDb == null)
+                    {
+                        roleDb = Activator.CreateInstance<Role>();
+
+                        roleDb.Name = "admin";
+                        roleDb.NormalizedName = "admin".Normalize();
+                        await _roleStore.CreateAsync(roleDb, CancellationToken.None);
+                    }
+                    break;
+                default:
+                    roleDb = await _roleStore.FindByNameAsync("user", CancellationToken.None);
+                    if (roleDb == null)
+                    {
+                        roleDb = Activator.CreateInstance<Role>();
+
+                        roleDb.Name = "user";
+                        roleDb.NormalizedName = "user".Normalize();
+                        await _roleStore.CreateAsync(roleDb, CancellationToken.None);
+                    }
+                    break;
+            }
+
+            if (user != null)
+            {
+                switch (role)
+                {
+                    case Roles.Admin: await _userManager.AddToRoleAsync(user, "admin"); break;
+                    default: await _userManager.AddToRoleAsync(user, "user"); break;
+                }
+
             }
         }
     }
