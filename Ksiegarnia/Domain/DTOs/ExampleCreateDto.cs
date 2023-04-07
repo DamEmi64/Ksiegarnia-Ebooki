@@ -20,5 +20,10 @@ namespace Domain.DTOs
         ///     Default Admin password
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        ///     Number of generated books
+        /// </summary>
+        public int BookNo { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Application.Controllers
 
 
         /// <summary>
-        ///     Konstruktor
+        ///     Constructor 
         /// </summary>
         /// <param name="bookRepository"></param>
         /// <param name="genreRepository"></param>
@@ -33,7 +33,7 @@ namespace Application.Controllers
             _userRepository = userRepository;
         }
 
-    #if DEBUG
+#if DEBUG
 
         /// <summary>
         ///     Create example data
@@ -54,7 +54,7 @@ namespace Application.Controllers
 
                 await GenerateGenres();
 
-                await GenerateBooks(token);
+                await GenerateBooks(token,data.BookNo);
 
                 return HttpStatusCode.OK;
             }
@@ -83,50 +83,36 @@ namespace Application.Controllers
 
         }
 
-        private async Task GenerateBooks(SendTokenDto sendToken)
+        private async Task GenerateBooks(SendTokenDto sendToken, int bookNo)
         {
             var author = await _userRepository.Get(sendToken.Id);
 
             var genres = (await _genreRepository.GetAll()).ToList();
 
-            var book = new EBook()
+            var files = Directory.GetFiles("../../Examples/");
+
+            var pictures = files.Where(x => x.EndsWith(".jpg") || x.EndsWith(".png")).ToList();
+            var contents = files.Where(x => x.EndsWith(".pdf")).ToList();
+
+            var random = new Random();
+
+            EBook book;
+
+            for (int i = 0; i < bookNo; i++)
             {
-                Author = author,
-                Verified = true,
-                Content = System.IO.File.ReadAllBytes("../../Przyklady/lalka.pdf"),
-                Picture = System.IO.File.ReadAllBytes("../../Przyklady/lalka.jpg"),
-                Title = "Lalka",
-                Description = "EXAMPLE BOOK",
-                Genre = genres.First(x => x.Name == "Powieść obyczajowa")
-            };
+                book = new EBook()
+                {
+                    Author = author,
+                    Verified = true,
+                    Content = System.IO.File.ReadAllBytes(contents[random.Next(contents.Count())]),
+                    Picture = System.IO.File.ReadAllBytes(pictures[random.Next(pictures.Count())]),
+                    Title = $"Example {i}",
+                    Description = "example Description",
+                    Genre = genres[random.Next(genres.Count())],
+                };
 
-            await _bookRepository.Add(book);
-
-            book = new EBook()
-            {
-                Author = author,
-                Verified = true,
-                Content = System.IO.File.ReadAllBytes("../../Przyklady/lorem-ipsum.pdf"),
-                Picture = System.IO.File.ReadAllBytes("../../Przyklady/lorem-ipsum.png"),
-                Title = "Lorum ipsum",
-                Description = "EXAMPLE BOOK",
-                Genre = genres.First(x => x.Name == "Science-fiction")
-            };
-
-            await _bookRepository.Add(book);
-
-            book = new EBook()
-            {
-                Author = author,
-                Verified = false,
-                Content = System.IO.File.ReadAllBytes("../../Przyklady/pies-baskervilleow.pdf"),
-                Picture = System.IO.File.ReadAllBytes("../../Przyklady/pies.jpg"),
-                Title = "Pies baskervilleów",
-                Description = "EXAMPLE BOOK",
-                Genre = genres.First(x => x.Name == "Thriller")
-            };
-
-            await _bookRepository.Add(book);
+                await _bookRepository.Add(book);
+            }
 
             await _bookRepository.SaveChanges();
         }
@@ -158,6 +144,6 @@ namespace Application.Controllers
             await _genreRepository.SaveChanges();
         }
 
-    #endif
+#endif
     }
 }
