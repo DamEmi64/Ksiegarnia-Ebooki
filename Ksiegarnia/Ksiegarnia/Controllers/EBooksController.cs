@@ -49,11 +49,17 @@ namespace Application.Controllers
                                                 [FromQuery] string? genre2 = "",
                                                 [FromQuery] string? genre3 = "",
                                                 [FromQuery] SortType sort = default,
+                                                [FromQuery] bool onlyOnPromotion = false,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
                                                 [FromQuery] int page = 0)
         {
             var books = await _bookRepository.GetEBooks();
+
+            if (onlyOnPromotion)
+            {
+                books = books.Where(x => x.Promotion != null && x.Promotion.EndDate > DateTime.Now).ToList();
+            }
 
             books = books.Where(x => x.Prize >= minPrize
                             && ((string.IsNullOrEmpty(genre1) || x.Genre.Name == genre1)
@@ -95,6 +101,51 @@ namespace Application.Controllers
             {
                 return bookDtos.GetRange(page * 100, count);
             }
+        }
+
+        /// <summary>
+        ///     Get best sellers ( book with the biggest number of readers)
+        /// </summary>
+        /// <param name="no">Books count</param>
+        /// <returns>List of books</returns>
+        [HttpGet("bestseller")]
+        public async Task<List<BookDto>> Index([FromQuery] int no, [FromQuery] int page)
+        {
+            var books = await _bookRepository.GetEBooks();
+
+            var bookDtos = books.OrderBy(x => x.Readers.Count).ToDTOs().ToList();
+
+            var count = books.Count() - page * 100;
+
+            return bookDtos.GetRange(0, no);
+        }
+
+        /// <summary>
+        ///     Put book on promotion
+        /// </summary>
+        /// <param name="id">Book id</param>
+        /// <param name="promotion">Promotion data</param>
+        /// <returns>List of books</returns>
+        [HttpPost("{id}/promote")]
+        public async Task<HttpStatusCode> Index(Guid id, [FromBody] PromotionDto promotion)
+        {
+            var book = await _bookRepository.Get(id);
+
+            if (book == null)
+            {
+                throw new BookNotFoundException(id.ToString());
+            }
+
+            book.Promotion = new Promotion()
+            {
+                StartDate = promotion.StartDate,
+                EndDate = promotion.EndDate,
+                Prize = promotion.Prize
+            };
+
+            await _bookRepository.SaveChanges();
+
+            return HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -140,7 +191,7 @@ namespace Application.Controllers
             {
                 throw new BookNotFoundException(id.ToString() ?? string.Empty);
             }
-            
+
             if (!ebook.Verified)
             {
                 throw new BookNotVerifiedException();

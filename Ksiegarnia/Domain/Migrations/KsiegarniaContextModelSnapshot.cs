@@ -126,6 +126,33 @@ namespace Domain.Migrations
                     b.ToTable("Genre");
                 });
 
+            modelBuilder.Entity("Domain.Entitites.Promotion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Prize")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId")
+                        .IsUnique();
+
+                    b.ToTable("Promotions");
+                });
+
             modelBuilder.Entity("Domain.Entitites.Role", b =>
                 {
                     b.Property<string>("Id")
@@ -402,6 +429,17 @@ namespace Domain.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entitites.Promotion", b =>
+                {
+                    b.HasOne("Domain.Entitites.EBook", "Book")
+                        .WithOne("Promotion")
+                        .HasForeignKey("Domain.Entitites.Promotion", "BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Domain.Entitites.Role", null)
@@ -455,6 +493,8 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entitites.EBook", b =>
                 {
+                    b.Navigation("Promotion");
+
                     b.Navigation("Readers");
                 });
 

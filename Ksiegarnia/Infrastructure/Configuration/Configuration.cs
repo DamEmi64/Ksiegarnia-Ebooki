@@ -20,6 +20,7 @@ namespace Infrastructure.Configuration
     {
         public static void Configure(this WebApplicationBuilder webApplicationBuilder)
         {
+
             //Repos
             webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookRepository, EbookRepository>()
@@ -79,7 +80,8 @@ namespace Infrastructure.Configuration
                 name: "default",
                 pattern: "{controller=Home}/{id?}/{action=Index}");
             app.UseAuthorization();
-            app.MapFallbackToFile("index.html");
+            app.MapFallbackToFile("index.html"); 
+
         }
     }
 }

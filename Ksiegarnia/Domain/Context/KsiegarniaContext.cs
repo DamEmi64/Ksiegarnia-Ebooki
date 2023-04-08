@@ -19,6 +19,7 @@ namespace Domain.Context
             new EBookEnitityConfiguration().Configure(builder.Entity<EBook>());
             new EBookReaderEntityConfiguration().Configure(builder.Entity<EBookReader>());
             new UserEntityConfiguration().Configure(builder.Entity<User>());
+            new PromotionEntityConfiguration().Configure(builder.Entity<Promotion>());
         }
 
         public DbSet<EBook> Ebooks { get; set; } = default!;
@@ -26,6 +27,8 @@ namespace Domain.Context
         public DbSet<EBookReader> Readers { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }
+
+        public DbSet<Promotion> Promotions { get; set; }
 
     }
 }

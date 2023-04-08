@@ -54,7 +54,7 @@ namespace Application.Controllers
 
                 await GenerateGenres();
 
-                await GenerateBooks(token,data.BookNo);
+                await GenerateBooks(token, data.BookNo);
 
                 return HttpStatusCode.OK;
             }
