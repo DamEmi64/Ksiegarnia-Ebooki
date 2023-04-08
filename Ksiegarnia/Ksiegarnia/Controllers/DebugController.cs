@@ -61,6 +61,17 @@ namespace Application.Controllers
             return HttpStatusCode.BadRequest;
         }
 
+        /// <summary>
+        ///     Return urls
+        /// </summary>
+        /// <param name="data">Data</param>
+        /// <returns></returns>
+        [HttpPost("url")]
+        public string CheckUrl()
+        {
+            return Url.Action("example");
+        }
+
         private async Task<SendTokenDto> RegisterAdmin(string email, string password)
         {
             var registerData = new RegisterDto()

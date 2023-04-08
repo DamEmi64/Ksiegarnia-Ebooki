@@ -4,10 +4,12 @@ using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace Tests.Controllers.TransactionController
 {
+#pragma warning disable CS1998 // Metoda asynchroniczna nie zawiera operatorów „await” i zostanie uruchomiona synchronicznie
     public class BuyTest
     {
         private readonly Guid bookId = Guid.NewGuid();
@@ -15,7 +17,9 @@ namespace Tests.Controllers.TransactionController
         private Mock<IPaymentService> _paymentService => new();
 
         [Fact]
+
         public async Task Failed_BookNotFoundException_empty()
+
         {
             var bookReaderRepository = new Mock<IEBookReaderRepository>().Object;
             var bookRepository = new Mock<IEBookRepository>();
@@ -152,7 +156,8 @@ namespace Tests.Controllers.TransactionController
             var bookReaderRepository = new Mock<IEBookReaderRepository>().Object;
             var bookRepository = new Mock<IEBookRepository>();
             var userRepository = new Mock<IUserRepository>();
-
+            var urlhelper = new Mock<IUrlHelper>();
+            _paymentService.SetReturnsDefault("https://localhost:7270/swagger/index.html");
             userRepository.Setup(x => x.Get(userId)).ReturnsAsync(new User());
             bookRepository.Setup(x => x.Get(bookId)).ReturnsAsync(new EBook()
             {
@@ -169,7 +174,7 @@ namespace Tests.Controllers.TransactionController
             };
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
-
+            controller.Url = urlhelper.Object;
             var result = await controller.Buy(buyerDto, string.Empty);
             Assert.NotNull(result);
         }
@@ -180,7 +185,8 @@ namespace Tests.Controllers.TransactionController
             var bookReaderRepository = new Mock<IEBookReaderRepository>().Object;
             var bookRepository = new Mock<IEBookRepository>();
             var userRepository = new Mock<IUserRepository>();
-
+            var urlhelper = new Mock<IUrlHelper>();
+            _paymentService.SetReturnsDefault("https://localhost:7270/swagger/index.html");
             userRepository.Setup(x => x.Get(userId)).ReturnsAsync(new User());
             bookRepository.Setup(x => x.Get(bookId)).ReturnsAsync(new EBook()
             {
@@ -197,8 +203,10 @@ namespace Tests.Controllers.TransactionController
             };
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            controller.Url = urlhelper.Object;
             var result = await controller.Buy(buyerDto, "EUR");
             Assert.NotNull(result);
         }
     }
+#pragma warning restore CS1998 // Metoda asynchroniczna nie zawiera operatorów „await” i zostanie uruchomiona synchronicznie
 }

@@ -12,7 +12,7 @@ namespace Application.Controllers
     /// <summary>
     ///     Transaction Controller
     /// </summary>
-    [Route("Transaction")]
+    [Route("Transactions")]
     [ApiController]
     public class TransactionsController : Controller
     {
@@ -44,7 +44,7 @@ namespace Application.Controllers
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
-        [HttpPost("")]
+        [HttpPost("buy")]
         public async Task<IActionResult> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
         {
             if (ModelState.IsValid)
@@ -93,17 +93,19 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                await _eBookReaderRepository.Add(transaction);
-                await _eBookReaderRepository.SaveChanges();
-
-                var cancel = Url.Action("Finish", "Transaction", new { id = Guid.Empty, succeeded = false }) ?? string.Empty;
-                var redirect = Url.Action("Finish", "Transaction", new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+                var cancel = Url.Action("Finish", values: new { id = Guid.Empty, succeeded = false }) ?? string.Empty;
+                var redirect = Url.Action("Finish", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
-                var url = _paymentService.GetUri(cancel, redirect, transactionDto,(decimal)0.1);
+                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1);
 
-                return Redirect(url);
+                if (!string.IsNullOrEmpty(url))
+                {
+                    await _eBookReaderRepository.Add(transaction);
+                    await _eBookReaderRepository.SaveChanges();
+                    return Redirect(url);
+                }
             }
 
             return BadRequest();

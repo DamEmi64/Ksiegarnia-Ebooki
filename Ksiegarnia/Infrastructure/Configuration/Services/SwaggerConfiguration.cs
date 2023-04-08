@@ -33,6 +33,8 @@ namespace Infrastructure.Configuration
                 options.IncludeXmlComments(xmlPath, false);
             });
 
+            builder.Services.AddMvcCore().AddRazorPages();
+            builder.Services.AddAntiforgery();
             builder.Services.AddControllersWithViews().AddJsonOptions(options =>
             {
 

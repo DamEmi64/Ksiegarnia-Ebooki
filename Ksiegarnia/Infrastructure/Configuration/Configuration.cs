@@ -8,6 +8,8 @@ using Infrastructure.Services.PlagiatSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net;
@@ -26,7 +28,7 @@ namespace Infrastructure.Configuration
             //Services
             webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
                                         .AddScoped<IAuthService, AuthService>()
-                                        .AddScoped<IPaymentService,PaypalService>();
+                                        .AddScoped<IPaymentService, PaypalService>();
 
             webApplicationBuilder.ConfigureIdentity()
                                  .ConfigureCORS()
@@ -73,7 +75,9 @@ namespace Infrastructure.Configuration
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseRouting();
-            app.MapControllers();
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{id?}/{action=Index}");
             app.UseAuthorization();
             app.MapFallbackToFile("index.html");
         }
