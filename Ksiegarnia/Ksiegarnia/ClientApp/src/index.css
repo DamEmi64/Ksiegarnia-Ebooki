@@ -3,7 +3,7 @@ body {
 }
 
 #root{
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .inputRounded .MuiOutlinedInput-root {
@@ -22,4 +22,8 @@ a{
 .maximixed-img{
   width: 80%;
   height: auto;
+}
+
+.links-panel > a:hover{
+  color: #EB4B36;
 }
