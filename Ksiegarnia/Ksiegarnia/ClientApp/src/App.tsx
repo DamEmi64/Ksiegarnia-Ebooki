@@ -9,6 +9,8 @@ import Footer from './layouts/Footer';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme, CssBaseline, Grid, makeStyles } from '@mui/material';
 import SideAd from './layouts/SideAd';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 const theme = createTheme({
   palette: {
@@ -52,10 +54,12 @@ function App() {
                 <Content>
                   <Routes>
                     <Route path="/" element={<Home/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/register" element={<Register/>}/>
                   </Routes>
                 </Content>
               </Grid>
-              <Grid item marginTop={12}>
+              <Grid item>
                 <Footer/>
               </Grid>
             </Grid>

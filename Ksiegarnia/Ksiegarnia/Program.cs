@@ -1,89 +1,20 @@
 using Domain.Context;
-using Infrastructure;
-using Infrastructure.Converters;
+using Infrastructure.Configuration;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using System.Net;
-using System.Reflection;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<KsiegarniaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("KsiegarniaContext") ?? throw new InvalidOperationException("Connection string 'KsiegarniaContext' not found.")));
 
-// Add services to the container.
-builder.Services.AddSwaggerGen(options =>
-{
-    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-    options.SchemaFilter<EnumSchemaFilter>();
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "Ksiegarnia Ebookow - BackEnd",
-    });
-    // Set the comments path for the Swagger JSON and UI.
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
-});
-
-builder.Services.AddCors(options =>
-options.AddPolicy(name: "allowAll",
-policy =>
-{
-    policy.AllowAnyHeader();
-    policy.AllowAnyOrigin();
-    policy.AllowAnyMethod();
-}));
-
-
-builder.Services.AddControllersWithViews().AddJsonOptions(options =>
-{
-
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-
+// Add services
 builder.Configure();
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseExceptionHandler(a => a.Run(async context =>
-{
-    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-    var exception = exceptionHandlerPathFeature.Error;
-
-    if (exception is DefaultException defaultException)
-    {
-        context.Response.StatusCode = (int)defaultException.StatusCode;
-        await context.Response.WriteAsJsonAsync(new { Title = defaultException.Title, Description = defaultException.Description });
-    }
-    else
-    {
-        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-        await context.Response.WriteAsJsonAsync(new { error = exception.Message });
-    }
-
-}));
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseCors("allowAll");
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseAuthentication();
-app.UseRouting();
-app.MapControllers();
-app.UseAuthorization();
-app.MapFallbackToFile("index.html"); ;
+app.Configure();
 
 app.Run();

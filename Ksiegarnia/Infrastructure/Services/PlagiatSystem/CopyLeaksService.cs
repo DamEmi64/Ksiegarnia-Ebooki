@@ -6,6 +6,7 @@ using Copyleaks.SDK.V3.API.Models.Requests.Properties;
 using Copyleaks.SDK.V3.API.Models.Responses;
 using Copyleaks.SDK.V3.API.Models.Types;
 using Domain.DTOs;
+using Infrastructure.Configuration;
 using Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Net;

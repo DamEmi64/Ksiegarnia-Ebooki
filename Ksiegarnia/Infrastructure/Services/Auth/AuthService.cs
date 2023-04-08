@@ -1,4 +1,5 @@
-﻿using Infrastructure.Services.Interfaces;
+﻿using Infrastructure.Configuration;
+using Infrastructure.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;

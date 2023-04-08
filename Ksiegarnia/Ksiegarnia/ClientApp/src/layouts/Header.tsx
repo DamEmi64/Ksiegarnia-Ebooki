@@ -61,13 +61,17 @@ const Header = () => {
           >
             {!logged ? (
               <React.Fragment>
-                <Button variant="contained" color="info">
+                <Button 
+                  variant="contained" 
+                  color="info"
+                  href="/register"
+                >
                   Zarejestruj
                 </Button>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => setLogged(true)}
+                  href="/login"
                 >
                   Zaloguj się
                 </Button>
