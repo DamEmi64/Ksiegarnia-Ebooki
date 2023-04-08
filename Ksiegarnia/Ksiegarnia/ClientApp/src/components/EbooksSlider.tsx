@@ -1,4 +1,4 @@
-﻿import { Grid, IconButton, Typography } from "@mui/material";
+﻿import { Grid, IconButton, Paper, Typography } from "@mui/material";
 import Ebook from "../models/api/ebook";
 import BasicEbookView from "./BasicEbookView";
 import { useEffect, useState } from "react";
@@ -47,8 +47,8 @@ const EbooksSlider = (props: {
         {ebooks
           .slice(page * pageSize, (page + 1) * pageSize)
           .map((ebook: Ebook, index: number) => (
-            <Grid item xs={2}>
-              <BasicEbookView key={index} ebook={ebook} />
+            <Grid key={index} item xs={2}>
+              <BasicEbookView ebook={ebook} />
             </Grid>
           ))}
         {page < numberOfPages - 1 && (

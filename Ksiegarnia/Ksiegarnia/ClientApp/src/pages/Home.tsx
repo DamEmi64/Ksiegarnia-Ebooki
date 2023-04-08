@@ -6,7 +6,6 @@ import EbooksSlider from "../components/EbooksSlider";
 import { EbookSortOptions } from "../models/ebookSortOptions";
 
 const Home = () => {
-
     return (
         <CategoriesContent>
             <Grid item container direction="column" rowGap={8} marginTop={2}>
