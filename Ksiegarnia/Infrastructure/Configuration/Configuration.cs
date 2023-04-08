@@ -3,6 +3,7 @@ using Infrastructure.Exceptions;
 using Infrastructure.Repositories;
 using Infrastructure.Services.Auth;
 using Infrastructure.Services.Interfaces;
+using Infrastructure.Services.Paypal;
 using Infrastructure.Services.PlagiatSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -24,7 +25,8 @@ namespace Infrastructure.Configuration
                                     .AddScoped<IGenreRepository, GenreRepository>();
             //Services
             webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
-                                        .AddScoped<IAuthService, AuthService>();
+                                        .AddScoped<IAuthService, AuthService>()
+                                        .AddScoped<IPaymentService,PaypalService>();
 
             webApplicationBuilder.ConfigureIdentity()
                                  .ConfigureCORS()
@@ -32,6 +34,10 @@ namespace Infrastructure.Configuration
                                  .ConfigureConst();
         }
 
+        /// <summary>
+        ///     Configure app
+        /// </summary>
+        /// <param name="app">app</param>
         public static void Configure(this WebApplication app)
         {
 

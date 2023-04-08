@@ -28,17 +28,18 @@ namespace Domain.DTOs
         /// <summary>
         ///     Transaction Book
         /// </summary>
-        public BookDto Book { get; set; }
+        public IEnumerable<BookDto> Books { get; set; }
     }
 
     public static class TransactionConvert
     {
         public static TransactionDto ToDTO(this Transaction transaction)
         {
+
             return new TransactionDto()
             {
-                Book = transaction.EBookReader?.EBook?.ToDTO() ?? throw new Exception("Book not found."),
-                Buyer = transaction.EBookReader.User.ToDTO(),
+                Books = transaction.EBookReaders.GetBooks(),
+                Buyer = transaction.EBookReaders.First().User.ToDTO(),
                 Currency = transaction.Currency,
                 DateTime = transaction.DateTime,
                 Id = transaction.Id
@@ -50,6 +51,14 @@ namespace Domain.DTOs
             foreach (var transaction in transactions)
             {
                 yield return transaction.ToDTO();
+            }
+        }
+
+        private static IEnumerable<BookDto> GetBooks(this IEnumerable<EBookReader> readers)
+        {
+            foreach (var reader in readers)
+            {
+                yield return reader.EBook.ToDTO();
             }
         }
     }

@@ -10,6 +10,8 @@ namespace Domain.Entitites
 
         public Currency Currency { get; set; }
 
-        public EBookReader EBookReader { get; set; }
+        public IEnumerable<EBookReader> EBookReaders { get; set; }
+
+        public bool Finished { get; set; }
     }
 }

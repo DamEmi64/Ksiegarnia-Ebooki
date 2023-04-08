@@ -2,6 +2,7 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
+using Infrastructure.Services.Interfaces;
 using Moq;
 
 namespace Tests.Controllers.TransactionController
@@ -10,26 +11,29 @@ namespace Tests.Controllers.TransactionController
     {
         private readonly Guid transactionId = Guid.NewGuid();
 
+        private Mock<IPaymentService> _paymentService => new();
         [Fact]
         public async Task Failed_TransactionNotFoundException_empty()
         {
+            var bookReaders = new EBookReader()
+            {
+                EBook = new EBook()
+                {
+                    Genre = new Genre(),
+                    Author = new User()
+                },
+                User = new User(),
+            };
             var bookReaderRepository = new Mock<IEBookReaderRepository>();
             bookReaderRepository.Setup(x => x.GetTransaction(transactionId)).ReturnsAsync(new Transaction()
             {
-                EBookReader = new EBookReader()
-                {
-                    EBook = new EBook()
-                    {
-                        Genre = new Genre(),
-                        Author = new User()
-                    },
-                    User = new User(),
-                }
+                EBookReaders = new List<EBookReader>() { bookReaders }
             });
+
             var bookRepository = new Mock<IEBookRepository>().Object;
             var userRepository = new Mock<IUserRepository>().Object;
 
-            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository);
+            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object);
 
             Assert.ThrowsAsync<TransactionNotFoundException>(async () => await controller.Details(Guid.Empty));
         }
@@ -40,7 +44,7 @@ namespace Tests.Controllers.TransactionController
             var bookReaderRepository = new Mock<IEBookReaderRepository>();
             bookReaderRepository.Setup(x => x.GetTransaction(transactionId)).ReturnsAsync(new Transaction()
             {
-                EBookReader = new EBookReader()
+                EBookReaders = new List<EBookReader>() { new EBookReader()
                 {
                     EBook = new EBook()
                     {
@@ -49,11 +53,12 @@ namespace Tests.Controllers.TransactionController
                     },
                     User = new User(),
                 }
+                }
             });
             var bookRepository = new Mock<IEBookRepository>().Object;
             var userRepository = new Mock<IUserRepository>().Object;
 
-            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository);
+            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object);
 
             Assert.ThrowsAsync<TransactionNotFoundException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -64,20 +69,22 @@ namespace Tests.Controllers.TransactionController
             var bookReaderRepository = new Mock<IEBookReaderRepository>();
             bookReaderRepository.Setup(x => x.GetTransaction(transactionId)).ReturnsAsync(new Transaction()
             {
-                EBookReader = new EBookReader()
+                EBookReaders = new List<EBookReader>() {
+                    new EBookReader()
                 {
                     EBook = new EBook()
                     {
-                         Genre = new Genre(),
-                         Author = new User()
+                        Genre = new Genre(),
+                        Author = new User()
                     },
                     User = new User(),
                 }
+            }
             });
             var bookRepository = new Mock<IEBookRepository>().Object;
             var userRepository = new Mock<IUserRepository>().Object;
 
-            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository);
+            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object);
 
             var result = await controller.Details(transactionId);
             Assert.NotNull(result);

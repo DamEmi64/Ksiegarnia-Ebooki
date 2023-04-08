@@ -1,12 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infrastructure.Configuration.Structures
+﻿namespace Infrastructure.Configuration.Structures
 {
-    internal class PaypalStruct
+    /// <summary>
+    ///     Paypal config structure
+    /// </summary>
+    public class PaypalStruct
     {
+        /// <summary>
+        ///     Client Id
+        /// </summary>
+        public string ClientId { get; set; }
+
+        /// <summary>
+        ///     Client secret
+        /// </summary>
+        public string ClientSecret { get; set; }
+
+        /// <summary>
+        ///     Mode
+        /// </summary>
+        public string Mode { get; set; }
     }
 }

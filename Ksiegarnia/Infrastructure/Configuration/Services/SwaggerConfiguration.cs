@@ -7,10 +7,13 @@ using System.Text.Json.Serialization;
 
 namespace Infrastructure.Configuration
 {
+    /// <summary>
+    ///     Swagger config
+    /// </summary>
     public static class SwaggerConfiguration
     {
         /// <summary>
-        ///     Configure CROS
+        ///     Configure swagger
         /// </summary>
         /// <param name="builder"></param>
         public static WebApplicationBuilder ConfigureSwagger(this WebApplicationBuilder builder)
