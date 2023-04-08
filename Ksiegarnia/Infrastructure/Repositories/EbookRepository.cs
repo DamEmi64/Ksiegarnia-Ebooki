@@ -32,7 +32,11 @@ namespace Infrastructure.Repositories
 
         public async Task<List<EBook>> GetEBooks()
         {
-            return await _context.Set<EBook>().Include(x=>x.Genre).Include(x=>x.Author).ToListAsync();
+            return await _context.Set<EBook>()
+                .Include(x=>x.Genre)
+                .Include(x=>x.Author)
+                .Include(x=>x.Promotion)
+                .ToListAsync();
         }
 
         public async Task Remove(Guid bookId)

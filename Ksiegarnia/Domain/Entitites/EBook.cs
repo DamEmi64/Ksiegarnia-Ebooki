@@ -13,6 +13,7 @@
         public Genre Genre { get; set; }
         public User Author { get; set; }
 
+        public Promotion? Promotion { get; set; }
         public DateTime Date { get; set; }
 
         public bool Verified { get; set; }
