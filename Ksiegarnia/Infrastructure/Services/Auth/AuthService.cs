@@ -6,6 +6,9 @@ using MimeKit.Text;
 
 namespace Infrastructure.Services.Auth
 {
+    /// <summary>
+    ///     Auth Service
+    /// </summary>
     public class AuthService : IAuthService
     {
         /// <summary>
@@ -16,14 +19,15 @@ namespace Infrastructure.Services.Auth
         /// <param name="subject">Mail title</param>
         public void SendEmail(string content, string sendEmail, string? subject = "Edytor Tekstowy")
         {
+            var smtpData = ConfigurationConst.SMTP;
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(ConfigurationConst.Email));
+            email.From.Add(MailboxAddress.Parse(smtpData.Email));
             email.To.Add(MailboxAddress.Parse(sendEmail));
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = content };
             using var smtp = new SmtpClient();
-            smtp.Connect(ConfigurationConst.SmtpServer, ConfigurationConst.SmtpPort, SecureSocketOptions.StartTls);
-            smtp.Authenticate(ConfigurationConst.Email, ConfigurationConst.EmailPassword);
+            smtp.Connect(smtpData.SmtpServer, smtpData.SmtpPort, SecureSocketOptions.StartTls);
+            smtp.Authenticate(smtpData.Email, smtpData.Password);
             smtp.Send(email);
             smtp.Disconnect(true);
         }

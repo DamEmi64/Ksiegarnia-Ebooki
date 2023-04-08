@@ -6,6 +6,7 @@ using Copyleaks.SDK.V3.API.Models.Requests.Properties;
 using Copyleaks.SDK.V3.API.Models.Responses;
 using Copyleaks.SDK.V3.API.Models.Types;
 using Domain.DTOs;
+using Infrastructure.Configuration;
 using Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Net;
@@ -37,7 +38,7 @@ namespace Infrastructure.Services.PlagiatSystem
             var response = new CopyLeaksResponse()
             {
                 ScanId = plagiatData.BookId.ToString(),
-                Token = ConfigurationConst.CopyLeaksToken
+                Token = ConfigurationConst.CopyLeak.CopyLeaksToken
             };
 
             try
@@ -53,7 +54,7 @@ namespace Infrastructure.Services.PlagiatSystem
                         Filename = "text.txt",
                         PropertiesSection = GetScanProperties(plagiatData.BookId.ToString())
                     },
-                    ConfigurationConst.CopyLeaksToken).ConfigureAwait(false);
+                    ConfigurationConst.CopyLeak.CopyLeaksToken).ConfigureAwait(false);
                 }
                 var checkResult = new CopyLeaksResultResponse
                 {
@@ -93,12 +94,13 @@ namespace Infrastructure.Services.PlagiatSystem
             var response = new LoginResponse();
             try
             {
+                var copyleak = ConfigurationConst.CopyLeak;
                 // Use CopyleaksIdentityApi to aquire a login Token from 
                 Guid temp;
-                var validOrEmptyKey = Guid.TryParse(ConfigurationConst.CopyLeaksAPIKey, out temp) ? ConfigurationConst.CopyLeaksAPIKey : Guid.Empty.ToString();
+                var validOrEmptyKey = Guid.TryParse(copyleak.CopyLeaksAPIKey, out temp) ? copyleak.CopyLeaksAPIKey : Guid.Empty.ToString();
 
                 // Request an API token from https://id.copyleaks.com/
-                var loginResponse = await _IdentityClient.LoginAsync(ConfigurationConst.Email, validOrEmptyKey).ConfigureAwait(false);
+                var loginResponse = await _IdentityClient.LoginAsync(copyleak.Email, validOrEmptyKey).ConfigureAwait(false);
 
                 var clientApi = _APIClient;
                 var clientCredits = await clientApi.CreditBalanceAsync(loginResponse.Token).ConfigureAwait(false);
@@ -139,7 +141,7 @@ namespace Infrastructure.Services.PlagiatSystem
             {
                 // Copyleaks API will POST the scan results to the 'completed' callback
                 // See 'CompletedProcess' method for more details
-                Status = new Uri($"{ConfigurationConst.WebHookHost}/{scanId}/{{status}}")
+                Status = new Uri($"{ConfigurationConst.CopyLeak.WebHookHost}/{scanId}/{{status}}")
             };
             // Sandbox mode does not take any credits
             scanProperties.Sandbox = false;

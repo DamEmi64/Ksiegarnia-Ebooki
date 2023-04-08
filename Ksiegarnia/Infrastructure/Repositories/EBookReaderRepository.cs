@@ -15,12 +15,12 @@ namespace Infrastructure.Repositories
         }
         public async Task Add(Transaction transaction)
         {
-           await _context.Set<Transaction>().AddAsync(transaction);
+            await _context.Set<Transaction>().AddAsync(transaction);
         }
 
         public async Task<EBookReader?> Get(Guid id)
         {
-           return await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<Transaction?> GetTransaction(Guid id)
         {
@@ -31,7 +31,7 @@ namespace Infrastructure.Repositories
         {
             if (string.IsNullOrEmpty(id))
             {
-                return _context.Set<Transaction>().Where(x => x.EBookReader.User.Id == id);
+                return _context.Set<Transaction>().Where(x => x.EBookReaders.Any(y => y.User.Id == id));
             }
             return _context.Set<Transaction>().ToList();
         }

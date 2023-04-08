@@ -5,28 +5,34 @@ using System.Net;
 using Domain.Enums;
 using Domain.DTOs;
 using Infrastructure.Exceptions;
+using Infrastructure.Services.Interfaces;
 
 namespace Application.Controllers
 {
     /// <summary>
     ///     Transaction Controller
     /// </summary>
-    [Route("Transaction")]
+    [Route("Transactions")]
     [ApiController]
     public class TransactionsController : Controller
     {
         private readonly IEBookReaderRepository _eBookReaderRepository;
         private readonly IEBookRepository _eBookRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IPaymentService _paymentService;
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public TransactionsController(IEBookReaderRepository repository, IEBookRepository eBookRepository, IUserRepository userRepository)
+        public TransactionsController(IEBookReaderRepository repository,
+                                        IEBookRepository eBookRepository,
+                                        IUserRepository userRepository,
+                                        IPaymentService paymentService)
         {
             _eBookReaderRepository = repository;
             _eBookRepository = eBookRepository;
             _userRepository = userRepository;
+            _paymentService = paymentService;
         }
 
         /// <summary>
@@ -38,58 +44,93 @@ namespace Application.Controllers
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
-        [HttpPost("")]
-        [ValidateAntiForgeryToken]
-        public async Task<HttpStatusCode> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
+        [HttpPost("buy")]
+        public async Task<IActionResult> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
         {
-            foreach (var bookId in buyer.BookIds)
+            if (ModelState.IsValid)
             {
-                var book = await _eBookRepository.Get(Guid.TryParse(bookId,out Guid id) ? id : Guid.Empty);
+                var client = await _userRepository.Get(buyer.BuyerId);
 
-                if (book == null)
+                if (client == null)
                 {
-                    throw new BookNotFoundException(bookId);
+                    throw new UserNotFoundException(buyer.BuyerId);
                 }
 
-                if (!book.Verified)
+                var readers = new List<EBookReader>();
+                foreach (var bookId in buyer.BookIds)
                 {
-                    throw new BookNotVerifiedException();
-                }
+                    var book = await _eBookRepository.Get(Guid.TryParse(bookId, out Guid id) ? id : Guid.Empty);
 
-                if (ModelState.IsValid)
-                {
-                    var currencyEnum = Currency.PLN;
-
-                    if (Enum.TryParse(currency, out Currency currencyValue))
+                    if (book == null)
                     {
-                        currencyEnum = currencyValue;
-                    }
-                    var transaction = new Transaction()
-                    {
-                        Currency = currencyEnum,
-                        DateTime = DateTime.UtcNow,
-                        Id = Guid.NewGuid()
-                    };
-
-                    var client = await _userRepository.Get(buyer.BuyerId);
-
-                    if (client == null)
-                    {
-                        throw new UserNotFoundException(buyer.BuyerId);
+                        throw new BookNotFoundException(bookId);
                     }
 
-                    var reader = new EBookReader()
+                    if (!book.Verified)
+                    {
+                        throw new BookNotVerifiedException();
+                    }
+
+                    readers.Add(new EBookReader()
                     {
                         BookId = book.Id,
                         EBook = book,
-                        User = client,
-                        Transaction = transaction
-                    };
+                        User = client
+                    });
+                }
 
+                var currencyEnum = Currency.PLN;
+
+                if (Enum.TryParse(currency, out Currency currencyValue))
+                {
+                    currencyEnum = currencyValue;
+                }
+                var transaction = new Transaction()
+                {
+                    Currency = currencyEnum,
+                    DateTime = DateTime.UtcNow,
+                    Id = Guid.NewGuid(),
+                    EBookReaders = readers
+                };
+
+                var cancel = Url.Action("Finish", values: new { id = Guid.Empty, succeeded = false }) ?? string.Empty;
+                var redirect = Url.Action("Finish", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+
+                var transactionDto = transaction.ToDTO();
+
+                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1);
+
+                if (!string.IsNullOrEmpty(url))
+                {
                     await _eBookReaderRepository.Add(transaction);
                     await _eBookReaderRepository.SaveChanges();
+                    return Redirect(url);
                 }
             }
+
+            return BadRequest();
+        }
+
+        /// <summary>
+        ///     Book buyed - redirect uri
+        /// </summary>
+        /// <param name="id">transaction id</param>
+        /// <param name="succeeded">transaction succeeded</param>
+        /// <returns>Status code</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
+        [HttpPost("Finish/{id}")]
+        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false)
+        {
+            var reader = await _eBookReaderRepository.GetTransaction(id);
+
+            if (reader != null)
+            {
+                reader.Finished = true;
+            }
+
+            await _eBookReaderRepository.SaveChanges();
 
             return HttpStatusCode.OK;
         }

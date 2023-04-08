@@ -21,7 +21,7 @@ namespace Application.Controllers
 
 
         /// <summary>
-        ///     Constructor 
+        ///     Constructor
         /// </summary>
         /// <param name="bookRepository"></param>
         /// <param name="genreRepository"></param>
@@ -59,6 +59,17 @@ namespace Application.Controllers
                 return HttpStatusCode.OK;
             }
             return HttpStatusCode.BadRequest;
+        }
+
+        /// <summary>
+        ///     Return urls
+        /// </summary>
+        /// <param name="data">Data</param>
+        /// <returns></returns>
+        [HttpPost("url")]
+        public string CheckUrl()
+        {
+            return Url.Action("example");
         }
 
         private async Task<SendTokenDto> RegisterAdmin(string email, string password)
