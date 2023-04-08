@@ -28,12 +28,10 @@ namespace Infrastructure.Configuration
                     Title = "Ksiegarnia Ebookow - BackEnd",
                 });
                 // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
+                options.IncludeXmlComments(xmlPath, false);
             });
-
-
 
             builder.Services.AddControllersWithViews().AddJsonOptions(options =>
             {
