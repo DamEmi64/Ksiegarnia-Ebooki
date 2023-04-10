@@ -14,7 +14,7 @@ const BasicTextField = (props: {
         <TextField
             {...props.settings}
             value={props.value ? props.value : ""}
-            error={props.errorMessage}
+            error={props.errorMessage != undefined && props.errorMessage !== ""}
             onChange={(event: any) => props.handleChange(event.target.value)}
         />
         <FormHelperText error>{props.errorMessage ? props.errorMessage : " "}</FormHelperText>

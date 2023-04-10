@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import CategoriesContent from "../layouts/CategoriesContent";
 import EbooksSlider from "../components/EbooksSlider";
 import { EbookSortOptions } from "../models/ebookSortOptions";
+import { useEffect } from "react";
 
 const Home = () => {
+
     return (
         <CategoriesContent>
             <Grid item container direction="column" rowGap={8} marginTop={2}>
