@@ -6,11 +6,13 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import EbookService from "../services/EbookService";
 import { EbookSortOptions } from "../models/ebookSortOptions";
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
+import { AxiosResponse } from "axios";
 
 const EbooksSlider = (props: {
   title: string;
   ebookSearchCriteria?: EbookSearchCriteria;
   sort?: string;
+  searchBestsellers?: boolean;
 }) => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
@@ -20,9 +22,17 @@ const EbooksSlider = (props: {
 
   useEffect(() => {
     const searchCriteria = props.ebookSearchCriteria;
+    if(props.searchBestsellers){
+      EbookService.getBestsellers(page)
+      .then((response) => {
+        const newEbooks: Ebook[] = response.data;
+        setEbooks(newEbooks);
+        setNumberOfPages(newEbooks.length / pageSize);
+      })
+    }
     EbookService.search(
-      searchCriteria ? searchCriteria : {},
-      props.sort ? props.sort : "",
+      searchCriteria,
+      props.sort,
       page
     ).then((response) => {
       const newEbooks: Ebook[] = response.data;

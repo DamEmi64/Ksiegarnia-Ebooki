@@ -12,6 +12,7 @@ import SideAd from './layouts/SideAd';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
+import SearchEbooks from './pages/SearchEbooks';
 
 const theme = createTheme({
   palette: {
@@ -59,6 +60,7 @@ function App() {
                     <Route path="/" element={<Home/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/register" element={<Register/>}/>
+                    <Route path="/Ebooki" element={<SearchEbooks/>}/>
                     <Route path="*" element={<NotFound/>}/>
                   </Routes>
                 </Content>
