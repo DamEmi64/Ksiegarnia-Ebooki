@@ -1,15 +1,20 @@
 ﻿import { Grid, Typography, TextField, FormControl, FormHelperText } from "@mui/material";
+import RedAsterisk from "./RedAsterisk";
 
 const BasicTextField = (props: {
   label: string;
   value?: string;
   errorMessage?: string;
   settings?: any;
+  isRequired?: boolean;
   handleChange: (value: string) => void;
 }) => {
   return (
     <Grid item container justifyContent="space-between" alignItems="center">
-      <Typography variant="h6" marginBottom={3}>{props.label}</Typography>
+      <Grid item marginBottom={3}>
+        <Typography variant="h6" display="inline" marginRight={0.5}>{props.label}</Typography>
+        {props.isRequired && <RedAsterisk/>}  
+      </Grid>
       <FormControl>
         <TextField
             {...props.settings}

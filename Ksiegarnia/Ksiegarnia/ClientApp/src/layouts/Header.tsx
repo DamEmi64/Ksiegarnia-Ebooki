@@ -22,51 +22,57 @@ import TextField from "@mui/material/TextField";
 import React from "react";
 import { useState } from "react";
 import logo from "../assets/logo.png";
-import { UserContext, UserContextType, UserProps } from "../context/UserContext";
+import {
+  UserContext,
+  UserContextType,
+  UserProps,
+} from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const AccountMenu = () => {
-
-  const userContext = React.useContext(UserContext)
+  const userContext = React.useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const navigate = useNavigate()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleCloseMenu = () => {
-    setAnchorEl(null)
+    setAnchorEl(null);
+  };
+
+  const handleAccountSettings = () => {
+    handleCloseMenu();
+    navigate("/account-settings")
   }
 
   const handleLogout = () => {
-    handleCloseMenu()
-    userContext?.setLogged(false)
-  }
+    handleCloseMenu();
+    userContext?.setLogged(false);
+  };
 
   return (
     <React.Fragment>
       <IconButton onClick={handleClick}>
         <PersonIcon fontSize="large" style={{ color: "white" }} />
         <Typography variant="h6" color="white" marginLeft={2}>
-            Konto
+          Konto
         </Typography>
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleCloseMenu}
-      >
-        <MenuItem onClick={handleCloseMenu}>Panel użytkownika</MenuItem>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+        <MenuItem onClick={handleAccountSettings}>Panel użytkownika</MenuItem>
         <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
       </Menu>
     </React.Fragment>
-  )
-}
+  );
+};
 
 const Header = () => {
-  
-  const user = React.useContext(UserContext)?.user
+  const user = React.useContext(UserContext)?.user;
 
   return (
     <AppBar
@@ -76,7 +82,7 @@ const Header = () => {
     >
       <Toolbar>
         <Link href="/">
-          <img src={logo} height="55" width="217"/>
+          <img src={logo} height="55" width="217" />
         </Link>
         <Grid item container justifyContent="space-around" alignItems="center">
           <Grid item xs={6} marginLeft={6}>
@@ -103,44 +109,31 @@ const Header = () => {
           >
             {!user?.logged ? (
               <React.Fragment>
-                <Button 
-                  variant="contained" 
-                  color="info"
-                  href="/register"
-                >
+                <Button variant="contained" color="info" href="/register">
                   Zarejestruj
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  href="/login"
-                >
+                <Button variant="contained" color="primary" href="/login">
                   Zaloguj się
                 </Button>
               </React.Fragment>
             ) : (
-              <IconButton>
-                <PersonIcon fontSize="large" style={{ color: "white" }} />
-                <Typography variant="h6" color="white" marginLeft={2}>
-                    Konto
-                </Typography>
-              </IconButton>
+              <AccountMenu />
             )}
-              <AccountMenu/>
-              <IconButton>
-                <ShoppingCartOutlined
-                  fontSize="large"
-                  style={{ color: "white" }}
-                />
-                <Stack marginLeft={2}>
-                  <Typography variant="h6" color="white" textAlign="start">
-                    199 szt.
-                  </Typography>
-                  <Typography variant="h6" color="white">
-                    244,99 zł
-                  </Typography>
-                </Stack>
-              </IconButton>
+            <AccountMenu />
+            <IconButton>
+              <ShoppingCartOutlined
+                fontSize="large"
+                style={{ color: "white" }}
+              />
+              <Stack marginLeft={2}>
+                <Typography variant="h6" color="white" textAlign="start">
+                  199 szt.
+                </Typography>
+                <Typography variant="h6" color="white">
+                  244,99 zł
+                </Typography>
+              </Stack>
+            </IconButton>
           </Grid>
         </Grid>
       </Toolbar>
