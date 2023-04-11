@@ -129,6 +129,7 @@ const Register = () => {
             <Grid item xs={4}>
               <BasicTextField
                 label="E-mail"
+                isRequired={true}
                 value={form.email}
                 errorMessage={errors.email}
                 handleChange={(value: string) => {
@@ -140,6 +141,7 @@ const Register = () => {
             <Grid item xs={4}>
               <BasicTextField
                 label="Pseudonim"
+                isRequired={true}
                 value={form.nick}
                 errorMessage={errors.nick}
                 handleChange={(value: string) => {
@@ -154,6 +156,7 @@ const Register = () => {
               <BasicTextField
                 settings={{ type: "password" }}
                 label="Hasło"
+                isRequired={true}
                 value={form.password}
                 errorMessage={errors.password}
                 handleChange={(value: string) => {
@@ -166,6 +169,7 @@ const Register = () => {
               <BasicTextField
                 settings={{ type: "password" }}
                 label="Powtórz hasło"
+                isRequired={true}
                 value={form.repeatedPassword}
                 errorMessage={errors.repeatedPassword}
                 handleChange={(value: string) => {
