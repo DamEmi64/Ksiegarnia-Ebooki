@@ -7,7 +7,6 @@ class GenreService {
     getAll(){
         return axios.get(this.api)
     }
-
 }
 
 export default new GenreService()

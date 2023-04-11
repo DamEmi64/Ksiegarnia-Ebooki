@@ -3,6 +3,8 @@ import CategoriesContent from "../layouts/CategoriesContent";
 import FormService from "../services/FormService";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
+import Notification from "../components/Notification";
+import UserService from "../services/UserService";
 
 interface LoginForm {
   email: string;
@@ -10,6 +12,10 @@ interface LoginForm {
 }
 
 const Login = () => {
+
+  const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie"
+  const LOGGED_FAILED_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle"
+
   const initForm: LoginForm = {
     email: "",
     password: "",
@@ -19,27 +25,31 @@ const Login = () => {
 
   const [errors, setErrors] = React.useState<LoginForm>({...initForm});
 
+  const [showNotification, setShowNotification] = React.useState<boolean>(false)
+  const [isSuccessNotification, setIsSuccessNotification] = React.useState<boolean>(true)
+  const [notificationMessage, setShowNotificationMessage] = React.useState<string>("")
+
   const validateForm = () => {
     let newErrors: LoginForm = {...initForm};
 
-    let failedValidation = false;
+    let passedValidation = true;
 
     if (!FormService.checkIfIsRequired(form.email)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.email = FormService.requiredMessage;
     } else if (!FormService.checkIfIsEmail(form.email)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.email = FormService.invalidFormatMessage;
     }
 
     if (!FormService.checkIfIsRequired(form.password)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.password = FormService.requiredMessage;
     }
 
     setErrors(newErrors)
 
-    return failedValidation;
+    return passedValidation;
   };
 
   const handleLogin = () => {
@@ -47,8 +57,19 @@ const Login = () => {
       return;
     }
 
-    console.log(form);
-    console.log(errors)
+    UserService.login(form)
+    .then((response) => {
+      console.log(response)
+      setShowNotification(true)
+      setIsSuccessNotification(true)
+      setShowNotificationMessage(LOGGED_SUCCESSFULY_MESSAGE)
+    })
+    .catch((error) => {
+      console.log(error)
+      setShowNotification(true)
+      setIsSuccessNotification(false)
+      setShowNotificationMessage(LOGGED_FAILED_MESSAGE)
+    })
   };
 
   return (
@@ -68,6 +89,7 @@ const Login = () => {
             }}
           />
           <BasicTextField
+            settings={{ type: "password" }}
             label="Hasło"
             value={form.password}
             errorMessage={errors.password}
@@ -81,6 +103,7 @@ const Login = () => {
           </Button>
         </Grid>
       </Grid>
+      <Notification open={showNotification} isSuccess={isSuccessNotification} message={notificationMessage}/>
     </CategoriesContent>
   );
 };

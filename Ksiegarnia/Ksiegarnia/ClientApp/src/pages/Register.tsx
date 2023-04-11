@@ -3,6 +3,8 @@ import CategoriesContent from "../layouts/CategoriesContent";
 import FormService from "../services/FormService";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
+import Notification from "../components/Notification";
+import UserService, { RegisterRequest } from "../services/UserService";
 
 interface RegisterForm {
   firstName?: string;
@@ -15,6 +17,10 @@ interface RegisterForm {
 }
 
 const Register = () => {
+
+  const REGISTERED_SUCCESSFULY_MESSAGE = "Zarejestrowano pomyślnie"
+  const REGISTERED_FAILED_MESSAGE = "Nie udało się zarejestrować"
+
   const initForm = {
     email: "",
     nick: "",
@@ -26,40 +32,45 @@ const Register = () => {
 
   const [errors, setErrors] = React.useState<RegisterForm>({ ...initForm });
 
+  const [showNotification, setShowNotification] = React.useState<boolean>(false)
+  const [isSuccessNotification, setIsSuccessNotification] = React.useState<boolean>(true)
+  const [notificationMessage, setShowNotificationMessage] = React.useState<string>("")
+
   const validateForm = () => {
     let newErrors: RegisterForm = { ...initForm };
 
-    let failedValidation = false;
+    let passedValidation = true;
 
     if (!FormService.checkIfIsRequired(form.email)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.email = FormService.requiredMessage;
     } else if (!FormService.checkIfIsEmail(form.email)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.email = FormService.invalidFormatMessage;
     }
 
     if (!FormService.checkIfIsRequired(form.nick)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.nick = FormService.requiredMessage;
     }
 
     if (!FormService.checkIfIsRequired(form.password)) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.password = FormService.requiredMessage;
     }
 
     if (!FormService.checkIfIsRequired(form.repeatedPassword)) {
-      failedValidation = true;
-      newErrors.nick = FormService.requiredMessage;
+      passedValidation = false;
+      newErrors.repeatedPassword = FormService.requiredMessage;
     } else if (form.repeatedPassword !== form.password) {
-      failedValidation = true;
+      passedValidation = false;
       newErrors.repeatedPassword = "Hasła nie są takie same";
+      newErrors.password = "Hasła nie są takie same";
     }
 
     setErrors(newErrors);
 
-    return failedValidation;
+    return passedValidation;
   };
 
   const handleRegister = () => {
@@ -67,8 +78,20 @@ const Register = () => {
       return;
     }
 
-    console.log(form);
-    console.log(errors);
+    UserService.register(form)
+    .then((response) => {
+      console.log(response)
+      setShowNotification(true)
+      setIsSuccessNotification(true)
+      setShowNotificationMessage(REGISTERED_SUCCESSFULY_MESSAGE)
+      setErrors(initForm)
+    })
+    .catch((error) => {
+      console.log(error)
+      setShowNotification(true)
+      setIsSuccessNotification(false)
+      setShowNotificationMessage(REGISTERED_FAILED_MESSAGE)
+    })
   };
 
   return (
@@ -175,6 +198,7 @@ const Register = () => {
           </Button>
         </Grid>
       </Grid>
+      <Notification open={showNotification} isSuccess={isSuccessNotification} message={notificationMessage}/>
     </CategoriesContent>
   );
 };
