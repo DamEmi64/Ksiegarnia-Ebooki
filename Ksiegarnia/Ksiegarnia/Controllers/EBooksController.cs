@@ -106,18 +106,26 @@ namespace Application.Controllers
         /// <summary>
         ///     Get best sellers ( book with the biggest number of readers)
         /// </summary>
-        /// <param name="no">Books count</param>
+        /// <param name="pageSize">Books count on page</param>
+        /// <param name="page">page</param>
         /// <returns>List of books</returns>
         [HttpGet("bestseller")]
-        public async Task<List<BookDto>> Index([FromQuery] int no, [FromQuery] int page)
+        public async Task<List<BookDto>> Index([FromQuery] int page, [FromQuery] int pageSize)
         {
             var books = await _bookRepository.GetEBooks();
 
             var bookDtos = books.OrderBy(x => x.Readers.Count).ToDTOs().ToList();
 
-            var count = books.Count() - page * 100;
+            var count = bookDtos.Count() - page * pageSize;
 
-            return bookDtos.GetRange(0, no);
+            if (count > pageSize)
+            {
+                return bookDtos.GetRange(page * pageSize, pageSize);
+            }
+            else
+            {
+                return bookDtos.GetRange(page * pageSize, count);
+            }
         }
 
         /// <summary>
