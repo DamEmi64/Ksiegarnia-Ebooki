@@ -225,6 +225,8 @@ namespace Domain.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Prize = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    OnlyForPremium = table.Column<bool>(type: "bit", nullable: false),
+                    PremiumPrize = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
