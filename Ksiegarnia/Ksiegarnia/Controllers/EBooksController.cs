@@ -35,7 +35,7 @@ namespace Application.Controllers
         ///     Get books list via paramereters
         /// </summary>
         /// <param name="authorName">Author name</param>
-        /// <param name="genre">Genre</param>
+        /// <param name="genre">Genre (names)</param>
         /// <param name="onlyOnPromotion">Only books on promotion</param>
         /// <param name="pageSize">page size</param>
         /// <param name="year">publication year</param>
@@ -45,7 +45,7 @@ namespace Application.Controllers
         /// <param name="page">Page</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
-        public async Task<List<BookDto>> Index([FromQuery] string? authorName = "",
+        public async Task<object> Index([FromQuery] string? authorName = "",
                                                 [FromQuery] string[]? genre = default,
                                                 [FromQuery] int[]? year = default,
                                                 [FromQuery] int pageSize = 100,
@@ -53,7 +53,7 @@ namespace Application.Controllers
                                                 [FromQuery] bool onlyOnPromotion = false,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
-                                                [FromQuery] int page = 0)
+                                                [FromQuery] int page = 1)
         {
             var books = await _bookRepository.GetEBooks();
 
@@ -62,9 +62,17 @@ namespace Application.Controllers
                 books = books.Where(x => x.Promotion != null && x.Promotion.EndDate > DateTime.Now).ToList();
             }
 
-            books = books.Where(x => x.Prize >= minPrize
-                            && (genre == null || genre.Contains(x.Genre.Name))
-                            && (year == null || year.Contains(x.Date.Year))).ToList();
+            books = books.Where(x => x.Prize >= minPrize).ToList();
+
+            if (genre != null && genre.Length > 0)
+            {
+                books = books.Where(x => genre.Contains(x.Genre.Name)).ToList();
+            }
+
+            if (year != null && year.Length > 0)
+            {
+                books = books.Where(x => year.Contains(x.Date.Year)).ToList();
+            }
 
             if (!string.IsNullOrEmpty(authorName))
             {
@@ -91,15 +99,24 @@ namespace Application.Controllers
                 _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
             };
 
+            if (page <= 0)
+            {
+                page = 0;
+            }
+            else
+            {
+                page--;
+            }
+
             var count = bookDtos.Count() - page * pageSize;
 
             if (count > pageSize)
             {
-                return bookDtos.GetRange(page * pageSize, pageSize);
+                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, result = bookDtos.GetRange(page * pageSize, pageSize) };
             }
             else
             {
-                return bookDtos.GetRange(page * pageSize, count);
+                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, result = bookDtos.GetRange(page * pageSize, count) };
             }
         }
 
@@ -110,21 +127,30 @@ namespace Application.Controllers
         /// <param name="page">page</param>
         /// <returns>List of books</returns>
         [HttpGet("bestseller")]
-        public async Task<List<BookDto>> Index([FromQuery] int page, [FromQuery] int pageSize)
+        public async Task<object> BestSeller([FromQuery] int page, [FromQuery] int pageSize)
         {
             var books = await _bookRepository.GetEBooks();
 
             var bookDtos = books.OrderBy(x => x.Readers.Count).ToDTOs().ToList();
 
+            if (page <= 0)
+            {
+                page = 0;
+            }
+            else
+            {
+                page--;
+            }
+
             var count = bookDtos.Count() - page * pageSize;
 
             if (count > pageSize)
             {
-                return bookDtos.GetRange(page * pageSize, pageSize);
+                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, result = bookDtos.GetRange(page * pageSize, pageSize) };
             }
             else
             {
-                return bookDtos.GetRange(page * pageSize, count);
+                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, result = bookDtos.GetRange(page * pageSize, count) };
             }
         }
 
@@ -135,7 +161,7 @@ namespace Application.Controllers
         /// <param name="promotion">Promotion data</param>
         /// <returns>List of books</returns>
         [HttpPost("{id}/promote")]
-        public async Task<HttpStatusCode> Index(Guid id, [FromBody] PromotionDto promotion)
+        public async Task<HttpStatusCode> Promote(Guid id, [FromBody] PromotionDto promotion)
         {
             var book = await _bookRepository.Get(id);
 
