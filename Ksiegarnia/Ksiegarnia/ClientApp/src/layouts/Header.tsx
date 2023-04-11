@@ -22,9 +22,51 @@ import TextField from "@mui/material/TextField";
 import React from "react";
 import { useState } from "react";
 import logo from "../assets/logo.png";
+import { UserContext, UserContextType, UserProps } from "../context/UserContext";
+
+const AccountMenu = () => {
+
+  const userContext = React.useContext(UserContext)
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    handleCloseMenu()
+    userContext?.setLogged(false)
+  }
+
+  return (
+    <React.Fragment>
+      <IconButton onClick={handleClick}>
+        <PersonIcon fontSize="large" style={{ color: "white" }} />
+        <Typography variant="h6" color="white" marginLeft={2}>
+            Konto
+        </Typography>
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleCloseMenu}
+      >
+        <MenuItem onClick={handleCloseMenu}>Panel użytkownika</MenuItem>
+        <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
+      </Menu>
+    </React.Fragment>
+  )
+}
 
 const Header = () => {
-  const [logged, setLogged] = useState<boolean>(false);
+  
+  const user = React.useContext(UserContext)?.user
 
   return (
     <AppBar
@@ -59,7 +101,7 @@ const Header = () => {
             alignItems="center"
             columnGap={4}
           >
-            {!logged ? (
+            {!user?.logged ? (
               <React.Fragment>
                 <Button 
                   variant="contained" 
@@ -84,20 +126,21 @@ const Header = () => {
                 </Typography>
               </IconButton>
             )}
-            <IconButton>
-              <ShoppingCartOutlined
-                fontSize="large"
-                style={{ color: "white" }}
-              />
-              <Stack marginLeft={2}>
-                <Typography variant="h6" color="white" textAlign="start">
-                  199 szt.
-                </Typography>
-                <Typography variant="h6" color="white">
-                  244,99 zł
-                </Typography>
-              </Stack>
-            </IconButton>
+              <AccountMenu/>
+              <IconButton>
+                <ShoppingCartOutlined
+                  fontSize="large"
+                  style={{ color: "white" }}
+                />
+                <Stack marginLeft={2}>
+                  <Typography variant="h6" color="white" textAlign="start">
+                    199 szt.
+                  </Typography>
+                  <Typography variant="h6" color="white">
+                    244,99 zł
+                  </Typography>
+                </Stack>
+              </IconButton>
           </Grid>
         </Grid>
       </Toolbar>
