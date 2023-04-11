@@ -35,9 +35,10 @@ namespace Application.Controllers
         ///     Get books list via paramereters
         /// </summary>
         /// <param name="authorName">Author name</param>
-        /// <param name="genre1">Genre</param>
-        /// <param name="genre2">Genre</param>
-        /// <param name="genre3">Genre</param>
+        /// <param name="genre">Genre</param>
+        /// <param name="onlyOnPromotion">Only books on promotion</param>
+        /// <param name="pageSize">page size</param>
+        /// <param name="year">publication year</param>
         /// <param name="maxPrize">Max Prize</param>
         /// <param name="minPrize">Min prize</param>
         /// <param name="sort">Sorting order</param>
@@ -45,9 +46,9 @@ namespace Application.Controllers
         /// <returns>List of books</returns>
         [HttpGet("search")]
         public async Task<List<BookDto>> Index([FromQuery] string? authorName = "",
-                                                [FromQuery] string? genre1 = "",
-                                                [FromQuery] string? genre2 = "",
-                                                [FromQuery] string? genre3 = "",
+                                                [FromQuery] string[]? genre = default,
+                                                [FromQuery] int[]? year = default,
+                                                [FromQuery] int pageSize = 100,
                                                 [FromQuery] SortType sort = default,
                                                 [FromQuery] bool onlyOnPromotion = false,
                                                 [FromQuery] decimal? maxPrize = 0,
@@ -62,9 +63,8 @@ namespace Application.Controllers
             }
 
             books = books.Where(x => x.Prize >= minPrize
-                            && ((string.IsNullOrEmpty(genre1) || x.Genre.Name == genre1)
-                            || (string.IsNullOrEmpty(genre2) || x.Genre.Name == genre2)
-                            || (string.IsNullOrEmpty(genre3) || x.Genre.Name == genre3))).ToList();
+                            && (genre == null || genre.Contains(x.Genre.Name))
+                            && (year == null || year.Contains(x.Date.Year))).ToList();
 
             if (!string.IsNullOrEmpty(authorName))
             {
@@ -91,15 +91,15 @@ namespace Application.Controllers
                 _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
             };
 
-            var count = bookDtos.Count() - page * 100;
+            var count = bookDtos.Count() - page * pageSize;
 
-            if (count > 100)
+            if (count > pageSize)
             {
-                return bookDtos.GetRange(page * 100, 100);
+                return bookDtos.GetRange(page * pageSize, pageSize);
             }
             else
             {
-                return bookDtos.GetRange(page * 100, count);
+                return bookDtos.GetRange(page * pageSize, count);
             }
         }
 
