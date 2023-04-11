@@ -1,11 +1,15 @@
 ﻿using Domain.DTOs;
 using Domain.Entitites;
 using Domain.Enums;
+using System.Security.Claims;
 
 namespace Domain.Repositories
 {
     public interface IUserRepository
     {
+
+        Task<User> Get(ClaimsPrincipal claimsPrincipal);
+
         Task<User> Get(string id);
         Task<SendTokenDto> Register(RegisterDto userData, string password);
         Task<User> Login(string email, string password);

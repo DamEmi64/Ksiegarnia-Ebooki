@@ -11,15 +11,16 @@ namespace Domain.Context
         public KsiegarniaContext(DbContextOptions<KsiegarniaContext> options)
             : base(options)
         {
-           Database.EnsureCreated();
+      //     Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
             new EBookEnitityConfiguration().Configure(builder.Entity<EBook>());
             new EBookReaderEntityConfiguration().Configure(builder.Entity<EBookReader>());
             new UserEntityConfiguration().Configure(builder.Entity<User>());
             new PromotionEntityConfiguration().Configure(builder.Entity<Promotion>());
+
+            base.OnModelCreating(builder);
         }
 
         public DbSet<EBook> Ebooks { get; set; } = default!;

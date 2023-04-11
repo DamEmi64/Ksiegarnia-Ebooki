@@ -138,6 +138,13 @@ namespace Domain.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("OnlyForPremium")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("PremiumPrize")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<decimal>("Prize")
                         .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");

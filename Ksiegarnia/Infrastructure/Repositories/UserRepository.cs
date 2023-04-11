@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -166,42 +167,40 @@ namespace Infrastructure.Repositories
         public async Task AddRole(string id, Roles role)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
-            Role? roleDb;
 
-            switch (role)
-            {
-                case Roles.Admin:
-                    roleDb = await _roleStore.FindByNameAsync("admin", CancellationToken.None);
-                    if (roleDb == null)
-                    {
-                        roleDb = Activator.CreateInstance<Role>();
-
-                        roleDb.Name = "admin";
-                        roleDb.NormalizedName = "admin".Normalize();
-                        await _roleStore.CreateAsync(roleDb, CancellationToken.None);
-                    }
-                    break;
-                default:
-                    roleDb = await _roleStore.FindByNameAsync("user", CancellationToken.None);
-                    if (roleDb == null)
-                    {
-                        roleDb = Activator.CreateInstance<Role>();
-
-                        roleDb.Name = "user";
-                        roleDb.NormalizedName = "user".Normalize();
-                        await _roleStore.CreateAsync(roleDb, CancellationToken.None);
-                    }
-                    break;
-            }
+            await CreateRolesIfNotExists();
 
             if (user != null)
             {
                 switch (role)
                 {
-                    case Roles.Admin: await _userManager.AddToRoleAsync(user, "admin"); break;
-                    default: await _userManager.AddToRoleAsync(user, "user"); break;
+                    case Roles.Admin: await _userManager.AddToRoleAsync(user, nameof(Roles.Admin)); break;
+                    case Roles.PremiumUser: await _userManager.AddToRoleAsync(user, nameof(Roles.PremiumUser)); break;
+                    default: await _userManager.AddToRoleAsync(user, nameof(Roles.User)); break;
                 }
 
+            }
+        }
+
+        public async Task<User> Get(ClaimsPrincipal principal)
+        {
+            return await _userManager.GetUserAsync(principal);
+        }
+
+        private async Task CreateRolesIfNotExists()
+        {
+            Role roleDb;
+            foreach (var role in Enum.GetNames(typeof(Roles)))
+            {
+                roleDb = await _roleStore.FindByNameAsync(role, CancellationToken.None);
+                if (roleDb == null)
+                {
+                    roleDb = Activator.CreateInstance<Role>();
+
+                    roleDb.Name = role;
+                    roleDb.NormalizedName = roleDb.Name.Normalize();
+                    await _roleStore.CreateAsync(roleDb, CancellationToken.None);
+                }
             }
         }
     }
