@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import "./index.css";
 import './App.css';
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './layouts/Header';
 import Content from './layouts/Content';
 import Footer from './layouts/Footer';
@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
 import SearchEbooks from './pages/SearchEbooks';
+import UserProvider, { UserContext, UserContextType, UserProps } from './context/UserContext';
 
 const theme = createTheme({
   palette: {
@@ -44,37 +45,39 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline/>
         <Grid container minHeight="100vh" direction="column" justifyContent="stretch">
-          <Grid item container position="sticky" top="0" zIndex="100">
-            <Header/>
-          </Grid>
-          <Grid item container flexGrow={2}>
-            <Grid item xs={1} container justifyContent="center">
-              <div style={{top: "50%", transform: "translate(0, -50%)", position: "fixed"}}>
-                <SideAd/>
-              </div>
+          <UserProvider>
+            <Grid item container position="sticky" top="0" zIndex="100">
+              <Header/>
             </Grid>
-            <Grid item xs={10} container rowGap={10}>
-              <Grid item xs={12}>
-                <Content>
-                  <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/register" element={<Register/>}/>
-                    <Route path="/Ebooki" element={<SearchEbooks/>}/>
-                    <Route path="*" element={<NotFound/>}/>
-                  </Routes>
-                </Content>
+            <Grid item container flexGrow={2}>
+              <Grid item xs={1} container justifyContent="center">
+                <div style={{top: "50%", transform: "translate(0, -50%)", position: "fixed"}}>
+                  <SideAd/>
+                </div>
               </Grid>
-              <Grid item xs={12} container alignItems="end">
-                <Footer/>
+              <Grid item xs={10} container rowGap={10}>
+                <Grid item xs={12}>
+                  <Content>
+                    <Routes>
+                      <Route path="/" element={<Home/>}/>
+                      <Route path="/login" element={<Login/>}/>
+                      <Route path="/register" element={<Register/>}/>
+                      <Route path="/Ebooki" element={<SearchEbooks/>}/>
+                      <Route path="*" element={<NotFound/>}/>
+                    </Routes>
+                  </Content>
+                </Grid>
+                <Grid item xs={12} container alignItems="end">
+                  <Footer/>
+                </Grid>
+              </Grid>
+              <Grid item xs={1} container justifyContent="center">
+                <div style={{top: "50%", transform: "translate(0, -50%)", position: "fixed"}}>
+                  <SideAd/>
+                </div>
               </Grid>
             </Grid>
-            <Grid item xs={1} container justifyContent="center">
-              <div style={{top: "50%", transform: "translate(0, -50%)", position: "fixed"}}>
-                <SideAd/>
-              </div>
-            </Grid>
-          </Grid>
+          </UserProvider>
         </Grid>
       </ThemeProvider>
     </React.Fragment>
