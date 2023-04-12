@@ -4,6 +4,7 @@ import React from "react";
 import BasicTextField from "../../../components/BasicTextField";
 import Notification from "../../../components/Notification";
 import FormService from "../../../services/FormService";
+import UserService from "../../../services/UserService";
 
 interface FormProps {
   firstName?: string;
@@ -96,12 +97,19 @@ const EditAccountDetails = (props: {
       return;
     }
 
-    setShowNotification(true)
-    setIsSuccessNotification(true)
-    setShowNotificationMessage(SUCCESSFULY_CHANGED_DATA_MESSAGE)
-    setErrors(initErrors)
-
-    setTimeout(()=>props.setIsEditMode(false), 4000);
+    UserService.update("1", form)
+    .then((response) => {
+      setShowNotification(true)
+      setIsSuccessNotification(true)
+      setShowNotificationMessage(SUCCESSFULY_CHANGED_DATA_MESSAGE)
+      setErrors(initErrors)
+      setTimeout(()=>props.setIsEditMode(false), 4000);
+    })
+    .catch((error) => {
+      setShowNotification(true)
+      setIsSuccessNotification(false)
+      setShowNotificationMessage(FAILED_CHANGED_DATA_MESSAGE)
+    })
   };
 
   return (
