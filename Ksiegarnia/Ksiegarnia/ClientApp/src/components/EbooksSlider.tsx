@@ -59,7 +59,7 @@ const EbooksSlider = (props: {
           {ebooks
             .map((ebook: Ebook) => (
               <Grid key={ebook.id} item xs={2}>
-                <BasicEbookView ebook={ebook} />
+                <BasicEbookView ebook={ebook} showAddToCart={true}/>
               </Grid>
             ))
           }
