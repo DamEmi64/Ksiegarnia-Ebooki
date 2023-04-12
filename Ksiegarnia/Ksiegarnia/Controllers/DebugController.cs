@@ -120,6 +120,7 @@ namespace Application.Controllers
                     Title = $"Example {i}",
                     Description = "example Description",
                     Genre = genres[random.Next(genres.Count())],
+                    Prize = Decimal.Parse((random.NextDouble() * 10.5).ToString())
                 };
 
                 await _bookRepository.Add(book);

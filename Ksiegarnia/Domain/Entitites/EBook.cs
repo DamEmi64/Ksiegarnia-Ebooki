@@ -9,7 +9,7 @@
         public byte[] Content { get; set; }
         public string Description { get; set; }
         public int PageNumber { get; set; }
-        public List<EBookReader>? Readers { get; set; }
+        public List<EBookReader> Readers { get; set; } = new List<EBookReader>();
         public Genre Genre { get; set; }
         public User Author { get; set; }
 
