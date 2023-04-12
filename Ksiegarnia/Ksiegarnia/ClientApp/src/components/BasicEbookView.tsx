@@ -4,9 +4,14 @@ import Image from "./Image";
 import Rate from "./Rate";
 import { ShoppingCartOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 
 const BasicEbookView = (props: { ebook: Ebook }) => {
-  const ebook: Ebook = props.ebook;
+  const [ebook, setEbook] = React.useState<Ebook>(props.ebook);
+
+  useEffect(() => {
+    setEbook(props.ebook)
+  }, [props.ebook])
 
   const navigate = useNavigate();
 
