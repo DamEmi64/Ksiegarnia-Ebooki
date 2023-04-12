@@ -8,13 +8,15 @@ import { useEffect } from "react";
 
 const Home = () => {
 
+    const prevYear: number = new Date().getFullYear() - 1
+
     return (
         <CategoriesContent>
             <Grid item container direction="column" rowGap={8} marginTop={2}>
                 <EbooksSlider title="Nowości" sort={EbookSortOptions[EbookSortOptions.DescByDate]}/>
-                <EbooksSlider title="Promocje" sort={EbookSortOptions[EbookSortOptions.DescByDate]}/>
-                <EbooksSlider title="Bestsellery" sort={EbookSortOptions[EbookSortOptions.DescByDate]}/>
-                <EbooksSlider title="Najlepsze książki 2022 roku" sort={EbookSortOptions[EbookSortOptions.DescByDate]}/>
+                <EbooksSlider title="Promocje" ebookSearchCriteria={{onlyOnPromotion: true}}/>
+                <EbooksSlider title="Bestsellery" ebookSearchCriteria={{onlyOnPromotion: true}}/>
+                <EbooksSlider title={`Najlepsze książki ${prevYear} roku`} ebookSearchCriteria={{year: prevYear}}/>
             </Grid>
         </CategoriesContent>
     )

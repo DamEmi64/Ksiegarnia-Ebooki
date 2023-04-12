@@ -49,7 +49,7 @@ const ViewAccountDetails = (props: {
       </Grid>
       <Button
         variant="contained"
-        style={{ width: "16%", marginTop: 8 }}
+        style={{ width: "16%", marginTop: 12 }}
         onClick={() => props.setIsEditMode(true)}
       >
         Edytuj

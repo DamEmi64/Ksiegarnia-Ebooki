@@ -13,7 +13,7 @@ interface RegisterForm {
   nick: string;
   password: string;
   repeatedPassword: string;
-  phoneNumber?: string;
+  phone?: string;
 }
 
 const Register = () => {
@@ -184,10 +184,10 @@ const Register = () => {
               <BasicTextField
                 settings={{ type: "number", maxRows: 9, minRows: 9 }}
                 label="Numer tel."
-                value={form.phoneNumber}
-                errorMessage={errors.phoneNumber}
+                value={form.phone}
+                errorMessage={errors.phone}
                 handleChange={(value: string) => {
-                  setForm({ ...form, phoneNumber: value });
+                  setForm({ ...form, phone: value });
                 }}
               />
             </Grid>
