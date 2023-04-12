@@ -48,6 +48,32 @@ namespace Application.Controllers
         }
 
         /// <summary>
+        ///     Get user ebooks by id
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
+        [HttpGet("{id}/ebooks")]
+        public async Task<List<BookDto>> Ebooks(string id)
+        {
+            var user = await _userRepository.Get(id);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+
+            var list = new  List<BookDto>();
+
+            foreach( var book in user.EBooks)
+            {
+                list.Add(book?.EBook?.ToDTO());
+
+            }
+
+            return list;
+        }
+
+        /// <summary>
         ///     Register
         /// </summary>
         /// <param name="data">register data</param>
