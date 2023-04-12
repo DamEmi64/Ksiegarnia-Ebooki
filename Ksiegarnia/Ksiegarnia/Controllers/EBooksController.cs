@@ -38,6 +38,7 @@ namespace Application.Controllers
         /// <param name="genre">Genre (names)</param>
         /// <param name="onlyOnPromotion">Only books on promotion</param>
         /// <param name="pageSize">page size</param>
+        /// <param name="phrase">search phrase</param>
         /// <param name="year">publication year</param>
         /// <param name="maxPrize">Max Prize</param>
         /// <param name="minPrize">Min prize</param>
