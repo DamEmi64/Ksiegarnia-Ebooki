@@ -6,12 +6,13 @@ class EbookService {
 
     private api: string = "https://localhost:7270/Books"
 
-    search(ebookSearchCriteria?: EbookSearchCriteria, sort?: string, page?: number){
+    search(ebookSearchCriteria?: EbookSearchCriteria, sort?: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/search`, {
             params: {
                 ebookSearchCriteria,
                 sort,
-                page
+                page,
+                pageSize
             }
         })
     }

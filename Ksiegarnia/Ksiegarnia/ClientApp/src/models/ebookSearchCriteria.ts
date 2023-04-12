@@ -8,5 +8,6 @@ export default interface EbookSearchCriteria {
     genre3?: Genre,
     minPrize?: number,
     maxPrize?: number,
-    onlyOnPromotion?: boolean
+    onlyOnPromotion?: boolean,
+    year?: number
 }
