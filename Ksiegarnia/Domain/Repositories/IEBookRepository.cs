@@ -4,7 +4,7 @@ namespace Domain.Repositories
 {
     public interface IEBookRepository
     {
-        Task<List<EBook>> GetEBooks();
+        Task<List<EBook>> GetEBooks(List<string>? genres = null, List<int>? years = null, string AuthorName = "");
 
         Task Remove(Guid bookId);
 

@@ -47,13 +47,32 @@ namespace Infrastructure.Repositories
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
             return new()
             {
                 Email = user.Email,
                 Id = user.Id,
                 Token = token
             };
+        }
+
+        public async Task<SendTokenDto> ChangeEmailToken(string id, string newEmail)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
+            var token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+            return new()
+            {
+                Email = newEmail,
+                Id = user.Id,
+                Token = token
+            };
+        }
+
+        public async Task<bool> ChangeEmail(string id, string token, string newEmail)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+           
+            return result.Succeeded;
         }
 
         public async Task ResetPassword(string id, string token, string newPassword)

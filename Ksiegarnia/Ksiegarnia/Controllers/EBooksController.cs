@@ -55,7 +55,7 @@ namespace Application.Controllers
                                                 [FromQuery] decimal? minPrize = 0,
                                                 [FromQuery] int page = 1)
         {
-            var books = await _bookRepository.GetEBooks();
+            var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName);
 
             if (onlyOnPromotion)
             {
@@ -63,26 +63,6 @@ namespace Application.Controllers
             }
 
             books = books.Where(x => x.Prize >= minPrize).ToList();
-
-            if (genre != null && genre.Length > 0)
-            {
-                books = books.Where(x => genre.Contains(x.Genre.Name)).ToList();
-            }
-
-            if (year != null && year.Length > 0)
-            {
-                books = books.Where(x => year.Contains(x.Date.Year)).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(authorName))
-            {
-                books = books.Where(x => x.Author.UserName == authorName).ToList();
-            }
-
-            if (maxPrize > 0)
-            {
-                books = books.Where(x => x.Prize < maxPrize).ToList();
-            }
 
             var bookDtos = sort switch
             {
@@ -127,10 +107,9 @@ namespace Application.Controllers
         /// <param name="page">page</param>
         /// <returns>List of books</returns>
         [HttpGet("bestseller")]
-        public async Task<object> BestSeller([FromQuery] int page, [FromQuery] int pageSize)
+        public async Task<object> BestSeller([FromQuery] int page, [FromQuery] int pageSize = 100)
         {
             var books = await _bookRepository.GetEBooks();
-
             var bookDtos = books.OrderBy(x => x.Readers.Count).ToDTOs().ToList();
 
             if (page <= 0)

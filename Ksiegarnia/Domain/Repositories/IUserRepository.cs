@@ -25,5 +25,9 @@ namespace Domain.Repositories
         Task AddRole(string id, Roles role);
 
         Task Confirm(string id, string token);
+
+        Task<SendTokenDto> ChangeEmailToken(string id, string newEmail);
+
+        Task<bool> ChangeEmail(string id, string token, string newEmail);
     }
 }

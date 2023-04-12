@@ -39,7 +39,7 @@ namespace Application.Controllers
         {
             var user = await _userRepository.Get(id);
 
-            if(user == null)
+            if (user == null)
             {
                 throw new UserNotFoundException(id);
             }
@@ -55,7 +55,7 @@ namespace Application.Controllers
         /// <exception cref="RegisterFailedException">when register fail...</exception>
         [HttpPost("Register")]
         public async Task<HttpStatusCode> Register([FromBody] RegisterDto data)
-        {    
+        {
             try
             {
                 var user = await _userRepository.Register(data, data.Password);
@@ -68,8 +68,33 @@ namespace Application.Controllers
             {
                 throw new RegisterFailedException();
             }
-            
+
             return HttpStatusCode.Created;
+        }
+
+        /// <summary>
+        ///     Update
+        /// </summary>
+        /// <param name="data">register data</param>
+        /// <returns></returns>
+        /// <exception cref="RegisterFailedException">when register fail...</exception>
+        [HttpPut("{id}")]
+        public async Task<HttpStatusCode> Update([FromBody] RegisterDto data, string id)
+        {
+
+            var user = await _userRepository.Get(id);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+
+            user.PhoneNumber = data.PhoneNumber;
+            user.FirstName = data.FirstName;
+            user.LastName = data.LastName;
+            user.Nick = data.Nick;
+
+            return HttpStatusCode.OK;
         }
 
         /// <summary>
@@ -131,6 +156,49 @@ namespace Application.Controllers
             }
 
             await _userRepository.ResetPassword(id, token, newPassword);
+        }
+
+        /// <summary>
+        ///     Send refresh token (for email change)
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <returns></returns>
+        /// <exception cref="UserNotFoundException">when user not found...</exception>
+        [HttpGet("{id}/emailToken")]
+        public async Task<HttpStatusCode> SendEmailToken(string id, [FromQuery] string newEmail)
+        {
+            var user = await _userRepository.GeneratePasswordToken(id);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+
+            var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
+            var callbackUrl = Url.Action("EmailChange", values: new { id = user.Id, token = token, newEmail = newEmail });
+            _authService.SendEmail($"Change email by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
+
+            return HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        ///     Change email
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="token">refresh token</param>
+        /// <param name="newEmail">email</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="TokenNotFoundException">when token is empty...</exception>
+        [HttpPost("{id}/emailChange")]
+        public async Task EmailChange(string id, [FromQuery] string token, [FromQuery] string newEmail)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new TokenNotFoundException();
+            }
+
+            await _userRepository.ChangeEmail(id, token, newEmail);
         }
 
         /// <summary>

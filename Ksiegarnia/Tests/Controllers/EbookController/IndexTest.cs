@@ -19,7 +19,7 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.GetEBooks()).ReturnsAsync(new List<EBook>()
+            bookRepo.Setup(x => x.GetEBooks(null,null,"")).ReturnsAsync(new List<EBook>()
             { new EBook() { Genre = new Genre() , Author = new User() },
                 new EBook() { Genre = new Genre(), Author = new User() } });
 
