@@ -17,10 +17,11 @@ class EbookService {
         })
     }
 
-    getBestsellers(page: number){
+    getBestsellers(page?: number, pageSize?: number){
         return axios.get(`${this.api}/bestseller`, {
             params: {
-                page
+                page,
+                pageSize
             }
         })
     }

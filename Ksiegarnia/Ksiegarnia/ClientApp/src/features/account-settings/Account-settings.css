@@ -1,0 +1,9 @@
+﻿.transaction-row{
+    cursor: pointer;
+    background-color: #1470a3;
+    color: white;
+}
+
+.transaction-row:hover{
+    cursor: pointer;
+}

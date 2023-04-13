@@ -30,57 +30,46 @@ const OwnedEbooks = () => {
 
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    pageSize: 12,
-    numberOfPages: 0
-  })
+  const page = useRef<number>(1)
+  const [pageSize, setPageSize] = useState<number>(12)
+  const actualPageSize = useRef<number>(12)
+  const numberOfPages = useRef<number>(0)
 
   useEffect(() => {
-    EbookService.search({}, undefined, pagination.page, pagination.pageSize).then((response) => {
-      const data = response.data;
-      const newEbooks: Ebook[] = data.result;
-      setEbooks([...ebooks, ...newEbooks]);
-      setPagination({...pagination, numberOfPages: data.number_of_pages})
-    });
-  }, [pagination.page]);
-
-  const handleChangeSize = (event: SelectChangeEvent) => {
-    setPagination({
-        ...pagination,
-        page: 1,
-        pageSize: +event.target.value,
-    })
-    setEbooks([])
-  };
-
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const onScroll = () => setOffset(window.pageYOffset);
-    window.removeEventListener("scroll", onScroll);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    handleSearch()
   }, []);
 
-  useEffect(() => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      if (pagination.page + 1 <= pagination.numberOfPages) {
-        setPagination({
-            ...pagination,
-            page: pagination.page + 1
-        })
-      }
-    }
-  }, [offset]);
+  const handleSearch = () => {
+    EbookService.search({}, undefined, page.current, actualPageSize.current)
+    .then((response) => {
+      const data = response.data;
+      const newEbooks: Ebook[] = data.result;
+      setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
+      numberOfPages.current = data.number_of_pages
+    });
+  }
 
-  /*useScrollPosition({
+  const handleChangeSize = (event: SelectChangeEvent) => {
+    page.current = 1
+    actualPageSize.current = +event.target.value
+    setPageSize(actualPageSize.current)
+    EbookService.search({}, undefined, page.current, actualPageSize.current)
+    .then((response) => {
+      const data = response.data;
+      const newEbooks: Ebook[] = data.result;
+      setEbooks(newEbooks);
+      numberOfPages.current = data.number_of_pages
+    });
+  };
+
+  useScrollPosition({
     handleScrollBottom() {
       if (page.current + 1 <= numberOfPages.current) {
-        page.current++;
+        page.current++
+        handleSearch()
       }
     },
-  });*/
+  });
 
   return (
     <Grid
@@ -113,7 +102,7 @@ const OwnedEbooks = () => {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <Select value={pagination.pageSize.toString()} onChange={handleChangeSize}>
+              <Select value={pageSize.toString()} onChange={handleChangeSize}>
                 {pageSizes.map((size: number) => (
                   <MenuItem key={size} value={size}>
                     {size}
