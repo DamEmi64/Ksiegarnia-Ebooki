@@ -23,7 +23,7 @@ const EbooksSlider = (props: {
   useEffect(() => {
     const searchCriteria = props.ebookSearchCriteria;
     if (props.searchBestsellers) {
-      EbookService.getBestsellers(page)
+      EbookService.getBestsellers(page, pageSize)
       .then((response) => {
         const data = response.data;
         const newEbooks: Ebook[] = data.result;
