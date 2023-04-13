@@ -6,6 +6,7 @@ import UserDTO from "../../../models/api/userDTO";
 import React from "react";
 import EditAccountDetails from "./EditAccountDetails";
 import ViewAccountDetails from "./ViewAccountDetails";
+import "../Account-settings.css"
 
 const AccountDetails = () => {
   const userContext = useContext(UserContext);
