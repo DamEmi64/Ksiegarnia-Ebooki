@@ -79,19 +79,32 @@ const mockedTransactions: Transaction[] = [
 
 const TransactionsHistory = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [ebooks, setEbooks] = useState<Ebook[]>([])
 
   useEffect(() => {
     TransactionService.getUserTransactions("1").then((response) => {
       //setTransactions(response.data)
     });
+    EbookService.search({}, undefined, 0, 6)
+    .then((response) => {
+      setEbooks(response.data.result)
+    })
   }, []);
+
+  const CustomPagination = () => {
+    return (
+      <Stack alignItems="center">
+        <Pagination count={10} color="primary" shape="rounded" size="large" />
+      </Stack>
+    );
+  };
 
   return (
     <Grid item marginTop={-2} container direction="column" rowGap={8}>
       <CustomPagination />
       <Grid item container direction="column" rowGap={6}>
         {mockedTransactions.map((transaction: Transaction) => (
-          <TransactionRow key={transaction.id} transaction={transaction} />
+          <TransactionRow key={transaction.id} transaction={transaction} ebooks={ebooks}/>
         ))}
       </Grid>
       <CustomPagination />
@@ -99,15 +112,7 @@ const TransactionsHistory = () => {
   );
 };
 
-const CustomPagination = () => {
-  return (
-    <Stack alignItems="center">
-      <Pagination count={10} color="primary" shape="rounded" size="large" />
-    </Stack>
-  );
-};
-
-const TransactionRow = (props: { transaction: Transaction }) => {
+const TransactionRow = (props: { transaction: Transaction, ebooks: Ebook[] }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const transaction: Transaction = props.transaction;
@@ -149,7 +154,7 @@ const TransactionRow = (props: { transaction: Transaction }) => {
           border="1px solid #0A3F5C"
           borderTop={0}
         >
-          {transaction.books.map((ebook: Ebook) => (
+          {props.ebooks.map((ebook: Ebook) => (
             <TransactionEbookView key={ebook.id} ebook={ebook} />
           ))}
         </Grid>
@@ -165,33 +170,36 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
     <Grid
       item
       container
-      direction="column"
       padding={6}
+      justifyContent="space-between"
       borderBottom="1px solid silver"
     >
-      <Grid item height="150px">
-        <Image alt={ebook.title} src={ebook.picture} style={{maxWidth: "100%", width: "auto", height: "220px"}}/>
-      </Grid>
-      <Grid item>
-        <Typography variant="h6" textAlign="center">
-          {ebook.title}
-        </Typography>
-        <Typography variant="h6" textAlign="center">
-          {ebook.author.firstName + " " + ebook.author.lastName}
-        </Typography>
-        <Grid item container justifyContent="center">
-          <Rate value={5} />
+      <Grid item xs={9} container columnGap={4}>
+        <Grid item height="260px">
+          <Image alt={ebook.title} src={ebook.picture} style={{maxWidth: "100%", width: "auto", height: "100%"}}/>
         </Grid>
+        <Grid item xs={8} container direction="column" justifyContent="space-between">
+          <Grid item container direction="column" rowGap={1}>
+            <Typography variant="h4" fontWeight="bold">
+              {ebook.title}
+            </Typography>
+            <Typography variant="h6">
+              {ebook.author.firstName + " " + ebook.author.lastName}
+            </Typography>
+          </Grid>
+          <Grid item container direction="column" rowGap={1}>
+            <Typography variant="h6" fontWeight="bold">
+              {ebook.genre.name}
+            </Typography>
+            <Rate value={5} />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item alignSelf="end">
+        <Typography variant="h4" textAlign="center">{ebook.prize} zł</Typography>
       </Grid>
     </Grid>
   );
 };
-
-<Typography
-  variant="h6"
-  marginLeft={2}
-  padding={6}
-  borderBottom="1px solid silver"
-></Typography>;
 
 export default TransactionsHistory;
