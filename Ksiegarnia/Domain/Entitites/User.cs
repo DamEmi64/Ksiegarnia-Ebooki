@@ -37,6 +37,14 @@ namespace Domain.Entitites
         /// </summary>
         public virtual List<EBook>? Publications { get; set; }
 
+        /// <summary>
+        ///  Buyed books
+        /// </summary>
         public virtual List<EBookReader> EBooks { get; set; }
+
+        /// <summary>
+        ///     Premium
+        /// </summary>
+        public Premium? Premium { get; set; }
     }
 }

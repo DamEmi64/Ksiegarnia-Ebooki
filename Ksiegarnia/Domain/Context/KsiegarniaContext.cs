@@ -31,5 +31,9 @@ namespace Domain.Context
 
         public DbSet<Promotion> Promotions { get; set; }
 
+        public DbSet<Premium> Premiums { get; set; }
+
+        public DbSet<Review> Reviews { get; set; }
+
     }
 }

@@ -193,17 +193,56 @@ namespace Infrastructure.Repositories
             {
                 switch (role)
                 {
-                    case Roles.Admin: await _userManager.AddToRoleAsync(user, nameof(Roles.Admin)); break;
-                    case Roles.PremiumUser: await _userManager.AddToRoleAsync(user, nameof(Roles.PremiumUser)); break;
-                    default: await _userManager.AddToRoleAsync(user, nameof(Roles.User)); break;
+                    case Roles.Admin: await _userManager.AddToRoleAsync(user, Enum.GetName(Roles.Admin)); break;
+                    case Roles.PremiumUser: await _userManager.AddToRoleAsync(user, Enum.GetName(Roles.PremiumUser)); break;
+                    default: await _userManager.AddToRoleAsync(user, Enum.GetName(Roles.User)); break;
                 }
 
             }
         }
 
+        public async Task RemoveRole(string id, Roles role)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
+
+            await CreateRolesIfNotExists();
+
+            if (user != null)
+            {
+                switch (role)
+                {
+                    case Roles.Admin: await _userManager.RemoveFromRoleAsync(user, Enum.GetName(Roles.Admin)); break;
+                    case Roles.PremiumUser: await _userManager.RemoveFromRoleAsync(user, Enum.GetName(Roles.PremiumUser)); break;
+                    default: await _userManager.RemoveFromRoleAsync(user, Enum.GetName(Roles.User)); break;
+                }
+
+            }
+        }
+
+        public async Task<bool> CheckRole(string id, Roles role)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
+
+            await CreateRolesIfNotExists();
+
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                return roles.Contains(Enum.GetName(Roles.PremiumUser));
+            }
+
+            return false;
+        }
+
         public async Task<User> Get(ClaimsPrincipal principal)
         {
             return await _userManager.GetUserAsync(principal);
+        }
+
+        public async Task Update(User user)
+        {
+           await _userManager.UpdateAsync(user);
         }
 
         private async Task CreateRolesIfNotExists()

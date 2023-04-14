@@ -54,6 +54,5 @@ namespace Domain.Enums
         /// </summary>
         [JsonProperty("AscByAuthor")] 
         AscByAuthor
-
     }
 }

@@ -25,6 +25,7 @@ namespace Infrastructure.Configuration
             webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookRepository, EbookRepository>()
                                     .AddScoped<IEBookReaderRepository, EBookReaderRepository>()
+                                    .AddScoped<IReviewsRepository,ReviewRepository>()
                                     .AddScoped<IGenreRepository, GenreRepository>();
             //Services
             webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
