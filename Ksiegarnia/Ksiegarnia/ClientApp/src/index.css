@@ -20,6 +20,11 @@ a{
   cursor: pointer;
 }
 
+img{
+  height: auto;
+  object-fit: cover;
+}
+
 .maximixed-img{
   width: 80%;
   height: auto;
