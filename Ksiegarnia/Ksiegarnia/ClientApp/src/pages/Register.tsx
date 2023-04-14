@@ -4,7 +4,7 @@ import FormService from "../services/FormService";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
 import Notification from "../components/Notification";
-import UserService, { RegisterRequest } from "../services/UserService";
+import UserService, { RegisterProps } from "../services/UserService";
 
 interface RegisterForm {
   firstName?: string;

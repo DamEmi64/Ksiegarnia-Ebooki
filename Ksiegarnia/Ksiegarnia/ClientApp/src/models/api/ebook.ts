@@ -7,7 +7,6 @@ export default interface Ebook{
     genre: Genre,
     description: string,
     pageNumber: number,
-    content: string,
     author: UserDTO,
     picture: string,
     prize: number
