@@ -10,6 +10,7 @@ namespace Domain.EntityConfiguration
         {
             builder.HasKey(x=>x.Id);
             builder.HasOne(x => x.Transaction).WithMany(x => x.EBookReaders).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.Reviews).WithOne(x => x.Reader).OnDelete(DeleteBehavior.Cascade);
          //   builder.HasOne(x => x.EBook).WithMany(x => x.Readers).HasForeignKey(x=>x.BookId).OnDelete(DeleteBehavior.Cascade);
         }
     }

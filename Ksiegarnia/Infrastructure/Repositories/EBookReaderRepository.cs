@@ -22,6 +22,15 @@ namespace Infrastructure.Repositories
         {
             return await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<EBookReader?> Get(string userId, Guid bookdId)
+        {
+            return await _context.Set<EBookReader>()
+                        .Include(x => x.User)
+                        .Include(x => x.EBook)
+                        .FirstOrDefaultAsync(x => x.User.Id == userId && x.EBook.Id == bookdId);
+        }
+
         public async Task<Transaction?> GetTransaction(Guid id)
         {
             return (await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
@@ -31,9 +40,19 @@ namespace Infrastructure.Repositories
         {
             if (string.IsNullOrEmpty(id))
             {
-                return _context.Set<Transaction>().Where(x => x.EBookReaders.Any(y => y.User.Id == id));
+                return _context.Set<Transaction>()
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.EBook)
+                    .ThenInclude(z => z.Author)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.User)
+                    .Where(x => x.EBookReaders.Any(y => y.User.Id == id));
             }
-            return _context.Set<Transaction>().ToList();
+            return _context.Set<Transaction>()
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.EBook)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.User);
         }
 
         public async Task SaveChanges()

@@ -90,10 +90,11 @@ namespace Application.Controllers
                     Currency = currencyEnum,
                     DateTime = DateTime.UtcNow,
                     Id = Guid.NewGuid(),
+                    BuyerId = buyer.BuyerId,
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action("Finish", values: new { id = Guid.Empty, succeeded = false }) ?? string.Empty;
+                var cancel = Url.Action("Finish", values: new { id =transaction.Id, succeeded = false }) ?? string.Empty;
                 var redirect = Url.Action("Finish", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
@@ -123,27 +124,78 @@ namespace Application.Controllers
         [HttpPost("Finish/{id}")]
         public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false)
         {
-            var reader = await _eBookReaderRepository.GetTransaction(id);
-
-            if (reader != null)
+            if (succeeded)
             {
-                reader.Finished = true;
-            }
+                var reader = await _eBookReaderRepository.GetTransaction(id);
 
-            await _eBookReaderRepository.SaveChanges();
+                if (reader != null)
+                {
+                    reader.Finished = true;
+                }
+
+                await _eBookReaderRepository.SaveChanges();
+            }
 
             return HttpStatusCode.OK;
         }
 
         /// <summary>
+        ///     Get user transactions summary (selled and buyed books)
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="page">page</param>
+        /// <param name="pageSize">page size</param>
+        /// <returns></returns>
+        [HttpGet("{id}/summary")]
+        public object GetSummary(string id,
+                        [FromQuery] int page = 1,
+                        [FromQuery] int pageSize = 100)
+        {
+            var buying = _eBookReaderRepository.GetTransactions(id).ToDTOs().ToList();
+
+            var buyingCash = GetCash(buying);
+
+            var selling = _eBookReaderRepository.GetTransactions(string.Empty)
+                            .Where(x => x.EBookReaders.Any(x => x.EBook?.Author.Id == id)).ToDTOs().ToList();
+
+            var sellingCash = GetCash(selling);
+
+            return new
+            {
+                buyed_books = Paging(buying, page, pageSize),
+                cash_spend_on_buying = buyingCash,
+                selled_book = Paging(selling, page, pageSize),
+                earned_cash = sellingCash
+            };
+        }
+
+        /// <summary>
         ///     Get all transactions
         /// </summary>
-        /// <param name="userId">User id, WARNING!!! User shouldn't have access to that</param>
+        /// <param name="userId">User id</param>
+        /// <param name="authorId">Author id</param>
+        /// <param name="page">Page</param>
+        /// <param name="pageSize">Page size</param>
         /// <returns></returns>
         [HttpGet("")]
-        public List<TransactionDto> GetAll([FromQuery] string userId)
+        public object GetAll([FromQuery] string userId,
+                            [FromQuery] string authorId,
+                            [FromQuery] int page = 1,
+                            [FromQuery] int pageSize = 100)
         {
-            return _eBookReaderRepository.GetTransactions(userId).ToDTOs().ToList();
+            var result = new List<TransactionDto>();
+            if (string.IsNullOrEmpty(authorId))
+            {
+                result = _eBookReaderRepository.GetTransactions(userId).ToDTOs().ToList();
+            }
+            else
+            {
+                var list = _eBookReaderRepository.GetTransactions(userId);
+
+                result = list.Where(x => x.EBookReaders.Any(x => x.EBook?.Author.Id == authorId)).ToDTOs().ToList();
+            }
+
+            return Paging(result, page, pageSize);
         }
 
         /// <summary>
@@ -165,5 +217,42 @@ namespace Application.Controllers
             return transaction.ToDTO();
         }
 
+
+        private object Paging(List<TransactionDto> transactionDtos, int page, int pageSize)
+        {
+            if (page <= 0)
+            {
+                page = 0;
+            }
+            else
+            {
+                page--;
+            }
+
+            var count = transactionDtos.Count() - page * pageSize;
+
+            if (count > pageSize)
+            {
+                return new { all = transactionDtos.Count, page = page + 1, number_of_pages = transactionDtos.Count / pageSize + 1, result = transactionDtos.GetRange(page * pageSize, pageSize) };
+            }
+            else
+            {
+                return new { all = transactionDtos.Count, page = page + 1, number_of_pages = transactionDtos.Count / pageSize + 1, result = transactionDtos.GetRange(page * pageSize, count) };
+            }
+        }
+
+        private decimal GetCash(List<TransactionDto> transactionDtos)
+        {
+            decimal cash = 0;
+            foreach (var transaction in transactionDtos)
+            {
+                foreach (var book in transaction.Books)
+                {
+                    cash += book.Prize;
+                }
+            }
+
+            return cash;
+        }
     }
 }

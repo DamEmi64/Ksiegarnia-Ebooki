@@ -11,5 +11,7 @@
 
         public Guid TransactionId { get; set; }
         public Transaction Transaction { get; set; }
+
+        public  List<Review> Reviews { get; set; }
     }
 }

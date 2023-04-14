@@ -62,9 +62,9 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var list = new  List<BookDto>();
+            var list = new List<BookDto>();
 
-            foreach( var book in user.EBooks)
+            foreach (var book in user.EBooks)
             {
                 list.Add(book?.EBook?.ToDTO());
 
@@ -119,6 +119,8 @@ namespace Application.Controllers
             user.FirstName = data.FirstName;
             user.LastName = data.LastName;
             user.Nick = data.Nick;
+
+            await _userRepository.Update(user);
 
             return HttpStatusCode.OK;
         }
