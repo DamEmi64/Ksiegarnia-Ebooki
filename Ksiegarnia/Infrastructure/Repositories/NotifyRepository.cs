@@ -36,6 +36,11 @@ namespace Infrastructure.Repositories
           return  await _context.Set<Notification>().FirstOrDefaultAsync(x=>x.Id== notificationId);
         }
 
+        public async Task<List<Notification>> GetAll()
+        {
+            return await _context.Set<Notification>().ToListAsync();
+        }
+
         public async Task  Remove(Guid notificationId)
         {
             var notify = await Get(notificationId);

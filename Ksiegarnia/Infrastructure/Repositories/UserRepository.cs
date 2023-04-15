@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -260,6 +261,11 @@ namespace Infrastructure.Repositories
                     await _roleStore.CreateAsync(roleDb, CancellationToken.None);
                 }
             }
+        }
+
+        public async Task<List<User>> GetUsers()
+        {
+            return await _userManager.Users.ToListAsync();
         }
     }
 }
