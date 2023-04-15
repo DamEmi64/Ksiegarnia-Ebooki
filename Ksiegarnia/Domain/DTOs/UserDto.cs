@@ -42,6 +42,14 @@ namespace Domain.DTOs
 
     public static class UserConvert
     {
+        public static IEnumerable<UserDto> ToDTOs(this List<User> users)
+        {
+            foreach ( var user in users)
+            {
+                yield return user.ToDTO();
+            }
+        }
+
         public static UserDto ToDTO ( this User  user)
         {
             return new UserDto()

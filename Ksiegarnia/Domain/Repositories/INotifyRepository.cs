@@ -5,6 +5,7 @@ namespace Domain.Repositories
 {
     public interface INotifyRepository
     {
+        Task<List<Notification>> GetAll();
         Task Add(Notification notification);
         Task Remove(Guid notificationId);
         Task ChangeStatus(Guid notificationId, NotificationStatus status);

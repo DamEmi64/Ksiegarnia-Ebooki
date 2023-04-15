@@ -1,4 +1,5 @@
-﻿using Domain.Entitites;
+﻿using Domain.DTOs;
+using Domain.Entitites;
 using Domain.Enums;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
@@ -17,16 +18,18 @@ namespace Application.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly INotifyRepository _notifyRepository;
+        private readonly IEBookRepository _eBookRepository;
 
         /// <summary>
         ///     Constructor
         /// </summary>
 
         /// <param name="userRepository"></param>
-        public AdminController(IUserRepository userRepository, INotifyRepository notifyRepository)
+        public AdminController(IUserRepository userRepository, INotifyRepository notifyRepository, IEBookRepository eBookRepository)
         {
             _userRepository = userRepository;
             _notifyRepository = notifyRepository;
+            _eBookRepository = eBookRepository;
         }
 
         /// <summary>
@@ -51,12 +54,23 @@ namespace Application.Controllers
         }
 
         /// <summary>
+        ///     Get Notifications 
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Notification")]
+        public async Task<List<Notification>> GetNotifications()
+        {
+            return await _notifyRepository.GetAll();
+        }
+
+        /// <summary>
         ///     Get notification 
         /// </summary>
         /// <param name="id">Notification id</param>
         /// <returns></returns>
         [HttpGet("Notification/{id}")]
-        public async Task<Notification> Notify(Guid id)
+        public async Task<Notification> GetNotify(Guid id)
         {
             var notify =  await _notifyRepository.Get(id);
 
@@ -113,6 +127,50 @@ namespace Application.Controllers
             await _notifyRepository.SaveChanges();
 
             return HttpStatusCode.OK;
+        }
+
+
+        /// <summary>
+        ///     Block Book  (ADMIN)
+        /// </summary>
+        /// <param name="id">Book id</param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Ebook/{id}/block")]
+        public async Task<HttpStatusCode> BlockBook(Guid id)
+        {
+            var book = await _eBookRepository.Get(id);
+
+            if (book == null)
+            {
+                throw new BookNotFoundException(id.ToString());
+            }
+
+            book.Verified = false;
+
+            await _eBookRepository.SaveChanges();
+
+            return HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        ///     Get all Users (ADMIN)
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <param name="role">user snew role</param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("User")]
+        public async Task<List<UserDto>> GetUsers()
+        {
+            var users = await _userRepository.GetUsers();
+
+            if (users != null)
+            {
+                return users.ToDTOs().ToList();
+            }
+
+            return new List<UserDto>() { };
         }
 
         /// <summary>

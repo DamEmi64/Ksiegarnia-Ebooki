@@ -7,6 +7,7 @@ namespace Domain.Repositories
 {
     public interface IUserRepository
     {
+        Task<List<User>> GetUsers();
 
         Task<User> Get(ClaimsPrincipal claimsPrincipal);
 
