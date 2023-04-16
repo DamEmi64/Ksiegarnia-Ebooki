@@ -9,7 +9,7 @@ class EbookService {
     search(ebookSearchCriteria?: EbookSearchCriteria, sort?: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/search`, {
             params: {
-                ebookSearchCriteria,
+                ...ebookSearchCriteria,
                 sort,
                 page,
                 pageSize
