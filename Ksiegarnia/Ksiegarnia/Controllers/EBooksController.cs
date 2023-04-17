@@ -321,6 +321,8 @@ namespace Application.Controllers
                 {
                     await _bookRepository.Remove(book.Id);
 
+                    await _bookRepository.SaveChanges();
+
                     return HttpStatusCode.OK;
                 }
             }
