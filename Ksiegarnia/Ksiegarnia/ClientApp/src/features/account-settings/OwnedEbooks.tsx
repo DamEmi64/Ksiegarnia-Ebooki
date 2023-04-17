@@ -18,19 +18,14 @@ import BasicEbookView from "../../components/BasicEbookView";
 import useScrollPosition from "../../components/useScrollPosition";
 import SelectPageSize from "../../components/SelectPageSize";
 
-interface Pagination{
-    page: number,
-    pageSize: number,
-    numberOfPages: number
-}
-
 const OwnedEbooks = () => {
   const userContext = useContext(UserContext);
 
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
   const page = useRef<number>(1)
-  const pageSize = useRef<number>(12)
+  const [pageSize, setPageSize] = useState<number>(12);
+  const actualPageSize = useRef<number>(12);
   const numberOfPages = useRef<number>(0)
 
   useEffect(() => {
@@ -38,7 +33,7 @@ const OwnedEbooks = () => {
   }, []);
 
   const handleSearch = () => {
-    EbookService.search({phrase: "E"}, undefined, page.current, pageSize.current)
+    EbookService.search({phrase: "E"}, undefined, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -49,8 +44,9 @@ const OwnedEbooks = () => {
 
   const handleSelectPageSize = (newPageSize: number) => {
     page.current = 1
-    pageSize.current = newPageSize
-    EbookService.search({phrase: "E"}, undefined, page.current, pageSize.current)
+    actualPageSize.current = newPageSize
+    setPageSize(newPageSize)
+    EbookService.search({phrase: "E"}, undefined, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -92,7 +88,7 @@ const OwnedEbooks = () => {
           />
         </Grid>
         <Grid item xs={3} container direction="row" alignItems="center">
-          <SelectPageSize pageSize={pageSize.current} handleSetPageSize={handleSelectPageSize}/>
+          <SelectPageSize pageSize={pageSize} handleSetPageSize={handleSelectPageSize}/>
         </Grid>
       </Grid>
       <Grid item container rowGap={6}>

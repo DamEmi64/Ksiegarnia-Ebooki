@@ -27,7 +27,7 @@ import {
   UserContextType,
   UserProps,
 } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const AccountMenu = () => {
   const userContext = React.useContext(UserContext);
@@ -117,7 +117,10 @@ const Header = () => {
                 </Button>
               </React.Fragment>
             ) : (
-              <AccountMenu />
+              <React.Fragment>
+                <AccountMenu />
+                <Button className="premium-button" variant="contained" href="account-settings/premium">Premium</Button>
+              </React.Fragment>
             )}
             <AccountMenu />
             <IconButton>

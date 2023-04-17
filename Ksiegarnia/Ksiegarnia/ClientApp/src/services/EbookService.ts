@@ -25,6 +25,10 @@ class EbookService {
             }
         })
     }
+
+    delete(ebookId: string){
+        return axios.delete(`${this.api}/${ebookId}`)
+    }
 }
 
 export default new EbookService()

@@ -16,7 +16,7 @@ import SearchEbooks from './pages/SearchEbooks';
 import UserProvider, { UserContext, UserContextType, UserProps } from './context/UserContext';
 import AccountSettings from './pages/AccountSettings';
 import AccountDetails from './features/account-settings/account-details/AccountDetails';
-import AuthorsPanel from './features/account-settings/AuthorsPanel';
+import AuthorsPanel from './features/account-settings/authors-panel/AuthorsPanel';
 import OwnedEbooks from './features/account-settings/OwnedEbooks';
 import TransactionsHistory from './features/account-settings/TransactionsHistory';
 import PremiumAccount from './features/account-settings/PremiumAccount';
@@ -32,7 +32,10 @@ const theme = createTheme({
     },
     info: {
       main: '#87CEEB'
-    }
+    },
+    success: {
+      main: '#10CE00'
+    },
   },
   typography: {
     fontSize: 13,
@@ -68,7 +71,7 @@ function App() {
                       <Route index path="/" element={<Home/>}/>
                       <Route path="/login" element={<Login/>}/>
                       <Route path="/register" element={<Register/>}/>
-                      <Route path="/Ebooki" element={<SearchEbooks/>}/>
+                      <Route path="/ebooks" element={<SearchEbooks/>}/>
                       <Route path="/account-settings" element={<AccountSettings/>}>
                         <Route index element={<AccountDetails/>}/>
                         <Route path="details" element={<AccountDetails/>}/>
@@ -77,6 +80,7 @@ function App() {
                         <Route path="transactions" element={<TransactionsHistory/>}/>
                         <Route path="premium" element={<PremiumAccount/>}/>
                       </Route>
+                      <Route path="/ebook/:id/edit" element={<NotFound/>}/>
                       <Route path="*" element={<NotFound/>}/>
                     </Routes>
                   </Content>
