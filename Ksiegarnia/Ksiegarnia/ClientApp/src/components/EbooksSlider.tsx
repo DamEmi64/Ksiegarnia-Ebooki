@@ -1,7 +1,7 @@
 ﻿import { Grid, IconButton, Paper, Typography } from "@mui/material";
 import Ebook from "../models/api/ebook";
 import BasicEbookView from "./BasicEbookView";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import EbookService from "../services/EbookService";
 import { EbookSortOptions } from "../models/ebookSortOptions";
@@ -42,36 +42,38 @@ const EbooksSlider = (props: {
     }
   }, [page]);
 
+  if(ebooks.length == 0){
+    return <React.Fragment></React.Fragment>
+  }
+
   return (
     <Grid item container direction="column" rowGap={8}>
       <Typography variant="h4" textAlign="center">
         {props.title}
       </Typography>
-      {ebooks.length > 0 && (
-        <Grid item container justifyContent="center" columnGap={2.5}>
-          {page > 1 && (
-            <Grid item alignSelf="start" marginTop={12}>
-              <IconButton onClick={() => setPage(page - 1)}>
-                <ChevronLeft fontSize="large" />
-              </IconButton>
+      <Grid item container justifyContent="center" columnGap={2.5}>
+        {page > 1 && (
+          <Grid item alignSelf="start" marginTop={12}>
+            <IconButton onClick={() => setPage(page - 1)}>
+              <ChevronLeft fontSize="large" />
+            </IconButton>
+          </Grid>
+        )}
+        {ebooks
+          .map((ebook: Ebook) => (
+            <Grid key={ebook.id} item xs={2}>
+              <BasicEbookView ebook={ebook} showAddToCart={true}/>
             </Grid>
-          )}
-          {ebooks
-            .map((ebook: Ebook) => (
-              <Grid key={ebook.id} item xs={2}>
-                <BasicEbookView ebook={ebook} showAddToCart={true}/>
-              </Grid>
-            ))
-          }
-          {page < numberOfPages && (
-            <Grid item alignSelf="start" marginTop={12}>
-              <IconButton onClick={() => setPage(page + 1)}>
-                <ChevronRight fontSize="large" />
-              </IconButton>
-            </Grid>
-          )}
-        </Grid>
-      )}
+          ))
+        }
+        {page < numberOfPages && (
+          <Grid item alignSelf="start" marginTop={12}>
+            <IconButton onClick={() => setPage(page + 1)}>
+              <ChevronRight fontSize="large" />
+            </IconButton>
+          </Grid>
+        )}
+      </Grid>
     </Grid>
   );
 };

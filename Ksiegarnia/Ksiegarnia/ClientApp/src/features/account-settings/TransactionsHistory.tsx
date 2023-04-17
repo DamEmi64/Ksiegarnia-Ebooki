@@ -85,7 +85,7 @@ const TransactionsHistory = () => {
     TransactionService.getUserTransactions("1").then((response) => {
       //setTransactions(response.data)
     });
-    EbookService.search({}, undefined, 0, 6)
+    EbookService.search({phrase: "E"}, undefined, 0, 6)
     .then((response) => {
       setEbooks(response.data.result)
     })

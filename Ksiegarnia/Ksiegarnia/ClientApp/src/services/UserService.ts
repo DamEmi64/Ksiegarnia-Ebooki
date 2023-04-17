@@ -38,6 +38,10 @@ class UserService {
     update(userId: string, request: UpdateRequest){
         return axios.put(`${this.api}/${userId}`, request)
     }
+
+    getOwnedEbooks(userId: string){
+        return axios.get(`${this.api}/${userId}/ebooks`)
+    }
 }
 
 export default new UserService()

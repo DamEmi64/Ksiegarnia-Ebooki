@@ -33,3 +33,19 @@ img{
 .links-panel > a:hover{
   color: #EB4B36;
 }
+
+.premium-button{
+  background-color: #FFE176 !important;
+  color: black !important;
+  border-radius: 24px !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.success{
+  color: #10CE00;
+}
+
+.error{
+  color: #FF0000;
+}

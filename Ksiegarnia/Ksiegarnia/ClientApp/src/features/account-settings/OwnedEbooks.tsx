@@ -16,14 +16,7 @@ import Ebook from "../../models/api/ebook";
 import EbookService from "../../services/EbookService";
 import BasicEbookView from "../../components/BasicEbookView";
 import useScrollPosition from "../../components/useScrollPosition";
-
-interface Pagination{
-    page: number,
-    pageSize: number,
-    numberOfPages: number
-}
-
-const pageSizes: number[] = [12, 20, 40, 80, 100];
+import SelectPageSize from "../../components/SelectPageSize";
 
 const OwnedEbooks = () => {
   const userContext = useContext(UserContext);
@@ -31,8 +24,8 @@ const OwnedEbooks = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
   const page = useRef<number>(1)
-  const [pageSize, setPageSize] = useState<number>(12)
-  const actualPageSize = useRef<number>(12)
+  const [pageSize, setPageSize] = useState<number>(12);
+  const actualPageSize = useRef<number>(12);
   const numberOfPages = useRef<number>(0)
 
   useEffect(() => {
@@ -40,7 +33,7 @@ const OwnedEbooks = () => {
   }, []);
 
   const handleSearch = () => {
-    EbookService.search({}, undefined, page.current, actualPageSize.current)
+    EbookService.search({phrase: "E"}, undefined, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -49,11 +42,11 @@ const OwnedEbooks = () => {
     });
   }
 
-  const handleChangeSize = (event: SelectChangeEvent) => {
+  const handleSelectPageSize = (newPageSize: number) => {
     page.current = 1
-    actualPageSize.current = +event.target.value
-    setPageSize(actualPageSize.current)
-    EbookService.search({}, undefined, page.current, actualPageSize.current)
+    actualPageSize.current = newPageSize
+    setPageSize(newPageSize)
+    EbookService.search({phrase: "E"}, undefined, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -80,7 +73,7 @@ const OwnedEbooks = () => {
       rowGap={6}
       marginTop={-2}
     >
-      <Grid item container direction="row" marginBottom={2}>
+      <Grid item container direction="row" justifyContent="space-between" marginBottom={2}>
         <Grid item xs={8}>
           <TextField
             fullWidth
@@ -94,23 +87,8 @@ const OwnedEbooks = () => {
             }}
           />
         </Grid>
-        <Grid item xs={4} container direction="row" alignItems="center">
-          <Grid item xs={6} container justifyContent="center">
-            <Typography variant="h6" display="inline" textAlign="center">
-              Pokaż na stronie:
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <Select value={pageSize.toString()} onChange={handleChangeSize}>
-                {pageSizes.map((size: number) => (
-                  <MenuItem key={size} value={size}>
-                    {size}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
+        <Grid item xs={3} container direction="row" alignItems="center">
+          <SelectPageSize pageSize={pageSize} handleSetPageSize={handleSelectPageSize}/>
         </Grid>
       </Grid>
       <Grid item container rowGap={6}>
