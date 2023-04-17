@@ -321,6 +321,8 @@ namespace Application.Controllers
                 {
                     await _bookRepository.Remove(book.Id);
 
+                    await _bookRepository.SaveChanges();
+
                     return HttpStatusCode.OK;
                 }
             }
@@ -338,6 +340,7 @@ namespace Application.Controllers
         public async Task<HttpStatusCode> Verify(Guid id, [FromQuery] string verifyName)
         {
             await _bookRepository.Verify(id, verifyName);
+            await _bookRepository.SaveChanges();
             return HttpStatusCode.OK;
         }
     }
