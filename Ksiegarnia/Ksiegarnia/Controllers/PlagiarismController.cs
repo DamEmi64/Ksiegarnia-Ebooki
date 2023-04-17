@@ -36,7 +36,7 @@ namespace Application.Controllers
         /// <returns></returns>
 
         [HttpPost]
-        [Route("/submit")]
+        [Route("submit")]
         public async Task<IActionResult> Submit([FromBody] PlagiarismDto content)
         {
             await _copyLeaksService.Submit(content);
@@ -49,7 +49,7 @@ namespace Application.Controllers
         /// <param name="scanId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("/{scanId}/checkResult")]
+        [Route("{scanId}/checkResult")]
         public CopyLeaksResultResponse CheckResult(string scanId)
         {
             return _copyLeaksService.GetResult(scanId);
@@ -62,7 +62,7 @@ namespace Application.Controllers
         /// <param name="scanResults">The scan results</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("/{scanId}/completed")]
+        [Route("{scanId}/completed")]
         public async Task<IActionResult> CompletedProcess(string scanId, [FromBody] CompletedCallback scanResults)
         {
             // Do something with the scan results
