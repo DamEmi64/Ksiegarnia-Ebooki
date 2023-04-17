@@ -51,9 +51,11 @@ namespace Application.Controllers
         ///     Get user ebooks by id
         /// </summary>
         /// <param name="id">id</param>
+        /// <param name="page">page</param>
+        /// <param name="pageSize">page size</param>
         /// <returns></returns>
         [HttpGet("{id}/ebooks")]
-        public async Task<List<BookDto>> Ebooks(string id)
+        public async Task<object> Ebooks(string id, [FromQuery] int page = 1, [FromQuery] int pageSize = 100)
         {
             var user = await _userRepository.Get(id);
 
@@ -70,7 +72,71 @@ namespace Application.Controllers
 
             }
 
-            return list;
+            if (page <= 0)
+            {
+                page = 0;
+            }
+            else
+            {
+                page--;
+            }
+
+            var count = list.Count() - page * pageSize;
+
+            if (count > pageSize)
+            {
+                return new { all = list.Count, page = page + 1, number_of_pages = list.Count / pageSize + 1, result = list.GetRange(page * pageSize, pageSize) };
+            }
+            else
+            {
+                return new { all = list.Count, page = page + 1, number_of_pages = list.Count / pageSize + 1, result = list.GetRange(page * pageSize, count) };
+            }
+        }
+
+        /// <summary>
+        ///     Get user publications by id
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="page">page</param>
+        /// <param name="pageSize">page size</param>
+        /// <returns></returns>
+        [HttpGet("{id}/publications")]
+        public async Task<object> Publications(string id, [FromQuery] int page = 1, [FromQuery] int pageSize = 100)
+        {
+            var user = await _userRepository.Get(id);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(id);
+            }
+
+            var list = new List<BookDto>();
+
+            foreach (var book in user.Publications)
+            {
+                list.Add(book?.ToDTO());
+
+            }
+
+            if (page <= 0)
+            {
+                page = 0;
+            }
+            else
+            {
+                page--;
+            }
+
+            var count = list.Count() - page * pageSize;
+
+            if (count > pageSize)
+            {
+                return new { all = list.Count, page = page + 1, number_of_pages = list.Count / pageSize + 1, result = list.GetRange(page * pageSize, pageSize) };
+            }
+            else
+            {
+                return new { all = list.Count, page = page + 1, number_of_pages = list.Count / pageSize + 1, result = list.GetRange(page * pageSize, count) };
+            }
         }
 
         /// <summary>

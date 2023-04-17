@@ -61,7 +61,7 @@ namespace Application.Controllers
 
             if (!string.IsNullOrEmpty(phrase))
             {
-                books = books.Where(x => x.Title.Contains(phrase)).ToList();
+                books = books.Where(x => x.Title.Contains(phrase) || x.Author.Nick.Contains(phrase)).ToList();
             }
 
             if (onlyOnPromotion)
