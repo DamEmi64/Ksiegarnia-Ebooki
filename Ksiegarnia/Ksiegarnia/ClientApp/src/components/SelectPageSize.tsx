@@ -16,12 +16,10 @@ const SelectPageSize = (props: {
 }) => {
   const [pageSize, setPageSize] = useState<number>(props.pageSize);
 
-  useEffect(() => {
-    setPageSize(props.pageSize);
-  }, [props.pageSize]);
-
   const handleChangeSize = (event: SelectChangeEvent) => {
-    props.handleSetPageSize(+event.target.value);
+    const newPageSize: number = +event.target.value
+    setPageSize(newPageSize)
+    props.handleSetPageSize(newPageSize);
   };
 
   return (
