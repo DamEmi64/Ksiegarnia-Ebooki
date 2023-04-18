@@ -1,16 +1,14 @@
-﻿import { Button, Grid, IconButton, Typography } from "@mui/material";
+﻿import { Button, Grid, Typography } from "@mui/material";
 import CategoriesContent from "../../../layouts/CategoriesContent";
-import { useState } from "react";
-import Ebook from "../../../models/api/ebook";
-import { AddAPhoto } from "@mui/icons-material";
 import Image from "../../../components/Image";
 import ChoosePicture from "../../../components/ChoosePicture";
 import Genre from "../../../models/api/genre";
 import BasicTextField from "../../../components/BasicTextField";
 import ChooseFile from "../../../components/ChooseFile";
 import SelectEbookGenre from "../../../components/SelectEbookGenre";
+import FormService from "../../../services/FormService";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import EbookService, { CreateEbookProps } from "../../../services/EbookService";
 
 interface FormProps {
   title?: string;
@@ -22,24 +20,105 @@ interface FormProps {
   prize?: number;
 }
 
+interface FormErrors {
+  title: string;
+  genre: string;
+  description: string;
+  pageNumber: string;
+  content: string;
+  prize: string;
+}
+
+const initErrors: FormErrors = {
+  title: "",
+  genre: "",
+  description: "",
+  pageNumber: "",
+  content: "",
+  prize: "",
+};
+
 const CreateEbook = () => {
+  const CREATED_SUCCESSFULY_MESSAGE = "Utworzono ebooka";
+
   const [form, setForm] = useState<FormProps>({});
+
+  const [errors, setErrors] = useState<FormErrors>(initErrors);
 
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    let newErrors: FormErrors = { ...initErrors };
+
+    let passedValidation = true;
+
+    if (!FormService.checkIfIsRequired(form.title)) {
+      passedValidation = false;
+      newErrors.title = FormService.requiredMessage;
+    }
+
+    if (!form.genre) {
+      passedValidation = false;
+      newErrors.genre = FormService.requiredMessage;
+    }
+
+    if (!FormService.checkIfIsRequired(form.description)) {
+      passedValidation = false;
+      newErrors.description = FormService.requiredMessage;
+    }
+
+    if (
+      !FormService.checkIfIsRequired(
+        form.pageNumber ? form.pageNumber.toString() : undefined
+      )
+    ) {
+      passedValidation = false;
+      newErrors.pageNumber = FormService.requiredMessage;
+    }
+
+    if (!FormService.checkIfIsRequired(form.content)) {
+      passedValidation = false;
+      newErrors.content = FormService.requiredMessage;
+    }
+
+    if (
+      !FormService.checkIfIsRequired(
+        form.prize ? form.prize.toString() : undefined
+      )
+    ) {
+      passedValidation = false;
+      newErrors.prize = FormService.requiredMessage;
+    }
+
+    setErrors(newErrors);
+
+    return passedValidation;
+  };
+
   const handleCreate = () => {
+    if (!validateForm()) {
+      return;
+    }
+
     /*EbookService.create({...form})
     .then(() => {
         navigate("../account-settings/authors-panel")
     })*/
-    navigate("../account-settings/authors-panel")
-  }
+    navigate("../account-settings/authors-panel");
+  };
 
   return (
     <CategoriesContent>
-      <Grid item container direction="column" rowGap={4}>
+      <Grid item container direction="column" rowGap={3}>
         <Grid item container columnGap={6}>
-          <Grid item xs={3} container justifyContent="center" rowGap={1}>
+          <Grid
+            item
+            xs={3}
+            container
+            direction="column"
+            alignItems="center"
+            rowGap={2}
+          >
             <Grid
               item
               container
@@ -71,28 +150,33 @@ const CreateEbook = () => {
               label="Tytuł"
               value={form.title}
               isRequired={true}
-              handleChange={(value: string) =>
-                setForm({ ...form, title: value })
-              }
+              errorMessage={errors.title}
+              handleChange={(value: string) => {
+                setForm({ ...form, title: value });
+                setErrors({ ...errors, title: "" });
+              }}
               disableSpaceBetween={true}
               fullWidth={true}
               formSize={10}
             />
             <ChooseFile
               label="Plik z ebookiem"
-              file={form.content}
               isRequired={true}
+              errorMessage={errors.content}
               handleSelectFile={(file: string) => {
                 setForm({ ...form, content: file });
+                setErrors({ ...errors, content: "" });
               }}
             />
             <SelectEbookGenre
               label="Kategoria"
               selectedGenreId={form.genre?.id}
               isRequired={true}
+              errorMessage={errors.genre}
               formSize={6}
               handleOnChange={(genre: Genre) => {
                 setForm({ ...form, genre: genre });
+                setErrors({ ...errors, genre: "" });
               }}
             />
             <BasicTextField
@@ -105,12 +189,14 @@ const CreateEbook = () => {
                 },
               }}
               isRequired={true}
-              handleChange={(value: string) =>
-                setForm({ ...form, pageNumber: +value })
-              }
+              errorMessage={errors.pageNumber}
+              handleChange={(value: string) => {
+                setForm({ ...form, pageNumber: +value });
+                setErrors({ ...errors, pageNumber: "" });
+              }}
               disableSpaceBetween={true}
               fullWidth={true}
-              formSize={3}
+              formSize={5}
             />
             <BasicTextField
               label="Cena"
@@ -122,12 +208,14 @@ const CreateEbook = () => {
                 },
               }}
               isRequired={true}
-              handleChange={(value: string) =>
-                setForm({ ...form, prize: +value })
-              }
+              errorMessage={errors.prize}
+              handleChange={(value: string) => {
+                setForm({ ...form, prize: +value });
+                setErrors({ ...errors, prize: "" });
+              }}
               disableSpaceBetween={true}
               fullWidth={true}
-              formSize={3}
+              formSize={5}
             />
           </Grid>
         </Grid>
@@ -140,9 +228,11 @@ const CreateEbook = () => {
               rows: 20,
             }}
             isRequired={true}
-            handleChange={(value: string) =>
-              setForm({ ...form, description: value })
-            }
+            errorMessage={errors.description}
+            handleChange={(value: string) => {
+              setForm({ ...form, description: value });
+              setErrors({ ...errors, description: "" });
+            }}
             disableSpaceBetween={true}
             fullWidth={true}
             formSize={12}
@@ -160,11 +250,7 @@ const CreateEbook = () => {
             </Button>
           </Grid>
           <Grid item xs={1}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={handleCreate}
-            >
+            <Button fullWidth variant="contained" onClick={handleCreate}>
               Utwórz
             </Button>
           </Grid>
