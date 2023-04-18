@@ -3,8 +3,8 @@
     public requiredMessage: string = "Pole nie może być puste"
     public invalidFormatMessage: string = "Niepoprawny format"
 
-    checkIfIsRequired(input: string){
-        return input !== ""
+    checkIfIsRequired(input?: string){
+        return input && input !== ""
     }
 
     checkIfIsEmail(input: string){

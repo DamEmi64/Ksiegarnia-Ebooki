@@ -73,6 +73,8 @@ const PremiumAccountOrder = (props: { premiumHistory: PremiumHistory }) => {
 const PremiumAccount = () => {
   const [isPremiumAccount, setIsPremiumAccount] = useState<boolean>(false);
 
+  const [isVisibleBuyPremium, setIsVisibleBuyPremium] = useState<boolean>(false)
+
   const BenefitInfo = (props: { benefit: string }) => {
     return (
       <Grid item xs={5} container alignItems="center">

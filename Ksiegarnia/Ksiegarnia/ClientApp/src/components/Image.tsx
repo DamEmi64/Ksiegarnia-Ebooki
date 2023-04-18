@@ -11,7 +11,6 @@ const Image = (props: {
   className?: string;
   style?: any;
 }) => {
-  console.log(!props.src.startsWith(srcBeginning))
   return (
     <img
       className={props.className}

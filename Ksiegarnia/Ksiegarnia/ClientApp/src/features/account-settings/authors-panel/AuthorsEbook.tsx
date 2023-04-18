@@ -22,7 +22,6 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
     EbookService.delete(ebook.id)
     .then(() => {
         props.update()
-        console.log("A")
     })
     .catch((error) => {
 
