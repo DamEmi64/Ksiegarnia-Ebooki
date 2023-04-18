@@ -20,6 +20,8 @@ import AuthorsPanel from './features/account-settings/authors-panel/AuthorsPanel
 import OwnedEbooks from './features/account-settings/OwnedEbooks';
 import TransactionsHistory from './features/account-settings/TransactionsHistory';
 import PremiumAccount from './features/account-settings/PremiumAccount';
+import EditEbook from './features/account-settings/authors-panel/EditEbook';
+import CreateEbook from './features/account-settings/authors-panel/CreateEbook';
 
 const theme = createTheme({
   palette: {
@@ -80,7 +82,8 @@ function App() {
                         <Route path="transactions" element={<TransactionsHistory/>}/>
                         <Route path="premium" element={<PremiumAccount/>}/>
                       </Route>
-                      <Route path="/ebook/:id/edit" element={<NotFound/>}/>
+                      <Route path="/ebook/create" element={<CreateEbook/>}/>
+                      <Route path="/ebook/:id/edit" element={<EditEbook/>}/>
                       <Route path="*" element={<NotFound/>}/>
                     </Routes>
                   </Content>

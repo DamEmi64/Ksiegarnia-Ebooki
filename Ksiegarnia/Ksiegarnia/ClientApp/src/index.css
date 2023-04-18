@@ -49,3 +49,11 @@ img{
 .error{
   color: #FF0000;
 }
+
+.show-on-hover{
+  opacity: 0;
+}
+
+.show-on-hover:hover{
+  opacity: 1;
+}

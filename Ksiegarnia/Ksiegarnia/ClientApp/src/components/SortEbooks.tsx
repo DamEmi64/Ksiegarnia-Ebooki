@@ -68,12 +68,10 @@ const SortEbooks = (props: {
 }) => {
   const [sortValue, setSortValue] = useState<string>(props.sortValue);
 
-  useEffect(() => {
-    setSortValue(props.sortValue);
-  }, [props.sortValue]);
-
   const handleChangeSize = (event: SelectChangeEvent) => {
-    props.handleSetSort(event.target.value);
+    const newSortValue: string = event.target.value
+    setSortValue(newSortValue);
+    props.handleSetSort(newSortValue);
   };
 
   return (

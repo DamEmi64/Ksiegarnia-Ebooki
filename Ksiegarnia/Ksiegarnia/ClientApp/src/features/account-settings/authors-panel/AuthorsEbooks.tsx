@@ -7,6 +7,7 @@ import { Search } from "@mui/icons-material";
 import AuthorsEbook from "./AuthorsEbook";
 import EbookService from "../../../services/EbookService";
 import useScrollPosition from "../../../components/useScrollPosition";
+import { useNavigate } from "react-router-dom";
 
 const AuthorsEbooks = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
@@ -19,6 +20,8 @@ const AuthorsEbooks = () => {
 
   const [sort, setSort] = useState<string | undefined>(undefined);
   const actualSort = useRef<string | undefined>(undefined);
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     handleSearch()
@@ -89,6 +92,7 @@ const AuthorsEbooks = () => {
             <Button
               variant="contained"
               style={{ padding: "8px 24px", borderRadius: "12px" }}
+              onClick={() => navigate('/ebook/create')}
             >
               Dodaj ebooka
             </Button>
