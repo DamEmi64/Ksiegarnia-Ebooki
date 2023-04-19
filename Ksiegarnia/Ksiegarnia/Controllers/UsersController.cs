@@ -232,13 +232,9 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="LoginFailedException">when login fail...</exception>
         [HttpPost("logout")]
-        public async Task<HttpStatusCode> Logout([FromBody] LoginDto data)
+        public async Task<HttpStatusCode> Logout()
         {
-            var user = await _userRepository.Login(data.Email, data.Password);
-            if (user == null)
-            {
-                throw new LoginFailedException();
-            }
+            await _userRepository.Logout();
 
             return HttpStatusCode.OK;
         }
