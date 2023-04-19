@@ -19,7 +19,7 @@ import AccountDetails from './features/account-settings/account-details/AccountD
 import AuthorsPanel from './features/account-settings/authors-panel/AuthorsPanel';
 import OwnedEbooks from './features/account-settings/OwnedEbooks';
 import TransactionsHistory from './features/account-settings/TransactionsHistory';
-import PremiumAccount from './features/premium-account/PremiumAccount';
+import PremiumAccount from './features/account-settings/premium-account/PremiumAccount';
 import EditEbook from './features/account-settings/authors-panel/EditEbook';
 import CreateEbook from './features/account-settings/authors-panel/CreateEbook';
 
