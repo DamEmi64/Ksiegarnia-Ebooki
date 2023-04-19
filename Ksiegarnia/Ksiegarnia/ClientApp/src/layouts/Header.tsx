@@ -64,7 +64,11 @@ const AccountMenu = () => {
         </Typography>
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-        <MenuItem onClick={handleAccountSettings}>Panel użytkownika</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Dane konta</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Zakupione e-booki</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Historia zamówień</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Panel twórcy</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Konto premum</MenuItem>
         <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
       </Menu>
     </React.Fragment>
