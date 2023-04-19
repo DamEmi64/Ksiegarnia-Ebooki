@@ -19,14 +19,16 @@ namespace Application.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthService _authService;
+        private readonly IHostEnvironment _environment;
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="userRepository"></param>
-        public UsersController(IUserRepository userRepository, IAuthService authService)
+        public UsersController(IUserRepository userRepository, IAuthService authService, IHostEnvironment environment)
         {
             _userRepository = userRepository;
             _authService = authService;
+            _environment = environment;
         }
 
         /// <summary>
@@ -153,7 +155,10 @@ namespace Application.Controllers
                 var user = await _userRepository.Register(data, data.Password);
                 var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
                 var callbackUrl = Url.Action("EmailConfirm", values: new { id = user.Id, token = token });
-                _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
+                if (!_environment.IsDevelopment())
+                {
+                    _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
+                }
 
             }
             catch (Exception)
@@ -173,7 +178,6 @@ namespace Application.Controllers
         [HttpPut("{id}")]
         public async Task<HttpStatusCode> Update([FromBody] RegisterDto data, string id)
         {
-
             var user = await _userRepository.Get(id);
 
             if (user == null)
@@ -192,6 +196,17 @@ namespace Application.Controllers
         }
 
         /// <summary>
+        ///     Get current user
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="RegisterFailedException">when register fail...</exception>
+        [HttpGet("")]
+        public async Task<UserDto?> GetCurrentUser()
+        {
+            return (await _userRepository.GetByNick(User?.Identity?.Name ?? string.Empty))?.ToDTO() ?? null;
+        }
+
+        /// <summary>
         ///     Login
         /// </summary>
         /// <param name="data">Login data</param>
@@ -207,6 +222,25 @@ namespace Application.Controllers
             }
 
             return user.ToDTO();
+        }
+
+
+        /// <summary>
+        ///     Login
+        /// </summary>
+        /// <param name="data">Login data</param>
+        /// <returns></returns>
+        /// <exception cref="LoginFailedException">when login fail...</exception>
+        [HttpPost("logout")]
+        public async Task<HttpStatusCode> Logout([FromBody] LoginDto data)
+        {
+            var user = await _userRepository.Login(data.Email, data.Password);
+            if (user == null)
+            {
+                throw new LoginFailedException();
+            }
+
+            return HttpStatusCode.OK;
         }
 
         /// <summary>

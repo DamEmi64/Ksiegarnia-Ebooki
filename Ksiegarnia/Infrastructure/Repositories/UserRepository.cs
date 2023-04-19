@@ -7,13 +7,9 @@ using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
 
 namespace Infrastructure.Repositories
 {
@@ -72,7 +68,7 @@ namespace Infrastructure.Repositories
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
             var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
-           
+
             return result.Succeeded;
         }
 
@@ -111,7 +107,7 @@ namespace Infrastructure.Repositories
                 throw new Exception("User not found");
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: true);
+            var result = await _signInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 return user;
@@ -123,6 +119,11 @@ namespace Infrastructure.Repositories
             }
 
             throw new Exception("Login Failed");
+        }
+
+        public async Task Logout()
+        {
+            await _signInManager.SignOutAsync();
         }
 
         public async Task<SendTokenDto> Register(RegisterDto userData, string password)
@@ -243,7 +244,7 @@ namespace Infrastructure.Repositories
 
         public async Task Update(User user)
         {
-           await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
         }
 
         private async Task CreateRolesIfNotExists()
@@ -266,6 +267,11 @@ namespace Infrastructure.Repositories
         public async Task<List<User>> GetUsers()
         {
             return await _userManager.Users.ToListAsync();
+        }
+
+        public async Task<User> GetByNick(string name)
+        {
+            return await _userStore.FindByNameAsync(name, CancellationToken.None);
         }
     }
 }

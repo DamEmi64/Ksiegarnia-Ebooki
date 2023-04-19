@@ -3,7 +3,6 @@ using Domain.Entitites;
 using Domain.Repositories;
 using System.Net;
 using Domain.DTOs;
-using Infrastructure.Services.Interfaces;
 using Domain.Enums;
 using Infrastructure.Exceptions;
 
@@ -47,7 +46,7 @@ namespace Application.Controllers
         /// <returns>List of books</returns>
         [HttpGet("search")]
         public async Task<object> Index([FromQuery] string? authorName = "",
-                                                [FromQuery] string phrase = "",
+                                                [FromQuery] string? phrase = "",
                                                 [FromQuery] string[]? genre = default,
                                                 [FromQuery] int[]? year = default,
                                                 [FromQuery] int pageSize = 100,
@@ -233,7 +232,6 @@ namespace Application.Controllers
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         /// <exception cref="BookHasThisContentException">When book with same content exist...</exception>
         [HttpPost("")]
-        [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Create([FromBody] CreateBookDto eBook)
         {
             if (ModelState.IsValid)
@@ -244,7 +242,7 @@ namespace Application.Controllers
                     throw new UserNotFoundException(eBook.Author.Id);
                 }
 
-                if (await _bookRepository.CheckIfExist(eBook.Content))
+                if (await _bookRepository.CheckIfExist(Convert.FromBase64String(eBook.Content)))
                 {
                     throw new BookHasThisContentException(eBook.Title);
                 }
@@ -260,14 +258,14 @@ namespace Application.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Author = author,
-                    Content = eBook.Content,
+                    Content = Convert.FromBase64String(eBook.Content),
                     Description = eBook.Description,
-                    PageNumber = eBook.PageNumber,
+                    PageNumber = eBook.PageNumber ?? 0,
                     Title = eBook.Title,
                     Date = DateTime.UtcNow,
-                    Picture = eBook.Picture,
+                    Picture = Convert.FromBase64String(eBook.Picture),
                     Genre = genre,
-                    Prize = eBook.Prize,
+                    Prize = eBook.Prize ?? 0,
                     Verified = false
                 };
                 await _bookRepository.Add(book);
@@ -284,8 +282,7 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpPut("{id}")]
-        [ValidateAntiForgeryToken]
-        public async Task<HttpStatusCode> Edit([FromBody] CreateBookDto eBook, Guid id)
+        public async Task<HttpStatusCode> Edit( CreateBookDto eBook, Guid id)
         {
             if (ModelState.IsValid)
             {
@@ -295,9 +292,22 @@ namespace Application.Controllers
                 {
                     throw new BookNotFoundException(id.ToString());
                 }
-                book.Content = eBook.Content;
-                book.Description = eBook.Description;
-                book.Title = eBook.Title;
+
+                if (eBook.Content != null)
+                {
+                    book.Content = Convert.FromBase64String(eBook.Content);
+                }
+
+                if (eBook.Description != null)
+                {
+                    book.Description = eBook.Description;
+                }
+
+                if (eBook.Title != null)
+                {
+                    book.Title = eBook.Title;
+                }
+
                 await _bookRepository.SaveChanges();
                 return HttpStatusCode.OK;
             }
