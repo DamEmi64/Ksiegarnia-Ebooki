@@ -1,7 +1,13 @@
 ﻿import { Close, Done } from "@mui/icons-material";
-import { Button, Grid, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import PremiumHistory from "../../models/api/premiumHistory";
+import PremiumAccountOrder from "./PremiumAccountOrder";
+import BuyPremiumDialog from "./BuyPremiumDialog";
 
 const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
@@ -42,38 +48,11 @@ const premiumHistories: PremiumHistory[] = [
   },
 ];
 
-const KeyValue = (props: { title: string; value: string }) => {
-  return (
-    <Typography variant="h5">
-      {props.title} {props.value}
-    </Typography>
-  );
-};
-
-const PremiumAccountOrder = (props: { premiumHistory: PremiumHistory }) => {
-  const premiumHistory: PremiumHistory = props.premiumHistory;
-
-  return (
-    <Grid
-      item
-      container
-      justifyContent="center"
-      border="1px solid #0A3F5C"
-      padding={4}
-      columnGap={1}
-    >
-      <KeyValue title="Premium " value={`${premiumHistory.type} msc,`} />
-      <KeyValue title="od dnia " value={`${premiumHistory.fromDate},`} />
-      <KeyValue title="do dnia " value={`${premiumHistory.toDate},`} />
-      <KeyValue title="koszt " value={`${premiumHistory.prize} zł`} />
-    </Grid>
-  );
-};
-
 const PremiumAccount = () => {
   const [isPremiumAccount, setIsPremiumAccount] = useState<boolean>(false);
 
-  const [isVisibleBuyPremium, setIsVisibleBuyPremium] = useState<boolean>(false)
+  const [isVisibleBuyPremium, setIsVisibleBuyPremium] =
+    useState<boolean>(false);
 
   const BenefitInfo = (props: { benefit: string }) => {
     return (
@@ -116,7 +95,7 @@ const PremiumAccount = () => {
             <Button
               className="premium-button"
               variant="contained"
-              onClick={() => setIsPremiumAccount(true)}
+              onClick={() => setIsVisibleBuyPremium(true)}
             >
               Zakup
             </Button>
@@ -158,6 +137,16 @@ const PremiumAccount = () => {
           ))}
         </Grid>
       </Grid>
+      <BuyPremiumDialog
+        open={isVisibleBuyPremium}
+        handleAccept={() => {
+          setIsPremiumAccount(true);
+          setIsVisibleBuyPremium(false)
+        }}
+        handleDecline={() => {
+          setIsVisibleBuyPremium(false);
+        }}
+      />
     </Grid>
   );
 };
