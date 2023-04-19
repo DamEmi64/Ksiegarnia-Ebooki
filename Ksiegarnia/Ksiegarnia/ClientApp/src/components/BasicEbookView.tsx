@@ -48,7 +48,7 @@ const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
       {props.showAddToCart && (
         <Button variant="contained" color="secondary">
           <ShoppingCartOutlined fontSize="large" style={{ color: "white" }} />
-          36,46 zł
+          {ebook.prize} zł
         </Button>
       )}
     </Grid>

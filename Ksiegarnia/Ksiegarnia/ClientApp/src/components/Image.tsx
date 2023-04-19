@@ -1,5 +1,8 @@
 ﻿import { useEffect } from "react";
 
+const srcBeginning: string = 'data'
+const srcBeginningPng: string = 'data:image/png;base64,'
+
 const Image = (props: {
   src: string;
   height?: number;
@@ -14,7 +17,7 @@ const Image = (props: {
       alt={props.alt}
       height={props.height}
       width={props.width}
-      src={`data:image/jpeg;base64,${props.src}`}
+      src={`${!props.src.startsWith(srcBeginning) ? srcBeginningPng : ""}${props.src}`}
       style={props.style}
     />
   );
