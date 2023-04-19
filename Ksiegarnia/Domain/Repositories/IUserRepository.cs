@@ -12,8 +12,12 @@ namespace Domain.Repositories
         Task<User> Get(ClaimsPrincipal claimsPrincipal);
 
         Task<User> Get(string id);
+
+        Task<User> GetByNick(string name);
         Task<SendTokenDto> Register(RegisterDto userData, string password);
         Task<User> Login(string email, string password);
+
+        Task Logout();
 
         Task ResetPassword(string id, string token, string newPassword);
 
