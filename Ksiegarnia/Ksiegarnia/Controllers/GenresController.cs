@@ -81,7 +81,6 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="GenreNotFoundException"></exception>
         [HttpPut("{id}")]
-        [ValidateAntiForgeryToken]
         public async Task<HttpStatusCode> Edit(Guid id, GenreDto genreDto)
         {
             var genre = await _genreRepository.Get(id);
