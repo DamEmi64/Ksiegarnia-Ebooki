@@ -12,12 +12,12 @@ namespace Domain.Entitites
         /// <summary>
         ///     Object id - what is about
         /// </summary>
-        public string ObjectId {get;set;}
+        public string ObjectId {get;set;} = string.Empty;
 
         /// <summary>
         ///     Description
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         ///     Creation date
@@ -32,5 +32,15 @@ namespace Domain.Entitites
         ///     Notification status
         /// </summary>
         public NotificationStatus Status { get; set; }
+
+        /// <summary>
+        ///     Creator
+        /// </summary>
+        public User User { get; set; }
+
+        /// <summary>
+        ///     Object Type
+        /// </summary>
+        public Type Type { get; set; } = typeof(Notification);
     }
 }

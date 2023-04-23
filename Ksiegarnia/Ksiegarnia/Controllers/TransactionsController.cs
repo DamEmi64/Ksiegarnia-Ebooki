@@ -94,12 +94,12 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action("Finish", values: new { id =transaction.Id, succeeded = false }) ?? string.Empty;
+                var cancel = Url.Action("Finish", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
                 var redirect = Url.Action("Finish", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
-                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1);
+                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1, false).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
                 {
@@ -130,10 +130,63 @@ namespace Application.Controllers
 
                 if (reader != null)
                 {
+                    var cancel = Url.Action(nameof(FinishSendingCashToUser), values: new { id = id, succeeded = false }) ?? string.Empty;
+                    var redirect = Url.Action(nameof(FinishSendingCashToUser), values: new { id = id, succeeded = true }) ?? string.Empty;
+
+                    var transactionDto = (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
+
+                    var urls = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1, true);
+
+                    foreach (var url in urls)
+                    {
+                        using (var client = new HttpClient())
+                        {
+                            var response = await client.SendAsync(new(HttpMethod.Get, url));
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                throw new DefaultException(HttpStatusCode.BadRequest, "Transaction failed - sending money to author");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new DefaultException(HttpStatusCode.BadRequest, "Transaction failed");
+                }
+
+                await _eBookReaderRepository.SaveChanges();
+            }
+
+            return HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        ///     Book buyed - redirect uri (cash to user)
+        /// </summary>
+        /// <param name="id">transaction id</param>
+        /// <param name="succeeded">transaction succeeded</param>
+        /// <returns>Status code</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
+        [HttpPost("FinishToUser/{id}")]
+        public async Task<HttpStatusCode> FinishSendingCashToUser(Guid id, [FromQuery] bool succeeded = false)
+        {
+            if (succeeded)
+            {
+                var reader = await _eBookReaderRepository.GetTransaction(id);
+
+                if (reader != null)
+                {
                     reader.Finished = true;
                 }
 
                 await _eBookReaderRepository.SaveChanges();
+            }
+            else
+            {
+                throw new DefaultException(HttpStatusCode.BadRequest, "Send cash to user failed.");
             }
 
             return HttpStatusCode.OK;
@@ -148,8 +201,8 @@ namespace Application.Controllers
         /// <returns></returns>
         [HttpGet("{id}/summary")]
         public object GetSummary(string id,
-                        [FromQuery] int page = 1,
-                        [FromQuery] int pageSize = 100)
+                    [FromQuery] int page = 1,
+                    [FromQuery] int pageSize = 100)
         {
             var buying = _eBookReaderRepository.GetTransactions(id).ToDTOs().ToList();
 

@@ -15,7 +15,7 @@ namespace Tests.Controllers.UserController
         public async Task Failed_LoginFailed()
         {
             var userRepo = new Mock<IUserRepository>();
-            var authService = new Mock<IAuthService>();
+            var authService = new Mock<ISmtpService>();
 
             var controller = new UsersController(userRepo.Object, authService.Object);
 
@@ -38,7 +38,7 @@ namespace Tests.Controllers.UserController
             };
 
             var userRepo = new Mock<IUserRepository>();
-            var authService = new Mock<IAuthService>();
+            var authService = new Mock<ISmtpService>();
             userRepo.Setup(x => x.Login(data.Email, data.Password)).ReturnsAsync(new User());
 
             var controller = new UsersController(userRepo.Object, authService.Object);

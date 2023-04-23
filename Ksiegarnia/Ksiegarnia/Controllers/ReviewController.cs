@@ -29,18 +29,18 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="authorName">Author name</param>
         /// <param name="pageSize">page size</param>
-        /// <param name="phrase">search phrase</param>
+        /// <param name="bookId">book id-</param>
         /// <param name="sort">Sorting order</param>
         /// <param name="page">Page</param>
         /// <returns>List of books</returns>
         [HttpGet("search")]
         public async Task<object> Index([FromQuery] string? authorName = "",
-                                                [FromQuery] string phrase = "",
                                                 [FromQuery] int pageSize = 100,
                                                 [FromQuery] ReviewSortType sort = default,
-                                                [FromQuery] int page = 1)
+                                                [FromQuery] int page = 1,
+                                                [FromQuery] Guid? bookId = default)
         {
-            var reviews = await _reviewsRepository.GetReviews(Guid.Empty);
+            var reviews = await _reviewsRepository.GetReviews(bookId ?? Guid.Empty);
 
             if (!string.IsNullOrEmpty(authorName))
             {

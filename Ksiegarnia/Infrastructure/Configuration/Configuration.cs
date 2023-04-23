@@ -1,4 +1,5 @@
 ﻿using Domain.Repositories;
+using Infrastructure.Configuration.Services;
 using Infrastructure.Exceptions;
 using Infrastructure.Repositories;
 using Infrastructure.Services.Auth;
@@ -25,14 +26,17 @@ namespace Infrastructure.Configuration
             webApplicationBuilder.Services.AddScoped<IUserRepository, UserRepository>()
                                     .AddScoped<IEBookRepository, EbookRepository>()
                                     .AddScoped<IEBookReaderRepository, EBookReaderRepository>()
-                                    .AddScoped<IReviewsRepository,ReviewRepository>()
+                                    .AddScoped<IReviewsRepository, ReviewRepository>()
                                     .AddScoped<IGenreRepository, GenreRepository>();
             //Services
             webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()
-                                        .AddScoped<IAuthService, AuthService>()
+                                        .AddScoped<ISmtpService, SmtpService>()
                                         .AddScoped<IPaymentService, PaypalService>();
 
+
+
             webApplicationBuilder.ConfigureIdentity()
+                                 .ConfigureTasks()
                                  .ConfigureCORS()
                                  .ConfigureSwagger()
                                  .ConfigureConst();
@@ -81,7 +85,7 @@ namespace Infrastructure.Configuration
                 name: "default",
                 pattern: "{controller=Home}/{id?}/{action=Index}");
             app.UseAuthorization();
-            app.MapFallbackToFile("index.html"); 
+            app.MapFallbackToFile("index.html");
 
         }
     }

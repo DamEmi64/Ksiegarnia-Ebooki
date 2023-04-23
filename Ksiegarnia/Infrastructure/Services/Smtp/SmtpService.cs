@@ -9,7 +9,7 @@ namespace Infrastructure.Services.Auth
     /// <summary>
     ///     Auth Service
     /// </summary>
-    public class AuthService : IAuthService
+    public class SmtpService : ISmtpService
     {
         /// <summary>
         ///     Send Mail

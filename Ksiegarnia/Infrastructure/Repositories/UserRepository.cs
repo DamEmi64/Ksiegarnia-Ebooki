@@ -21,14 +21,14 @@ namespace Infrastructure.Repositories
         private readonly IUserStore<User> _userStore;
         private readonly IUserEmailStore<User> _emailStore;
         private readonly IRoleStore<Role> _roleStore;
-        private readonly IAuthService _authService;
+        private readonly ISmtpService _authService;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public UserRepository(KsiegarniaContext ksiegarniaContext,
             SignInManager<User> signInManager,
             UserManager<User> userManager,
             IUserStore<User> userStore,
-            IAuthService authService,
+            ISmtpService authService,
             IRoleStore<Role> roleStore)
         {
             _context = ksiegarniaContext;
@@ -231,7 +231,7 @@ namespace Infrastructure.Repositories
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-                return roles.Contains(Enum.GetName(Roles.PremiumUser));
+                return roles.Contains(Enum.GetName(role));
             }
 
             return false;

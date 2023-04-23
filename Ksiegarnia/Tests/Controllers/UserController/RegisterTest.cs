@@ -22,7 +22,7 @@ namespace Tests.Controllers.UserController
             };
 
             var userRepo = new Mock<IUserRepository>();
-            var authService = new Mock<IAuthService>();
+            var authService = new Mock<ISmtpService>();
 
             var controller = new UsersController(userRepo.Object, authService.Object);
             await Assert.ThrowsAsync<RegisterFailedException>(async () => await controller.Register(data));
