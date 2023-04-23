@@ -76,7 +76,7 @@ const AccountMenu = () => {
 };
 
 const Header = () => {
-  const user = React.useContext(UserContext)?.user;
+  const isUserLogged = React.useContext(UserContext)?.user.logged;
 
   return (
     <AppBar
@@ -111,7 +111,7 @@ const Header = () => {
             alignItems="center"
             columnGap={4}
           >
-            {!user?.logged ? (
+            {!isUserLogged ? (
               <React.Fragment>
                 <Button variant="contained" color="info" href="/register">
                   Zarejestruj
@@ -126,7 +126,6 @@ const Header = () => {
                 <Button className="premium-button" variant="contained" href="account-settings/premium">Premium</Button>
               </React.Fragment>
             )}
-            <AccountMenu />
             <IconButton>
               <ShoppingCartOutlined
                 fontSize="large"

@@ -222,11 +222,6 @@ const EditAccountDetails = (props: {
           Anuluj
         </Button>
       </Grid>
-      <Notification
-        open={showNotification}
-        isSuccess={isSuccessNotification}
-        message={notificationMessage}
-      />
     </Grid>
   );
 };
