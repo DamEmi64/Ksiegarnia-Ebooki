@@ -1,12 +1,16 @@
 ﻿import React, { useEffect } from "react";
+import UserDTO from "../models/api/userDTO";
 
 export interface UserProps {
   logged: boolean;
+  data?: UserDTO;
 }
 
 export interface UserContextType {
   user: UserProps;
   setLogged: (logged: boolean) => void;
+  setUser: (user: UserDTO) => void;
+  setAll: (newData: UserProps) => void;
 }
 
 export const UserContext: React.Context<UserContextType | undefined> =
@@ -33,11 +37,19 @@ const UserProvider = (props: { children: React.ReactNode }) => {
   }, [user])
 
   const setLogged = (logged: boolean) => {
-    setUser({ logged: logged });
+    setUser({...user, logged: logged });
   };
 
+  const setNewUser = (newUser: UserDTO) => {
+    setUser({...user, data: newUser})
+  }
+
+  const setAll = (newData: UserProps) => {
+    setUser(newData)
+  }
+
   return (
-    <UserContext.Provider value={{ user, setLogged }}>
+    <UserContext.Provider value={{ user, setLogged,  setUser: setNewUser, setAll}}>
       {props.children}
     </UserContext.Provider>
   );

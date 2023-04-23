@@ -1,31 +1,36 @@
-﻿import { Alert, Dialog, DialogTitle, Snackbar, Typography } from "@mui/material"
-import React, { useEffect } from "react";
+﻿import {
+  Alert,
+  Dialog,
+  DialogTitle,
+  Snackbar,
+  Typography,
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { NotificationContext, NotificationProps } from "../context/NotificationContext";
 
-const Notification = (props: {
-    open?: boolean,
-    isSuccess?: boolean,
-    message: string
-}) => {
+const Notification = () => {
+  const notificationContext = useContext(NotificationContext);
 
-    const [open, setOpen] = React.useState<boolean>(false);
+  const notification = notificationContext?.notification
 
-    useEffect(() => {
-        if(props.open != undefined){
-            setOpen(props.open)
-        }
-    }, [props.open])
+  const handleClose = () => {
+    notificationContext?.setIsVisible(false);
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    return (
-        <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity={props.isSuccess ? "success" : "error"}>
-                {props.message}
-            </Alert>
-        </Snackbar>
-    )
-}
+  return (
+    <Snackbar
+      open={notification?.isVisible}
+      autoHideDuration={4000}
+      onClose={handleClose}
+    >
+      <Alert
+        onClose={handleClose}
+        severity={notification?.isSuccessful ? "success" : "error"}
+      >
+        {notification?.message}
+      </Alert>
+    </Snackbar>
+  );
+};
 
 export default Notification;

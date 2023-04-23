@@ -5,7 +5,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import PremiumHistory from "../../models/api/premiumHistory";
+import PremiumHistory from "../../../models/api/premiumHistory";
 import PremiumAccountOrder from "./PremiumAccountOrder";
 import BuyPremiumDialog from "./BuyPremiumDialog";
 
