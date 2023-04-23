@@ -21,7 +21,6 @@ namespace Infrastructure.Configuration
               policy =>
               {
                   policy.AllowAnyHeader();
-                  policy.AllowAnyOrigin();
                   policy.AllowAnyMethod();
                   policy.AllowCredentials()
                         .SetIsOriginAllowed(origin =>
