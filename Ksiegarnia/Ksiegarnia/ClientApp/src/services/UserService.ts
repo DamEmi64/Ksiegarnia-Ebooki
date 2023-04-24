@@ -35,6 +35,10 @@ class UserService {
         return axios.post(`${this.api}/Login`, credentials)
     }
 
+    logout(){
+        return axios.post(`${this.api}/logout`)
+    }
+
     update(userId: string, request: UpdateRequest){
         return axios.put(`${this.api}/${userId}`, request)
     }

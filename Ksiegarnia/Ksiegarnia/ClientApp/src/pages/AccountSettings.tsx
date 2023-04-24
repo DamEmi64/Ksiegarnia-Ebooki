@@ -28,7 +28,7 @@ const links: LinkProps[] = [
   },
   {
     title: "Wyloguj",
-    url: "premium",
+    url: "logout",
   },
 ];
 
