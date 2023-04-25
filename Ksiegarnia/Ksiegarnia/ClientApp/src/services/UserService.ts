@@ -43,8 +43,22 @@ class UserService {
         return axios.put(`${this.api}/${userId}`, request)
     }
 
-    getOwnedEbooks(userId: string){
-        return axios.get(`${this.api}/${userId}/ebooks`)
+    getOwnedEbooks(userId: string, page?: number, pageSize?: number){
+        return axios.get(`${this.api}/${userId}/ebooks`, {
+            params: {
+                page,
+                pageSize
+            }
+        })
+    }
+
+    getPublishedEbooks(userId: string, page?: number, pageSize?: number){
+        return axios.get(`${this.api}/${userId}/publications`, {
+            params: {
+                page,
+                pageSize
+            }
+        })
     }
 }
 

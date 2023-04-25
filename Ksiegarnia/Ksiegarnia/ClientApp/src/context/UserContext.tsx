@@ -37,7 +37,12 @@ const UserProvider = (props: { children: React.ReactNode }) => {
   }, [user])
 
   const setLogged = (logged: boolean) => {
-    setUser({...user, logged: logged });
+    if(!logged){
+      setUser({logged: logged });
+    }
+    else{
+      setUser({...user, logged: logged})
+    }
   };
 
   const setNewUser = (newUser: UserDTO) => {

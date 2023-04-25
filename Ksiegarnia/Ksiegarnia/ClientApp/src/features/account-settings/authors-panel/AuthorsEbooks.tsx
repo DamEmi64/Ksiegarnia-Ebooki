@@ -1,15 +1,21 @@
 ﻿import { Grid, Typography, TextField, Button, IconButton } from "@mui/material";
 import SelectPageSize from "../../../components/SelectPageSize";
 import SortEbooks from "../../../components/SortEbooks";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import Ebook from "../../../models/api/ebook";
 import { Search } from "@mui/icons-material";
 import AuthorsEbook from "./AuthorsEbook";
 import EbookService from "../../../services/EbookService";
 import useScrollPosition from "../../../components/useScrollPosition";
 import { useNavigate } from "react-router-dom";
+import UserService from "../../../services/UserService";
+import { UserContext } from "../../../context/UserContext";
+import Loading from "../../../pages/Loading";
 
 const AuthorsEbooks = () => {
+  const userId = useContext(UserContext)?.user.data?.id;
+
+  const [searchPhrase, setSearchPhrase] = useState<string>("")
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
   const page = useRef<number>(1);
@@ -27,8 +33,12 @@ const AuthorsEbooks = () => {
     handleSearch()
   }, []);
 
+  if(!userId){
+    return <Loading/>
+  }
+
   const handleSearchPage = () => {
-    EbookService.search({phrase: "E"}, actualSort.current, page.current, actualPageSize.current)
+    UserService.getPublishedEbooks(userId, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -38,7 +48,8 @@ const AuthorsEbooks = () => {
   }
 
   const handleSearch = () => {
-    EbookService.search({phrase: "E"}, actualSort.current, page.current, actualPageSize.current)
+    page.current = 1
+    UserService.getPublishedEbooks(userId, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -76,8 +87,10 @@ const AuthorsEbooks = () => {
       <Grid item container alignItems="stretch" columnGap={4}>
         <Grid item xs={8}>
           <TextField
-            placeholder="Wpisz tytuł"
             fullWidth
+            placeholder="Wpisz tytuł"
+            value={searchPhrase}
+            onChange={(event: any) => setSearchPhrase(event.target.value)}
             InputProps={{
               endAdornment: (
                 <IconButton onClick={() => handleSearch()}>

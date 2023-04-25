@@ -1,13 +1,13 @@
 ﻿import { Close, Done } from "@mui/icons-material";
-import {
-  Button,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
+import { Button, Grid, Typography } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import PremiumHistory from "../../../models/api/premiumHistory";
 import PremiumAccountOrder from "./PremiumAccountOrder";
 import BuyPremiumDialog from "./BuyPremiumDialog";
+import { UserContext } from "../../../context/UserContext";
+import PremiumService from "../../../services/PremiumService";
+import PremiumCheck from "../../../models/api/premiumCheck";
+import Loading from "../../../pages/Loading";
 
 const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
@@ -49,15 +49,36 @@ const premiumHistories: PremiumHistory[] = [
 ];
 
 const PremiumAccount = () => {
-  const [isPremiumAccount, setIsPremiumAccount] = useState<boolean>(false);
+  const userId = useContext(UserContext)?.user.data?.id;
 
-  const [isVisibleBuyPremium, setIsVisibleBuyPremium] =
+  const [premiumInfo, setPremiumInfo] = useState<PremiumCheck>();
+
+  const [isVisibleBuyPremiumDialog, setIsVisibleBuyPremiumDialog] =
     useState<boolean>(false);
+
+  const handleCheckPremium = () => {
+    PremiumService.checkPremium(userId as string).then((response) => {
+      setPremiumInfo(response.data);
+    });
+  };
+
+  useEffect(() => {
+    handleCheckPremium();
+  }, []);
+
+  if (!userId || !premiumInfo) {
+    return <Loading />;
+  }
+
+  const handleBuyPremium = () => {
+    setPremiumInfo({ ...premiumInfo, isActive: true });
+    setIsVisibleBuyPremiumDialog(false);
+  }
 
   const BenefitInfo = (props: { benefit: string }) => {
     return (
       <Grid item xs={5} container alignItems="center">
-        {isPremiumAccount ? (
+        {premiumInfo?.isActive ? (
           <Done className="success" fontSize="large" />
         ) : (
           <Close className="error" />
@@ -76,7 +97,7 @@ const PremiumAccount = () => {
           <StatisticData
             title="Status konta premium"
             value={
-              isPremiumAccount ? (
+              premiumInfo?.isActive ? (
                 <Typography variant="h6" style={{ color: "#24FF00" }}>
                   Aktywny
                 </Typography>
@@ -87,7 +108,7 @@ const PremiumAccount = () => {
               )
             }
           />
-          {isPremiumAccount ? (
+          {premiumInfo?.isActive ? (
             <Button className="premium-button" variant="contained">
               Przedłuż
             </Button>
@@ -95,7 +116,7 @@ const PremiumAccount = () => {
             <Button
               className="premium-button"
               variant="contained"
-              onClick={() => setIsVisibleBuyPremium(true)}
+              onClick={() => setIsVisibleBuyPremiumDialog(true)}
             >
               Zakup
             </Button>
@@ -106,7 +127,23 @@ const PremiumAccount = () => {
             title="Premium wygasa dnia"
             value={
               <Typography variant="h6">
-                {new Date().toLocaleDateString()}
+                {premiumInfo.isActive
+                  ? new Date(premiumInfo.endDate as string).toLocaleDateString()
+                  : ""
+                }
+              </Typography>
+            }
+          />
+        </Grid>
+        <Grid item container>
+          <StatisticData
+            title="Ostatnia data zakupu"
+            value={
+              <Typography variant="h6">
+                {premiumInfo.isActive
+                  ? new Date(premiumInfo.buyDate as string).toLocaleDateString()
+                  : ""
+                }
               </Typography>
             }
           />
@@ -138,13 +175,10 @@ const PremiumAccount = () => {
         </Grid>
       </Grid>
       <BuyPremiumDialog
-        open={isVisibleBuyPremium}
-        handleAccept={() => {
-          setIsPremiumAccount(true);
-          setIsVisibleBuyPremium(false)
-        }}
+        open={isVisibleBuyPremiumDialog}
+        handleAccept={handleBuyPremium}
         handleDecline={() => {
-          setIsVisibleBuyPremium(false);
+          setIsVisibleBuyPremiumDialog(false);
         }}
       />
     </Grid>

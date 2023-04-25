@@ -6,7 +6,7 @@
   TableRow,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Transaction from "../../models/api/transaction";
 import TransactionService from "../../services/TransactionService";
 import {
@@ -19,6 +19,10 @@ import Ebook from "../../models/api/ebook";
 import EbookService from "../../services/EbookService";
 import Image from "../../components/Image";
 import Rate from "../../components/Rate";
+import { UserContext } from "../../context/UserContext";
+import Loading from "../../pages/Loading";
+import React from "react";
+import PagedResponse from "../../models/api/pagedResponse";
 
 const mockedTransactions: Transaction[] = [
   {
@@ -78,41 +82,82 @@ const mockedTransactions: Transaction[] = [
 ];
 
 const TransactionsHistory = () => {
+  const userId = useContext(UserContext)?.user.data?.id;
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [ebooks, setEbooks] = useState<Ebook[]>([])
+  const [ebooks, setEbooks] = useState<Ebook[]>([]);
+
+  const pageSize = 10;
+  const [page, setPage] = useState<number>(1);
+  const [numberOfPages, setNumberOfPages] = useState<number>(0);
 
   useEffect(() => {
-    TransactionService.getUserTransactions("1").then((response) => {
-      //setTransactions(response.data)
+    //handleSearchTransactions();
+    EbookService.search({}, undefined, 0, 10).then((response) => {
+      const data: PagedResponse = response.data;
+      const newEbooks: Ebook[] = data.result;
+      setEbooks(newEbooks);
     });
-    EbookService.search({phrase: "E"}, undefined, 0, 6)
-    .then((response) => {
-      setEbooks(response.data.result)
-    })
-  }, []);
+  }, [page]);
+
+  if (!userId) {
+    return <Loading />;
+  }
+
+  const handleSearchTransactions = () => {
+    TransactionService.getUserTransactions(userId, userId).then((response) => {
+      const data: PagedResponse = response.data;
+      const newTransactions: Transaction[] = data.result;
+      setTransactions(data.result);
+      setNumberOfPages(data.number_of_pages);
+    });
+  };
 
   const CustomPagination = () => {
     return (
       <Stack alignItems="center">
-        <Pagination count={10} color="primary" shape="rounded" size="large" />
+        <Pagination
+          page={page}
+          count={numberOfPages}
+          onChange={(event: any, newPage: number) => setPage(newPage)}
+          color="primary"
+          shape="rounded"
+          size="large"
+        />
       </Stack>
     );
   };
 
   return (
     <Grid item marginTop={-2} container direction="column" rowGap={8}>
-      <CustomPagination />
-      <Grid item container direction="column" rowGap={6}>
-        {mockedTransactions.map((transaction: Transaction) => (
-          <TransactionRow key={transaction.id} transaction={transaction} ebooks={ebooks}/>
-        ))}
-      </Grid>
-      <CustomPagination />
+      {mockedTransactions.length > 0 ? (
+        <React.Fragment>
+          {numberOfPages > 1 && <CustomPagination />}
+          <Grid item container direction="column" rowGap={6}>
+            {mockedTransactions.map((transaction: Transaction) => (
+              <TransactionRow
+                key={transaction.id}
+                transaction={transaction}
+                ebooks={ebooks}
+              />
+            ))}
+          </Grid>
+          {numberOfPages > 1 && <CustomPagination />}
+        </React.Fragment>
+      ) : (
+        <Typography variant="h5" textAlign="center">
+          Brak zamówień
+        </Typography>
+      )}
+      {numberOfPages > 1 && <CustomPagination />}
     </Grid>
   );
 };
 
-const TransactionRow = (props: { transaction: Transaction, ebooks: Ebook[] }) => {
+const TransactionRow = (props: {
+  transaction: Transaction;
+  ebooks: Ebook[];
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const transaction: Transaction = props.transaction;
@@ -176,9 +221,19 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
     >
       <Grid item xs={9} container columnGap={4}>
         <Grid item height="260px">
-          <Image alt={ebook.title} src={ebook.picture} style={{maxWidth: "100%", width: "auto", height: "100%"}}/>
+          <Image
+            alt={ebook.title}
+            src={ebook.picture}
+            style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+          />
         </Grid>
-        <Grid item xs={8} container direction="column" justifyContent="space-between">
+        <Grid
+          item
+          xs={8}
+          container
+          direction="column"
+          justifyContent="space-between"
+        >
           <Grid item container direction="column" rowGap={1}>
             <Typography variant="h4" fontWeight="bold">
               {ebook.title}
@@ -196,7 +251,9 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
         </Grid>
       </Grid>
       <Grid item alignSelf="end">
-        <Typography variant="h4" textAlign="center">{ebook.prize} zł</Typography>
+        <Typography variant="h4" textAlign="center">
+          {ebook.prize} zł
+        </Typography>
       </Grid>
     </Grid>
   );
