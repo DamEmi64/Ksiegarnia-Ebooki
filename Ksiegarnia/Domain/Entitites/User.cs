@@ -30,7 +30,7 @@ namespace Domain.Entitites
         /// <summary>
         ///     User name
         /// </summary>
-        public string Nick { get;set; }
+        public string Nick { get; set; }
 
         /// <summary>
         ///     Documents
@@ -46,5 +46,12 @@ namespace Domain.Entitites
         ///     Premium
         /// </summary>
         public Premium? Premium { get; set; }
+
+        /// <summary>
+        ///     User birth date
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+
+        public HideInfo? HideInfo { get; set; }
     }
 }

@@ -27,7 +27,11 @@ namespace Infrastructure.Repositories
 
         public async Task<EBook?> Get(Guid id)
         {
-            return await _context.Set<EBook>().Include(x => x.Genre).Include(x => x.Author).FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Set<EBook>().Include(x => x.Genre)
+                                                .Include(x => x.Author)
+                                                .Include(x=>x.Promotion)
+                                                .Include(x=>x.Distinction)
+                                                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<List<EBook>> GetEBooks(List<string>? genres = null, List<int>? years = null, string AuthorName = "")

@@ -68,22 +68,41 @@ namespace Application.Controllers
                 books = books.Where(x => x.Promotion != null && x.Promotion.EndDate > DateTime.Now).ToList();
             }
 
-            books = books.Where(x => x.Prize >= minPrize).ToList();
+            // pozyskanie wyróżnionych
+            var booksCache = books.Where(x => x.Prize >= minPrize && (x.Distinction != null && x.Distinction.StartDate.AddDays(x.Distinction.HowLong) > DateTime.UtcNow)).ToList();
 
             var bookDtos = sort switch
             {
-                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
-                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByDate => books.OrderBy(x => x.Date).ToDTOs().ToList(),
-                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
-                SortType.AscByPrize => books.OrderBy(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByName => books.OrderByDescending(x => x.Title).ToDTOs().ToList(),
-                SortType.AscByName => books.OrderBy(x => x.Title).ToDTOs().ToList(),
-                _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
+                SortType.DescByPrize => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByGenre => booksCache.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
+                SortType.DescByDate => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByAuthor => booksCache.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByAuthor => booksCache.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByDate => booksCache.OrderBy(x => x.Date).ToDTOs().ToList(),
+                SortType.AscByGenre => booksCache.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
+                SortType.AscByPrize => booksCache.OrderBy(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByName => booksCache.OrderByDescending(x => x.Title).ToDTOs().ToList(),
+                SortType.AscByName => booksCache.OrderBy(x => x.Title).ToDTOs().ToList(),
+                _ => booksCache.OrderBy(x => x.Title).ToDTOs().ToList()
             };
+
+            // Pozyskanie nie wyróżnionych
+            booksCache = books.Where(x => x.Prize >= minPrize && !(x.Distinction != null && x.Distinction.StartDate.AddDays(x.Distinction.HowLong) > DateTime.UtcNow)).ToList();
+
+            bookDtos.AddRange(sort switch
+            {
+                SortType.DescByPrize => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByGenre => booksCache.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
+                SortType.DescByDate => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByAuthor => booksCache.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByAuthor => booksCache.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByDate => booksCache.OrderBy(x => x.Date).ToDTOs().ToList(),
+                SortType.AscByGenre => booksCache.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
+                SortType.AscByPrize => booksCache.OrderBy(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByName => booksCache.OrderByDescending(x => x.Title).ToDTOs().ToList(),
+                SortType.AscByName => booksCache.OrderBy(x => x.Title).ToDTOs().ToList(),
+                _ => booksCache.OrderBy(x => x.Title).ToDTOs().ToList()
+            });
 
             if (page <= 0)
             {
@@ -140,7 +159,51 @@ namespace Application.Controllers
         }
 
         /// <summary>
-        ///     Put book on promotion
+        ///     Distinct Book
+        /// </summary>
+        /// <param name="id">Book id</param>
+        /// <param name="distinction">Distinction data</param>
+        /// <returns>List of books</returns>
+        [HttpPost("{id}/Distinct")]
+        public async Task<HttpStatusCode> Distinct(Guid id, [FromBody] DistinctionDto distinction)
+        {
+            var user = await _userRepository.GetByNick(User.Identity.Name ?? String.Empty);
+            var book = await _bookRepository.Get(id);
+
+            if (book == null)
+            {
+                throw new BookNotFoundException(id.ToString());
+            }
+
+            if (user == null || book.Author != user || user.Publications.Count(x => x.Distinction != null) > 10)
+            {
+                if (!(await _userRepository.CheckRole(user.Id, Roles.PremiumUser) || await _userRepository.CheckRole(user.Id, Roles.Admin)))
+                {
+                    throw new DefaultException();
+                }
+                else
+                {
+                    if (await _userRepository.CheckRole(user.Id, Roles.PremiumUser) && CountFreeDistinctions(user) < user.Publications?.Count(x => x.Promotion != null))
+                    {
+                        throw new DefaultException();
+                    }
+                }
+            }
+
+            book.Distinction = new Distinction()
+            {
+                StartDate = distinction.StartDate,
+                HowLong = distinction.HowLong,
+                Id = Guid.NewGuid()
+            };
+
+            await _bookRepository.SaveChanges();
+
+            return HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        ///     Put book on promotion (free user have 10 promotion)
         /// </summary>
         /// <param name="id">Book id</param>
         /// <param name="promotion">Promotion data</param>
@@ -148,6 +211,7 @@ namespace Application.Controllers
         [HttpPost("{id}/promote")]
         public async Task<HttpStatusCode> Promote(Guid id, [FromBody] PromotionDto promotion)
         {
+            var user = await _userRepository.GetByNick(User.Identity.Name ?? String.Empty);
             var book = await _bookRepository.Get(id);
 
             if (book == null)
@@ -157,8 +221,8 @@ namespace Application.Controllers
 
             book.Promotion = new Promotion()
             {
-                StartDate = promotion.StartDate,
-                EndDate = promotion.EndDate,
+                StartDate = promotion.StartDate ?? default,
+                EndDate = promotion.EndDate ?? default,
                 Prize = promotion.Prize
             };
 
@@ -282,7 +346,7 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpPut("{id}")]
-        public async Task<HttpStatusCode> Edit( CreateBookDto eBook, Guid id)
+        public async Task<HttpStatusCode> Edit(CreateBookDto eBook, Guid id)
         {
             if (ModelState.IsValid)
             {
@@ -352,6 +416,17 @@ namespace Application.Controllers
             await _bookRepository.Verify(id, verifyName);
             await _bookRepository.SaveChanges();
             return HttpStatusCode.OK;
+        }
+
+        private int CountFreeDistinctions(User user)
+        {
+            switch (user.Premium.DaysToFinishPremium)
+            {
+                case 30: return 1;
+                case 60: return 2;
+                case 90: return 3;
+                default: return 0;
+            }
         }
     }
 }

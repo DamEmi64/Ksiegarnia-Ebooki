@@ -65,7 +65,7 @@ namespace Application.Controllers
                     Premium = new Premium()
                     {
                         StartDate = premiumData.BuyDate,
-                        EndDate = premiumData.EndDate,
+                        DaysToFinishPremium = premiumData.Days,
                         Id = Guid.NewGuid()
                     },
                     EBookReaders = Enumerable.Empty<EBookReader>(),
@@ -84,7 +84,7 @@ namespace Application.Controllers
 
                 var transactionDto = transaction.ToDTO();
 
-                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1);
+                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1,false).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
                 {
@@ -155,7 +155,7 @@ namespace Application.Controllers
             {
                 if (user.Premium != null)
                 {
-                    var isExpired = user.Premium.EndDate < DateTime.UtcNow;
+                    var isExpired = user.Premium.StartDate.AddDays(user.Premium.DaysToFinishPremium) < DateTime.UtcNow;
 
                     if (isExpired)
                     {
@@ -165,7 +165,7 @@ namespace Application.Controllers
                     return new PremiumInfoDto()
                     {
                         BuyDate = user.Premium.StartDate,
-                        EndDate = user.Premium.EndDate,
+                        Days = user.Premium.DaysToFinishPremium,
                         IsActive = !isExpired,
                         UserId = user.Id
                     };

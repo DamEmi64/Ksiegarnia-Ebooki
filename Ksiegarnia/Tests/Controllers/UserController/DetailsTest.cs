@@ -16,7 +16,7 @@ namespace Tests.Controllers.UserController
         {
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(userId)).ReturnsAsync(new User());
-            var authService = new Mock<IAuthService>();
+            var authService = new Mock<ISmtpService>();
 
             var controller = new UsersController(userRepo.Object, authService.Object);
 
@@ -29,7 +29,7 @@ namespace Tests.Controllers.UserController
         {
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(userId)).ReturnsAsync(new User());
-            var authService = new Mock<IAuthService>();
+            var authService = new Mock<ISmtpService>();
 
             var controller = new UsersController(userRepo.Object, authService.Object);
 
@@ -42,7 +42,7 @@ namespace Tests.Controllers.UserController
         {
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(userId)).ReturnsAsync(new User());
-            var authService = new Mock<IAuthService>();
+            var authService = new Mock<ISmtpService>();
 
             var controller = new UsersController(userRepo.Object, authService.Object);
 

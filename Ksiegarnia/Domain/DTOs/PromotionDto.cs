@@ -10,12 +10,12 @@ namespace Domain.DTOs
         /// <summary>
         ///     Start date
         /// </summary>
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         /// <summary>
         ///     Promotion Expired Date
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         ///     Prize

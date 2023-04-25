@@ -41,6 +41,16 @@ namespace Domain.DTOs
         ///     Prize
         /// </summary>
         public decimal Prize { get; set; }
+
+        /// <summary>
+        ///     Promotion
+        /// </summary>
+        public PromotionDto Promotion { get; set; }
+
+        /// <summary>
+        ///     Distinction
+        /// </summary>
+        public DistinctionDto Distinction { get; set; }
     }
 
     public static class BookConvert
@@ -64,7 +74,20 @@ namespace Domain.DTOs
                 PageNumber = eBook.PageNumber,
                 Author = eBook.Author.ToDTO(),
                 Prize = eBook.Prize,
-                Picture = eBook.Picture
+                Picture = eBook.Picture,
+                Promotion = new PromotionDto
+                {
+                    IsPremiumOnly = eBook.Promotion?.OnlyForPremium ?? false,
+                    StartDate = eBook.Promotion?.StartDate ?? default,
+                    EndDate = eBook.Promotion?.EndDate ?? default,
+                    PremiumPrize = eBook.Promotion?.PremiumPrize ?? default,
+                    Prize = eBook.Promotion?.Prize ?? default
+                },
+                Distinction = new DistinctionDto
+                {
+                    StartDate = eBook.Distinction?.StartDate ?? default,
+                    HowLong = eBook.Distinction?.HowLong ?? 0,
+                }
             };
         }
     }
