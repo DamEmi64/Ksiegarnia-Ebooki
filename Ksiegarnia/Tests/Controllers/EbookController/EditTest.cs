@@ -32,7 +32,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = "RANDOM" },
-                Content = new byte[1024]
+                Content = Convert.ToBase64String(new byte[1024])
             };
 
              Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Edit(obj, Guid.Empty));
@@ -50,7 +50,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = "RANDOM" },
-                Content = new byte[1024]
+                Content = Convert.ToBase64String(new byte[1024])
             };
 
              Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Edit(obj, Guid.NewGuid()));
@@ -69,7 +69,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = AuthorId },
-                Content = new byte[1024],
+                Content = Convert.ToBase64String(new byte[1024]),
                 Genre = new GenreDto()
                 {
                     Description = string.Empty,

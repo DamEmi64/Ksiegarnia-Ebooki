@@ -37,7 +37,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = AuthorId },
-                Content = bookData
+                Content = Convert.ToBase64String(bookData)
             };
 
             Assert.ThrowsAsync<BookHasThisContentException>(async () => controller.Create(obj));
@@ -56,7 +56,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = "RANDOM" },
-                Content = bookData
+                Content = Convert.ToBase64String(bookData)
             };
 
             Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Create(obj));
@@ -75,7 +75,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = string.Empty },
-                Content = bookData
+                Content = Convert.ToBase64String(bookData)
             };
 
             Assert.ThrowsAsync<UserNotFoundException>(async () => controller.Create(obj));
@@ -94,7 +94,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = string.Empty },
-                Content = bookData,
+                Content = Convert.ToBase64String(bookData),
                 Genre = new GenreDto() { Id = Guid.Empty }
             };
 
@@ -114,7 +114,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = string.Empty },
-                Content = bookData,
+                Content = Convert.ToBase64String(bookData),
                 Genre = new GenreDto() { Id = Guid.NewGuid() }
             };
 
@@ -134,7 +134,7 @@ namespace Tests.Controllers.EbookController
             var obj = new CreateBookDto
             {
                 Author = new UserDto() { Id = AuthorId },
-                Content = bookData,
+                Content = Convert.ToBase64String(bookData),
                 Genre = new GenreDto()
                 {
                     Description = string.Empty,

@@ -58,7 +58,11 @@ namespace Application.Controllers
         /// <param name="pageSize">page size</param>
         /// <returns></returns>
         [HttpGet("{id}/ebooks")]
-        public async Task<object> Ebooks(string id, [FromQuery] int page = 1, [FromQuery] int pageSize = 100)
+        public async Task<object> Ebooks(string id, 
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100, 
+            [FromQuery] string author = "",
+            [FromQuery] string title = "")
         {
             var user = await _userRepository.Get(id);
 
@@ -73,6 +77,16 @@ namespace Application.Controllers
             {
                 list.Add(book?.EBook?.ToDTO());
 
+            }
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                list = list.Where(x => x.Title.Contains(title)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(author))
+            {
+                list = list.Where(x => x.Author.Nick!=null &&  x.Author.Nick.Contains(author)).ToList();
             }
 
             if (page <= 0)
