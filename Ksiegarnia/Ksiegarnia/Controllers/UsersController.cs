@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs;
 using Domain.Entitites;
+using Domain.Enums;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
@@ -60,7 +61,8 @@ namespace Application.Controllers
         [HttpGet("{id}/ebooks")]
         public async Task<object> Ebooks(string id, 
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 100, 
+            [FromQuery] int pageSize = 100,
+            [FromQuery] SortType sort = SortType.DescByName,
             [FromQuery] string author = "",
             [FromQuery] string title = "")
         {
@@ -71,13 +73,27 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var list = new List<BookDto>();
+            var books = user.EBooks.Select(x=>x.EBook);
 
-            foreach (var book in user.EBooks)
+            if (books == null)
             {
-                list.Add(book?.EBook?.ToDTO());
-
+                return new { all = 0};
             }
+
+            var list = sort switch
+            {
+                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
+                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByDate => books.OrderBy(x => x.Date).ToDTOs().ToList(),
+                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
+                SortType.AscByPrize => books.OrderBy(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByName => books.OrderByDescending(x => x.Title).ToDTOs().ToList(),
+                SortType.AscByName => books.OrderBy(x => x.Title).ToDTOs().ToList(),
+                _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
+            };
 
             if (!string.IsNullOrEmpty(title))
             {
@@ -118,7 +134,11 @@ namespace Application.Controllers
         /// <param name="pageSize">page size</param>
         /// <returns></returns>
         [HttpGet("{id}/publications")]
-        public async Task<object> Publications(string id, [FromQuery] int page = 1, [FromQuery] int pageSize = 100)
+        public async Task<object> Publications(string id,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100,
+            [FromQuery] SortType sort = SortType.DescByName,
+            [FromQuery] string title = "")
         {
             var user = await _userRepository.Get(id);
 
@@ -127,12 +147,35 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var list = new List<BookDto>();
+            var books = user.EBooks.Select(x => x.EBook);
 
-            foreach (var book in user.Publications)
+            if (books == null)
             {
-                list.Add(book?.ToDTO());
+                return new { all = 0 };
+            }
 
+            var list = sort switch
+            {
+                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
+                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
+                SortType.AscByDate => books.OrderBy(x => x.Date).ToDTOs().ToList(),
+                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
+                SortType.AscByPrize => books.OrderBy(x => x.Prize).ToDTOs().ToList(),
+                SortType.DescByName => books.OrderByDescending(x => x.Title).ToDTOs().ToList(),
+                SortType.AscByName => books.OrderBy(x => x.Title).ToDTOs().ToList(),
+                _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
+            };
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                list = list.Where(x => x.Title.Contains(title)).ToList();
+            }
+            if (!string.IsNullOrEmpty(title))
+            {
+                list = list.Where(x => x.Title.Contains(title)).ToList();
             }
 
             if (page <= 0)

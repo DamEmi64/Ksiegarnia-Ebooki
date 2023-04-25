@@ -35,12 +35,12 @@ namespace Domain.Entitites
         /// <summary>
         ///     Documents
         /// </summary>
-        public virtual List<EBook>? Publications { get; set; }
+        public virtual List<EBook>? Publications { get; set; } = new();
 
         /// <summary>
         ///  Buyed books
         /// </summary>
-        public virtual List<EBookReader> EBooks { get; set; }
+        public virtual List<EBookReader> EBooks { get; set; } = new();
 
         /// <summary>
         ///     Premium
