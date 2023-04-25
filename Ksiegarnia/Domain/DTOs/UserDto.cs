@@ -33,24 +33,29 @@ namespace Domain.DTOs
         ///     User email
         /// </summary>
         public string? Email { get; set; }
-        
+
         /// <summary>
         ///     User phone number
         /// </summary>
         public string? Phone { get; set; }
+
+        /// <summary>
+        ///     User age
+        /// </summary>
+        public int Age { get; set; }
     }
 
     public static class UserConvert
     {
         public static IEnumerable<UserDto> ToDTOs(this List<User> users)
         {
-            foreach ( var user in users)
+            foreach (var user in users)
             {
                 yield return user.ToDTO();
             }
         }
 
-        public static UserDto ToDTO ( this User  user)
+        public static UserDto ToDTO(this User user)
         {
             return new UserDto()
             {
@@ -59,7 +64,8 @@ namespace Domain.DTOs
                 Id = user.Id,
                 LastName = user.LastName,
                 Nick = user.Nick,
-                Phone = user.PhoneNumber
+                Phone = user.PhoneNumber,
+                Age = (int)(DateTime.UtcNow - user.BirthDate).TotalDays / 365
             };
         }
     }

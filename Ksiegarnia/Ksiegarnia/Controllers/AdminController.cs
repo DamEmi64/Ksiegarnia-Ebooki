@@ -3,6 +3,7 @@ using Domain.Entitites;
 using Domain.Enums;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
+using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -19,17 +20,22 @@ namespace Application.Controllers
         private readonly IUserRepository _userRepository;
         private readonly INotifyRepository _notifyRepository;
         private readonly IEBookRepository _eBookRepository;
+        private readonly ISmtpService _smtpService;
 
         /// <summary>
         ///     Constructor
         /// </summary>
 
         /// <param name="userRepository"></param>
-        public AdminController(IUserRepository userRepository, INotifyRepository notifyRepository, IEBookRepository eBookRepository)
+        /// <param name="notifyRepository"></param>
+        /// <param name="eBookRepository"></param>
+        /// <param name="smtpService"></param>
+        public AdminController(IUserRepository userRepository, INotifyRepository notifyRepository, IEBookRepository eBookRepository, ISmtpService smtpService)
         {
             _userRepository = userRepository;
             _notifyRepository = notifyRepository;
             _eBookRepository = eBookRepository;
+            _smtpService = smtpService;
         }
 
         /// <summary>
@@ -43,10 +49,13 @@ namespace Application.Controllers
             if (ModelState.IsValid)
             {
                 notification.CreationDate = DateTime.UtcNow;
+                notification.User = await _userRepository.GetByNick(User.Identity?.Name ?? String.Empty);
                 notification.StatusChangeDate = DateTime.UtcNow;
 
                 await _notifyRepository.Add(notification);
                 await _notifyRepository.SaveChanges();
+                await SendNotifyToEmail(notification);
+                
                 return HttpStatusCode.OK;
             }
 
@@ -218,6 +227,20 @@ namespace Application.Controllers
             await _userRepository.Update(user);
 
             return HttpStatusCode.OK;
+        }
+
+        private async Task SendNotifyToEmail(Notification notification)
+        {
+            var content = $"User {notification.User.Nick} send new notification  about object {notification.Id}: {notification.Description}";
+
+            foreach (var user in await _userRepository.GetUsers())
+            {
+                if (await _userRepository.CheckRole(user.Id,Roles.Admin))
+                {
+                    _smtpService.SendEmail(content, user.Email, $"Notification {notification.Id}");
+                }
+            }
+
         }
     }
 }

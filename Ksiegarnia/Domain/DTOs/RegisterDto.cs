@@ -31,5 +31,15 @@
         ///     Username
         /// </summary>
         public string Nick { get; set; }
+
+        /// <summary>
+        ///     Birth date
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+
+        /// <summary>
+        ///     What is to hide
+        /// </summary>
+        public HideInfoDto HideInfo { get; set; }
     }
 }

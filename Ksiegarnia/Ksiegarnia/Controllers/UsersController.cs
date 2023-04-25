@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs;
+using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
@@ -18,13 +19,13 @@ namespace Application.Controllers
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
-        private readonly IAuthService _authService;
+        private readonly ISmtpService _authService;
         private readonly IHostEnvironment _environment;
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="userRepository"></param>
-        public UsersController(IUserRepository userRepository, IAuthService authService, IHostEnvironment environment)
+        public UsersController(IUserRepository userRepository, ISmtpService authService, IHostEnvironment environment)
         {
             _userRepository = userRepository;
             _authService = authService;
@@ -46,7 +47,7 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            return user.ToDTO();
+            return await HideData(user.ToDTO(), user);
         }
 
         /// <summary>
@@ -57,7 +58,11 @@ namespace Application.Controllers
         /// <param name="pageSize">page size</param>
         /// <returns></returns>
         [HttpGet("{id}/ebooks")]
-        public async Task<object> Ebooks(string id, [FromQuery] int page = 1, [FromQuery] int pageSize = 100)
+        public async Task<object> Ebooks(string id, 
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 100, 
+            [FromQuery] string author = "",
+            [FromQuery] string title = "")
         {
             var user = await _userRepository.Get(id);
 
@@ -72,6 +77,16 @@ namespace Application.Controllers
             {
                 list.Add(book?.EBook?.ToDTO());
 
+            }
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                list = list.Where(x => x.Title.Contains(title)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(author))
+            {
+                list = list.Where(x => x.Author.Nick!=null &&  x.Author.Nick.Contains(author)).ToList();
             }
 
             if (page <= 0)
@@ -150,6 +165,11 @@ namespace Application.Controllers
         [HttpPost("Register")]
         public async Task<HttpStatusCode> Register([FromBody] RegisterDto data)
         {
+            if (DateTime.UtcNow.Year - data.BirthDate.Year < 18)
+            {
+                throw new DefaultException();
+            }
+
             try
             {
                 var user = await _userRepository.Register(data, data.Password);
@@ -190,6 +210,18 @@ namespace Application.Controllers
             user.LastName = data.LastName;
             user.Nick = data.Nick;
 
+            if (user.HideInfo != null)
+            {
+                user.HideInfo = new HideInfo()
+                {
+                    Age = data.HideInfo.Age,
+                    Email = data.HideInfo.Email,
+                    FirstName = data.HideInfo.Email,
+                    LastName = data.HideInfo.LastName,
+                    Phone = data.HideInfo.Phone
+                };
+            }
+
             await _userRepository.Update(user);
 
             return HttpStatusCode.OK;
@@ -199,7 +231,6 @@ namespace Application.Controllers
         ///     Get current user
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RegisterFailedException">when register fail...</exception>
         [HttpGet("")]
         public async Task<UserDto?> GetCurrentUser()
         {
@@ -358,6 +389,37 @@ namespace Application.Controllers
         public async Task EmailConfirm(string id, [FromQuery] string token)
         {
             await _userRepository.Confirm(id, token);
+        }
+
+        private async Task<UserDto> HideData(UserDto userData, User user)
+        {
+            var logged = await _userRepository.GetByNick(User.Identity.Name);
+            if (!(user.UserName == logged.UserName || await _userRepository.CheckRole(logged.Id, Domain.Enums.Roles.Admin)))
+            {
+                if (user != null && user.HideInfo != null)
+                {
+                    if (user.HideInfo.Email)
+                    {
+                        userData.Email = string.Empty;
+                    }
+
+                    if (user.HideInfo.FirstName)
+                    {
+                        userData.FirstName = string.Empty;
+                    }
+
+                    if (user.HideInfo.LastName)
+                    {
+                        userData.LastName = string.Empty;
+                    }
+
+                    if (user.HideInfo.Age)
+                    {
+                        userData.Age = 0;
+                    }
+                }
+            }
+            return userData;
         }
     }
 }

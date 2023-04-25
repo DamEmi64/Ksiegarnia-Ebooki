@@ -25,29 +25,49 @@ namespace Infrastructure.Services.Paypal
         /// <param name="redirectUri">uri to redirect</param>
         /// <param name="transaction">transaction id</param>
         /// <param name="commission">commission</param>
-        public string GetUri(string cancelUri, string redirectUri, TransactionDto transaction, decimal commission)
+        public IEnumerable<string> GetUri(string cancelUri, string redirectUri, TransactionDto transaction, decimal commission, bool isForUser)
         {
             var context = GetAPIContext(GetAccessToken());
 
             if (transaction != null)
             {
-                var payment = CreatePayment(context, redirectUri, cancelUri, transaction, commission);
-
-                var links = payment.links.GetEnumerator();
-
-                _httpContextAccessor.HttpContext.Session.SetString("payment", payment.id);
-
-                while (links.MoveNext())
+                Payment payment;
+                if (isForUser)
                 {
-                    var link = links.Current;
-                    if (link.rel.ToLower().Equals("approval_url"))
+                    foreach (var book in transaction.Books)
                     {
-                        return link.href;
+                        payment = Task.Run(async () => await CreatePaymentForUser(context, redirectUri, cancelUri, book, transaction.Currency)).Result;
+
+                        var links = payment.links.GetEnumerator();
+
+                        _httpContextAccessor.HttpContext.Session.SetString("payment", payment.id);
+
+                        while (links.MoveNext())
+                        {
+                            var link = links.Current;
+                            if (link.rel.ToLower().Equals("approval_url"))
+                            {
+                               yield return link.href;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    payment = CreatePayment(context, redirectUri, cancelUri, transaction, commission);
+
+                    var links = payment.links.GetEnumerator();
+
+                    while (links.MoveNext())
+                    {
+                        var link = links.Current;
+                        if (link.rel.ToLower().Equals("approval_url"))
+                        {
+                           yield return link.href;
+                        }
                     }
                 }
             }
-
-            return string.Empty;
         }
 
         /// <summary>
@@ -139,5 +159,69 @@ namespace Infrastructure.Services.Paypal
             return payment.Create(apiContext);
         }
 
+        /// <summary>
+        ///     Create payment
+        /// </summary>
+        /// <param name="apiContext">api context</param>
+        /// <param name="redirectUri">redirect uri</param>
+        /// <param name="cancelUri">cancel uri</param>
+        /// <param name="transaction">Transaction</param>
+        /// <param name="commission">commision where 10 % is 0.1</param>
+        /// <returns></returns>
+        public async Task<Payment> CreatePaymentForUser(APIContext apiContext, string redirectUri, string cancelUri, BookDto book, Domain.Enums.Currency currencyEnum)
+        {
+
+            var payee = new Payee()
+            {
+                email = book.Author.Email
+
+            };
+
+            var itemlist = new ItemList()
+            {
+                items = new List<Item>()
+            };
+
+            itemlist.items.Add(new Item()
+            {
+                name = book.Title,
+                currency = currencyEnum.ToString(),
+                quantity = "1",
+                sku = "asd"
+            });
+
+            var currency = book.Prize;
+
+            var urls = new RedirectUrls()
+            {
+                cancel_url = cancelUri,
+                return_url = redirectUri
+            };
+
+            var amount = new Amount()
+            {
+                currency = currencyEnum.ToString(),
+                total = currency.ToString()
+            };
+
+            var transactionPaypal = new List<Transaction>();
+            transactionPaypal.Add(new Transaction()
+            {
+                description = $"Sprzedaż książki {book.Title}",
+                invoice_number = Guid.NewGuid().ToString(),
+                amount = amount,
+                item_list = itemlist
+            });
+
+            var payment = new Payment()
+            {
+                payee = payee,
+                redirect_urls = urls,
+                intent = "sale",
+                transactions = transactionPaypal
+            };
+
+            return payment.Create(apiContext);
+        }
     }
 }

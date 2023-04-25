@@ -12,10 +12,10 @@
         public List<EBookReader> Readers { get; set; } = new List<EBookReader>();
         public Genre Genre { get; set; }
         public User Author { get; set; }
-
         public Promotion? Promotion { get; set; }
-        public DateTime Date { get; set; }
 
+        public Distinction? Distinction { get; set; }
+        public DateTime Date { get; set; }
         public bool Verified { get; set; }
     }
 }

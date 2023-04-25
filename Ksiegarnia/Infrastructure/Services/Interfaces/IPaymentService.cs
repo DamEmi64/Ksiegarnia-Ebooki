@@ -11,7 +11,8 @@ namespace Infrastructure.Services.Interfaces
         /// <param name="redirectUri">uri to redirect</param>
         /// <param name="transaction">transaction</param>
         /// <param name="commission">commission</param>
+        /// <param name="isForUser">Is money send to user</param>
         /// <returns></returns>
-        string GetUri(string cancelUri, string redirectUri, TransactionDto transaction, decimal commission);
+        IEnumerable<string> GetUri(string cancelUri, string redirectUri, TransactionDto transaction, decimal commission, bool isForUser);
     }
 }

@@ -6,6 +6,6 @@
 
         public DateTime StartDate { get; set; } = DateTime.Now;
 
-        public DateTime EndDate { get; set; } = DateTime.MinValue;
+        public int DaysToFinishPremium { get; set; } = 0;
     }
 }

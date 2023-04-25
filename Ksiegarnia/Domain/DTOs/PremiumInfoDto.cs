@@ -18,8 +18,8 @@
         public DateTime BuyDate { get; set; }
 
         /// <summary>
-        ///     Date when premium is ended
+        ///     Days to finish premium
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public int Days { get; set; }
     }
 }
