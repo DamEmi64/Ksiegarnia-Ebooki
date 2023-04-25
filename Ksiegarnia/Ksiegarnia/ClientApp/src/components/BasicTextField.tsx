@@ -15,15 +15,13 @@ const BasicTextField = (props: {
   return (
     <Grid item container justifyContent={props.disableSpaceBetween ? "start" : "space-between"} alignItems="center" columnGap={2}>
       <Grid item marginBottom={3}>
-        <Typography variant="h6" display="inline" marginRight={0.5}>{props.label}</Typography>
+        <Typography variant="h6" display="inline" >{props.label}</Typography>
         {props.isRequired && <RedAsterisk/>}  
       </Grid>
-      <Grid item xs={props.formSize && props.formSize}>
-        <FormControl fullWidth={props.fullWidth}>
+      <Grid item xs={props.formSize ? props.formSize : 6}>
+        <FormControl fullWidth={true}>
           <TextField
-          inputProps={{
-            
-          }}
+              fullWidth
               {...props.settings}
               value={props.value ? props.value : ""}
               error={props.errorMessage != undefined && props.errorMessage !== ""}

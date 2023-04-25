@@ -8,6 +8,7 @@ import UserService, { RegisterProps } from "../services/UserService";
 import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import CustomDatePicker from "../components/CustomDatePicker";
 
 interface RegisterForm {
   firstName?: string;
@@ -16,6 +17,7 @@ interface RegisterForm {
   nick: string;
   password: string;
   repeatedPassword: string;
+  birthDate: string;
   phone?: string;
 }
 
@@ -30,6 +32,7 @@ const Register = () => {
     nick: "",
     password: "",
     repeatedPassword: "",
+    birthDate: ""
   };
 
   const [form, setForm] = React.useState<RegisterForm>({ ...initForm });
@@ -82,6 +85,7 @@ const Register = () => {
 
     UserService.register(form)
     .then((response) => {
+      console.log(response)
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
@@ -91,6 +95,7 @@ const Register = () => {
       navigate("/login")
     })
     .catch((error) => {
+      console.log(error)
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: false,
@@ -196,7 +201,16 @@ const Register = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={4}></Grid>
+            <Grid item xs={4}>
+              <CustomDatePicker
+                label="Data urodzenia"
+                isRequired={true}
+                value={form.birthDate ? new Date(form.birthDate) : undefined}
+                onChange={(newDate: Date) => {
+                  setForm({...form, birthDate: newDate.toLocaleDateString()})
+                }}
+              />
+            </Grid>
           </Grid>
           <Button
             variant="contained"
