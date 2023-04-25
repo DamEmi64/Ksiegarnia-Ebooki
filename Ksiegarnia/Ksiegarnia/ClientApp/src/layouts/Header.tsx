@@ -28,14 +28,20 @@ import {
   UserProps,
 } from "../context/UserContext";
 import { Navigate, useNavigate } from "react-router-dom";
+import { NotificationContext } from "../context/NotificationContext";
+import UserService from "../services/UserService";
 
 const AccountMenu = () => {
   const userContext = React.useContext(UserContext);
+  const notificationContext = React.useContext(NotificationContext);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const SUCCESSFUL_LOGGOUT_MSG = "Wylogowano pomyślnie";
+  const FAILED_LOGGOUT_MSG = "Nie udało się wylogować";
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -47,12 +53,27 @@ const AccountMenu = () => {
 
   const handleAccountSettings = () => {
     handleCloseMenu();
-    navigate("/account-settings")
-  }
+    navigate("/account-settings");
+  };
 
   const handleLogout = () => {
-    handleCloseMenu();
-    userContext?.setLogged(false);
+    UserService.logout()
+    .then(() => {
+      handleCloseMenu();
+      userContext?.setLogged(false);
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFUL_LOGGOUT_MSG,
+      });
+    })
+    .catch(() => {
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: FAILED_LOGGOUT_MSG,
+      });
+    });
   };
 
   return (
@@ -123,7 +144,13 @@ const Header = () => {
             ) : (
               <React.Fragment>
                 <AccountMenu />
-                <Button className="premium-button" variant="contained" href="account-settings/premium">Premium</Button>
+                <Button
+                  className="premium-button"
+                  variant="contained"
+                  href="account-settings/premium"
+                >
+                  Premium
+                </Button>
               </React.Fragment>
             )}
             <IconButton>

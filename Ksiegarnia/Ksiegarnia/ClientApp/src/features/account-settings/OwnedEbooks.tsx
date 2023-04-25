@@ -17,10 +17,14 @@ import EbookService from "../../services/EbookService";
 import BasicEbookView from "../../components/BasicEbookView";
 import useScrollPosition from "../../components/useScrollPosition";
 import SelectPageSize from "../../components/SelectPageSize";
+import Loading from "../../pages/Loading";
+import UserService from "../../services/UserService";
+import PagedResponse from "../../models/api/pagedResponse";
 
 const OwnedEbooks = () => {
-  const userContext = useContext(UserContext);
+  const userId = useContext(UserContext)?.user.data?.id;
 
+  const [searchPhrase, setSearchPhrase] = useState<string>("")
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
   const page = useRef<number>(1)
@@ -32,27 +36,35 @@ const OwnedEbooks = () => {
     handleSearch()
   }, []);
 
+  if(!userId){
+    return <Loading/>
+  }
+
   const handleSearch = () => {
-    EbookService.search({phrase: "E"}, undefined, page.current, actualPageSize.current)
+    UserService.getOwnedEbooks(userId, page.current, actualPageSize.current)
     .then((response) => {
-      const data = response.data;
+      const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages
     });
   }
 
-  const handleSelectPageSize = (newPageSize: number) => {
+  const handleSearchWithReplace = () => {
     page.current = 1
-    actualPageSize.current = newPageSize
-    setPageSize(newPageSize)
-    EbookService.search({phrase: "E"}, undefined, page.current, actualPageSize.current)
+    UserService.getOwnedEbooks(userId, page.current, actualPageSize.current)
     .then((response) => {
-      const data = response.data;
+      const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages
     });
+  }
+
+  const handleSelectPageSize = (newPageSize: number) => {
+    actualPageSize.current = newPageSize
+    setPageSize(newPageSize)
+    handleSearchWithReplace()
   };
 
   useScrollPosition({
@@ -78,9 +90,11 @@ const OwnedEbooks = () => {
           <TextField
             fullWidth
             placeholder="Wpisz tytuł lub autora książki"
+            value={searchPhrase}
+            onChange={(event: any) => setSearchPhrase(event.target.value)}
             InputProps={{
               endAdornment: (
-                <IconButton onClick={() => console.log("AA")}>
+                <IconButton onClick={handleSearchWithReplace}>
                   <Search />
                 </IconButton>
               ),

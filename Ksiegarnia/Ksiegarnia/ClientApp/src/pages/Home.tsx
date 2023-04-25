@@ -13,8 +13,8 @@ const Home = () => {
     return (
         <CategoriesContent>
             <Grid item container direction="column" rowGap={8} marginTop={2}>
-                <EbooksSlider title="Nowości" ebookSearchCriteria={{phrase: "E"}} sort={EbookSortOptions.DescByDate}/>
-                <EbooksSlider title="Promocje" ebookSearchCriteria={{phrase: "E", onlyOnPromotion: true}}/>
+                <EbooksSlider title="Nowości" sort={EbookSortOptions.DescByDate}/>
+                <EbooksSlider title="Promocje" ebookSearchCriteria={{onlyOnPromotion: true}}/>
                 <EbooksSlider title="Bestsellery" searchBestsellers={true}/>
                 <EbooksSlider title={`Najlepsze książki ${prevYear} roku`} searchBestsellers={true} ebookSearchCriteria={{year: prevYear}}/>
             </Grid>
