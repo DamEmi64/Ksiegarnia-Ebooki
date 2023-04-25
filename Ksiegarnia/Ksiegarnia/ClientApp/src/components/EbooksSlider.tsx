@@ -7,6 +7,7 @@ import EbookService from "../services/EbookService";
 import { EbookSortOptions } from "../models/ebookSortOptions";
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
 import { AxiosResponse } from "axios";
+import PagedResponse from "../models/api/pagedResponse";
 
 const EbooksSlider = (props: {
   title: string;
@@ -25,7 +26,7 @@ const EbooksSlider = (props: {
     if (props.searchBestsellers) {
       EbookService.getBestsellers(page, pageSize)
       .then((response) => {
-        const data = response.data;
+        const data: PagedResponse = response.data;
         const newEbooks: Ebook[] = data.result;
         setEbooks(newEbooks);
         setNumberOfPages(data.number_of_pages);
@@ -34,7 +35,7 @@ const EbooksSlider = (props: {
     else {
       EbookService.search(searchCriteria, props.sort, page, pageSize)
       .then((response) => {
-        const data = response.data;
+        const data: PagedResponse = response.data;
         const newEbooks: Ebook[] = data.result;
         setEbooks(newEbooks);
         setNumberOfPages(data.number_of_pages);

@@ -1,6 +1,8 @@
 ﻿import { Grid, Typography, Button } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import UserDTO from "../../../models/api/userDTO";
+import { UserContext } from "../../../context/UserContext";
+import Loading from "../../../pages/Loading";
 
 const Data = (props: { label: string; value: string }) => {
   return (
@@ -24,14 +26,12 @@ const Data = (props: { label: string; value: string }) => {
 const ViewAccountDetails = (props: {
   setIsEditMode: (isEditMode: boolean) => void;
 }) => {
-  const user: UserDTO = {
-    id: "1",
-    nick: "adam_nowak",
-    firstName: "Adam",
-    lastName: "Nowak",
-    email: "adam.nowak@mail.com",
-    phone: "+48123456789",
-  };
+
+  const user = useContext(UserContext)?.user.data
+
+  if(!user){
+    return <Loading/> 
+  }
 
   return (
     <Grid item container direction="column" alignItems="center" rowGap={6}>

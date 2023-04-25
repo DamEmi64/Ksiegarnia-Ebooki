@@ -1,10 +1,13 @@
 ﻿import { Grid, Button, Typography } from "@mui/material";
 import UserDTO from "../../../models/api/userDTO";
-import React from "react";
+import React, { useContext } from "react";
 import BasicTextField from "../../../components/BasicTextField";
 import Notification from "../../../components/Notification";
 import FormService from "../../../services/FormService";
 import UserService from "../../../services/UserService";
+import { UserContext } from "../../../context/UserContext";
+import Loading from "../../../pages/Loading";
+import { NotificationContext } from "../../../context/NotificationContext";
 
 interface FormProps {
   firstName?: string;
@@ -29,14 +32,13 @@ const EditAccountDetails = (props: {
   const SUCCESSFULY_CHANGED_DATA_MESSAGE = "Zapisano dane";
   const FAILED_CHANGED_DATA_MESSAGE = "Nie udało się zapisać danych";
 
-  const user: UserDTO = {
-    id: "1",
-    nick: "adam_nowak",
-    firstName: "Adam",
-    lastName: "Nowak",
-    email: "adam.nowak@mail.com",
-    phone: "+48123456789",
-  };
+  const notificationContext = useContext(NotificationContext)
+  const userContext = useContext(UserContext)
+  const user = userContext?.user.data
+
+  if(!user){
+    return <Loading/> 
+  }
 
   const [form, setForm] = React.useState<FormProps>({
     ...user,
@@ -50,11 +52,7 @@ const EditAccountDetails = (props: {
     password: "",
     repeatedPassword: "",
   });
-
-  const [showNotification, setShowNotification] = React.useState<boolean>(false);
-  const [isSuccessNotification, setIsSuccessNotification] = React.useState<boolean>(true);
-  const [notificationMessage, setShowNotificationMessage] = React.useState<string>("");
-
+  
   const validateForm = () => {
     let newErrors: FormProps = { ...initErrors };
 
@@ -97,18 +95,23 @@ const EditAccountDetails = (props: {
       return;
     }
 
-    UserService.update("1", form)
+    UserService.update(user.id, form)
     .then((response) => {
-      setShowNotification(true)
-      setIsSuccessNotification(true)
-      setShowNotificationMessage(SUCCESSFULY_CHANGED_DATA_MESSAGE)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_CHANGED_DATA_MESSAGE
+      })
+      userContext.setUser({...user, ...form})
       setErrors(initErrors)
-      setTimeout(()=>props.setIsEditMode(false), 4000);
+      props.setIsEditMode(false)
     })
     .catch((error) => {
-      setShowNotification(true)
-      setIsSuccessNotification(false)
-      setShowNotificationMessage(FAILED_CHANGED_DATA_MESSAGE)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: FAILED_CHANGED_DATA_MESSAGE
+      })
     })
   };
 

@@ -35,12 +35,30 @@ class UserService {
         return axios.post(`${this.api}/Login`, credentials)
     }
 
+    logout(){
+        return axios.post(`${this.api}/logout`)
+    }
+
     update(userId: string, request: UpdateRequest){
         return axios.put(`${this.api}/${userId}`, request)
     }
 
-    getOwnedEbooks(userId: string){
-        return axios.get(`${this.api}/${userId}/ebooks`)
+    getOwnedEbooks(userId: string, page?: number, pageSize?: number){
+        return axios.get(`${this.api}/${userId}/ebooks`, {
+            params: {
+                page,
+                pageSize
+            }
+        })
+    }
+
+    getPublishedEbooks(userId: string, page?: number, pageSize?: number){
+        return axios.get(`${this.api}/${userId}/publications`, {
+            params: {
+                page,
+                pageSize
+            }
+        })
     }
 }
 

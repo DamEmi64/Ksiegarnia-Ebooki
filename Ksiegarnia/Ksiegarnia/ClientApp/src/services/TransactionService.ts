@@ -4,10 +4,13 @@ class TransactionService {
 
     private api: string = "https://localhost:7270/Transactions"
 
-    getUserTransactions = (userId: string) => {
+    getUserTransactions = (userId: string, authorId: string, page?: number, pageSize?: number) => {
         return axios.get(this.api, {
             params: {
-                userId
+                userId,
+                authorId,
+                page,
+                pageSize
             }
         })
     } 

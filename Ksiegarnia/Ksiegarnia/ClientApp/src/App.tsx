@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import "./index.css";
 import "./App.css";
@@ -25,6 +25,7 @@ import CreateEbook from "./features/account-settings/authors-panel/CreateEbook";
 import NotificationProvider from "./context/NotificationContext";
 import Notification from "./components/Notification";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Logout from "./features/account-settings/Logout";
 
 const theme = createTheme({
   palette: {
@@ -126,6 +127,7 @@ function App() {
                             element={<TransactionsHistory />}
                           />
                           <Route path="premium" element={<PremiumAccount />} />
+                          <Route path="logout" element={<Logout />} />
                         </Route>
                         <Route
                           path="/ebook/create"
