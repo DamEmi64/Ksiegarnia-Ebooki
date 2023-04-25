@@ -1,5 +1,5 @@
 ﻿import { Grid, Typography } from "@mui/material";
-import PremiumHistory from "../../models/api/premiumHistory";
+import PremiumHistory from "../../../models/api/premiumHistory";
 
 const KeyValue = (props: { title: string; value: string }) => {
   return (

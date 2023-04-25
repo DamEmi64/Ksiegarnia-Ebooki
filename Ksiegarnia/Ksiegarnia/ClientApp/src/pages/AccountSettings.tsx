@@ -26,6 +26,10 @@ const links: LinkProps[] = [
     title: "Konto premium",
     url: "premium",
   },
+  {
+    title: "Wyloguj",
+    url: "premium",
+  },
 ];
 
 const AccountSettings = () => {

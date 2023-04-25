@@ -64,7 +64,11 @@ const AccountMenu = () => {
         </Typography>
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-        <MenuItem onClick={handleAccountSettings}>Panel użytkownika</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Dane konta</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Zakupione e-booki</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Historia zamówień</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Panel twórcy</MenuItem>
+        <MenuItem onClick={handleAccountSettings}>Konto premum</MenuItem>
         <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
       </Menu>
     </React.Fragment>
@@ -72,7 +76,7 @@ const AccountMenu = () => {
 };
 
 const Header = () => {
-  const user = React.useContext(UserContext)?.user;
+  const isUserLogged = React.useContext(UserContext)?.user.logged;
 
   return (
     <AppBar
@@ -107,7 +111,7 @@ const Header = () => {
             alignItems="center"
             columnGap={4}
           >
-            {!user?.logged ? (
+            {!isUserLogged ? (
               <React.Fragment>
                 <Button variant="contained" color="info" href="/register">
                   Zarejestruj
@@ -122,7 +126,6 @@ const Header = () => {
                 <Button className="premium-button" variant="contained" href="account-settings/premium">Premium</Button>
               </React.Fragment>
             )}
-            <AccountMenu />
             <IconButton>
               <ShoppingCartOutlined
                 fontSize="large"

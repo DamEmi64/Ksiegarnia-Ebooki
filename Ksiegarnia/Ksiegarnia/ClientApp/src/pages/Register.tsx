@@ -1,10 +1,13 @@
-﻿import React from "react";
+﻿import React, { useContext, useEffect } from "react";
 import CategoriesContent from "../layouts/CategoriesContent";
 import FormService from "../services/FormService";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
 import Notification from "../components/Notification";
 import UserService, { RegisterProps } from "../services/UserService";
+import { NotificationContext } from "../context/NotificationContext";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 interface RegisterForm {
   firstName?: string;
@@ -17,9 +20,10 @@ interface RegisterForm {
 }
 
 const Register = () => {
+  const notificationContext = useContext(NotificationContext);
 
   const REGISTERED_SUCCESSFULY_MESSAGE = "Zarejestrowano pomyślnie"
-  const REGISTERED_FAILED_MESSAGE = "Nie udało się zarejestrować"
+  const REGISTERED_FAILED_MESSAGE = "Wprowadzone dane są niepoprawne"
 
   const initForm = {
     email: "",
@@ -32,9 +36,7 @@ const Register = () => {
 
   const [errors, setErrors] = React.useState<RegisterForm>({ ...initForm });
 
-  const [showNotification, setShowNotification] = React.useState<boolean>(false)
-  const [isSuccessNotification, setIsSuccessNotification] = React.useState<boolean>(true)
-  const [notificationMessage, setShowNotificationMessage] = React.useState<string>("")
+  const navigate = useNavigate()
 
   const validateForm = () => {
     let newErrors: RegisterForm = { ...initForm };
@@ -80,17 +82,20 @@ const Register = () => {
 
     UserService.register(form)
     .then((response) => {
-      console.log(response)
-      setShowNotification(true)
-      setIsSuccessNotification(true)
-      setShowNotificationMessage(REGISTERED_SUCCESSFULY_MESSAGE)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: REGISTERED_SUCCESSFULY_MESSAGE
+      })
       setErrors(initForm)
+      navigate("/login")
     })
     .catch((error) => {
-      console.log(error)
-      setShowNotification(true)
-      setIsSuccessNotification(false)
-      setShowNotificationMessage(REGISTERED_FAILED_MESSAGE)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: REGISTERED_FAILED_MESSAGE
+      })
     })
   };
 
@@ -202,9 +207,9 @@ const Register = () => {
           </Button>
         </Grid>
       </Grid>
-      <Notification open={showNotification} isSuccess={isSuccessNotification} message={notificationMessage}/>
     </CategoriesContent>
   );
 };
 
 export default Register;
+

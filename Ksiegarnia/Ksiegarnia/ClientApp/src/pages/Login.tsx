@@ -1,10 +1,13 @@
-﻿import React from "react";
+﻿import React, { useContext, useEffect } from "react";
 import CategoriesContent from "../layouts/CategoriesContent";
 import FormService from "../services/FormService";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
 import Notification from "../components/Notification";
 import UserService from "../services/UserService";
+import { NotificationContext } from "../context/NotificationContext";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 interface LoginForm {
   email: string;
@@ -12,6 +15,8 @@ interface LoginForm {
 }
 
 const Login = () => {
+  const userContext = React.useContext(UserContext);
+  const notificationContext = useContext(NotificationContext);
 
   const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie"
   const LOGGED_FAILED_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle"
@@ -24,10 +29,6 @@ const Login = () => {
   const [form, setForm] = React.useState<LoginForm>({...initForm});
 
   const [errors, setErrors] = React.useState<LoginForm>({...initForm});
-
-  const [showNotification, setShowNotification] = React.useState<boolean>(false)
-  const [isSuccessNotification, setIsSuccessNotification] = React.useState<boolean>(true)
-  const [notificationMessage, setShowNotificationMessage] = React.useState<string>("")
 
   const validateForm = () => {
     let newErrors: LoginForm = {...initForm};
@@ -60,15 +61,23 @@ const Login = () => {
     UserService.login(form)
     .then((response) => {
       console.log(response)
-      setShowNotification(true)
-      setIsSuccessNotification(true)
-      setShowNotificationMessage(LOGGED_SUCCESSFULY_MESSAGE)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: LOGGED_SUCCESSFULY_MESSAGE
+      })
+      userContext?.setAll({
+        logged: true,
+        data: response.data
+      })
+      setErrors(initForm)
     })
     .catch((error) => {
-      console.log(error)
-      setShowNotification(true)
-      setIsSuccessNotification(false)
-      setShowNotificationMessage(LOGGED_FAILED_MESSAGE)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: LOGGED_FAILED_MESSAGE
+      })
     })
   };
 
@@ -103,7 +112,6 @@ const Login = () => {
           </Button>
         </Grid>
       </Grid>
-      <Notification open={showNotification} isSuccess={isSuccessNotification} message={notificationMessage}/>
     </CategoriesContent>
   );
 };
