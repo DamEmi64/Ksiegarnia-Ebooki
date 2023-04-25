@@ -23,15 +23,7 @@ namespace Infrastructure.Configuration
                   policy.AllowAnyHeader();
                   policy.AllowAnyMethod();
                   policy.AllowCredentials()
-                        .SetIsOriginAllowed(origin =>
-                        {
-                            if (string.IsNullOrWhiteSpace(origin)) return false;
-                            // Only add this to allow testing with localhost, remove this line in production!
-                            if (origin.ToLower().StartsWith("http://localhost")) return true;
-                            // Insert your production domain here.
-                            if (origin.ToLower().StartsWith("https://dev.mydomain.com")) return true;
-                            return false;
-                        });
+                        .SetIsOriginAllowed(origin => true);
               }));
             return builder;
         }
