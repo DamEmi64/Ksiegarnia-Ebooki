@@ -45,12 +45,17 @@ namespace Application.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (data.Token != Guid.Parse("e03745c4-6569-41f9-844e-a93fe5ca582d"))
+                var token = await RegisterAdmin(data.AdminEmail, data.AdminPassword);
+
+                if (!string.IsNullOrEmpty(data.PremiumEmail) && !string.IsNullOrEmpty(data.PremiumPassword))
                 {
-                    throw new DefaultException(HttpStatusCode.Forbidden, "Wrong access token");
+                    _ = await RegisterAdmin(data.PremiumEmail, data.PremiumPassword);
                 }
 
-                var token = await RegisterAdmin(data.Email, data.Password);
+                if (!string.IsNullOrEmpty(data.Email) && !string.IsNullOrEmpty(data.Password))
+                {
+                    _ = await RegisterAdmin(data.Email, data.Password);
+                }
 
                 await GenerateGenres();
 
