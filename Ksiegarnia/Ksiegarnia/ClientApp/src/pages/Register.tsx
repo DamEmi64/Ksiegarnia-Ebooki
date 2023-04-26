@@ -17,8 +17,16 @@ interface RegisterForm {
   nick: string;
   password: string;
   repeatedPassword: string;
-  birthDate: string;
+  birthDate: Date;
   phone?: string;
+}
+
+interface ErrorsForm {
+  email: string;
+  nick: string;
+  password: string;
+  repeatedPassword: string;
+  birthDate: string;
 }
 
 const Register = () => {
@@ -32,17 +40,25 @@ const Register = () => {
     nick: "",
     password: "",
     repeatedPassword: "",
+    birthDate: new Date()
+  };
+
+  const errorsInitForm = {
+    email: "",
+    nick: "",
+    password: "",
+    repeatedPassword: "",
     birthDate: ""
   };
 
   const [form, setForm] = React.useState<RegisterForm>({ ...initForm });
 
-  const [errors, setErrors] = React.useState<RegisterForm>({ ...initForm });
+  const [errors, setErrors] = React.useState<ErrorsForm>({ ...errorsInitForm });
 
   const navigate = useNavigate()
 
   const validateForm = () => {
-    let newErrors: RegisterForm = { ...initForm };
+    let newErrors: ErrorsForm = { ...errorsInitForm };
 
     let passedValidation = true;
 
@@ -73,6 +89,12 @@ const Register = () => {
       newErrors.password = "Hasła nie są takie same";
     }
 
+    if(!FormService.checkIfIsAdult(new Date(form.birthDate))){
+      passedValidation = false;
+      newErrors.birthDate = "Wymagane jest 18 lat";
+      console.log("A")
+    }
+
     setErrors(newErrors);
 
     return passedValidation;
@@ -83,7 +105,12 @@ const Register = () => {
       return;
     }
 
-    UserService.register(form)
+    const request: RegisterProps = {
+      ...form,
+      birthDate: form.birthDate.toISOString()
+    }
+
+    UserService.register(request)
     .then((response) => {
       console.log(response)
       notificationContext?.setNotification({
@@ -91,7 +118,7 @@ const Register = () => {
         isSuccessful: true,
         message: REGISTERED_SUCCESSFULY_MESSAGE
       })
-      setErrors(initForm)
+      setErrors(errorsInitForm)
       navigate("/login")
     })
     .catch((error) => {
@@ -118,7 +145,6 @@ const Register = () => {
               <BasicTextField
                 label="Imię"
                 value={form.firstName}
-                errorMessage={errors.firstName}
                 handleChange={(value: string) => {
                   setForm({ ...form, firstName: value });
                 }}
@@ -128,7 +154,6 @@ const Register = () => {
               <BasicTextField
                 label="Nazwisko"
                 value={form.lastName}
-                errorMessage={errors.lastName}
                 handleChange={(value: string) => {
                   setForm({ ...form, lastName: value });
                 }}
@@ -195,7 +220,6 @@ const Register = () => {
                 settings={{ type: "number", maxRows: 9, minRows: 9 }}
                 label="Numer tel."
                 value={form.phone}
-                errorMessage={errors.phone}
                 handleChange={(value: string) => {
                   setForm({ ...form, phone: value });
                 }}
@@ -205,9 +229,10 @@ const Register = () => {
               <CustomDatePicker
                 label="Data urodzenia"
                 isRequired={true}
-                value={form.birthDate ? new Date(form.birthDate) : undefined}
+                value={form.birthDate}
+                errorMessage={errors.birthDate}
                 onChange={(newDate: Date) => {
-                  setForm({...form, birthDate: newDate.toLocaleDateString()})
+                  setForm({...form, birthDate: newDate})
                 }}
               />
             </Grid>

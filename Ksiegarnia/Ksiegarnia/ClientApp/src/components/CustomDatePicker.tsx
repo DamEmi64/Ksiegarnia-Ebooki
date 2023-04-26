@@ -47,7 +47,7 @@ const CustomDatePicker = (props: {
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  error={props.errorMessage}
+                  error={props.errorMessage != undefined && props.errorMessage !== ""}
                   color="secondary"
                 />
               )}

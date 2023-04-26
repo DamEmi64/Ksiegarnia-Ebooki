@@ -38,7 +38,7 @@ const AuthorsEbooks = () => {
   }
 
   const handleSearchPage = () => {
-    UserService.getPublishedEbooks(userId, page.current, actualPageSize.current)
+    UserService.getPublishedEbooks(userId, userId, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -49,7 +49,7 @@ const AuthorsEbooks = () => {
 
   const handleSearch = () => {
     page.current = 1
-    UserService.getPublishedEbooks(userId, page.current, actualPageSize.current)
+    UserService.getPublishedEbooks(userId, userId, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;

@@ -45,7 +45,7 @@ const ViewAccountDetails = (props: {
       </Grid>
       <Grid item container justifyContent="center" columnGap={12}>
         <Data label={"Numer tel."} value={user.phone} />
-        <Data label={""} value={""} />
+        <Data label={"Wiek"} value={(user.age - 1970).toString()} />
       </Grid>
       <Button
         variant="contained"

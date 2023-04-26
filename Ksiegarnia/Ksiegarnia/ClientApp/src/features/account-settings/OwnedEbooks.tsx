@@ -41,18 +41,21 @@ const OwnedEbooks = () => {
   }
 
   const handleSearch = () => {
-    UserService.getOwnedEbooks(userId, page.current, actualPageSize.current)
+    UserService.getOwnedEbooks(userId, userId, page.current, actualPageSize.current)
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages
-    });
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   const handleSearchWithReplace = () => {
     page.current = 1
-    UserService.getOwnedEbooks(userId, page.current, actualPageSize.current)
+    UserService.getOwnedEbooks(userId, userId, page.current, actualPageSize.current)
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;

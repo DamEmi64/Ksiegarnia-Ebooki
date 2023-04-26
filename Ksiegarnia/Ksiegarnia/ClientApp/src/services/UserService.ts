@@ -41,7 +41,6 @@ class UserService {
         return axios.post(`${this.api}/Register`, {
             ...request, 
             hideInfo: hideInfo,
-            birthDate: new Date()
         })
     }
 
@@ -57,18 +56,20 @@ class UserService {
         return axios.put(`${this.api}/${userId}`, request)
     }
 
-    getOwnedEbooks(userId: string, page?: number, pageSize?: number){
+    getOwnedEbooks(userId: string, authorId: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/${userId}/ebooks`, {
             params: {
+                author: authorId,
                 page,
                 pageSize
             }
         })
     }
 
-    getPublishedEbooks(userId: string, page?: number, pageSize?: number){
+    getPublishedEbooks(userId: string, authorId: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/${userId}/publications`, {
             params: {
+                author: authorId,
                 page,
                 pageSize
             }
