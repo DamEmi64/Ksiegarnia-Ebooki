@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import UserService from "../../../services/UserService";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
+import PagedResponse from "../../../models/api/pagedResponse";
 
 const AuthorsEbooks = () => {
   const userId = useContext(UserContext)?.user.data?.id;
@@ -30,7 +31,13 @@ const AuthorsEbooks = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    handleSearch()
+    //handleSearch()
+    EbookService.search({phrase: searchPhrase}, actualSort.current, page.current, actualPageSize.current)
+    .then((response) => {
+      const data: PagedResponse = response.data
+      setEbooks(data.result)
+      numberOfPages.current = data.number_of_pages
+    })
   }, []);
 
   if(!userId){
@@ -38,7 +45,7 @@ const AuthorsEbooks = () => {
   }
 
   const handleSearchPage = () => {
-    UserService.getPublishedEbooks(userId, userId, page.current, actualPageSize.current)
+    UserService.getPublishedEbooks(userId, userId, searchPhrase, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
@@ -49,7 +56,7 @@ const AuthorsEbooks = () => {
 
   const handleSearch = () => {
     page.current = 1
-    UserService.getPublishedEbooks(userId, userId, page.current, actualPageSize.current)
+    UserService.getPublishedEbooks(userId, userId, searchPhrase, page.current, actualPageSize.current)
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;

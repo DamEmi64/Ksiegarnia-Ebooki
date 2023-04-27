@@ -66,9 +66,10 @@ class UserService {
         })
     }
 
-    getPublishedEbooks(userId: string, authorId: string, page?: number, pageSize?: number){
+    getPublishedEbooks(userId: string, authorId: string, title: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/${userId}/publications`, {
             params: {
+                title,
                 author: authorId,
                 page,
                 pageSize

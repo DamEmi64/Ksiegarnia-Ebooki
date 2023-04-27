@@ -33,7 +33,13 @@ const OwnedEbooks = () => {
   const numberOfPages = useRef<number>(0)
 
   useEffect(() => {
-    handleSearch()
+    //handleSearch()
+    EbookService.search({phrase: searchPhrase}, undefined, page.current, actualPageSize.current)
+    .then((response) => {
+      const data: PagedResponse = response.data
+      setEbooks(data.result)
+      numberOfPages.current = data.number_of_pages
+    })
   }, []);
 
   if(!userId){
