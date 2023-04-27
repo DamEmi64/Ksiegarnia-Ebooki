@@ -27,32 +27,34 @@ import Notification from "./components/Notification";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Logout from "./features/account-settings/Logout";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#0A3F5C",
-      dark: "#1470a3",
+const theme = createTheme(
+  {
+    palette: {
+      primary: {
+        main: "#0A3F5C",
+        dark: "#1470a3",
+      },
+      secondary: {
+        main: "#EB4B36",
+      },
+      info: {
+        main: "#87CEEB",
+      },
+      success: {
+        main: "#10CE00",
+      },
     },
-    secondary: {
-      main: "#EB4B36",
-    },
-    info: {
-      main: "#87CEEB",
-    },
-    success: {
-      main: "#10CE00",
+    typography: {
+      fontSize: 13,
+      fontWeightLight: 300,
+      fontWeightRegular: 400,
+      fontWeightMedium: 500,
+      button: {
+        textTransform: "none",
+      },
     },
   },
-  typography: {
-    fontSize: 13,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
-    button: {
-      textTransform: "none",
-    },
-  },
-});
+);
 
 function App() {
   return (

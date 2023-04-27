@@ -1,7 +1,7 @@
 ﻿import { useNavigate, useParams } from "react-router-dom";
 import CategoriesContent from "../../../layouts/CategoriesContent";
 import Genre from "../../../models/api/genre";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import EbookService from "../../../services/EbookService";
 import Ebook from "../../../models/api/ebook";
 import NotFound from "../../../pages/NotFound";
@@ -13,6 +13,8 @@ import Image from "../../../components/Image";
 import UserDTO from "../../../models/api/userDTO";
 import { Close, Edit } from "@mui/icons-material";
 import FormService from "../../../services/FormService";
+import Loading from "../../../pages/Loading";
+import { NotificationContext } from "../../../context/NotificationContext";
 
 interface FormProps {
   title: string;
@@ -91,24 +93,38 @@ const EditableField = (props: {
 const EditEbook = () => {
   const ebookId: string = useParams().id as string;
 
+  const notificationContext = useContext(NotificationContext)
+
   const [form, setForm] = useState<FormProps>();
 
   const [errors, setErrors] = useState<FormErrors>(initErrors);
 
   const navigate = useNavigate();
 
+  const NOT_FOUND_BOOK = "Nie znaleziono takiej książki"
+  const SUCCESSFULY_EDITED_EBOOK = "Zmieniono dane książki" 
+
   let ebookAuthor: UserDTO;
 
   useEffect(() => {
-    EbookService.getById(ebookId).then((response) => {
+    EbookService.getById(ebookId)
+     .then((response) => {
       const gotEboot: Ebook = response.data;
       setForm(gotEboot);
       ebookAuthor = gotEboot.author;
-    });
+    })
+    .catch(() => {
+      navigate("/account-settings/authors-panel")
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: NOT_FOUND_BOOK
+      })
+    })
   }, []);
 
   if (!form?.title) {
-    return <NotFound />;
+    return <Loading />;
   }
 
   const validateForm = () => {
@@ -159,9 +175,16 @@ const EditEbook = () => {
       return;
     }
 
+    console.log({...form, author: ebookAuthor})
+
     EbookService.update(ebookId, { ...form, author: ebookAuthor })
     .then(() => {
       navigate("../account-settings/authors-panel");
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_EDITED_EBOOK
+      })
     })
     .catch((error) => {
       console.log(error)

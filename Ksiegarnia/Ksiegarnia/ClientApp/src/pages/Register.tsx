@@ -8,6 +8,7 @@ import UserService, { RegisterProps } from "../services/UserService";
 import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import CustomDatePicker from "../components/CustomDatePicker";
 
 interface RegisterForm {
   firstName?: string;
@@ -16,7 +17,16 @@ interface RegisterForm {
   nick: string;
   password: string;
   repeatedPassword: string;
+  birthDate: Date;
   phone?: string;
+}
+
+interface ErrorsForm {
+  email: string;
+  nick: string;
+  password: string;
+  repeatedPassword: string;
+  birthDate: string;
 }
 
 const Register = () => {
@@ -30,16 +40,25 @@ const Register = () => {
     nick: "",
     password: "",
     repeatedPassword: "",
+    birthDate: new Date()
+  };
+
+  const errorsInitForm = {
+    email: "",
+    nick: "",
+    password: "",
+    repeatedPassword: "",
+    birthDate: ""
   };
 
   const [form, setForm] = React.useState<RegisterForm>({ ...initForm });
 
-  const [errors, setErrors] = React.useState<RegisterForm>({ ...initForm });
+  const [errors, setErrors] = React.useState<ErrorsForm>({ ...errorsInitForm });
 
   const navigate = useNavigate()
 
   const validateForm = () => {
-    let newErrors: RegisterForm = { ...initForm };
+    let newErrors: ErrorsForm = { ...errorsInitForm };
 
     let passedValidation = true;
 
@@ -70,6 +89,12 @@ const Register = () => {
       newErrors.password = "Hasła nie są takie same";
     }
 
+    if(!FormService.checkIfIsAdult(new Date(form.birthDate))){
+      passedValidation = false;
+      newErrors.birthDate = "Wymagane jest 18 lat";
+      console.log("A")
+    }
+
     setErrors(newErrors);
 
     return passedValidation;
@@ -80,17 +105,24 @@ const Register = () => {
       return;
     }
 
-    UserService.register(form)
+    const request: RegisterProps = {
+      ...form,
+      birthDate: form.birthDate.toISOString()
+    }
+
+    UserService.register(request)
     .then((response) => {
+      console.log(response)
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
         message: REGISTERED_SUCCESSFULY_MESSAGE
       })
-      setErrors(initForm)
+      setErrors(errorsInitForm)
       navigate("/login")
     })
     .catch((error) => {
+      console.log(error)
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: false,
@@ -113,7 +145,6 @@ const Register = () => {
               <BasicTextField
                 label="Imię"
                 value={form.firstName}
-                errorMessage={errors.firstName}
                 handleChange={(value: string) => {
                   setForm({ ...form, firstName: value });
                 }}
@@ -123,7 +154,6 @@ const Register = () => {
               <BasicTextField
                 label="Nazwisko"
                 value={form.lastName}
-                errorMessage={errors.lastName}
                 handleChange={(value: string) => {
                   setForm({ ...form, lastName: value });
                 }}
@@ -190,13 +220,22 @@ const Register = () => {
                 settings={{ type: "number", maxRows: 9, minRows: 9 }}
                 label="Numer tel."
                 value={form.phone}
-                errorMessage={errors.phone}
                 handleChange={(value: string) => {
                   setForm({ ...form, phone: value });
                 }}
               />
             </Grid>
-            <Grid item xs={4}></Grid>
+            <Grid item xs={4}>
+              <CustomDatePicker
+                label="Data urodzenia"
+                isRequired={true}
+                value={form.birthDate}
+                errorMessage={errors.birthDate}
+                onChange={(newDate: Date) => {
+                  setForm({...form, birthDate: newDate})
+                }}
+              />
+            </Grid>
           </Grid>
           <Button
             variant="contained"

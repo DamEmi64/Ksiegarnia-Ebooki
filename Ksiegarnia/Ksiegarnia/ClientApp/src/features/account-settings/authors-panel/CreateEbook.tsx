@@ -7,8 +7,12 @@ import BasicTextField from "../../../components/BasicTextField";
 import ChooseFile from "../../../components/ChooseFile";
 import SelectEbookGenre from "../../../components/SelectEbookGenre";
 import FormService from "../../../services/FormService";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import EbookService, { CreateEbookProps } from "../../../services/EbookService";
+import { NotificationContext } from "../../../context/NotificationContext";
+import { UserContext } from "../../../context/UserContext";
+import Loading from "../../../pages/Loading";
 
 interface FormProps {
   title?: string;
@@ -39,13 +43,22 @@ const initErrors: FormErrors = {
 };
 
 const CreateEbook = () => {
-  const CREATED_SUCCESSFULY_MESSAGE = "Utworzono ebooka";
+  const user = useContext(UserContext)?.user.data;
+
+  const notificationContext = useContext(NotificationContext);
 
   const [form, setForm] = useState<FormProps>({});
 
   const [errors, setErrors] = useState<FormErrors>(initErrors);
 
   const navigate = useNavigate();
+
+  const CREATED_SUCCESSFULY_MESSAGE = "Utworzono ebooka";
+  const CREATED_FAILED_MESSAGE = "Nie udało się utworzyć ebooka";
+
+  if (!user) {
+    return <Loading />;
+  }
 
   const validateForm = () => {
     let newErrors: FormErrors = { ...initErrors };
@@ -100,11 +113,35 @@ const CreateEbook = () => {
       return;
     }
 
-    /*EbookService.create({...form})
-    .then(() => {
-        navigate("../account-settings/authors-panel")
-    })*/
-    navigate("../account-settings/authors-panel");
+    let convertedPicture = form.picture;
+    let convertedContent = btoa(unescape(encodeURIComponent(form.content as string)))
+
+    if (form.picture) {
+      convertedPicture = form.picture.split(",")[1]
+    }
+
+    EbookService.create({
+      ...form,
+      picture: convertedPicture,
+      content: convertedContent,
+      author: user,
+    } as CreateEbookProps)
+      .then(() => {
+        navigate("/account-settings/authors-panel");
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: CREATED_SUCCESSFULY_MESSAGE,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message: CREATED_FAILED_MESSAGE,
+        });
+      });
   };
 
   return (

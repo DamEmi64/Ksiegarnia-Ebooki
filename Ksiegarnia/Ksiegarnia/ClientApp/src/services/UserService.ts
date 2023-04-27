@@ -1,12 +1,14 @@
 ﻿import axios from "axios"
+import HideInfo from "../models/api/hideInfo"
 
 export interface RegisterProps{
     firstName?: string,
     lastName?: string,
     email: string,
+    birthDate: string,
     phoneNumber?: string,
     password: string,
-    nick: string
+    nick: string,
 }
 
 export interface UpdateRequest{
@@ -28,7 +30,18 @@ class UserService {
     private api: string = "https://localhost:7270/Users"
 
     register(request: RegisterProps){
-        return axios.post(`${this.api}/Register`, request)
+        const hideInfo: HideInfo = {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            age: true
+        }
+
+        return axios.post(`${this.api}/Register`, {
+            ...request, 
+            hideInfo: hideInfo,
+        })
     }
 
     login(credentials: Credentials){
@@ -43,18 +56,21 @@ class UserService {
         return axios.put(`${this.api}/${userId}`, request)
     }
 
-    getOwnedEbooks(userId: string, page?: number, pageSize?: number){
+    getOwnedEbooks(userId: string, authorId: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/${userId}/ebooks`, {
             params: {
+                author: authorId,
                 page,
                 pageSize
             }
         })
     }
 
-    getPublishedEbooks(userId: string, page?: number, pageSize?: number){
+    getPublishedEbooks(userId: string, authorId: string, title: string, page?: number, pageSize?: number){
         return axios.get(`${this.api}/${userId}/publications`, {
             params: {
+                title,
+                author: authorId,
                 page,
                 pageSize
             }
