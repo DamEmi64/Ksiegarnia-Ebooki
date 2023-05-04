@@ -95,7 +95,7 @@ const TransactionsHistory = () => {
 
   useEffect(() => {
     handleSearchTransactions();
-    EbookService.search({}, undefined, 1, 10)
+    EbookService.search({page: 1, pageSize: 10})
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
