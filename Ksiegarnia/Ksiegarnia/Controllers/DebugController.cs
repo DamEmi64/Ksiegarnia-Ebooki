@@ -18,6 +18,7 @@ namespace Application.Controllers
         private readonly IGenreRepository _genreRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEBookRepository _bookRepository;
+        private readonly IEBookReaderRepository _eBookReaderRepository;
 
 
         /// <summary>
@@ -26,11 +27,15 @@ namespace Application.Controllers
         /// <param name="bookRepository"></param>
         /// <param name="genreRepository"></param>
         /// <param name="userRepository"></param>
-        public DebugController(IEBookRepository bookRepository, IGenreRepository genreRepository, IUserRepository userRepository)
+        public DebugController(IEBookRepository bookRepository,
+            IGenreRepository genreRepository,
+            IUserRepository userRepository,
+            IEBookReaderRepository eBookReaderRepository)
         {
             _bookRepository = bookRepository;
             _genreRepository = genreRepository;
             _userRepository = userRepository;
+            _eBookReaderRepository = eBookReaderRepository;
         }
 
 #if DEBUG
@@ -45,21 +50,43 @@ namespace Application.Controllers
         {
             if (ModelState.IsValid)
             {
+                SendTokenDto userData  = new();
                 var token = await RegisterAdmin(data.AdminEmail, data.AdminPassword);
 
                 if (!string.IsNullOrEmpty(data.PremiumEmail) && !string.IsNullOrEmpty(data.PremiumPassword))
                 {
-                    _ = await RegisterAdmin(data.PremiumEmail, data.PremiumPassword);
+                    userData = await RegisterPremium(data.PremiumEmail, data.PremiumPassword);
+
                 }
 
                 if (!string.IsNullOrEmpty(data.Email) && !string.IsNullOrEmpty(data.Password))
                 {
                     _ = await RegisterAdmin(data.Email, data.Password);
+
                 }
 
                 await GenerateGenres();
 
                 await GenerateBooks(token, data.BookNo);
+
+                if (!string.IsNullOrEmpty(data.PremiumEmail) && !string.IsNullOrEmpty(data.PremiumPassword))
+                {
+                    var books = await _bookRepository.GetEBooks();
+                    await _eBookReaderRepository.Add(new Transaction()
+                    {
+                        BuyerId = userData.Id,
+                        Currency = Currency.PLN,
+                        DateTime = DateTime.Now,
+                        Finished = true,
+                        EBookReaders = new List<EBookReader>() {
+                            new EBookReader() {
+                            User = await _userRepository.Get(userData.Id),
+                            EBook = books.First() } 
+                        }
+                    });
+
+                    await _eBookReaderRepository.SaveChanges();
+                }
 
                 return HttpStatusCode.OK;
             }
@@ -89,11 +116,49 @@ namespace Application.Controllers
                 PhoneNumber = "123456789"
             };
 
-
-
             var sendToken = await _userRepository.Register(registerData, password);
 
             await _userRepository.AddRole(sendToken.Id, Roles.Admin);
+
+            return sendToken;
+
+        }
+
+        private async Task<SendTokenDto> RegisterPremium(string email, string password)
+        {
+            var registerData = new RegisterDto()
+            {
+                Email = email,
+                Password = password,
+                FirstName = "Debug",
+                LastName = "Debug",
+                Nick = "Debug Account",
+                PhoneNumber = "123456789"
+            };
+
+            var sendToken = await _userRepository.Register(registerData, password);
+
+            await _userRepository.AddRole(sendToken.Id, Roles.PremiumUser);
+
+            return sendToken;
+
+        }
+
+        private async Task<SendTokenDto> RegisterUser(string email, string password)
+        {
+            var registerData = new RegisterDto()
+            {
+                Email = email,
+                Password = password,
+                FirstName = "Debug",
+                LastName = "Debug",
+                Nick = "Debug Account",
+                PhoneNumber = "123456789"
+            };
+
+            var sendToken = await _userRepository.Register(registerData, password);
+
+            await _userRepository.AddRole(sendToken.Id, Roles.User);
 
             return sendToken;
 

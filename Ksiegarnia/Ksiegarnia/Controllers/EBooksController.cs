@@ -164,7 +164,7 @@ namespace Application.Controllers
         /// <param name="id">Book id</param>
         /// <param name="distinction">Distinction data</param>
         /// <returns>List of books</returns>
-        [HttpPost("{id}/Distinct")]
+        [HttpPost("{id}/distinct")]
         public async Task<HttpStatusCode> Distinct(Guid id, [FromBody] DistinctionDto distinction)
         {
             var user = await _userRepository.GetByNick(User.Identity.Name ?? String.Empty);
@@ -273,11 +273,6 @@ namespace Application.Controllers
             if (ebook == null)
             {
                 throw new BookNotFoundException(id.ToString() ?? string.Empty);
-            }
-
-            if (!ebook.Verified)
-            {
-                throw new BookNotVerifiedException();
             }
 
             if (!ebook.Verified)
