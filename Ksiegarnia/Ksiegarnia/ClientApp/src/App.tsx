@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import "./index.css";
 import "./App.css";
@@ -17,7 +17,6 @@ import UserProvider from "./context/UserContext";
 import AccountSettings from "./pages/AccountSettings";
 import AccountDetails from "./features/account-settings/account-details/AccountDetails";
 import AuthorsPanel from "./features/account-settings/authors-panel/AuthorsPanel";
-import OwnedEbooks from "./features/account-settings/OwnedEbooks";
 import TransactionsHistory from "./features/account-settings/TransactionsHistory";
 import PremiumAccount from "./features/account-settings/premium-account/PremiumAccount";
 import EditEbook from "./features/account-settings/authors-panel/EditEbook";
@@ -26,6 +25,8 @@ import NotificationProvider from "./context/NotificationContext";
 import Notification from "./components/Notification";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Logout from "./features/account-settings/Logout";
+import OwnedEbooks from "./features/account-settings/owned-ebooks/OwnedEbooks";
+import EbookContentViewer from "./features/account-settings/owned-ebooks/EbookContentViewer";
 
 const theme = createTheme(
   {
@@ -122,8 +123,11 @@ function App() {
                           />
                           <Route
                             path="owned-ebooks"
-                            element={<OwnedEbooks />}
-                          />
+                            element={<Outlet />}
+                          >
+                            <Route index element={<OwnedEbooks />} />
+                            <Route path=":id" element={<EbookContentViewer />} />
+                          </Route>
                           <Route
                             path="transactions"
                             element={<TransactionsHistory />}

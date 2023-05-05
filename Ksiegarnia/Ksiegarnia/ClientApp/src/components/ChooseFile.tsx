@@ -21,7 +21,7 @@ const ChooseFile = (props: {
         const gotFile: string = reader.result as string;
         props.handleSelectFile(gotFile);
       };
-      reader.readAsBinaryString(event.target.files[0]);
+      reader.readAsDataURL(event.target.files[0]);
     }
   };
   return (

@@ -40,6 +40,10 @@ class EbookService {
     return axios.get(`${this.api}/${ebookId}`);
   }
 
+  getContentById(ebookId: string) {
+    return axios.get(`${this.api}/${ebookId}/read`);
+  }
+
   search(props: SearchEbookProps) {
     return axios.get(`${this.api}/search`, {
       params: {

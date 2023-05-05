@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
@@ -13,7 +13,9 @@ const root = createRoot(container!);
 
 root.render(
     <BrowserRouter basename={baseUrl ? baseUrl : undefined}>
-      <App />
+      <StrictMode>
+        <App />
+      </StrictMode>
     </BrowserRouter>
 );
 

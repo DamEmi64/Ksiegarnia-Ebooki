@@ -6,7 +6,7 @@ import { ShoppingCartOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect } from "react";
 
-const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
+const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean, preventRedirect?: boolean }) => {
   const [ebook, setEbook] = React.useState<Ebook>(props.ebook);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
   const navigate = useNavigate();
 
   return (
-    <Grid item container direction="column" alignItems="stretch" rowGap={2}>
+    <Grid item container className="ebook" direction="column" alignItems="stretch" rowGap={2}>
       <Grid
         item
         height="220px"
@@ -24,7 +24,11 @@ const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
         container
         justifyContent="center"
         alignItems="center"
-        onClick={() => navigate(`/Ebook/${ebook.id}`)}
+        onClick={() => {
+          if(!props.preventRedirect){
+            navigate(`/Ebook/${ebook.id}`)
+          }
+        }}
       >
         <Image
           alt={ebook.title}
