@@ -46,6 +46,7 @@ const mockedTransactions: Transaction[] = [
           lastName: "string",
           email: "string",
           phone: "string",
+          age: 18
         },
         picture: "string",
         prize: 0,
@@ -73,6 +74,7 @@ const mockedTransactions: Transaction[] = [
           lastName: "string",
           email: "string",
           phone: "string",
+          age: 18
         },
         picture: "string",
         prize: 0,
@@ -92,8 +94,9 @@ const TransactionsHistory = () => {
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
 
   useEffect(() => {
-    //handleSearchTransactions();
-    EbookService.search({}, undefined, 0, 10).then((response) => {
+    handleSearchTransactions();
+    EbookService.search({}, undefined, 1, 10)
+    .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
@@ -105,10 +108,11 @@ const TransactionsHistory = () => {
   }
 
   const handleSearchTransactions = () => {
-    TransactionService.getUserTransactions(userId, userId).then((response) => {
+    TransactionService.getUserTransactions(userId, userId, page, pageSize)
+    .then((response) => {
       const data: PagedResponse = response.data;
       const newTransactions: Transaction[] = data.result;
-      setTransactions(data.result);
+      setTransactions(newTransactions);
       setNumberOfPages(data.number_of_pages);
     });
   };
@@ -134,9 +138,10 @@ const TransactionsHistory = () => {
         <React.Fragment>
           {numberOfPages > 1 && <CustomPagination />}
           <Grid item container direction="column" rowGap={6}>
-            {mockedTransactions.map((transaction: Transaction) => (
+            {mockedTransactions.map((transaction: Transaction, index: number) => (
               <TransactionRow
                 key={transaction.id}
+                index={index + 1}
                 transaction={transaction}
                 ebooks={ebooks}
               />
@@ -157,10 +162,15 @@ const TransactionsHistory = () => {
 const TransactionRow = (props: {
   transaction: Transaction;
   ebooks: Ebook[];
+  index: number;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const transaction: Transaction = props.transaction;
+
+  const transactionAmout: number = transaction.books
+    .map((ebook: Ebook) => ebook.prize)
+    .reduce((a: number, b: number) => a + b, 0)
 
   return (
     <Grid item container direction="column">
@@ -177,11 +187,11 @@ const TransactionRow = (props: {
           setIsOpen(!isOpen);
         }}
       >
-        <Typography variant="h6">Zamówienie nr. {transaction.id},</Typography>
-        <Typography variant="h6">kwota: 30 zł,</Typography>
-        <Typography variant="h6">data: {transaction.dateTime},</Typography>
+        <Typography variant="h6">Zamówienie nr. {props.index},</Typography>
+        <Typography variant="h6">Łączna kwota: {transactionAmout} zł,</Typography>
+        <Typography variant="h6">Data: {new Date(transaction.dateTime).toLocaleDateString()},</Typography>
         <Typography variant="h6">
-          liczba ebooków: {transaction.books.length}
+          Liczba ebooków: {transaction.books.length}
         </Typography>
         <IconButton style={{ color: "white" }}>
           {!isOpen ? (

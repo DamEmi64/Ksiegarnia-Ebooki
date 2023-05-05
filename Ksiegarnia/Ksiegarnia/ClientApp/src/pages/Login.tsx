@@ -90,6 +90,7 @@ const Login = () => {
         <Grid item xs={3} container direction="column" alignItems="center" rowGap={6}>
           <BasicTextField
             label="E-mail"
+            formSize={7}
             value={form.email}
             errorMessage={errors.email}
             handleChange={(value: string) => {
@@ -100,6 +101,7 @@ const Login = () => {
           <BasicTextField
             settings={{ type: "password" }}
             label="Hasło"
+            formSize={7}
             value={form.password}
             errorMessage={errors.password}
             handleChange={(value: string) => {
