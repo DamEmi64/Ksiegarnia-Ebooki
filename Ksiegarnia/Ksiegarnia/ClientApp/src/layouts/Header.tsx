@@ -30,6 +30,31 @@ import {
 import { Navigate, useNavigate } from "react-router-dom";
 import { NotificationContext } from "../context/NotificationContext";
 import UserService from "../services/UserService";
+import { LinkProps } from "../models/linkProps";
+import { BasketContext } from "../context/BasketContext";
+
+const links: LinkProps[] = [
+  {
+    title: "Dane konta",
+    url: "details",
+  },
+  {
+    title: "Zakupione ebooki",
+    url: "owned-ebooks",
+  },
+  {
+    title: "Historia zamówień",
+    url: "transactions",
+  },
+  {
+    title: "Panel twórcy",
+    url: "authors-panel",
+  },
+  {
+    title: "Konto premium",
+    url: "premium",
+  },
+];
 
 const AccountMenu = () => {
   const userContext = React.useContext(UserContext);
@@ -51,9 +76,9 @@ const AccountMenu = () => {
     setAnchorEl(null);
   };
 
-  const handleAccountSettings = () => {
+  const handleAccountSettings = (url: string) => {
     handleCloseMenu();
-    navigate("/account-settings");
+    navigate(`/account-settings/${url}`);
   };
 
   const handleLogout = () => {
@@ -85,11 +110,9 @@ const AccountMenu = () => {
         </Typography>
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-        <MenuItem onClick={handleAccountSettings}>Dane konta</MenuItem>
-        <MenuItem onClick={handleAccountSettings}>Zakupione e-booki</MenuItem>
-        <MenuItem onClick={handleAccountSettings}>Historia zamówień</MenuItem>
-        <MenuItem onClick={handleAccountSettings}>Panel twórcy</MenuItem>
-        <MenuItem onClick={handleAccountSettings}>Konto premum</MenuItem>
+        {links.map((link: LinkProps, index: number) => (
+          <MenuItem key={index} onClick={() => handleAccountSettings(link.url)}>{link.title}</MenuItem>
+        ))}
         <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
       </Menu>
     </React.Fragment>
@@ -98,6 +121,9 @@ const AccountMenu = () => {
 
 const Header = () => {
   const isUserLogged = React.useContext(UserContext)?.user.logged;
+  const basketContext = React.useContext(BasketContext)?.basket
+
+  const navigate = useNavigate()
 
   return (
     <AppBar
@@ -153,17 +179,17 @@ const Header = () => {
                 </Button>
               </React.Fragment>
             )}
-            <IconButton>
+            <IconButton onClick={() => navigate("/transaction")}>
               <ShoppingCartOutlined
                 fontSize="large"
                 style={{ color: "white" }}
               />
               <Stack marginLeft={2}>
                 <Typography variant="h6" color="white" textAlign="start">
-                  199 szt.
+                  {basketContext?.ebooks.length} szt
                 </Typography>
                 <Typography variant="h6" color="white">
-                  244,99 zł
+                  {basketContext?.totalPrice} zł
                 </Typography>
               </Stack>
             </IconButton>

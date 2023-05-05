@@ -95,12 +95,13 @@ const TransactionsHistory = () => {
 
   useEffect(() => {
     handleSearchTransactions();
-    EbookService.search({page: 1, pageSize: 10})
+    /*EbookService.search({page: 1, pageSize: 10})
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
-    });
+      console.log(response.data)
+    });*/
   }, [page]);
 
   if (!userId) {
@@ -114,6 +115,7 @@ const TransactionsHistory = () => {
       const newTransactions: Transaction[] = data.result;
       setTransactions(newTransactions);
       setNumberOfPages(data.number_of_pages);
+      console.log(response.data)
     });
   };
 
@@ -134,11 +136,11 @@ const TransactionsHistory = () => {
 
   return (
     <Grid item marginTop={-2} container direction="column" rowGap={8}>
-      {mockedTransactions.length > 0 ? (
+      {transactions.length > 0 ? (
         <React.Fragment>
           {numberOfPages > 1 && <CustomPagination />}
           <Grid item container direction="column" rowGap={6}>
-            {mockedTransactions.map((transaction: Transaction, index: number) => (
+            {transactions.map((transaction: Transaction, index: number) => (
               <TransactionRow
                 key={transaction.id}
                 index={index + 1}

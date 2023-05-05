@@ -34,8 +34,8 @@ const OwnedEbooks = () => {
   const numberOfPages = useRef<number>(0);
 
   useEffect(() => {
-    //handleSearch()
-    EbookService.search({
+    handleSearch()
+    /*EbookService.search({
       ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
       pageSize: actualPageSize.current,
@@ -43,7 +43,7 @@ const OwnedEbooks = () => {
       const data: PagedResponse = response.data;
       setEbooks(data.result);
       numberOfPages.current = data.number_of_pages;
-    });
+    });*/
   }, []);
 
   if (!userId) {
@@ -62,6 +62,7 @@ const OwnedEbooks = () => {
         const newEbooks: Ebook[] = data.result;
         setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
         numberOfPages.current = data.number_of_pages;
+        console.log(response.data)
       })
       .catch((error) => {
         console.log(error);

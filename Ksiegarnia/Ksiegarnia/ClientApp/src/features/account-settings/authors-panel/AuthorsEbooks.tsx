@@ -57,6 +57,7 @@ const AuthorsEbooks = () => {
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages;
+      console.log(response.data)
     });
   };
 

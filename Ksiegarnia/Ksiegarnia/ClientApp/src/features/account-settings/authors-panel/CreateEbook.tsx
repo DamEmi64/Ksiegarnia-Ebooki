@@ -120,7 +120,8 @@ const CreateEbook = () => {
       content: FileService.splitBase64(form.content),
       author: user,
     } as CreateEbookProps)
-      .then(() => {
+      .then((response) => {
+        console.log(response.data)
         navigate("/account-settings/authors-panel");
         notificationContext?.setNotification({
           isVisible: true,
@@ -129,11 +130,11 @@ const CreateEbook = () => {
         });
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error)
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: false,
-          message: CREATED_FAILED_MESSAGE,
+          message: error.response.data.title,
         });
       });
   };
