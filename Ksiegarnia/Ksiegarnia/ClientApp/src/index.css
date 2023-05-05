@@ -62,3 +62,12 @@ img{
 .show-on-hover:hover{
   opacity: 1;
 }
+
+.ebook{
+  padding: 12px;
+}
+
+.ebook:hover{
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}

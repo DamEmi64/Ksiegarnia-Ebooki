@@ -33,7 +33,12 @@ const EbooksSlider = (props: {
       });
     } 
     else {
-      EbookService.search(searchCriteria, props.sort, page, pageSize)
+      EbookService.search({
+        ebookSearchCriteria: searchCriteria, 
+        sort: props.sort, 
+        page: page, 
+        pageSize: pageSize
+      })
       .then((response) => {
         const data: PagedResponse = response.data;
         const newEbooks: Ebook[] = data.result;
