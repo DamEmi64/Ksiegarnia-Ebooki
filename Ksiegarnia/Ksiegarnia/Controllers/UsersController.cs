@@ -57,14 +57,17 @@ namespace Application.Controllers
         /// <param name="id">id</param>
         /// <param name="page">page</param>
         /// <param name="pageSize">page size</param>
+        /// <param name="sort">sort type</param>
+        /// <param name="author">author</param>
+        /// <param name="title">title</param>
         /// <returns></returns>
         [HttpGet("{id}/ebooks")]
-        public async Task<object> Ebooks(string id, 
+        public async Task<object> Ebooks(string id,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 100,
             [FromQuery] SortType sort = SortType.DescByName,
-            [FromQuery] string author = "",
-            [FromQuery] string title = "")
+            [FromQuery] string? author = null,
+            [FromQuery] string? title = null)
         {
             var user = await _userRepository.Get(id);
 
@@ -73,11 +76,11 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var books = user.EBooks.Select(x=>x.EBook);
+            var books = user.EBooks.Select(x => x.EBook);
 
             if (books == null)
             {
-                return new { all = 0};
+                return new { all = 0 };
             }
 
             var list = sort switch
@@ -102,7 +105,7 @@ namespace Application.Controllers
 
             if (!string.IsNullOrEmpty(author))
             {
-                list = list.Where(x => x.Author.Nick!=null &&  x.Author.Nick.Contains(author)).ToList();
+                list = list.Where(x => x.Author.Nick != null && x.Author.Nick.Contains(author)).ToList();
             }
 
             if (page <= 0)
@@ -132,13 +135,15 @@ namespace Application.Controllers
         /// <param name="id">id</param>
         /// <param name="page">page</param>
         /// <param name="pageSize">page size</param>
+        /// <param name="title">title</param>
+        /// <param name="sort">sort type</param>
         /// <returns></returns>
         [HttpGet("{id}/publications")]
         public async Task<object> Publications(string id,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 100,
             [FromQuery] SortType sort = SortType.DescByName,
-            [FromQuery] string title = "")
+            [FromQuery] string? title = null)
         {
             var user = await _userRepository.Get(id);
 
@@ -436,8 +441,8 @@ namespace Application.Controllers
 
         private async Task<UserDto> HideData(UserDto userData, User user)
         {
-            var logged = await _userRepository.GetByNick(User.Identity.Name);
-            if (!(user.UserName == logged.UserName || await _userRepository.CheckRole(logged.Id, Domain.Enums.Roles.Admin)))
+            var logged = await _userRepository.GetByNick(User?.Identity?.Name ?? string.Empty);
+            if (!(user?.UserName == logged?.UserName || await _userRepository.CheckRole(logged?.Id ?? string.Empty, Domain.Enums.Roles.Admin)))
             {
                 if (user != null && user.HideInfo != null)
                 {

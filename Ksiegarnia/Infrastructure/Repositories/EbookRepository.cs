@@ -22,15 +22,23 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> CheckIfExist(byte[] data)
         {
-            return await _context.Set<EBook>().AnyAsync(x => x.Content.SequenceEqual(data));
+            foreach (var book in await _context.Set<EBook>().ToListAsync())
+            {
+                if (book.Content.SequenceEqual(data))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public async Task<EBook?> Get(Guid id)
         {
             return await _context.Set<EBook>().Include(x => x.Genre)
                                                 .Include(x => x.Author)
-                                                .Include(x=>x.Promotion)
-                                                .Include(x=>x.Distinction)
+                                                .Include(x => x.Promotion)
+                                                .Include(x => x.Distinction)
                                                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
@@ -41,8 +49,8 @@ namespace Infrastructure.Repositories
                 .Include(x => x.Author)
                 .Include(x => x.Promotion)
                 .Where(x => (string.IsNullOrEmpty(AuthorName) || x.Author.Nick == AuthorName)
-                            && (years == null || years.Count==0 || years.Contains(x.Date.Year))
-                            && (genres == null || genres.Count==0 || genres.Contains(x.Genre.Name))
+                            && (years == null || years.Count == 0 || years.Contains(x.Date.Year))
+                            && (genres == null || genres.Count == 0 || genres.Contains(x.Genre.Name))
                             )
                             .ToListAsync();
         }
