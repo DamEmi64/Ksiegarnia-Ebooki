@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import "./index.css";
 import "./App.css";
 import React, { useState } from "react";
-import Header from "./layouts/Header";
+import Header from "./layouts/header/Header";
 import Content from "./layouts/Content";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
@@ -161,11 +161,7 @@ function App() {
                       />
                       <Route
                         path="/transaction"
-                        element={
-                          <ProtectedRoute requiresLogged={true}>
-                            <Outlet />
-                          </ProtectedRoute>
-                        }
+                        element={<Outlet />}
                       >
                         <Route index element={<Basket />} />
                       </Route>
