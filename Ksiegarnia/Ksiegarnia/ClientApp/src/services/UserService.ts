@@ -45,6 +45,10 @@ export interface GetPublishedEbooksProps {
 class UserService {
   private api: string = "https://localhost:7270/Users";
 
+  getLoggedUser(){
+    return axios.get(this.api)
+  }
+
   register(request: RegisterProps) {
     const hideInfo: HideInfo = {
       firstName: true,
@@ -69,7 +73,18 @@ class UserService {
   }
 
   update(userId: string, request: UpdateRequest) {
-    return axios.put(`${this.api}/${userId}`, request);
+    const hideInfo: HideInfo = {
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+      age: true,
+    };
+
+    return axios.put(`${this.api}/${userId}`, {
+      ...request,
+      hideInfo: hideInfo,
+    });
   }
 
   getOwnedEbooks(props: GetOwnedEbooksProps) {

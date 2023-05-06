@@ -29,6 +29,8 @@ import OwnedEbooks from "./features/account-settings/owned-ebooks/OwnedEbooks";
 import EbookContentViewer from "./features/account-settings/owned-ebooks/EbookContentViewer";
 import BasketProvider from "./context/BasketContext";
 import Basket from "./features/transaction/Basket";
+import Contact from "./pages/Contact";
+import Regulamin from "./pages/Regulamin";
 
 const theme = createTheme({
   palette: {
@@ -167,6 +169,8 @@ function App() {
                       >
                         <Route index element={<Basket />} />
                       </Route>
+                      <Route path="contact" element={<Contact />} />
+                      <Route path="regulamin" element={<Regulamin />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Content>

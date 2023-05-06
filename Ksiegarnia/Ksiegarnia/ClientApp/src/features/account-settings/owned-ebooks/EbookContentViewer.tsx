@@ -23,6 +23,8 @@ const EbookContentViewer = () => {
     return <Loading/>
   }
 
+  console.log(content)
+
   return (
     <Dialog fullWidth={true} fullScreen={true} open={true}>
       <embed

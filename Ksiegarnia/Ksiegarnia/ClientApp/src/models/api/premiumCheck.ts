@@ -2,5 +2,5 @@
   isActive: boolean;
   userId: string;
   buyDate?: string;
-  endDate?: string;
+  days?: number
 }

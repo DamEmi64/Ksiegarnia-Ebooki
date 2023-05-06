@@ -97,6 +97,7 @@ const EditAccountDetails = (props: {
 
     UserService.update(user.id, form)
     .then((response) => {
+      console.log(response)
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
@@ -107,6 +108,7 @@ const EditAccountDetails = (props: {
       props.setIsEditMode(false)
     })
     .catch((error) => {
+      console.log(error)
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: false,

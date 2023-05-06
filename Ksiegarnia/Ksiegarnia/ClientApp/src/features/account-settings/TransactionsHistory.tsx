@@ -136,11 +136,11 @@ const TransactionsHistory = () => {
 
   return (
     <Grid item marginTop={-2} container direction="column" rowGap={8}>
-      {transactions.length > 0 ? (
+      {mockedTransactions.length > 0 ? (
         <React.Fragment>
           {numberOfPages > 1 && <CustomPagination />}
           <Grid item container direction="column" rowGap={6}>
-            {transactions.map((transaction: Transaction, index: number) => (
+            {mockedTransactions.map((transaction: Transaction, index: number) => (
               <TransactionRow
                 key={transaction.id}
                 index={index + 1}
