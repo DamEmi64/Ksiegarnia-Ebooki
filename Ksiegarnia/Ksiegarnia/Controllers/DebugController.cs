@@ -184,7 +184,7 @@ namespace Application.Controllers
                 book = new EBook()
                 {
                     Author = author,
-                    Verified = true,
+                    Verification = VerificationType.Accepted,
                     Content = System.IO.File.ReadAllBytes(contents[random.Next(contents.Count())]),
                     Picture = System.IO.File.ReadAllBytes(pictures[random.Next(pictures.Count())]),
                     Title = $"Example {i}",

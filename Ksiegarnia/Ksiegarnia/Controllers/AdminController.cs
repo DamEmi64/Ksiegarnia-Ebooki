@@ -155,7 +155,7 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString());
             }
 
-            book.Verified = false;
+            book.Verification = VerificationType.Rejected;
 
             await _eBookRepository.SaveChanges();
 

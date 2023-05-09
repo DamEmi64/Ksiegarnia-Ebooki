@@ -5,6 +5,7 @@ using System.Net;
 using Domain.DTOs;
 using Domain.Enums;
 using Infrastructure.Exceptions;
+using Newtonsoft.Json;
 
 namespace Application.Controllers
 {
@@ -182,6 +183,55 @@ namespace Application.Controllers
             return HttpStatusCode.OK;
         }
 
+
+        /// <summary>
+        ///     Get gift tokens (5)
+        /// </summary>
+        /// <param name="id">Book id</param>
+        /// <returns>List of books</returns>
+        [HttpGet("{id}/tokens")]
+        public async Task<List<string>?> Token(Guid id)
+        {
+            var book = await _bookRepository.Get(id);
+
+            if (book == null)
+            {
+                throw new BookNotFoundException(id.ToString());
+            }
+
+            if (string.IsNullOrEmpty(book.Tokens))
+            {
+                var list = new List<string>();
+                for (int i = 0; i < 5; i++)
+                {
+                    var bytes = new byte[64];
+                    Random.Shared.NextBytes(bytes);
+                    list.Add(Convert.ToBase64String(bytes));
+                }
+
+                book.Tokens = JsonConvert.SerializeObject(list);
+            }
+            else
+            {
+                var list = JsonConvert.DeserializeObject<List<string>>(book.Tokens);
+
+                if (list != null)
+                {
+                    for (int i = list.Count; i < 6; i++)
+                    {
+                        var bytes = new byte[64];
+                        Random.Shared.NextBytes(bytes);
+                        list.Add(Convert.ToBase64String(bytes));
+                    }
+
+                }    
+            }
+
+            await _bookRepository.SaveChanges();
+
+            return JsonConvert.DeserializeObject<List<string>>(book.Tokens);
+        }
+
         /// <summary>
         ///     Put book on promotion (free user have 10 promotion)
         /// </summary>
@@ -227,12 +277,7 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString() ?? String.Empty);
             }
 
-            if (!ebook.Verified)
-            {
-                throw new BookNotVerifiedException();
-            }
-
-            if (!ebook.Verified)
+            if (ebook.Verification != VerificationType.Accepted)
             {
                 throw new BookNotVerifiedException();
             }
@@ -255,7 +300,7 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString() ?? string.Empty);
             }
 
-            if (!ebook.Verified)
+            if (ebook.Verification != VerificationType.Accepted)
             {
                 throw new BookNotVerifiedException();
             }
@@ -305,7 +350,7 @@ namespace Application.Controllers
                     Picture = Convert.FromBase64String(eBook.Picture),
                     Genre = genre,
                     Prize = eBook.Prize ?? 0,
-                    Verified = false
+                    Verification = VerificationType.Verifing
                 };
                 await _bookRepository.Add(book);
                 await _bookRepository.SaveChanges();

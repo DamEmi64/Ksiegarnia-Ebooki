@@ -30,7 +30,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = true
+                Verification = Domain.Enums.VerificationType.Accepted
             });
 
             var buyerDto = new BuyerDto()
@@ -42,7 +42,7 @@ namespace Tests.Controllers.TransactionController
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
 
-            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Buy(buyerDto, string.Empty));
+            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, string.Empty));
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = true
+                Verification = Domain.Enums.VerificationType.Accepted
             });
 
             var buyerDto = new BuyerDto()
@@ -83,7 +83,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = true
+                Verification = Domain.Enums.VerificationType.Accepted
             });
 
             var buyerDto = new BuyerDto()
@@ -95,7 +95,7 @@ namespace Tests.Controllers.TransactionController
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
 
-            Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.Buy(buyerDto, string.Empty));
+            Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, string.Empty));
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = true
+                Verification = Domain.Enums.VerificationType.Accepted
             });
 
             var buyerDto = new BuyerDto()
@@ -136,7 +136,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = false
+                Verification = Domain.Enums.VerificationType.Rejected
             });
 
             var buyerDto = new BuyerDto()
@@ -164,7 +164,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = true
+                Verification = Domain.Enums.VerificationType.Accepted
             });
 
             var buyerDto = new BuyerDto()
@@ -175,7 +175,7 @@ namespace Tests.Controllers.TransactionController
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
             controller.Url = urlhelper.Object;
-            var result = await controller.Buy(buyerDto, string.Empty);
+            var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, string.Empty);
             Assert.NotNull(result);
         }
 
@@ -193,7 +193,7 @@ namespace Tests.Controllers.TransactionController
                 Author = new User(),
                 Genre = new Genre(),
                 Content = new byte[1024],
-                Verified = true
+                Verification = Domain.Enums.VerificationType.Accepted
             });
 
             var buyerDto = new BuyerDto()
@@ -204,7 +204,7 @@ namespace Tests.Controllers.TransactionController
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
             controller.Url = urlhelper.Object;
-            var result = await controller.Buy(buyerDto, "EUR");
+            var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, "EUR");
             Assert.NotNull(result);
         }
     }

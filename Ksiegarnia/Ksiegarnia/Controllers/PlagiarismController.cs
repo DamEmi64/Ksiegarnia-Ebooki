@@ -74,7 +74,7 @@ namespace Application.Controllers
                 {
                     if (scanResults.Results.Score.AggregatedScore > 70)
                     {
-                        book.Verified = false;
+                        book.Verification = Domain.Enums.VerificationType.Rejected;
                         await _eBookRepository.SaveChanges();
 
                         throw new DefaultException(System.Net.HttpStatusCode.Conflict,

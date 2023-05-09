@@ -9,8 +9,8 @@
         public Guid BookId { get; set; }
         public EBook? EBook { get; set; }
 
-        public Guid TransactionId { get; set; }
-        public Transaction Transaction { get; set; }
+        public Guid? TransactionId { get; set; }
+        public Transaction? Transaction { get; set; }
 
         public  List<Review> Reviews { get; set; }
     }
