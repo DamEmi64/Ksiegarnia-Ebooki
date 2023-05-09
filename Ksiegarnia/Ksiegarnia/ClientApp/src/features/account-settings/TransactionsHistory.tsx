@@ -95,12 +95,13 @@ const TransactionsHistory = () => {
 
   useEffect(() => {
     handleSearchTransactions();
-    EbookService.search({}, undefined, 1, 10)
+    /*EbookService.search({page: 1, pageSize: 10})
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
-    });
+      console.log(response.data)
+    });*/
   }, [page]);
 
   if (!userId) {
@@ -114,6 +115,7 @@ const TransactionsHistory = () => {
       const newTransactions: Transaction[] = data.result;
       setTransactions(newTransactions);
       setNumberOfPages(data.number_of_pages);
+      console.log(response.data)
     });
   };
 

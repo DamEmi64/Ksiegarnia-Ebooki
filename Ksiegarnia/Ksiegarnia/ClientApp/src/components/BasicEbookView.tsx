@@ -4,10 +4,19 @@ import Image from "./Image";
 import Rate from "./Rate";
 import { ShoppingCartOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { UserContext } from "../context/UserContext";
+import { BasketContext } from "../context/BasketContext";
 
-const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
+const BasicEbookView = (props: {
+  ebook: Ebook;
+  showAddToCart?: boolean;
+  preventRedirect?: boolean;
+}) => {
   const [ebook, setEbook] = React.useState<Ebook>(props.ebook);
+
+  const userId = useContext(UserContext)?.user.data?.id;
+  const basketContext = React.useContext(BasketContext);
 
   useEffect(() => {
     setEbook(props.ebook);
@@ -15,8 +24,32 @@ const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
 
   const navigate = useNavigate();
 
+  const checkShowAddToCart = (): boolean => {
+
+    if(!props.showAddToCart){
+      return false;
+    }
+
+    if(userId === ebook.author.id){
+      return false;
+    }
+
+    if(basketContext?.containsEbook(ebook.id)){
+      return false;
+    }
+
+    return true;
+  }
+
   return (
-    <Grid item container direction="column" alignItems="stretch" rowGap={2}>
+    <Grid
+      item
+      container
+      className="ebook"
+      direction="column"
+      alignItems="stretch"
+      rowGap={2}
+    >
       <Grid
         item
         height="220px"
@@ -24,12 +57,16 @@ const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
         container
         justifyContent="center"
         alignItems="center"
-        onClick={() => navigate(`/Ebook/${ebook.id}`)}
+        onClick={() => {
+          if (!props.preventRedirect) {
+            navigate(`/Ebook/${ebook.id}`);
+          }
+        }}
       >
         <Image
           alt={ebook.title}
           src={ebook.picture}
-          style={{maxWidth: "100%", width: "auto", height: "100%"}}
+          style={{ maxWidth: "100%", width: "auto", height: "100%" }}
         />
       </Grid>
       <Grid item>
@@ -45,8 +82,12 @@ const BasicEbookView = (props: { ebook: Ebook; showAddToCart?: boolean }) => {
       <Grid item container justifyContent="center">
         <Rate value={5} />
       </Grid>
-      {props.showAddToCart && (
-        <Button variant="contained" color="secondary">
+      {checkShowAddToCart() && (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => basketContext?.addEbook(ebook)}
+        >
           <ShoppingCartOutlined fontSize="large" style={{ color: "white" }} />
           {ebook.prize} zł
         </Button>

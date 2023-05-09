@@ -8,23 +8,26 @@ import UserService from "../../../services/UserService";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
 import { NotificationContext } from "../../../context/NotificationContext";
+import axios from "axios";
+import { AxiosError } from "axios";
+import { AxiosResponse } from "axios";
 
 interface FormProps {
   firstName?: string;
   lastName?: string;
   email: string;
   nick: string;
-  password: string;
-  repeatedPassword: string;
+  previousPassword: string;
+  newPassword: string;
   phone?: string;
 }
 
 const initErrors: FormProps = {
   email: "",
   nick: "",
-  password: "",
-  repeatedPassword: "",
-}
+  previousPassword: "",
+  newPassword: "",
+};
 
 const EditAccountDetails = (props: {
   setIsEditMode: (isEditMode: boolean) => void;
@@ -32,27 +35,22 @@ const EditAccountDetails = (props: {
   const SUCCESSFULY_CHANGED_DATA_MESSAGE = "Zapisano dane";
   const FAILED_CHANGED_DATA_MESSAGE = "Nie udało się zapisać danych";
 
-  const notificationContext = useContext(NotificationContext)
-  const userContext = useContext(UserContext)
-  const user = userContext?.user.data
+  const notificationContext = useContext(NotificationContext);
+  const userContext = useContext(UserContext);
+  const user = userContext?.user.data;
 
-  if(!user){
-    return <Loading/> 
+  if (!user) {
+    return <Loading />;
   }
 
   const [form, setForm] = React.useState<FormProps>({
     ...user,
-    password: "",
-    repeatedPassword: "",
+    previousPassword: "",
+    newPassword: "",
   });
 
-  const [errors, setErrors] = React.useState<FormProps>({
-    email: "",
-    nick: "",
-    password: "",
-    repeatedPassword: "",
-  });
-  
+  const [errors, setErrors] = React.useState<FormProps>(initErrors);
+
   const validateForm = () => {
     let newErrors: FormProps = { ...initErrors };
 
@@ -71,16 +69,10 @@ const EditAccountDetails = (props: {
       newErrors.nick = FormService.requiredMessage;
     }
 
-    if (FormService.checkIfIsRequired(form.password)) {
-
-      if (!FormService.checkIfIsRequired(form.repeatedPassword)) {
+    if (FormService.checkIfIsRequired(form.previousPassword)) {
+      if (!FormService.checkIfIsRequired(form.newPassword)) {
         passedValidation = false;
-        newErrors.repeatedPassword = FormService.requiredMessage;
-      } 
-      else if (form.repeatedPassword !== form.password) {
-        passedValidation = false;
-        newErrors.repeatedPassword = "Hasła nie są takie same";
-        newErrors.password = "Hasła nie są takie same";
+        newErrors.newPassword = FormService.requiredMessage;
       }
     }
 
@@ -90,29 +82,55 @@ const EditAccountDetails = (props: {
   };
 
   const handleEdit = () => {
-
     if (!validateForm()) {
       return;
     }
 
-    UserService.update(user.id, form)
+    const updateEmail = (): Promise<AxiosResponse<any, any>> => {
+      return UserService.getEmailUpdateToken(user.id, form.email)
+        .then((response) => {
+          const token: string = response.data;
+
+          return UserService.updateEmail(user.id, token, form.email)
+
+          .catch((error) => {
+            throw error
+          });
+        })
+    };
+
+    axios
+    .all([
+      form.previousPassword
+        ? UserService.updatePassword(
+            user.id,
+            form.previousPassword,
+            form.newPassword
+          )
+        : undefined,
+      form.email !== user.email ? updateEmail() : undefined,
+      UserService.update(user.id, form),
+    ])
     .then((response) => {
+      console.log("A")
+      console.log(response);
+      userContext.setUser({ ...user, ...form });
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
-        message: SUCCESSFULY_CHANGED_DATA_MESSAGE
-      })
-      userContext.setUser({...user, ...form})
-      setErrors(initErrors)
-      props.setIsEditMode(false)
+        message: SUCCESSFULY_CHANGED_DATA_MESSAGE,
+      });
+      setErrors(initErrors);
+      props.setIsEditMode(false);
     })
     .catch((error) => {
+      console.log(error);
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: false,
-        message: FAILED_CHANGED_DATA_MESSAGE
-      })
-    })
+        message: FAILED_CHANGED_DATA_MESSAGE,
+      });
+    });
   };
 
   return (
@@ -168,23 +186,25 @@ const EditAccountDetails = (props: {
       <Grid item container justifyContent="center" columnGap={12}>
         <Grid item xs={4}>
           <BasicTextField
-            label="Hasło"
-            value={form.password}
-            errorMessage={errors.password}
+            settings={{ type: "password" }}
+            label="Poprzednie hasło"
+            value={form.previousPassword}
+            errorMessage={errors.previousPassword}
             handleChange={(value: string) => {
-              setForm({ ...form, password: value });
-              setErrors({ ...errors, password: "" });
+              setForm({ ...form, previousPassword: value });
+              setErrors({ ...errors, previousPassword: "" });
             }}
           />
         </Grid>
         <Grid item xs={4}>
           <BasicTextField
-            label="Powtórz hasło"
-            value={form.repeatedPassword}
-            errorMessage={errors.repeatedPassword}
+            settings={{ type: "password" }}
+            label="Nowe hasło"
+            value={form.newPassword}
+            errorMessage={errors.newPassword}
             handleChange={(value: string) => {
-              setForm({ ...form, repeatedPassword: value });
-              setErrors({ ...errors, repeatedPassword: "" });
+              setForm({ ...form, newPassword: value });
+              setErrors({ ...errors, newPassword: "" });
             }}
           />
         </Grid>
@@ -203,13 +223,7 @@ const EditAccountDetails = (props: {
         </Grid>
         <Grid item xs={4}></Grid>
       </Grid>
-      <Grid
-        item
-        container
-        direction="column"
-        alignItems="center"
-        rowGap={2}
-      >
+      <Grid item container direction="column" alignItems="center" rowGap={2}>
         <Button
           variant="contained"
           style={{ width: "16%" }}

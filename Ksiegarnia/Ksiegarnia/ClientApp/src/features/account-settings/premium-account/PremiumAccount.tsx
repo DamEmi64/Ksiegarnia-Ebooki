@@ -48,17 +48,43 @@ const premiumHistories: PremiumHistory[] = [
   },
 ];
 
+interface PremiumInfoProps {
+  isActive: boolean;
+  userId: string;
+  buyDate?: Date;
+  endDate?: Date;
+}
+
 const PremiumAccount = () => {
   const userId = useContext(UserContext)?.user.data?.id;
 
-  const [premiumInfo, setPremiumInfo] = useState<PremiumCheck>();
+  const [premiumInfo, setPremiumInfo] = useState<PremiumInfoProps>();
 
   const [isVisibleBuyPremiumDialog, setIsVisibleBuyPremiumDialog] =
     useState<boolean>(false);
 
   const handleCheckPremium = () => {
     PremiumService.checkPremium(userId as string).then((response) => {
-      setPremiumInfo(response.data);
+      const premiumInfoData: PremiumCheck = response.data;
+
+      if (!premiumInfoData.isActive) {
+        setPremiumInfo({
+          ...premiumInfoData,
+          buyDate: undefined,
+          endDate: undefined,
+        });
+        return;
+      }
+
+      const buyDate = new Date(premiumInfoData.buyDate as string);
+      let endDate = new Date(buyDate);
+      endDate.setDate(buyDate.getDate() + premiumInfoData.days!);
+
+      setPremiumInfo({
+        ...premiumInfoData,
+        buyDate: buyDate,
+        endDate: endDate,
+      });
     });
   };
 
@@ -70,10 +96,19 @@ const PremiumAccount = () => {
     return <Loading />;
   }
 
-  const handleBuyPremium = () => {
-    setPremiumInfo({ ...premiumInfo, isActive: true });
+  const handleBuyPremium = (numberOfDays: number) => {
+    const newBuyDate = new Date();
+    let newEndDate = premiumInfo.endDate ? premiumInfo.endDate : new Date(newBuyDate);
+    newEndDate.setDate(newBuyDate.getDate() + numberOfDays);
+
+    setPremiumInfo({
+      ...premiumInfo,
+      isActive: true,
+      buyDate: newBuyDate,
+      endDate: newEndDate,
+    });
     setIsVisibleBuyPremiumDialog(false);
-  }
+  };
 
   const BenefitInfo = (props: { benefit: string }) => {
     return (
@@ -109,7 +144,11 @@ const PremiumAccount = () => {
             }
           />
           {premiumInfo?.isActive ? (
-            <Button className="premium-button" variant="contained">
+            <Button
+              className="premium-button"
+              variant="contained"
+              onClick={() => setIsVisibleBuyPremiumDialog(true)}
+            >
               Przedłuż
             </Button>
           ) : (
@@ -128,9 +167,8 @@ const PremiumAccount = () => {
             value={
               <Typography variant="h6">
                 {premiumInfo.isActive
-                  ? new Date(premiumInfo.endDate as string).toLocaleDateString()
-                  : ""
-                }
+                  ? premiumInfo.endDate!.toLocaleDateString()
+                  : ""}
               </Typography>
             }
           />
@@ -141,9 +179,8 @@ const PremiumAccount = () => {
             value={
               <Typography variant="h6">
                 {premiumInfo.isActive
-                  ? new Date(premiumInfo.buyDate as string).toLocaleDateString()
-                  : ""
-                }
+                  ? premiumInfo.buyDate!.toLocaleDateString()
+                  : ""}
               </Typography>
             }
           />
@@ -156,7 +193,7 @@ const PremiumAccount = () => {
             <BenefitInfo benefit="Nielimitowana ilość dodanych ebooków" />
           </Grid>
           <Grid item container justifyContent="space-between">
-            <BenefitInfo benefit="Jedno wyróżnienie ebooka" />
+            <BenefitInfo benefit="Darmowe wyróżnienia ebooka" />
             <BenefitInfo benefit="Nieograniczona pojemność na ebooka" />
           </Grid>
         </Grid>

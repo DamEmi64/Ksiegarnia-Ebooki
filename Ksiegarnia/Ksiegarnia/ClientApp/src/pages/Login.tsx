@@ -7,7 +7,7 @@ import Notification from "../components/Notification";
 import UserService from "../services/UserService";
 import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface LoginForm {
   email: string;
@@ -29,6 +29,9 @@ const Login = () => {
   const [form, setForm] = React.useState<LoginForm>({...initForm});
 
   const [errors, setErrors] = React.useState<LoginForm>({...initForm});
+
+  const redirectUrl = useLocation().state
+  const navigate = useNavigate()
 
   const validateForm = () => {
     let newErrors: LoginForm = {...initForm};
@@ -71,6 +74,7 @@ const Login = () => {
         data: response.data
       })
       setErrors(initForm)
+      navigate(redirectUrl)
     })
     .catch((error) => {
       notificationContext?.setNotification({

@@ -16,7 +16,7 @@ import PagedResponse from "../../../models/api/pagedResponse";
 const AuthorsEbooks = () => {
   const userId = useContext(UserContext)?.user.data?.id;
 
-  const [searchPhrase, setSearchPhrase] = useState<string>("")
+  const [searchPhrase, setSearchPhrase] = useState<string>("");
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
   const page = useRef<number>(1);
@@ -28,60 +28,73 @@ const AuthorsEbooks = () => {
   const [sort, setSort] = useState<string | undefined>(undefined);
   const actualSort = useRef<string | undefined>(undefined);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    //handleSearch()
-    EbookService.search({phrase: searchPhrase}, actualSort.current, page.current, actualPageSize.current)
+    handleSearch();
+    /*EbookService.search({phrase: searchPhrase}, actualSort.current, page.current, actualPageSize.current)
     .then((response) => {
       const data: PagedResponse = response.data
       setEbooks(data.result)
       numberOfPages.current = data.number_of_pages
-    })
+    })*/
   }, []);
 
-  if(!userId){
-    return <Loading/>
+  if (!userId) {
+    return <Loading />;
   }
 
   const handleSearchPage = () => {
-    UserService.getPublishedEbooks(userId, userId, searchPhrase, page.current, actualPageSize.current)
+    UserService.getPublishedEbooks({
+      userId: userId,
+      authorId: userId,
+      phrase: searchPhrase,
+      page: page.current,
+      pageSize: actualPageSize.current,
+    })
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
-      numberOfPages.current = data.number_of_pages
+      numberOfPages.current = data.number_of_pages;
+      console.log(response.data)
     });
-  }
+  };
 
   const handleSearch = () => {
-    page.current = 1
-    UserService.getPublishedEbooks(userId, userId, searchPhrase, page.current, actualPageSize.current)
+    page.current = 1;
+    UserService.getPublishedEbooks({
+      userId: userId,
+      authorId: userId,
+      phrase: searchPhrase,
+      page: page.current,
+      pageSize: actualPageSize.current,
+    })
     .then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
-      numberOfPages.current = data.number_of_pages
+      numberOfPages.current = data.number_of_pages;
     });
-  }
+  };
 
   const handleSelectPageSize = (newPageSize: number) => {
-    page.current = 1
-    actualPageSize.current = newPageSize
-    setPageSize(newPageSize)
-    handleSearch()
+    page.current = 1;
+    actualPageSize.current = newPageSize;
+    setPageSize(newPageSize);
+    handleSearch();
   };
 
   const handleSetSort = (newSort: string) => {
-    actualSort.current = newSort
+    actualSort.current = newSort;
     setSort(newSort);
   };
 
   useScrollPosition({
     handleScrollBottom() {
       if (page.current + 1 <= numberOfPages.current) {
-        page.current++
-        handleSearchPage()
+        page.current++;
+        handleSearchPage();
       }
     },
   });
@@ -112,7 +125,7 @@ const AuthorsEbooks = () => {
             <Button
               variant="contained"
               style={{ padding: "8px 24px", borderRadius: "12px" }}
-              onClick={() => navigate('/ebook/create')}
+              onClick={() => navigate("/ebook/create")}
             >
               Dodaj ebooka
             </Button>
@@ -121,7 +134,10 @@ const AuthorsEbooks = () => {
       </Grid>
       <Grid item container justifyContent="space-between">
         <Grid item xs={4}>
-          <SortEbooks sortValue={sort ? sort : ""} handleSetSort={handleSetSort} />
+          <SortEbooks
+            sortValue={sort ? sort : ""}
+            handleSetSort={handleSetSort}
+          />
         </Grid>
         <Grid item xs={3}>
           <SelectPageSize
@@ -132,7 +148,7 @@ const AuthorsEbooks = () => {
       </Grid>
       <Grid item container rowGap={6} marginTop={2}>
         {ebooks.map((ebook: Ebook) => (
-          <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch}/>
+          <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch} />
         ))}
       </Grid>
     </Grid>

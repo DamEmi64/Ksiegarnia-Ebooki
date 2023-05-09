@@ -13,6 +13,7 @@ import EbookService, { CreateEbookProps } from "../../../services/EbookService";
 import { NotificationContext } from "../../../context/NotificationContext";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
+import FileService from "../../../services/FileService";
 
 interface FormProps {
   title?: string;
@@ -113,20 +114,14 @@ const CreateEbook = () => {
       return;
     }
 
-    let convertedPicture = form.picture;
-    let convertedContent = btoa(unescape(encodeURIComponent(form.content as string)))
-
-    if (form.picture) {
-      convertedPicture = form.picture.split(",")[1]
-    }
-
     EbookService.create({
       ...form,
-      picture: convertedPicture,
-      content: convertedContent,
+      picture: FileService.splitBase64(form.picture),
+      content: FileService.splitBase64(form.content),
       author: user,
     } as CreateEbookProps)
-      .then(() => {
+      .then((response) => {
+        console.log(response.data)
         navigate("/account-settings/authors-panel");
         notificationContext?.setNotification({
           isVisible: true,
@@ -135,11 +130,11 @@ const CreateEbook = () => {
         });
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error)
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: false,
-          message: CREATED_FAILED_MESSAGE,
+          message: error.response.data.title,
         });
       });
   };
