@@ -1,4 +1,4 @@
-﻿import { Grid, IconButton, Paper, Typography } from "@mui/material";
+﻿import { Grid, IconButton, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Ebook from "../models/api/ebook";
 import BasicEbookView from "./BasicEbookView";
 import React, { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { EbookSortOptions } from "../models/ebookSortOptions";
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
 import { AxiosResponse } from "axios";
 import PagedResponse from "../models/api/pagedResponse";
+import useWindowResize from "./useWindowResize";
 
 const EbooksSlider = (props: {
   title: string;
@@ -17,9 +18,43 @@ const EbooksSlider = (props: {
 }) => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
-  const pageSize = 5;
+  const theme = useTheme();
+  const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchesSM = useMediaQuery(theme.breakpoints.up('sm'));
+  const matchesMD = useMediaQuery(theme.breakpoints.up('md'));
+  const matchesLG = useMediaQuery(theme.breakpoints.up('lg'));
+  const matchesXL = useMediaQuery(theme.breakpoints.up('xl'));
+
+  const initPageSize = () => {
+
+    if(matchesXL){
+      return 4
+    }
+
+    if(matchesLG){
+      return 3
+    }
+
+    if(matchesMD){
+      return 2
+    }
+
+    return 1
+  }
+
+  const [pageSize, setPageSize] = useState<number>(initPageSize())
+
   const [page, setPage] = useState<number>(1);
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
+
+  const [width] = useWindowResize();
+
+  useEffect(() => {
+      const newPageSize = initPageSize()
+      if(pageSize !==  newPageSize){
+        setPageSize(newPageSize)
+      }
+  }, [width]);
 
   useEffect(() => {
     const searchCriteria = props.ebookSearchCriteria;
@@ -46,7 +81,7 @@ const EbooksSlider = (props: {
         setNumberOfPages(data.number_of_pages);
       });
     }
-  }, [page]);
+  }, [page, pageSize]);
 
   if(ebooks.length == 0){
     return <React.Fragment></React.Fragment>
@@ -67,7 +102,7 @@ const EbooksSlider = (props: {
         )}
         {ebooks
           .map((ebook: Ebook) => (
-            <Grid key={ebook.id} item xs={2}>
+            <Grid key={ebook.id} item xs={10} md={5} lg={3} xl={2}>
               <BasicEbookView ebook={ebook} showAddToCart={true}/>
             </Grid>
           ))

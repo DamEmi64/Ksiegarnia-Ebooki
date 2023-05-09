@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import "./index.css";
 import "./App.css";
 import React, { useState } from "react";
-import Header from "./layouts/Header";
+import Header from "./layouts/header/Header";
 import Content from "./layouts/Content";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
@@ -29,6 +29,11 @@ import OwnedEbooks from "./features/account-settings/owned-ebooks/OwnedEbooks";
 import EbookContentViewer from "./features/account-settings/owned-ebooks/EbookContentViewer";
 import BasketProvider from "./context/BasketContext";
 import Basket from "./features/transaction/Basket";
+import Contact from "./pages/Contact";
+import Regulamin from "./pages/Regulamin";
+import axios from "axios";
+
+axios.defaults.withCredentials = true
 
 const theme = createTheme({
   palette: {
@@ -159,14 +164,12 @@ function App() {
                       />
                       <Route
                         path="/transaction"
-                        element={
-                          <ProtectedRoute requiresLogged={true}>
-                            <Outlet />
-                          </ProtectedRoute>
-                        }
+                        element={<Outlet />}
                       >
                         <Route index element={<Basket />} />
                       </Route>
+                      <Route path="contact" element={<Contact />} />
+                      <Route path="regulamin" element={<Regulamin />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Content>

@@ -5,6 +5,8 @@ import Image from "../../components/Image";
 import { useContext } from "react";
 import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
+import { UserContext } from "../../context/UserContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -67,9 +69,13 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
 };
 
 const Basket = () => {
+  const isLogged = useContext(UserContext)?.user.logged;
   const basket = useContext(BasketContext)?.basket;
 
   const basketEbooks = basket?.ebooks;
+
+  const locationUrl = useLocation().pathname;
+  const navigate = useNavigate();
 
   return (
     <Grid
@@ -93,7 +99,14 @@ const Basket = () => {
         ))}
       </Grid>
       {basketEbooks?.length != 0 && (
-        <Grid item container direction="column" alignItems="end" marginTop={2} rowSpacing={2}>
+        <Grid
+          item
+          container
+          direction="column"
+          alignItems="end"
+          marginTop={2}
+          rowSpacing={2}
+        >
           <Grid item>
             <Typography variant="h5" display="inline">
               Razem do zapłaty:
@@ -103,9 +116,24 @@ const Basket = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <Button variant="contained" color="secondary" style={{paddingLeft: 40, paddingRight: 40}}>
-              Zamawiam {`>>`}
-            </Button>
+            {isLogged ? (
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ paddingLeft: 40, paddingRight: 40 }}
+              >
+                Zamawiam {`>>`}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ paddingLeft: 40, paddingRight: 40 }}
+                onClick={() => navigate("/login", { state: locationUrl })}
+              >
+                Zaloguj
+              </Button>
+            )}
           </Grid>
         </Grid>
       )}

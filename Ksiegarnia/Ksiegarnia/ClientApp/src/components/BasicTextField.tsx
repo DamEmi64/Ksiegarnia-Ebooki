@@ -1,5 +1,6 @@
 ﻿import { Grid, Typography, TextField, FormControl, FormHelperText, GridSize } from "@mui/material";
 import RedAsterisk from "./RedAsterisk";
+import React from "react";
 
 const BasicTextField = (props: {
   label: string;
@@ -10,7 +11,8 @@ const BasicTextField = (props: {
   disableSpaceBetween?: boolean;
   fullWidth?: boolean;
   formSize?: GridSize;
-  handleChange: (value: string) => void;
+  formInside?: React.ReactNode;
+  handleChange?: (value: string) => void;
 }) => {
   return (
     <Grid item container justifyContent={props.disableSpaceBetween ? "start" : "space-between"} alignItems="center" columnGap={2}>
@@ -25,8 +27,10 @@ const BasicTextField = (props: {
               {...props.settings}
               value={props.value ? props.value : ""}
               error={props.errorMessage != undefined && props.errorMessage !== ""}
-              onChange={(event: any) => props.handleChange(event.target.value)}
-          />
+              onChange={(event: any) => props.handleChange!(event.target.value)}
+          >
+            {props.formInside}
+          </TextField>
           <FormHelperText error>{props.errorMessage ? props.errorMessage : " "}</FormHelperText>
         </FormControl>
       </Grid>

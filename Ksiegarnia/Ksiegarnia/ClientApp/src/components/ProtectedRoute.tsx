@@ -1,6 +1,6 @@
 ﻿import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 const ProtectedRoute = (props: {
   requiresLogged: boolean;
@@ -8,9 +8,11 @@ const ProtectedRoute = (props: {
 }) => {
   const userContext = React.useContext(UserContext);
 
+  const locationUrl = useLocation().pathname
+
   if (props.requiresLogged) {
     if (!userContext?.user.logged) {
-        return <Navigate to="/login" />
+        return <Navigate to="/login"  state={locationUrl}/>
     }
   } 
   else if (props.requiresLogged == false && userContext?.user.logged) {
