@@ -31,6 +31,9 @@ import BasketProvider from "./context/BasketContext";
 import Basket from "./features/transaction/Basket";
 import Contact from "./pages/Contact";
 import Regulamin from "./pages/Regulamin";
+import axios from "axios";
+
+axios.defaults.withCredentials = true
 
 const theme = createTheme({
   palette: {

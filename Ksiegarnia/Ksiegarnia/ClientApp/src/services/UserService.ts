@@ -14,9 +14,7 @@ export interface RegisterProps {
 export interface UpdateRequest {
   firstName?: string;
   lastName?: string;
-  email?: string;
   phoneNumber?: string;
-  password?: string;
   nick?: string;
 }
 
@@ -85,6 +83,30 @@ class UserService {
       ...request,
       hideInfo: hideInfo,
     });
+  }
+
+  updatePassword(userId: string, oldPassword: string, newPassword: string){
+    return axios.post(`${this.api}/${userId}/passwordChange`, {
+      oldPassword: oldPassword,
+      password: newPassword
+    })
+  }
+
+  getEmailUpdateToken(userId: string, newEmail: string){
+    return axios.get(`${this.api}/${userId}/emailToken`, {
+      params: {
+        newEmail
+      }
+    })
+  }
+
+  updateEmail(userId: string, token: string, newEmail: string){
+    return axios.post(`${this.api}/${userId}/emailChange`, {
+      params: {
+        token: token,
+        newEmail: newEmail
+      }
+    })
   }
 
   getOwnedEbooks(props: GetOwnedEbooksProps) {
