@@ -18,8 +18,9 @@ namespace Tests.Controllers.UserController
         {
             var userRepo = new Mock<IUserRepository>();
             var authService = new Mock<ISmtpService>();
+            var ebookRepo = new Mock<IEBookRepository>();
 
-            var controller = new UsersController(userRepo.Object, authService.Object, env);
+            var controller = new UsersController(userRepo.Object, authService.Object, env, ebookRepo.Object);
 
             var data = new LoginDto()
             {
@@ -42,8 +43,9 @@ namespace Tests.Controllers.UserController
             var userRepo = new Mock<IUserRepository>();
             var authService = new Mock<ISmtpService>();
             userRepo.Setup(x => x.Login(data.Email, data.Password)).ReturnsAsync(new User());
+            var ebookRepo = new Mock<IEBookRepository>();
 
-            var controller = new UsersController(userRepo.Object, authService.Object, env);
+            var controller = new UsersController(userRepo.Object, authService.Object, env, ebookRepo.Object);
             var result = await controller.Login(data);
             Assert.NotNull(result);
         }

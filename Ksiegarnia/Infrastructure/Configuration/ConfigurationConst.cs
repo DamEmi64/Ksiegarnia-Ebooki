@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Configuration.Structures;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Infrastructure
@@ -26,9 +27,9 @@ namespace Infrastructure
 
         public static void ConfigureConst(this WebApplicationBuilder builder)
         {
-            CopyLeak = JsonConvert.DeserializeObject<CopyLeakStruct>(builder.Configuration["CopyLeak"]) ?? new();
-            SMTP = JsonConvert.DeserializeObject<SMTPstruct>(builder.Configuration["SMTP"]) ?? new();
-            Paypal = JsonConvert.DeserializeObject<PaypalStruct>(builder.Configuration["Paypal"]) ?? new();
+            CopyLeak = builder.Configuration.GetSection("CopyLeak").Get<CopyLeakStruct>();
+            SMTP = builder.Configuration.GetSection("SMTP").Get<SMTPstruct>(); ;
+            Paypal = builder.Configuration.GetSection("Paypal").Get<PaypalStruct>(); ;
         }
     }
 }
