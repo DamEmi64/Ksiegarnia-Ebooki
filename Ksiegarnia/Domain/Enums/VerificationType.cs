@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 namespace Domain.Enums
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum Currency
+    public enum VerificationType
     {
-        PLN,
-        EUR,
-        Token
+        Verifing,
+        Accepted,
+        Rejected
     }
 }
