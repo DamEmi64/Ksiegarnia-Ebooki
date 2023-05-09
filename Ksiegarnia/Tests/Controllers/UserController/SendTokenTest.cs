@@ -17,8 +17,9 @@ namespace Tests.Controllers.UserController
         {
             var userRepo = new Mock<IUserRepository>();
             var authService = new Mock<ISmtpService>();
+            var ebookRepo = new Mock<IEBookRepository>();
 
-            var controller = new UsersController(userRepo.Object, authService.Object, env);
+            var controller = new UsersController(userRepo.Object, authService.Object, env, ebookRepo.Object);
             await Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.SendToken("TEST"));
         }
     }

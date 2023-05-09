@@ -19,10 +19,9 @@ namespace Tests.Controllers.UserController
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(userId)).ReturnsAsync(new User());
             var authService = new Mock<ISmtpService>();
+            var ebookRepo = new Mock<IEBookRepository>();
 
-            var controller = new UsersController(userRepo.Object, authService.Object, env);
-
-            var result = await controller.Details(userId);
+            var controller = new UsersController(userRepo.Object, authService.Object, env,ebookRepo.Object);
             await Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.Details(string.Empty));
         }
 
@@ -32,10 +31,10 @@ namespace Tests.Controllers.UserController
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(userId)).ReturnsAsync(new User());
             var authService = new Mock<ISmtpService>();
+            var ebookRepo = new Mock<IEBookRepository>();
 
-            var controller = new UsersController(userRepo.Object, authService.Object, env);
+            var controller = new UsersController(userRepo.Object, authService.Object, env, ebookRepo.Object);
 
-            var result = await controller.Details(userId);
             Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.Details("TEST2"));
         }
 
@@ -45,8 +44,9 @@ namespace Tests.Controllers.UserController
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(userId)).ReturnsAsync(new User());
             var authService = new Mock<ISmtpService>();
+            var ebookRepo = new Mock<IEBookRepository>();
 
-            var controller = new UsersController(userRepo.Object, authService.Object, env);
+            var controller = new UsersController(userRepo.Object, authService.Object, env, ebookRepo.Object);
 
             var result = await controller.Details(userId);
             Assert.NotNull(result);
