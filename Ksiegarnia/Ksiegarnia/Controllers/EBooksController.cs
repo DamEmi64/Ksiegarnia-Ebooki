@@ -68,41 +68,21 @@ namespace Application.Controllers
                 books = books.Where(x => x.Promotion != null && x.Promotion.EndDate > DateTime.Now).ToList();
             }
 
-            // pozyskanie wyróżnionych
-            var booksCache = books.Where(x => x.Prize >= minPrize && (x.Distinction != null && x.Distinction.StartDate.AddDays(x.Distinction.HowLong) > DateTime.UtcNow)).ToList();
-
             var bookDtos = sort switch
             {
-                SortType.DescByPrize => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByGenre => booksCache.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
-                SortType.DescByDate => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByAuthor => booksCache.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByAuthor => booksCache.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByDate => booksCache.OrderBy(x => x.Date).ToDTOs().ToList(),
-                SortType.AscByGenre => booksCache.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
-                SortType.AscByPrize => booksCache.OrderBy(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByName => booksCache.OrderByDescending(x => x.Title).ToDTOs().ToList(),
-                SortType.AscByName => booksCache.OrderBy(x => x.Title).ToDTOs().ToList(),
-                _ => booksCache.OrderBy(x => x.Title).ToDTOs().ToList()
+                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.AscByDate => books.OrderBy(x => x.Date).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.AscByPrize => books.OrderBy(x => x.Prize).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.DescByName => books.OrderByDescending(x => x.Title).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.AscByName => books.OrderBy(x => x.Title).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                _ => books.OrderBy(x => x.Title).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList()
             };
 
-            // Pozyskanie nie wyróżnionych
-            booksCache = books.Where(x => x.Prize >= minPrize && !(x.Distinction != null && x.Distinction.StartDate.AddDays(x.Distinction.HowLong) > DateTime.UtcNow)).ToList();
-
-            bookDtos.AddRange(sort switch
-            {
-                SortType.DescByPrize => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByGenre => booksCache.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
-                SortType.DescByDate => booksCache.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByAuthor => booksCache.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByAuthor => booksCache.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByDate => booksCache.OrderBy(x => x.Date).ToDTOs().ToList(),
-                SortType.AscByGenre => booksCache.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
-                SortType.AscByPrize => booksCache.OrderBy(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByName => booksCache.OrderByDescending(x => x.Title).ToDTOs().ToList(),
-                SortType.AscByName => booksCache.OrderBy(x => x.Title).ToDTOs().ToList(),
-                _ => booksCache.OrderBy(x => x.Title).ToDTOs().ToList()
-            });
 
             if (page <= 0)
             {
@@ -175,7 +155,7 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString());
             }
 
-            if (user == null || book.Author != user || user.Publications.Count(x => x.Distinction != null) > 10)
+            if (user == null || book.Author != user || user.Publications.Count(x => x.Distinction != null) > 3)
             {
                 if (!(await _userRepository.CheckRole(user.Id, Roles.PremiumUser) || await _userRepository.CheckRole(user.Id, Roles.Admin)))
                 {

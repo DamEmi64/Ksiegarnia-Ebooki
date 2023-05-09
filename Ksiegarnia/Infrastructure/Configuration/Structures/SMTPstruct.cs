@@ -6,11 +6,6 @@
     public class SMTPstruct
     {
         /// <summary>
-        ///     Server name
-        /// </summary>
-        public string ServerName { get; set; }
-
-        /// <summary>
         ///     Email
         /// </summary>
         public string Email { get; set; }

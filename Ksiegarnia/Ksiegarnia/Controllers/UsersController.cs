@@ -22,15 +22,17 @@ namespace Application.Controllers
         private readonly IUserRepository _userRepository;
         private readonly ISmtpService _authService;
         private readonly IHostEnvironment _environment;
+        private readonly IEBookRepository _eBookRepository;
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="userRepository"></param>
-        public UsersController(IUserRepository userRepository, ISmtpService authService, IHostEnvironment environment)
+        public UsersController(IUserRepository userRepository, ISmtpService authService, IHostEnvironment environment, IEBookRepository eBookRepository)
         {
             _userRepository = userRepository;
             _authService = authService;
             _environment = environment;
+            _eBookRepository = eBookRepository;
         }
 
         /// <summary>
@@ -152,7 +154,7 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var books = user.EBooks.Select(x => x.EBook);
+            var books = await _eBookRepository.GetEBooks(AuthorName: user.Nick);
 
             if (books == null)
             {
@@ -161,17 +163,17 @@ namespace Application.Controllers
 
             var list = sort switch
             {
-                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ToDTOs().ToList(),
-                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ToDTOs().ToList(),
-                SortType.AscByDate => books.OrderBy(x => x.Date).ToDTOs().ToList(),
-                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ToDTOs().ToList(),
-                SortType.AscByPrize => books.OrderBy(x => x.Prize).ToDTOs().ToList(),
-                SortType.DescByName => books.OrderByDescending(x => x.Title).ToDTOs().ToList(),
-                SortType.AscByName => books.OrderBy(x => x.Title).ToDTOs().ToList(),
-                _ => books.OrderBy(x => x.Title).ToDTOs().ToList()
+                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ThenBy(x=>x.Distinction!=null).ToDTOs().ToList(),
+                SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.DescByDate => books.OrderByDescending(x => x.Prize).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.AscByAuthor => books.OrderBy(x => x.Author.Nick).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.AscByDate => books.OrderBy(x => x.Date).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.AscByGenre => books.OrderBy(x => x.Genre.Name).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.AscByPrize => books.OrderBy(x => x.Prize).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.DescByName => books.OrderByDescending(x => x.Title).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                SortType.AscByName => books.OrderBy(x => x.Title).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
+                _ => books.OrderBy(x => x.Title).ThenBy(x => x.Distinction != null).ToDTOs().ToList()
             };
 
             if (!string.IsNullOrEmpty(title))
