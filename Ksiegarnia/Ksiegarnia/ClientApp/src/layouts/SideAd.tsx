@@ -3,7 +3,7 @@
 const SideAd = () => {
     return (
         <Typography variant="h2" style={{writingMode: "vertical-rl"}} textAlign="center">
-            Reklama
+            
         </Typography>
     )
 }

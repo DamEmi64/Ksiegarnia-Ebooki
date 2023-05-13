@@ -142,7 +142,6 @@ const Register = () => {
         <Grid
           item
           xs={12}
-          md={12}
           lg={10}
           container
           justifyContent={{

@@ -91,7 +91,7 @@ function App() {
               <Grid item xs={1} container justifyContent="center">
                 <Box
                   sx={{
-                    display: { xs: "none", md: "flex" },
+                    display: { xs: "none", md: "flex", justifyContent: "center" },
                   }}
                 >
                   <div
