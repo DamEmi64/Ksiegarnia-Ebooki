@@ -89,9 +89,9 @@ const Login = () => {
     <CategoriesContent>
       <Grid item container justifyContent="center" rowGap={8} marginTop={4}>
         <Grid item xs={12}>
-            <Typography variant="h4" textAlign="center">Logowanie</Typography>
+          <Typography variant="h4" textAlign="center">Logowanie</Typography>
         </Grid>
-        <Grid item xs={3} container direction="column" alignItems="center" rowGap={6}>
+        <Grid item xs={10} md={5} lg={3} container direction="column" alignItems="center" rowGap={6}>
           <BasicTextField
             label="E-mail"
             formSize={7}

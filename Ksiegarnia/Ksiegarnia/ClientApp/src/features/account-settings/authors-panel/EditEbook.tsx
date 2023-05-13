@@ -113,7 +113,8 @@ const EditEbook = () => {
       setForm(gotEboot);
       ebookAuthor = gotEboot.author;
     })
-    .catch(() => {
+    .catch((error) => {
+      console.log(error)
       navigate("/account-settings/authors-panel")
       notificationContext?.setNotification({
         isVisible: true,
