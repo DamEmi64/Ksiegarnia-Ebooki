@@ -19,6 +19,7 @@ namespace Domain.Context
             new EBookReaderEntityConfiguration().Configure(builder.Entity<EBookReader>());
             new UserEntityConfiguration().Configure(builder.Entity<User>());
             new PromotionEntityConfiguration().Configure(builder.Entity<Promotion>());
+            new ReviewEnitityConfiguration().Configure(builder.Entity<Review>());
 
             base.OnModelCreating(builder);
         }

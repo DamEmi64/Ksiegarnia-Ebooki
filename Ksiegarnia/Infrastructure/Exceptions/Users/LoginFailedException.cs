@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class LoginFailedException : DefaultException
+    public class LoginFailedException : ExceptionBase
     {
         public LoginFailedException()
         {

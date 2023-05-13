@@ -3,7 +3,7 @@
     /// <summary>
     ///     Review not found exception
     /// </summary>
-    public class BookReviewNotFound : DefaultException
+    public class BookReviewNotFound : ExceptionBase
     {
         /// <summary>
         ///     Constructor
