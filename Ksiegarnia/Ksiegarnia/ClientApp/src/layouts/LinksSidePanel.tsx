@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const LinksSidePanel = (props: {title: string, links: LinkProps[]}) => {
     return (
-        <Grid item xs={2} container justifyContent="center">
+        <Grid item xs={1} container justifyContent="center">
             <Paper style={{padding: "20px 40px 20px 20px", position: "fixed"}}>
                 <Grid container direction="column" rowGap={2}>
                     <Typography variant="h5">

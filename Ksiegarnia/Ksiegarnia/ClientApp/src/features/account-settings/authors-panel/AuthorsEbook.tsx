@@ -1,16 +1,22 @@
 ﻿import { Button, Grid, Typography } from "@mui/material";
 import Ebook from "../../../models/api/ebook";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Rate from "../../../components/Rate";
 import { useNavigate } from "react-router-dom";
 import Image from "../../../components/Image";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import EbookService from "../../../services/EbookService";
+import { NotificationContext } from "../../../context/NotificationContext";
 
 const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
   const [ebook, setEbook] = useState<Ebook>(props.ebook);
   const [visibleDeleteConfirmation, setVisibleDeleteConfirmation] =
     useState<boolean>(false);
+
+  const notificationContext = useContext(NotificationContext);
+
+  const DELETED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie"
+  const DELETED_FAILED_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle"
 
   const navigate = useNavigate();
 
@@ -21,10 +27,19 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
   const handleDelete = () => {
     EbookService.delete(ebook.id)
     .then(() => {
-        props.update()
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: DELETED_SUCCESSFULY_MESSAGE
+      })
+      props.update()
     })
     .catch((error) => {
-
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: DELETED_FAILED_MESSAGE
+      })
     })
   };
 

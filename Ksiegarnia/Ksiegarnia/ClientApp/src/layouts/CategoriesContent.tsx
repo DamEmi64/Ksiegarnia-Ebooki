@@ -25,14 +25,15 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
           url: genre.name,
         }))}
       />
-      <Grid item xs={10} container direction="column" alignItems="stretch" rowGap={5}>
+      <Grid item xs={10} container direction="column" alignItems="center" rowGap={5}>
         <Grid item container justifyContent="center">
           <Navbar/>
         </Grid>
-        <Grid item container justifyContent="stretch" alignItems="stretch">
-            {props.children}
+        <Grid item container justifyContent="center" alignItems="stretch">
+          {props.children}
         </Grid>
       </Grid>
+      <Grid item xs={1}></Grid>
     </Grid>
   );
 };

@@ -34,10 +34,11 @@ const CustomDatePicker = (props: {
         {props.isRequired && <RedAsterisk />}
       </Grid>
       <Grid item xs={6}>
-        <FormControl>
+        <FormControl fullWidth>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               {...props.settings}
+              fullWidth
               value={props.value === undefined ? null : dayjs(props.value)}
               onChange={(newValue: Dayjs | null) => {
                 if(newValue){
