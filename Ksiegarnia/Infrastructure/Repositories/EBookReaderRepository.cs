@@ -55,6 +55,13 @@ namespace Infrastructure.Repositories
                     .ThenInclude(y => y.User);
         }
 
+        public void Remove(Transaction transaction)
+        {
+            _context.Set<EBookReader>().RemoveRange(transaction.EBookReaders ?? new List<EBookReader>());
+
+            _context.Set<Transaction>().Remove(transaction);
+        }
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();

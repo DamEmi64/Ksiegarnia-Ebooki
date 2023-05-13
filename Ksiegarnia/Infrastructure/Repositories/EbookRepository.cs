@@ -74,7 +74,7 @@ namespace Infrastructure.Repositories
             var book = await Get(id);
             if (book != null)
             {
-                book.Verified = true;
+                book.Verification = Domain.Enums.VerificationType.Accepted;
             }
         }
     }

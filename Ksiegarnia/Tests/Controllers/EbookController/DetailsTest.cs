@@ -23,7 +23,7 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true });
+            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Accepted });
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
@@ -36,7 +36,7 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true });
+            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Accepted });
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
@@ -48,7 +48,7 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = false });
+            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Rejected });
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 
@@ -60,7 +60,7 @@ namespace Tests.Controllers.EbookController
         {
             var userRepo = new Mock<IUserRepository>();
             var bookRepo = new Mock<IEBookRepository>();
-            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verified = true, Genre = new Genre(), Author = new User() });
+            bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Accepted, Genre = new Genre(), Author = new User() });
 
             var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
 

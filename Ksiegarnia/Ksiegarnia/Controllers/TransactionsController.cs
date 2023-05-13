@@ -6,6 +6,7 @@ using Domain.Enums;
 using Domain.DTOs;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
+using Newtonsoft.Json;
 
 namespace Application.Controllers
 {
@@ -40,12 +41,80 @@ namespace Application.Controllers
         /// </summary>
         /// <param name="buyer">Buyer</param>
         /// <param name="currency">Currency (optional)</param>
+        /// <param name="tokens">Gift tokens (optional)</param>
+        /// <param name="transactionType">Transaction type</param>
         /// <returns>Status code</returns>
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpPost("buy")]
-        public async Task<IActionResult> Buy([FromBody] BuyerDto buyer, [FromQuery] string currency)
+        public async Task<IActionResult> Buy([FromBody] BuyerDto buyer, [FromQuery] TransactionType transactionType, [FromQuery] string? currency = null, [FromQuery] List<string>? tokens = null)
+        {
+            return transactionType switch
+            {
+                TransactionType.Token => await BuyViaToken(buyer, tokens),
+                TransactionType.Paypal => await BuyViaPaypal(buyer, currency),
+                _ => await BuyViaToken(buyer, tokens),
+            };
+        }
+
+        private async Task<IActionResult> BuyViaToken(BuyerDto buyer, List<string> tokens)
+        {
+            var client = await _userRepository.Get(buyer.BuyerId);
+            var readers = new List<EBookReader>();
+
+            var buyed = new List<BookDto>();
+
+            foreach (var bookId in buyer.BookIds)
+            {
+                var book = await _eBookRepository.Get(Guid.TryParse(bookId, out Guid id) ? id : Guid.Empty);
+
+                if (book == null)
+                {
+                    throw new BookNotFoundException(bookId);
+                }
+
+                if (book.Verification != VerificationType.Accepted)
+                {
+                    throw new BookNotVerifiedException();
+                }
+
+                var tokensFromBase = JsonConvert.DeserializeObject<List<string>>(book.Tokens);
+
+                var token = tokensFromBase.FirstOrDefault(x=>tokens.Contains(x));
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    tokensFromBase.Remove(token);
+                    book.Tokens = JsonConvert.SerializeObject(tokensFromBase);
+                    buyed.Add(book.ToDTO());
+                    await _eBookRepository.SaveChanges();
+
+                    readers.Add(new EBookReader()
+                    {
+                        BookId = book.Id,
+                        EBook = book,
+                        User = client
+                    });
+                }    
+            }
+
+            var transaction = new Transaction()
+            {
+                Currency = Currency.Token,
+                DateTime = DateTime.UtcNow,
+                Id = Guid.NewGuid(),
+                BuyerId = buyer.BuyerId,
+                EBookReaders = readers
+            };
+
+            await _eBookReaderRepository.Add(transaction);
+            await _eBookReaderRepository.SaveChanges();
+
+            return Ok(buyed);
+        }
+
+        private async Task<IActionResult> BuyViaPaypal(BuyerDto buyer, string currency)
         {
             if (ModelState.IsValid)
             {
@@ -66,7 +135,7 @@ namespace Application.Controllers
                         throw new BookNotFoundException(bookId);
                     }
 
-                    if (!book.Verified)
+                    if (book.Verification != VerificationType.Accepted)
                     {
                         throw new BookNotVerifiedException();
                     }
@@ -124,11 +193,11 @@ namespace Application.Controllers
         [HttpPost("Finish/{id}")]
         public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false)
         {
+            var transaction = await _eBookReaderRepository.GetTransaction(id);
+
             if (succeeded)
             {
-                var reader = await _eBookReaderRepository.GetTransaction(id);
-
-                if (reader != null)
+                if (transaction != null)
                 {
                     var cancel = Url.Action(nameof(FinishSendingCashToUser), values: new { id = id, succeeded = false }) ?? string.Empty;
                     var redirect = Url.Action(nameof(FinishSendingCashToUser), values: new { id = id, succeeded = true }) ?? string.Empty;
@@ -156,6 +225,14 @@ namespace Application.Controllers
                 }
 
                 await _eBookReaderRepository.SaveChanges();
+            }
+            else
+            {
+                if (transaction != null)
+                {
+                    _eBookReaderRepository.Remove(transaction);
+                    await _eBookRepository.SaveChanges();
+                }
             }
 
             return HttpStatusCode.OK;
