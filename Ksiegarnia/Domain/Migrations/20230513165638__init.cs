@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Domain.Migrations
 {
-    public partial class init : Migration
+    public partial class _init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,34 +24,6 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Nick = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Genre",
                 columns: table => new
                 {
@@ -65,17 +37,32 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "HideInfo",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    Finished = table.Column<bool>(type: "bit", nullable: false)
+                    FirstName = table.Column<bool>(type: "bit", nullable: false),
+                    Email = table.Column<bool>(type: "bit", nullable: false),
+                    LastName = table.Column<bool>(type: "bit", nullable: false),
+                    Phone = table.Column<bool>(type: "bit", nullable: false),
+                    Age = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_HideInfo", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Premiums",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DaysToFinishPremium = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Premiums", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,6 +84,68 @@ namespace Domain.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nick = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PremiumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HideInfoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_HideInfo_HideInfoId",
+                        column: x => x.HideInfoId,
+                        principalTable: "HideInfo",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Premiums_PremiumId",
+                        column: x => x.PremiumId,
+                        principalTable: "Premiums",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BuyerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false),
+                    PremiumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Finished = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Premiums_PremiumId",
+                        column: x => x.PremiumId,
+                        principalTable: "Premiums",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -197,8 +246,9 @@ namespace Domain.Migrations
                     PageNumber = table.Column<int>(type: "int", nullable: false),
                     GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Tokens = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Verified = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    Verification = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -213,6 +263,26 @@ namespace Domain.Migrations
                         name: "FK_Ebooks_Genre_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genre",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Distinction",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HowLong = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Distinction", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Distinction_Ebooks_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Ebooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -248,7 +318,7 @@ namespace Domain.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EBookId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -269,7 +339,28 @@ namespace Domain.Migrations
                         column: x => x.TransactionId,
                         principalTable: "Transactions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Opinion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Grade = table.Column<decimal>(type: "decimal(2,1)", precision: 2, scale: 1, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Readers_ReaderId",
+                        column: x => x.ReaderId,
+                        principalTable: "Readers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -305,11 +396,27 @@ namespace Domain.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_HideInfoId",
+                table: "AspNetUsers",
+                column: "HideInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_PremiumId",
+                table: "AspNetUsers",
+                column: "PremiumId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Distinction_BookId",
+                table: "Distinction",
+                column: "BookId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ebooks_AuthorId",
@@ -341,6 +448,16 @@ namespace Domain.Migrations
                 name: "IX_Readers_UserId",
                 table: "Readers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ReaderId",
+                table: "Reviews",
+                column: "ReaderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_PremiumId",
+                table: "Transactions",
+                column: "PremiumId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -361,13 +478,19 @@ namespace Domain.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Distinction");
+
+            migrationBuilder.DropTable(
                 name: "Promotions");
 
             migrationBuilder.DropTable(
-                name: "Readers");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Readers");
 
             migrationBuilder.DropTable(
                 name: "Ebooks");
@@ -380,6 +503,12 @@ namespace Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "Genre");
+
+            migrationBuilder.DropTable(
+                name: "HideInfo");
+
+            migrationBuilder.DropTable(
+                name: "Premiums");
         }
     }
 }

@@ -85,7 +85,7 @@ namespace Application.Controllers
 
             if (notify == null)
             {
-                throw new DefaultException(HttpStatusCode.NotFound, "Notification not found");
+                throw new ExceptionBase(HttpStatusCode.NotFound, "Notification not found");
             }
 
             return notify;
@@ -104,7 +104,7 @@ namespace Application.Controllers
 
             if (notify == null)
             {
-                throw new DefaultException(HttpStatusCode.NotFound, "Notification not found");
+                throw new ExceptionBase(HttpStatusCode.NotFound, "Notification not found");
             }
 
             await _notifyRepository.Remove(notify.Id);
@@ -127,7 +127,7 @@ namespace Application.Controllers
 
             if (notify == null)
             {
-                throw new DefaultException(HttpStatusCode.NotFound, "Notification not found");
+                throw new ExceptionBase(HttpStatusCode.NotFound, "Notification not found");
             }
 
             notify.Status = status;

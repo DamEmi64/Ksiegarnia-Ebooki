@@ -160,13 +160,13 @@ namespace Application.Controllers
             {
                 if (!(await _userRepository.CheckRole(user.Id, Roles.PremiumUser) || await _userRepository.CheckRole(user.Id, Roles.Admin)))
                 {
-                    throw new DefaultException();
+                    throw new ExceptionBase();
                 }
                 else
                 {
                     if (await _userRepository.CheckRole(user.Id, Roles.PremiumUser) && CountFreeDistinctions(user) < user.Publications?.Count(x => x.Promotion != null))
                     {
-                        throw new DefaultException();
+                        throw new ExceptionBase();
                     }
                 }
             }

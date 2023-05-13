@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class GenreNotFoundException : DefaultException
+    public class GenreNotFoundException : ExceptionBase
     {
         public GenreNotFoundException()
         {

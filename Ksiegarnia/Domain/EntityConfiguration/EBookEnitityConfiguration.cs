@@ -15,6 +15,7 @@ namespace Domain.EntityConfiguration
             builder.Property(x => x.Prize).HasPrecision(5, 2);
             builder.Property(x => x.Verification).HasDefaultValue(VerificationType.Verifing);
             builder.Property(x => x.Description).HasMaxLength(255);
+            builder.Property(x => x.Tokens).IsRequired(false);
             builder.HasOne(x=>x.Genre).WithMany(x=>x.Books).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.Author).WithMany(x => x.Publications).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.Distinction).WithOne(x => x.Book).HasForeignKey<Distinction>(x => x.BookId).OnDelete(DeleteBehavior.Cascade);

@@ -77,7 +77,7 @@ namespace Application.Controllers
                         book.Verification = Domain.Enums.VerificationType.Rejected;
                         await _eBookRepository.SaveChanges();
 
-                        throw new DefaultException(System.Net.HttpStatusCode.Conflict,
+                        throw new ExceptionBase(System.Net.HttpStatusCode.Conflict,
                             "PLAGIAT",
                             $"Wykryto plagiat na poziome {scanResults.Results.Score.AggregatedScore}");
                     }

@@ -157,7 +157,7 @@ namespace Infrastructure.Repositories
                 {
                     errorstr += error.Description;
                 }
-                throw new DefaultException(HttpStatusCode.BadRequest, "Register Failed", errorstr);
+                throw new ExceptionBase(HttpStatusCode.BadRequest, "Register Failed", errorstr);
             }
         }
 

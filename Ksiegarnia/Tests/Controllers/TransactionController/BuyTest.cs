@@ -19,7 +19,6 @@ namespace Tests.Controllers.TransactionController
         [Fact]
 
         public async Task Failed_BookNotFoundException_empty()
-
         {
             var bookReaderRepository = new Mock<IEBookReaderRepository>().Object;
             var bookRepository = new Mock<IEBookRepository>();
@@ -38,7 +37,6 @@ namespace Tests.Controllers.TransactionController
                 BookIds = new List<string>() { string.Empty },
                 BuyerId = userId
             };
-
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
 
@@ -173,9 +171,11 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = userId
             };
 
+         //   _paymentService.Setup(x=>x.GetUri("","",transaction))
+
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
             controller.Url = urlhelper.Object;
-            var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, string.Empty);
+            var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Token, string.Empty);
             Assert.NotNull(result);
         }
 
@@ -204,7 +204,7 @@ namespace Tests.Controllers.TransactionController
 
             var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
             controller.Url = urlhelper.Object;
-            var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, "EUR");
+            var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Token, "EUR");
             Assert.NotNull(result);
         }
     }

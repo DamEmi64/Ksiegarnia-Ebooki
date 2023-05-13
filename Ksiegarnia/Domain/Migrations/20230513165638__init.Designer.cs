@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(KsiegarniaContext))]
-    [Migration("20230425110502_porzadki")]
-    partial class porzadki
+    [Migration("20230513165638__init")]
+    partial class _init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,10 +88,13 @@ namespace Domain.Migrations
                         .HasMaxLength(86)
                         .HasColumnType("nvarchar(86)");
 
-                    b.Property<bool>("Verified")
+                    b.Property<string>("Tokens")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Verification")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 
@@ -114,7 +117,7 @@ namespace Domain.Migrations
                     b.Property<Guid?>("EBookId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TransactionId")
+                    b.Property<Guid?>("TransactionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
@@ -238,7 +241,8 @@ namespace Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Grade")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(2, 1)
+                        .HasColumnType("decimal(2,1)");
 
                     b.Property<string>("Opinion")
                         .IsRequired()
@@ -547,8 +551,7 @@ namespace Domain.Migrations
                     b.HasOne("Domain.Entitites.Transaction", "Transaction")
                         .WithMany("EBookReaders")
                         .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Domain.Entitites.User", "User")
                         .WithMany("EBooks")
@@ -579,7 +582,7 @@ namespace Domain.Migrations
                     b.HasOne("Domain.Entitites.EBookReader", "Reader")
                         .WithMany("Reviews")
                         .HasForeignKey("ReaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Reader");

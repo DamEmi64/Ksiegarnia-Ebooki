@@ -113,7 +113,7 @@ namespace Application.Controllers
 
                 if (transaction == null)
                 {
-                    throw new DefaultException(HttpStatusCode.NotFound, "Transaction not found");
+                    throw new ExceptionBase(HttpStatusCode.NotFound, "Transaction not found");
                 }
 
                 var user = await _userRepository.Get(transaction.BuyerId);

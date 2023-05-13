@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Exceptions
 {
-    public class BookNotFoundException : DefaultException
+    public class BookNotFoundException : ExceptionBase
     {
         public BookNotFoundException(string bookId)
         {

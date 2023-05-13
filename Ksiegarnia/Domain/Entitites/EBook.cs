@@ -15,7 +15,7 @@ namespace Domain.Entitites
         public Genre Genre { get; set; }
         public User Author { get; set; }
         public Promotion? Promotion { get; set; }
-        public string Tokens { get; set; }
+        public string? Tokens { get; set; }
         public Distinction? Distinction { get; set; }
         public DateTime Date { get; set; }
         public VerificationType Verification { get; set; }

@@ -8,7 +8,7 @@ namespace Infrastructure.Services.Paypal
     /// <summary>
     ///     Paypal service
     /// </summary>
-    partial class PaypalService : IPaymentService
+    public partial class PaypalService : IPaymentService
     {
 
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -47,7 +47,7 @@ namespace Infrastructure.Services.Paypal
                             var link = links.Current;
                             if (link.rel.ToLower().Equals("approval_url"))
                             {
-                               yield return link.href;
+                                yield return link.href;
                             }
                         }
                     }
@@ -63,7 +63,7 @@ namespace Infrastructure.Services.Paypal
                         var link = links.Current;
                         if (link.rel.ToLower().Equals("approval_url"))
                         {
-                           yield return link.href;
+                            yield return link.href;
                         }
                     }
                 }
@@ -116,15 +116,17 @@ namespace Infrastructure.Services.Paypal
 
             foreach (var book in transaction.Books)
             {
+                var prize = book.Prize * commission / 100 + book.Prize;
+                currency += prize;
                 itemlist.items.Add(new Item()
                 {
                     name = book.Title,
                     currency = transaction.Currency.ToString(),
                     quantity = "1",
-                    sku = "asd"
+                    sku = "asd",
+                    price = prize.ToString(),
                 });
 
-                currency += book.Prize;
             }
 
             var urls = new RedirectUrls()
@@ -136,13 +138,13 @@ namespace Infrastructure.Services.Paypal
             var amount = new Amount()
             {
                 currency = transaction.Currency.ToString(),
-                total = (currency + currency * commission).ToString()
+                total = currency.ToString()
             };
 
             var transactionPaypal = new List<Transaction>();
             transactionPaypal.Add(new Transaction()
             {
-                description = "Zakup książki",
+                description = itemlist.items.Count > 1 ? "Zakup książek - ebookWorld" : "Zakup książki - ebookWorld",
                 invoice_number = Guid.NewGuid().ToString(),
                 amount = amount,
                 item_list = itemlist
