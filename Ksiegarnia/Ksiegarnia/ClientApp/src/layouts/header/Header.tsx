@@ -39,31 +39,65 @@ const Header = () => {
           display: { xs: "none", lg: "flex" },
           justifyContent: "end",
           alignItems: "center",
-          columnGap: 4,
-          marginRight: 4,
         }}
       >
-        {!isUserLogged ? (
-          <React.Fragment>
-            <Button variant="contained" color="info" href="/register">
-              Zarejestruj
-            </Button>
-            <Button variant="contained" color="primary" href="/login">
-              Zaloguj się
-            </Button>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <AccountMenu />
-            <Button
-              className="premium-button"
-              variant="contained"
-              href="account-settings/premium"
-            >
-              Premium
-            </Button>
-          </React.Fragment>
-        )}
+        <Link href="/">
+          <img src={logo} height="55" width="197" />
+        </Link>
+        <Grid
+          item
+          container
+          flexGrow={1}
+          justifyContent="space-around"
+          alignItems="center"
+        >
+          <Grid item lg={6} xl={7} marginLeft={6}>
+            <TextField
+              className="inputRounded"
+              placeholder="Wpisz zagadnienie, tytuł lub autora"
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => console.log("AA")}>
+                    <Search />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            lg={5}
+            xl={4}
+            container
+            justifyContent="end"
+            alignItems="center"
+            columnGap={3}
+          >
+            {!isUserLogged ? (
+              <React.Fragment>
+                <Button variant="contained" color="info" href="/register">
+                  Zarejestruj
+                </Button>
+                <Button variant="contained" color="primary" href="/login">
+                  Zaloguj się
+                </Button>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <AccountMenu />
+                <Button
+                  className="premium-button"
+                  variant="contained"
+                  href="account-settings/premium"
+                >
+                  Premium
+                </Button>
+              </React.Fragment>
+            )}
+            <Cart />
+          </Grid>
+        </Grid>
       </Box>
     );
   };
@@ -115,58 +149,25 @@ const Header = () => {
           display: { xs: "flex", lg: "none" },
           justifyContent: "end",
           alignItems: "center",
-          columnGap: 4,
-          marginRight: 4,
+          flexDirection: "column",
+          rowGap: 2,
         }}
       >
-        <IconButton onClick={handleClick}>
-          <MenuIcon fontSize="large" style={{ color: "white" }} />
-        </IconButton>
-        <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-          {!isUserLogged
-            ? [
-                <MenuItem key={1} href="/register">Zarejestruj</MenuItem>,
-                <MenuItem key={2} href="/login">Zaloguj się</MenuItem>,
-              ]
-            : [
-                ...[
-                  accountMenuLinks.map((link: LinkProps, index: number) => (
-                    <MenuItem
-                      key={index}
-                      onClick={() => {
-                        handleCloseMenu();
-                        navigate(`/account-settings/${link.url}`);
-                      }}
-                    >
-                      {link.title}
-                    </MenuItem>
-                  )),
-                  <MenuItem key={"l"} onClick={handleLogout}>Wyloguj</MenuItem>,
-                ],
-              ]}
-        </Menu>
-      </Box>
-    );
-  };
-
-  return (
-    <AppBar
-      position="static"
-      color="secondary"
-      style={{ padding: "20px 40px" }}
-    >
-      <Toolbar>
-        <Link href="/">
-          <img src={logo} height="55" width="217" />
-        </Link>
+        <Grid item container justifyContent="space-between" alignItems="center">
+          <Link href="/">
+            <img src={logo} height="55" width="197" />
+          </Link>
+          <Cart />
+        </Grid>
         <Grid
           item
           container
           flexGrow={1}
           justifyContent="space-around"
           alignItems="center"
+          columnGap={2}
         >
-          <Grid item flexGrow={1} marginLeft={6}>
+          <Grid item flexGrow={1}>
             <TextField
               className="inputRounded"
               placeholder="Wpisz zagadnienie, tytuł lub autora"
@@ -180,10 +181,52 @@ const Header = () => {
               }}
             />
           </Grid>
-          <WideScreenMenu />
-          <SmallScreenMenu />
-          <Cart />
+          <IconButton onClick={handleClick}>
+            <MenuIcon fontSize="large" style={{ color: "white" }} />
+          </IconButton>
+          <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+            {!isUserLogged
+              ? [
+                  <MenuItem key={1} onClick={() => navigate("/register")}>
+                    Zarejestruj
+                  </MenuItem>,
+                  <MenuItem key={2} onClick={() => navigate("/login")}>
+                    Zaloguj się
+                  </MenuItem>,
+                ]
+              : [
+                  ...[
+                    accountMenuLinks.map((link: LinkProps, index: number) => (
+                      <MenuItem
+                        key={index}
+                        onClick={() => {
+                          handleCloseMenu();
+                          navigate(`/account-settings/${link.url}`);
+                        }}
+                      >
+                        {link.title}
+                      </MenuItem>
+                    )),
+                    <MenuItem key={"l"} onClick={handleLogout}>
+                      Wyloguj
+                    </MenuItem>,
+                  ],
+                ]}
+          </Menu>
         </Grid>
+      </Box>
+    );
+  };
+
+  return (
+    <AppBar
+      position="static"
+      color="secondary"
+      style={{ padding: "20px 40px" }}
+    >
+      <Toolbar>
+        <WideScreenMenu />
+        <SmallScreenMenu />
       </Toolbar>
     </AppBar>
   );

@@ -7,7 +7,7 @@ import Loading from "../../../pages/Loading";
 const Data = (props: { label: string; value: string }) => {
   return (
     <React.Fragment>
-      <Grid item xs={4} container>
+      <Grid item xs={4} container rowGap={6}>
         <Grid item xs={6}>
           <Typography variant="h6" display="inline">
             {props.label}

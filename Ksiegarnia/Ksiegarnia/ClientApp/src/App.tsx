@@ -7,7 +7,7 @@ import Header from "./layouts/header/Header";
 import Content from "./layouts/Content";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
-import { createTheme, CssBaseline, Grid, makeStyles } from "@mui/material";
+import { Box, createTheme, CssBaseline, Grid, makeStyles } from "@mui/material";
 import SideAd from "./layouts/SideAd";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -33,7 +33,7 @@ import Contact from "./pages/Contact";
 import Regulamin from "./pages/Regulamin";
 import axios from "axios";
 
-axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true;
 
 const theme = createTheme({
   palette: {
@@ -89,15 +89,21 @@ function App() {
             </Grid>
             <Grid item container flexGrow={2}>
               <Grid item xs={1} container justifyContent="center">
-                <div
-                  style={{
-                    top: "50%",
-                    transform: "translate(0, -50%)",
-                    position: "fixed",
+                <Box
+                  sx={{
+                    display: { xs: "none", md: "flex" },
                   }}
                 >
-                  <SideAd />
-                </div>
+                  <div
+                    style={{
+                      top: "50%",
+                      transform: "translate(0, -50%)",
+                      position: "fixed",
+                    }}
+                  >
+                    <SideAd />
+                  </div>
+                </Box>
               </Grid>
               <Grid item xs={10} container rowGap={10}>
                 <Grid item xs={12}>
@@ -162,10 +168,7 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
-                      <Route
-                        path="/transaction"
-                        element={<Outlet />}
-                      >
+                      <Route path="/transaction" element={<Outlet />}>
                         <Route index element={<Basket />} />
                       </Route>
                       <Route path="contact" element={<Contact />} />
