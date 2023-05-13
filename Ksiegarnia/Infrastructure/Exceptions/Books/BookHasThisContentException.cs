@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class BookHasThisContentException : DefaultException
+    public class BookHasThisContentException : ExceptionBase
     {
         public BookHasThisContentException(string id)
         {

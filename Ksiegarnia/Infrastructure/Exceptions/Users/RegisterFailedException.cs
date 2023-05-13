@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class RegisterFailedException : DefaultException
+    public class RegisterFailedException : ExceptionBase
     {
         public RegisterFailedException()
         {

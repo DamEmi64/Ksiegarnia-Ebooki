@@ -61,7 +61,7 @@ namespace Infrastructure.Configuration
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
 
-                if (exception is DefaultException defaultException)
+                if (exception is ExceptionBase defaultException)
                 {
                     context.Response.StatusCode = (int)defaultException.StatusCode;
                     await context.Response.WriteAsJsonAsync(new { Title = defaultException.Title, Description = defaultException.Description });

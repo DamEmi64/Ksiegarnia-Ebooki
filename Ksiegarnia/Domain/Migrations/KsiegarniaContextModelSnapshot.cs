@@ -87,7 +87,6 @@ namespace Domain.Migrations
                         .HasColumnType("nvarchar(86)");
 
                     b.Property<string>("Tokens")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Verification")
@@ -240,7 +239,8 @@ namespace Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Grade")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(2, 1)
+                        .HasColumnType("decimal(2,1)");
 
                     b.Property<string>("Opinion")
                         .IsRequired()
@@ -580,7 +580,7 @@ namespace Domain.Migrations
                     b.HasOne("Domain.Entitites.EBookReader", "Reader")
                         .WithMany("Reviews")
                         .HasForeignKey("ReaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Reader");

@@ -217,7 +217,7 @@ namespace Application.Controllers
         {
             if (DateTime.UtcNow.Year - data.BirthDate.Year < 18)
             {
-                throw new DefaultException();
+                throw new ExceptionBase();
             }
 
             try

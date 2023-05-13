@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class UserNotFoundException : DefaultException
+    public class UserNotFoundException : ExceptionBase
     {
         public UserNotFoundException(string id)
         {

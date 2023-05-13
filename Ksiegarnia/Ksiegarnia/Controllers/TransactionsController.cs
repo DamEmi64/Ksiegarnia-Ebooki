@@ -48,17 +48,35 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpPost("buy")]
-        public async Task<IActionResult> Buy([FromBody] BuyerDto buyer, [FromQuery] TransactionType transactionType, [FromQuery] string? currency = null, [FromQuery] List<string>? tokens = null)
+        public async Task<string> Buy([FromBody] BuyerDto buyer, [FromQuery] TransactionType transactionType, [FromQuery] string? currency = null, [FromQuery] List<string>? tokens = null)
         {
-            return transactionType switch
+            try
             {
-                TransactionType.Token => await BuyViaToken(buyer, tokens),
-                TransactionType.Paypal => await BuyViaPaypal(buyer, currency),
-                _ => await BuyViaToken(buyer, tokens),
-            };
+                return transactionType switch
+                {
+                    TransactionType.Token => await BuyViaToken(buyer, tokens),
+                    TransactionType.Paypal => await BuyViaPaypal(buyer, currency),
+                    _ => await BuyViaToken(buyer, tokens),
+                };
+            }
+            catch (PayPal.PaymentsException e)
+            {
+                var list = new List<string>();
+                
+                foreach ( var detail in e.Details.details)
+                {
+                    list.Add(detail.issue);
+                }
+
+                throw new TransactionFailedException(list);
+            }
+            catch (Exception)
+            {
+                throw new TransactionFailedException();
+            }
         }
 
-        private async Task<IActionResult> BuyViaToken(BuyerDto buyer, List<string> tokens)
+        private async Task<string> BuyViaToken(BuyerDto buyer, List<string> tokens)
         {
             var client = await _userRepository.Get(buyer.BuyerId);
             var readers = new List<EBookReader>();
@@ -79,24 +97,27 @@ namespace Application.Controllers
                     throw new BookNotVerifiedException();
                 }
 
-                var tokensFromBase = JsonConvert.DeserializeObject<List<string>>(book.Tokens);
+                var tokensFromBase = JsonConvert.DeserializeObject<List<string>>(book.Tokens ?? String.Empty);
 
-                var token = tokensFromBase.FirstOrDefault(x=>tokens.Contains(x));
-
-                if (!string.IsNullOrEmpty(token))
+                if (tokensFromBase != null)
                 {
-                    tokensFromBase.Remove(token);
-                    book.Tokens = JsonConvert.SerializeObject(tokensFromBase);
-                    buyed.Add(book.ToDTO());
-                    await _eBookRepository.SaveChanges();
+                    var token = tokensFromBase.FirstOrDefault(x => tokens.Contains(x));
 
-                    readers.Add(new EBookReader()
+                    if (!string.IsNullOrEmpty(token))
                     {
-                        BookId = book.Id,
-                        EBook = book,
-                        User = client
-                    });
-                }    
+                        tokensFromBase.Remove(token);
+                        book.Tokens = JsonConvert.SerializeObject(tokensFromBase);
+                        buyed.Add(book.ToDTO());
+                        await _eBookRepository.SaveChanges();
+
+                        readers.Add(new EBookReader()
+                        {
+                            BookId = book.Id,
+                            EBook = book,
+                            User = client
+                        });
+                    }
+                }
             }
 
             var transaction = new Transaction()
@@ -111,10 +132,16 @@ namespace Application.Controllers
             await _eBookReaderRepository.Add(transaction);
             await _eBookReaderRepository.SaveChanges();
 
-            return Ok(buyed);
+            var cache = "";
+            foreach (var buy in buyed)
+            {
+                cache += " " + buy.Title;
+            }
+
+            return $"Zakupiono przez tokeny:{cache}";
         }
 
-        private async Task<IActionResult> BuyViaPaypal(BuyerDto buyer, string currency)
+        private async Task<string> BuyViaPaypal(BuyerDto buyer, string currency)
         {
             if (ModelState.IsValid)
             {
@@ -174,11 +201,11 @@ namespace Application.Controllers
                 {
                     await _eBookReaderRepository.Add(transaction);
                     await _eBookReaderRepository.SaveChanges();
-                    return Redirect(url);
+                    return url;
                 }
             }
 
-            return BadRequest();
+            throw new TransactionFailedException();
         }
 
         /// <summary>
@@ -214,14 +241,14 @@ namespace Application.Controllers
 
                             if (response.IsSuccessStatusCode)
                             {
-                                throw new DefaultException(HttpStatusCode.BadRequest, "Transaction failed - sending money to author");
+                                throw new ExceptionBase(HttpStatusCode.BadRequest, "Transaction failed - sending money to author");
                             }
                         }
                     }
                 }
                 else
                 {
-                    throw new DefaultException(HttpStatusCode.BadRequest, "Transaction failed");
+                    throw new ExceptionBase(HttpStatusCode.BadRequest, "Transaction failed");
                 }
 
                 await _eBookReaderRepository.SaveChanges();
@@ -263,7 +290,7 @@ namespace Application.Controllers
             }
             else
             {
-                throw new DefaultException(HttpStatusCode.BadRequest, "Send cash to user failed.");
+                throw new ExceptionBase(HttpStatusCode.BadRequest, "Send cash to user failed.");
             }
 
             return HttpStatusCode.OK;

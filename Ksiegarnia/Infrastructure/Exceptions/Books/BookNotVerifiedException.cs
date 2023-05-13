@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class BookNotVerifiedException : DefaultException
+    public class BookNotVerifiedException : ExceptionBase
     {
         public BookNotVerifiedException()
             : base()

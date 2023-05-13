@@ -2,13 +2,13 @@
 
 namespace Infrastructure.Exceptions
 {
-    public class DefaultException : Exception
+    public class ExceptionBase : Exception
     {
-        public DefaultException()
+        public ExceptionBase()
         {
 
         }
-        public DefaultException(HttpStatusCode statusCode, string title, string description = "")
+        public ExceptionBase(HttpStatusCode statusCode, string title, string description = "")
         {
             StatusCode = statusCode;
             Title = title;

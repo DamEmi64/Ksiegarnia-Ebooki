@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class TokenNotFoundException : DefaultException
+    public class TokenNotFoundException : ExceptionBase
     {
         public TokenNotFoundException()
         {

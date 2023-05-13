@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Exceptions
 {
-    public class TransactionNotFoundException : DefaultException
+    public class TransactionNotFoundException : ExceptionBase
     {
         public TransactionNotFoundException()
         {
