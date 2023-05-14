@@ -33,7 +33,10 @@ namespace Infrastructure.Repositories
 
         public async Task<Transaction?> GetTransaction(Guid id)
         {
-            return (await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
+            return (await _context.Set<EBookReader>()
+                    .Include(x=>x.EBook)
+                    .ThenInclude(x=>x.Author)
+                    .FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
         }
 
         public IEnumerable<Transaction> GetTransactions(string id)

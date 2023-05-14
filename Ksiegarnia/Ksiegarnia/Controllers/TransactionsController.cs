@@ -349,7 +349,7 @@ namespace Application.Controllers
             {
                 var list = _eBookReaderRepository.GetTransactions(userId);
 
-                result = list.Where(x => x.EBookReaders.Any(x => x.EBook?.Author.Id == authorId)).ToDTOs().ToList();
+                result = list.Where(x => x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().ToList();
             }
 
             return Paging(result, page, pageSize);
