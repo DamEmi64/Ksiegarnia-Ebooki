@@ -30,7 +30,11 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
     return (
       <Box
         sx={{
-          display: { xs: "none", lg: "flex", justifyContent: "stretch" },
+          display: {
+            xs: "none",
+            lg: "flex",
+            justifyContent: "stretch",
+          },
         }}
       >
         <LinksSidePanel
@@ -72,7 +76,7 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
         <Button
           variant="contained"
           onClick={handleClick}
-          style={{ padding: "5px 60px" }}
+          style={{ padding: "5px 20px" }}
         >
           <Typography variant="h5">Kategorie</Typography>
         </Button>
@@ -91,14 +95,15 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
 
   return (
     <Grid container justifyContent="start">
-      <Grid item xs={1}>
+      <Grid item xs={1} lg={1.5} container justifyContent="start" alignItems="start">
         <SmallScreenCategories />
         <WideScreenCategories />
       </Grid>
       <Grid
         item
         container
-        xs={10}
+        xs={9}
+        md={10.5}
         direction="column"
         alignItems="center"
         rowGap={5}
@@ -106,11 +111,19 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
         <Grid item container justifyContent="center">
           <Navbar />
         </Grid>
-        <Grid item container justifyContent="center" alignItems="stretch">
-          {props.children}
+        <Grid item container justifyContent="center">
+          <Grid
+            item
+            xs={11}
+            container
+            justifyContent="center"
+            alignItems="stretch"
+          >
+            {props.children}
+          </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={1}></Grid>
+      <Grid item xs={1.5} display={{ xs: "flex", md: "none" }}></Grid>
     </Grid>
   );
 };

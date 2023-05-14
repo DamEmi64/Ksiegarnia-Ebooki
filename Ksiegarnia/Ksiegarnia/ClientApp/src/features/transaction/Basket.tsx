@@ -7,6 +7,9 @@ import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
 import { UserContext } from "../../context/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import TransactionService from "../../services/TransactionService";
+import Loading from "../../pages/Loading";
+import { NotificationContext } from "../../context/NotificationContext";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -69,13 +72,52 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
 };
 
 const Basket = () => {
-  const isLogged = useContext(UserContext)?.user.logged;
-  const basket = useContext(BasketContext)?.basket;
+  const userContext = useContext(UserContext);
+  const userId = userContext?.user.data?.id;
+  const isLogged = userContext?.user.logged;
+
+  const notificationContext = useContext(NotificationContext)
+  
+  const basketContext = useContext(BasketContext)
+  const basket = basketContext?.basket;
 
   const basketEbooks = basket?.ebooks;
 
   const locationUrl = useLocation().pathname;
   const navigate = useNavigate();
+
+  const NOT_SUBMITED_TRANSACTION = "Nie udało się złożyć zamówienia"
+  const SUCCESSFULY_SUBMITED_TRANSACTION = "Udało się złożyć zamówienie" 
+
+  if (!basketEbooks || !userContext) {
+    return <Loading />;
+  }
+
+  const handleTransaction = () => {
+    const basketEbooksIds: string[] = basketEbooks.map(
+      (ebook: Ebook) => ebook.id
+    );
+
+    TransactionService.handleTransaction(userId!, basketEbooksIds)
+    .then((response) => {
+      console.log(response)
+      basketContext?.clear()
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_SUBMITED_TRANSACTION
+      })
+      navigate("/account-settings/transactions")
+    })
+    .catch((error) => {
+      console.log(error)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: NOT_SUBMITED_TRANSACTION
+      })
+    })
+  };
 
   return (
     <Grid
@@ -121,6 +163,7 @@ const Basket = () => {
                 variant="contained"
                 color="secondary"
                 style={{ paddingLeft: 40, paddingRight: 40 }}
+                onClick={handleTransaction}
               >
                 Zamawiam {`>>`}
               </Button>

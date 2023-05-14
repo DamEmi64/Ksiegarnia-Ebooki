@@ -7,14 +7,14 @@ import Loading from "../../../pages/Loading";
 const Data = (props: { label: string; value: string }) => {
   return (
     <React.Fragment>
-      <Grid item xs={4} container rowGap={6}>
-        <Grid item xs={6}>
-          <Typography variant="h6" display="inline">
+      <Grid item xs={12} md={5.5} container justifyContent="space-between">
+        <Grid item>
+          <Typography variant="h6" display="inline" textAlign="end">
             {props.label}
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="h6" display="inline">
+          <Typography variant="h6" display="inline" textAlign="end">
             {props.value}
           </Typography>
         </Grid>
@@ -26,34 +26,36 @@ const Data = (props: { label: string; value: string }) => {
 const ViewAccountDetails = (props: {
   setIsEditMode: (isEditMode: boolean) => void;
 }) => {
+  const user = useContext(UserContext)?.user.data;
 
-  const user = useContext(UserContext)?.user.data
-
-  if(!user){
-    return <Loading/> 
+  if (!user) {
+    return <Loading />;
   }
 
   return (
-    <Grid item container direction="column" alignItems="center" rowGap={6}>
-      <Grid item container justifyContent="center" columnGap={12}>
+    <Grid item container justifyContent="center">
+      <Grid
+        item
+        container
+        justifyContent={{ xs: "center", md: "space-between" }}
+        rowGap={6}
+      >
         <Data label={"Imię"} value={user.firstName} />
         <Data label={"Nazwisko"} value={user.lastName} />
-      </Grid>
-      <Grid item container justifyContent="center" columnGap={12}>
         <Data label={"E-mail"} value={user.email} />
         <Data label={"Pseudonim"} value={user.nick} />
-      </Grid>
-      <Grid item container justifyContent="center" columnGap={12}>
         <Data label={"Numer tel."} value={user.phone} />
         <Data label={"Wiek"} value={(user.age - 1970).toString()} />
+        <Grid item xs={12} container justifyContent="center"  marginTop={4}>
+          <Button
+            variant="contained"
+            onClick={() => props.setIsEditMode(true)}
+            style={{ padding: "6px 60px" }}
+          >
+            Edytuj
+          </Button>
+        </Grid>
       </Grid>
-      <Button
-        variant="contained"
-        style={{ width: "16%", marginTop: 12 }}
-        onClick={() => props.setIsEditMode(true)}
-      >
-        Edytuj
-      </Button>
     </Grid>
   );
 };

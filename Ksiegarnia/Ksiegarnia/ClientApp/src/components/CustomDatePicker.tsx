@@ -2,6 +2,7 @@
   FormControl,
   FormHelperText,
   Grid,
+  GridSize,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,6 +18,7 @@ const CustomDatePicker = (props: {
   isRequired?: boolean;
   errorMessage?: string;
   settings?: any;
+  formSize?: GridSize;
   onChange: (newValue: Date) => void;
 }) => {
   return (
@@ -33,7 +35,7 @@ const CustomDatePicker = (props: {
         </Typography>
         {props.isRequired && <RedAsterisk />}
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={props.formSize ? props.formSize : 6}>
         <FormControl fullWidth>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker

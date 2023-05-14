@@ -230,7 +230,8 @@ const Register = () => {
           </Grid>
           <Grid item xs={12} md={8} lg={5.5}>
             <CustomDatePicker
-              label="Data urodzenia"
+              label="Data urodzin"
+              formSize={6}
               isRequired={true}
               value={form.birthDate}
               errorMessage={errors.birthDate}
