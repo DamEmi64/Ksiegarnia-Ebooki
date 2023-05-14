@@ -15,7 +15,7 @@ const BasicTextField = (props: {
   handleChange?: (value: string) => void;
 }) => {
   return (
-    <Grid item container justifyContent={props.disableSpaceBetween ? "start" : "space-between"} alignItems="center" columnGap={2}>
+    <Grid item container justifyContent={props.disableSpaceBetween ? "start" : "space-between"} alignItems="center">
       <Grid item marginBottom={3}>
         <Typography variant="h6" display="inline" >{props.label}</Typography>
         {props.isRequired && <RedAsterisk/>}  

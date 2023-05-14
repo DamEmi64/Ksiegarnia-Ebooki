@@ -87,153 +87,154 @@ const EditAccountDetails = (props: {
     }
 
     const updateEmail = (): Promise<AxiosResponse<any, any>> => {
-      return UserService.getEmailUpdateToken(user.id, form.email)
-        .then((response) => {
+      return UserService.getEmailUpdateToken(user.id, form.email).then(
+        (response) => {
           const token: string = response.data;
 
-          return UserService.updateEmail(user.id, token, form.email)
-
-          .catch((error) => {
-            throw error
-          });
-        })
+          return UserService.updateEmail(user.id, token, form.email).catch(
+            (error) => {
+              throw error;
+            }
+          );
+        }
+      );
     };
 
     axios
-    .all([
-      form.previousPassword
-        ? UserService.updatePassword(
-            user.id,
-            form.previousPassword,
-            form.newPassword
-          )
-        : undefined,
-      form.email !== user.email ? updateEmail() : undefined,
-      UserService.update(user.id, form),
-    ])
-    .then((response) => {
-      console.log("A")
-      console.log(response);
-      userContext.setUser({ ...user, ...form });
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: true,
-        message: SUCCESSFULY_CHANGED_DATA_MESSAGE,
+      .all([
+        form.previousPassword
+          ? UserService.updatePassword(
+              user.id,
+              form.previousPassword,
+              form.newPassword
+            )
+          : undefined,
+        form.email !== user.email ? updateEmail() : undefined,
+        UserService.update(user.id, form),
+      ])
+      .then((response) => {
+        console.log("A");
+        console.log(response);
+        userContext.setUser({ ...user, ...form });
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: SUCCESSFULY_CHANGED_DATA_MESSAGE,
+        });
+        setErrors(initErrors);
+        props.setIsEditMode(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message: FAILED_CHANGED_DATA_MESSAGE,
+        });
       });
-      setErrors(initErrors);
-      props.setIsEditMode(false);
-    })
-    .catch((error) => {
-      console.log(error);
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: false,
-        message: FAILED_CHANGED_DATA_MESSAGE,
-      });
-    });
   };
 
   return (
-    <Grid item container direction="column" alignItems="center" rowGap={6}>
-      <Grid item container justifyContent="center" columnGap={12}>
-        <Grid item xs={4}>
-          <BasicTextField
-            label="Imię"
-            value={form.firstName}
-            errorMessage={errors.firstName}
-            handleChange={(value: string) => {
-              setForm({ ...form, firstName: value });
-              setErrors({ ...errors, firstName: "" });
-            }}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <BasicTextField
-            label="Nazwisko"
-            value={form.lastName}
-            errorMessage={errors.lastName}
-            handleChange={(value: string) => {
-              setForm({ ...form, lastName: value });
-              setErrors({ ...errors, lastName: "" });
-            }}
-          />
-        </Grid>
+    <Grid
+      item
+      container
+      justifyContent={{
+        xs: "center",
+        lg: "space-between",
+      }}
+      rowGap={6}
+    >
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          label="Imię"
+          value={form.firstName}
+          errorMessage={errors.firstName}
+          handleChange={(value: string) => {
+            setForm({ ...form, firstName: value });
+            setErrors({ ...errors, firstName: "" });
+          }}
+        />
       </Grid>
-      <Grid item container justifyContent="center" columnGap={12}>
-        <Grid item xs={4}>
-          <BasicTextField
-            label="E-mail"
-            value={form.email}
-            errorMessage={errors.email}
-            handleChange={(value: string) => {
-              setForm({ ...form, email: value });
-              setErrors({ ...errors, email: "" });
-            }}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <BasicTextField
-            label="Pseudonim"
-            value={form.nick}
-            errorMessage={errors.nick}
-            handleChange={(value: string) => {
-              setForm({ ...form, nick: value });
-              setErrors({ ...errors, nick: "" });
-            }}
-          />
-        </Grid>
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          label="Nazwisko"
+          value={form.lastName}
+          errorMessage={errors.lastName}
+          handleChange={(value: string) => {
+            setForm({ ...form, lastName: value });
+            setErrors({ ...errors, lastName: "" });
+          }}
+        />
       </Grid>
-      <Grid item container justifyContent="center" columnGap={12}>
-        <Grid item xs={4}>
-          <BasicTextField
-            settings={{ type: "password" }}
-            label="Poprzednie hasło"
-            value={form.previousPassword}
-            errorMessage={errors.previousPassword}
-            handleChange={(value: string) => {
-              setForm({ ...form, previousPassword: value });
-              setErrors({ ...errors, previousPassword: "" });
-            }}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <BasicTextField
-            settings={{ type: "password" }}
-            label="Nowe hasło"
-            value={form.newPassword}
-            errorMessage={errors.newPassword}
-            handleChange={(value: string) => {
-              setForm({ ...form, newPassword: value });
-              setErrors({ ...errors, newPassword: "" });
-            }}
-          />
-        </Grid>
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          label="E-mail"
+          value={form.email}
+          errorMessage={errors.email}
+          handleChange={(value: string) => {
+            setForm({ ...form, email: value });
+            setErrors({ ...errors, email: "" });
+          }}
+        />
       </Grid>
-      <Grid item container justifyContent="center" columnGap={12}>
-        <Grid item xs={4}>
-          <BasicTextField
-            settings={{ type: "number", maxRows: 9, minRows: 9 }}
-            label="Numer tel."
-            value={form.phone}
-            errorMessage={errors.phone}
-            handleChange={(value: string) => {
-              setForm({ ...form, phone: value });
-            }}
-          />
-        </Grid>
-        <Grid item xs={4}></Grid>
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          label="Pseudonim"
+          value={form.nick}
+          errorMessage={errors.nick}
+          handleChange={(value: string) => {
+            setForm({ ...form, nick: value });
+            setErrors({ ...errors, nick: "" });
+          }}
+        />
       </Grid>
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          settings={{ type: "password" }}
+          label="Aktualne hasło"
+          value={form.previousPassword}
+          errorMessage={errors.previousPassword}
+          handleChange={(value: string) => {
+            setForm({ ...form, previousPassword: value });
+            setErrors({ ...errors, previousPassword: "" });
+          }}
+        />
+      </Grid>
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          settings={{ type: "password" }}
+          label="Nowe hasło"
+          value={form.newPassword}
+          errorMessage={errors.newPassword}
+          handleChange={(value: string) => {
+            setForm({ ...form, newPassword: value });
+            setErrors({ ...errors, newPassword: "" });
+          }}
+        />
+      </Grid>
+      <Grid item xs={12} md={8} lg={5.5}>
+        <BasicTextField
+          settings={{ type: "number", maxRows: 9, minRows: 9 }}
+          label="Numer tel."
+          value={form.phone}
+          errorMessage={errors.phone}
+          handleChange={(value: string) => {
+            setForm({ ...form, phone: value });
+          }}
+        />
+      </Grid>
+      <Grid item xs={12} md={8} lg={5.5}></Grid>
       <Grid item container direction="column" alignItems="center" rowGap={2}>
         <Button
           variant="contained"
-          style={{ width: "16%" }}
+          style={{ padding: "6px 60px" }}
           onClick={handleEdit}
         >
           Zapisz
         </Button>
         <Button
           variant="contained"
-          style={{ width: "16%" }}
+          style={{ padding: "6px 60px" }}
           onClick={() => props.setIsEditMode(false)}
         >
           Anuluj

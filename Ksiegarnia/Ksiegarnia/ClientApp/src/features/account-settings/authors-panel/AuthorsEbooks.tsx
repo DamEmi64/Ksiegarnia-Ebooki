@@ -139,7 +139,7 @@ const AuthorsEbooks = () => {
             handleSetSort={handleSetSort}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <SelectPageSize
             pageSize={pageSize}
             handleSetPageSize={handleSelectPageSize}

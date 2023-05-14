@@ -102,6 +102,7 @@ const EditEbook = () => {
   const navigate = useNavigate();
 
   const NOT_FOUND_BOOK = "Nie znaleziono takiej książki"
+  const NOT_VERIFIED_BOOK = "Książka nie została jeszcze zweryfikowana"
   const SUCCESSFULY_EDITED_EBOOK = "Zmieniono dane książki" 
 
   let ebookAuthor: UserDTO;
@@ -119,7 +120,7 @@ const EditEbook = () => {
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: false,
-        message: NOT_FOUND_BOOK
+        message: error.response.status == 406 ? NOT_VERIFIED_BOOK :  NOT_FOUND_BOOK
       })
     })
   }, []);
