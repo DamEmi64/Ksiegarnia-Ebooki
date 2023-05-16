@@ -64,6 +64,10 @@ class EbookService {
     });
   }
 
+  getGiftTokens(ebookId: string){
+    return axios.get(`${this.api}/tokens`)
+  }
+
   create(createEbookProps: CreateEbookProps) {
     return axios.post(this.api, createEbookProps);
   }

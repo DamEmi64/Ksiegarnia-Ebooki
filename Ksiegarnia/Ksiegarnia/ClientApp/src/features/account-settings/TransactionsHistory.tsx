@@ -46,7 +46,7 @@ const mockedTransactions: Transaction[] = [
           lastName: "string",
           email: "string",
           phone: "string",
-          age: 18
+          age: 18,
         },
         picture: "string",
         prize: 0,
@@ -74,7 +74,7 @@ const mockedTransactions: Transaction[] = [
           lastName: "string",
           email: "string",
           phone: "string",
-          age: 18
+          age: 18,
         },
         picture: "string",
         prize: 0,
@@ -109,14 +109,15 @@ const TransactionsHistory = () => {
   }
 
   const handleSearchTransactions = () => {
-    TransactionService.getUserTransactions(userId, userId, page, pageSize)
-    .then((response) => {
-      const data: PagedResponse = response.data;
-      const newTransactions: Transaction[] = data.result;
-      setTransactions(newTransactions);
-      setNumberOfPages(data.number_of_pages);
-      console.log(response.data)
-    });
+    TransactionService.getUserTransactions(userId, userId, page, pageSize).then(
+      (response) => {
+        const data: PagedResponse = response.data;
+        const newTransactions: Transaction[] = data.result;
+        setTransactions(newTransactions);
+        setNumberOfPages(data.number_of_pages);
+        console.log(response.data);
+      }
+    );
   };
 
   const CustomPagination = () => {
@@ -140,14 +141,16 @@ const TransactionsHistory = () => {
         <React.Fragment>
           {numberOfPages > 1 && <CustomPagination />}
           <Grid item container direction="column" rowGap={6}>
-            {mockedTransactions.map((transaction: Transaction, index: number) => (
-              <TransactionRow
-                key={transaction.id}
-                index={index + 1}
-                transaction={transaction}
-                ebooks={ebooks}
-              />
-            ))}
+            {mockedTransactions.map(
+              (transaction: Transaction, index: number) => (
+                <TransactionRow
+                  key={transaction.id}
+                  index={index + 1}
+                  transaction={transaction}
+                  ebooks={ebooks}
+                />
+              )
+            )}
           </Grid>
           {numberOfPages > 1 && <CustomPagination />}
         </React.Fragment>
@@ -172,7 +175,7 @@ const TransactionRow = (props: {
 
   const transactionAmout: number = transaction.books
     .map((ebook: Ebook) => ebook.prize)
-    .reduce((a: number, b: number) => a + b, 0)
+    .reduce((a: number, b: number) => a + b, 0);
 
   return (
     <Grid item container direction="column">
@@ -180,8 +183,8 @@ const TransactionRow = (props: {
         item
         className="transaction-row"
         container
-        justifyContent="space-evenly"
         alignItems="center"
+        justifyContent="center"
         padding={4}
         marginTop={-2}
         border="1px solid #0A3F5C"
@@ -189,12 +192,26 @@ const TransactionRow = (props: {
           setIsOpen(!isOpen);
         }}
       >
-        <Typography variant="h6">Zamówienie nr. {props.index},</Typography>
-        <Typography variant="h6">Łączna kwota: {transactionAmout} zł,</Typography>
-        <Typography variant="h6">Data: {new Date(transaction.dateTime).toLocaleDateString()},</Typography>
-        <Typography variant="h6">
-          Liczba ebooków: {transaction.books.length}
-        </Typography>
+        <Grid
+          item
+          xs={11}
+          flexGrow={1}
+          container
+          justifyContent="space-evenly"
+          alignItems="center"
+        >
+          <Typography variant="h6">Zamówienie nr. {props.index},</Typography>
+          <Typography variant="h6">
+            Łączna kwota: {transactionAmout} zł,
+          </Typography>
+          <Typography variant="h6">
+            Data: {new Date(transaction.dateTime).toLocaleDateString()},
+          </Typography>
+          <Typography variant="h6">
+            Liczba ebooków: {transaction.books.length}
+          </Typography>
+        </Grid>
+        <Grid item>
         <IconButton style={{ color: "white" }}>
           {!isOpen ? (
             <ArrowDropDown fontSize="large" />
@@ -202,6 +219,7 @@ const TransactionRow = (props: {
             <ArrowDropUp fontSize="large" />
           )}
         </IconButton>
+        </Grid>
       </Grid>
       {isOpen && (
         <Grid
