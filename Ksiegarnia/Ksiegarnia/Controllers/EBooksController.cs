@@ -19,16 +19,18 @@ namespace Application.Controllers
         private readonly IEBookRepository _bookRepository;
         private readonly IUserRepository _userRepository;
         private readonly IGenreRepository _genreRepository;
+        private readonly IHostEnvironment _environment;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
-        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IGenreRepository genreRepository)
+        public EBooksController(IEBookRepository repository, IUserRepository userRepository, IGenreRepository genreRepository, IHostEnvironment environment)
         {
             _bookRepository = repository;
             _userRepository = userRepository;
             _genreRepository = genreRepository;
+            _environment = environment;
         }
 
         /// <summary>
@@ -352,6 +354,12 @@ namespace Application.Controllers
                     Prize = eBook.Prize ?? 0,
                     Verification = VerificationType.Verifing
                 };
+
+                if (_environment.IsDevelopment())
+                {
+                    book.Verification = VerificationType.Accepted;
+                }
+
                 await _bookRepository.Add(book);
                 await _bookRepository.SaveChanges();
                 return HttpStatusCode.Created;
