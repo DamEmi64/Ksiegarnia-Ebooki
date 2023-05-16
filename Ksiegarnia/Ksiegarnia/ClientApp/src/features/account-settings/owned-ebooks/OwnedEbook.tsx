@@ -11,11 +11,7 @@ const OwnedEbook = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
 
   return (
-    <Grid
-      key={ebook.id}
-      item
-      xs={2.4}
-    >
+    <Grid key={ebook.id} item xs={12} sm={6} md={4} lg={3} xl={2.4}>
       <Link to={ebook.id} target="_blank">
         <Grid item xs={10}>
           <BasicEbookView ebook={ebook} preventRedirect={true} />

@@ -44,8 +44,8 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
   };
 
   return (
-    <Grid key={ebook.id} item xs={2.4}>
-      <Grid item xs={10}>
+    <Grid key={ebook.id} item xs={12} sm={6} md={4} lg={3} xl={2.4} container justifyContent="center">
+      <Grid item xs={10} className="ebook ebook-rounded">
         <Grid item container direction="column" alignItems="stretch" rowGap={2}>
           <Grid
             item

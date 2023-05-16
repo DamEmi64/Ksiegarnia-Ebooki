@@ -44,7 +44,7 @@ const SmallScreenNavbar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -105,10 +105,12 @@ const WideScreenNavbar = () => {
 
 const Navbar = () => {
   return (
-    <nav>
-      <SmallScreenNavbar />
-      <WideScreenNavbar />
-    </nav>
+    <Grid item container justifyContent="center" padding="20px 0">
+      <nav>
+        <SmallScreenNavbar />
+        <WideScreenNavbar />
+      </nav>
+    </Grid>
   );
 };
 

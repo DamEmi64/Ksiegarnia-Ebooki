@@ -33,7 +33,7 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
           display: {
             xs: "none",
             lg: "flex",
-            justifyContent: "stretch",
+            justifyContent: "center",
           },
         }}
       >
@@ -70,7 +70,9 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
             lg: "none",
             justifyContent: "stretch",
             marginTop: 40,
+            left: 20,
           },
+          position: "fixed",
         }}
       >
         <Button
@@ -94,36 +96,37 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
   };
 
   return (
-    <Grid container justifyContent="start">
-      <Grid item xs={1} lg={1.5} container justifyContent="start" alignItems="start">
+    <Grid container justifyContent="center" columnGap={6}>
+      <Grid
+        item
+        xs={1}
+        lg={1.5}
+        container
+        justifyContent="center"
+        alignItems="start"
+      >
         <SmallScreenCategories />
         <WideScreenCategories />
       </Grid>
       <Grid
         item
         container
-        xs={9}
-        md={10.5}
-        direction="column"
-        alignItems="center"
+        xs={10}
+        md={9}
+        justifyContent="center"
         rowGap={5}
       >
-        <Grid item container justifyContent="center">
-          <Navbar />
-        </Grid>
-        <Grid item container justifyContent="center">
-          <Grid
-            item
-            xs={11}
-            container
-            justifyContent="center"
-            alignItems="stretch"
-          >
-            {props.children}
-          </Grid>
+        <Grid
+          item
+          xs={11}
+          container
+          justifyContent="center"
+          alignItems="stretch"
+        >
+          {props.children}
         </Grid>
       </Grid>
-      <Grid item xs={1.5} display={{ xs: "flex", md: "none" }}></Grid>
+      <Grid item xs={1} lg={1.5} display={{ xs: "flex", md: "none" }}></Grid>
     </Grid>
   );
 };

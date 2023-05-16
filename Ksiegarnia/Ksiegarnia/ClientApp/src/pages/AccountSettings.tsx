@@ -83,7 +83,9 @@ const AccountSettings = () => {
             lg: "none",
             justifyContent: "stretch",
             marginTop: 40,
+            left: 20,
           },
+          position: "fixed",
         }}
       >
         <Button
@@ -107,40 +109,35 @@ const AccountSettings = () => {
   };
 
   return (
-    <Grid container justifyContent="start">
-      <Grid item xs={1.5} container justifyContent="start" alignItems="start">
-        <SmallScreenSidePanel/>
-        <WideScreenSidePanel/>
-      </Grid>
+    <Grid container justifyContent="stretch" columnGap={{md: 8}}>
       <Grid
         item
+        xs={1}
+        lg={1.5}
         container
-        xs={9}
-        md={10.5}
-        direction="column"
-        alignItems="center"
-        rowGap={8}
+        justifyContent="center"
+        alignItems="start"
       >
-        <Grid item container justifyContent="center">
-          <Navbar />
-        </Grid>
-        <Grid item container justifyContent="center">
-          <Grid
-            item
-            xs={11}
-            container
-            justifyContent="center"
-            alignItems="stretch"
-            rowGap={9}
-          >
-            <Typography variant="h4" textAlign="center">
-              {subPath}
-            </Typography>
-            <Outlet />
-          </Grid>
+        <SmallScreenSidePanel />
+        <WideScreenSidePanel />
+      </Grid>
+      <Grid item container xs={10} md={9} justifyContent="center">
+        <Grid
+          item
+          xs={11}
+          container
+          justifyContent="center"
+          alignItems="stretch"
+          alignContent="start"
+          rowGap={9}
+        >
+          <Typography variant="h4" textAlign="center">
+            {subPath}
+          </Typography>
+          <Outlet />
         </Grid>
       </Grid>
-      <Grid item xs={1.5} display={{ xs: "flex", md: "none" }}></Grid>
+      <Grid item xs={1} lg={1.5}></Grid>
     </Grid>
   );
 };

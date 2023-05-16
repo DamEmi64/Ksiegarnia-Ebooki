@@ -5,7 +5,9 @@ const StatisticData = (props: { title: string; value: string }) => {
   return (
     <Grid
       item
-      xs={5}
+      xs={12}
+      lg={5.5}
+      xl={5}
       container
       justifyContent="space-between"
       borderBottom="1px solid silver"
@@ -32,27 +34,31 @@ const AuthorsStatistics = () => {
         Statystyki twórcy:
       </Typography>
       <Grid item container justifyContent="center">
-        <Grid item xs={10} container direction="column" rowGap={4}>
-          <Grid item container justifyContent="space-between">
-            <StatisticData
-              title="Liczba dodanych książek:"
-              value={stats.createdEbooks.toString()}
-            />
-            <StatisticData
-              title="Przychód ze wszystkich książek:"
-              value={stats.profit.toString() + "zł"}
-            />
-          </Grid>
-          <Grid item container justifyContent="space-between">
-            <StatisticData
-              title="Liczba odbiorców:"
-              value={stats.numberOfReceivers.toString()}
-            />
-            <StatisticData
-              title="Średni przychód na książkę:"
-              value={stats.profitPerEbook.toString() + "zł"}
-            />
-          </Grid>
+        <Grid
+          item
+          xs={12}
+          md={12}
+          xl={10}
+          container
+          justifyContent="space-between"
+          rowGap={4}
+        >
+          <StatisticData
+            title="Liczba dodanych książek:"
+            value={stats.createdEbooks.toString()}
+          />
+          <StatisticData
+            title="Łączny przychód z książek:"
+            value={stats.profit.toString() + "zł"}
+          />
+          <StatisticData
+            title="Liczba odbiorców:"
+            value={stats.numberOfReceivers.toString()}
+          />
+          <StatisticData
+            title="Średni przychód na książkę:"
+            value={stats.profitPerEbook.toString() + "zł"}
+          />
         </Grid>
       </Grid>
     </Grid>
