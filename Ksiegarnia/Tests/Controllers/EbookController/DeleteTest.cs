@@ -2,6 +2,7 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
+using Microsoft.Extensions.Hosting;
 using Moq;
 
 namespace Tests.Controllers.EbookController
@@ -12,9 +13,14 @@ namespace Tests.Controllers.EbookController
 
         private readonly IGenreRepository _genreRepository;
 
+        private readonly IHostEnvironment _hostEnviroment;
+
         public DeleteTest()
         {
-            _genreRepository = new Mock<IGenreRepository>().Object;
+            var genreRepo = new Mock<IGenreRepository>();
+            _genreRepository = genreRepo.Object;
+            var host = new Mock<IHostEnvironment>();
+            _hostEnviroment = host.Object;
         }
 
 
@@ -25,9 +31,9 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
-             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(String.Empty));
+            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(String.Empty));
         }
 
         [Fact]
@@ -37,9 +43,9 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
-             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete("TEST"));
+            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete("TEST"));
         }
 
         [Fact]
@@ -49,9 +55,9 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
-             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(Guid.NewGuid().ToString()));
+            Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Delete(Guid.NewGuid().ToString()));
         }
 
         [Fact]
@@ -61,7 +67,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var result = await controller.Delete(BookId.ToString());
             Assert.Equal(result, System.Net.HttpStatusCode.OK);
