@@ -3,6 +3,7 @@ using Domain.DTOs;
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
+using Microsoft.Extensions.Hosting;
 using Moq;
 
 namespace Tests.Controllers.EbookController
@@ -15,9 +16,14 @@ namespace Tests.Controllers.EbookController
 
         private readonly IGenreRepository _genreRepository;
 
+        private readonly IHostEnvironment _hostEnviroment;
+
         public EditTest()
         {
-            _genreRepository = new Mock<IGenreRepository>().Object;
+            var genreRepo = new Mock<IGenreRepository>();
+            _genreRepository = genreRepo.Object;
+            var host = new Mock<IHostEnvironment>();
+            _hostEnviroment = host.Object;
         }
 
         [Fact]
@@ -27,7 +33,7 @@ namespace Tests.Controllers.EbookController
             userRepo.Setup(x => x.Get(AuthorId)).ReturnsAsync(new User());
             var bookRepo = new Mock<IEBookRepository>();
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -44,8 +50,8 @@ namespace Tests.Controllers.EbookController
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(x => x.Get(AuthorId)).ReturnsAsync(new User());
             var bookRepo = new Mock<IEBookRepository>();
-        
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -64,7 +70,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(_bookId)).ReturnsAsync(new EBook());
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {

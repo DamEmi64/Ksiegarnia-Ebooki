@@ -3,6 +3,7 @@ using Domain.DTOs;
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
+using Microsoft.Extensions.Hosting;
 using Moq;
 
 namespace Tests.Controllers.EbookController
@@ -17,11 +18,15 @@ namespace Tests.Controllers.EbookController
 
         private readonly IGenreRepository _genreRepository;
 
+        private readonly IHostEnvironment _hostEnviroment;
+
         public CreateTest()
         {
             var genreRepo = new Mock<IGenreRepository>();
             genreRepo.Setup(x => x.Get(_genreId)).ReturnsAsync(new Genre());
             _genreRepository = genreRepo.Object;
+            var host = new Mock<IHostEnvironment>();
+            _hostEnviroment = host.Object;
         }
 
         [Fact]
@@ -32,7 +37,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.CheckIfExist(bookData)).ReturnsAsync(true);
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository,_hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -51,7 +56,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.CheckIfExist(bookData)).ReturnsAsync(false);
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository,_hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -70,7 +75,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.CheckIfExist(bookData)).ReturnsAsync(false);
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -89,7 +94,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.CheckIfExist(bookData)).ReturnsAsync(false);
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -109,7 +114,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.CheckIfExist(bookData)).ReturnsAsync(false);
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {
@@ -129,7 +134,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.CheckIfExist(bookData)).ReturnsAsync(false);
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var obj = new CreateBookDto
             {
