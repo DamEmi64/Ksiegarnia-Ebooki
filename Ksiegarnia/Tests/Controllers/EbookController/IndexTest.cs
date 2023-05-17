@@ -1,6 +1,7 @@
 ﻿using Application.Controllers;
 using Domain.Entitites;
 using Domain.Repositories;
+using Microsoft.Extensions.Hosting;
 using Moq;
 
 namespace Tests.Controllers.EbookController
@@ -8,10 +9,14 @@ namespace Tests.Controllers.EbookController
     public class IndexTest
     {
         private readonly IGenreRepository _genreRepository;
+        private readonly IHostEnvironment _hostEnviroment;
 
         public IndexTest()
         {
-            _genreRepository = new Mock<IGenreRepository>().Object;
+            var genreRepo = new Mock<IGenreRepository>();
+            _genreRepository = genreRepo.Object;
+            var host = new Mock<IHostEnvironment>();
+            _hostEnviroment = host.Object;
         }
 
         [Fact]
@@ -23,7 +28,7 @@ namespace Tests.Controllers.EbookController
             { new EBook() { Genre = new Genre() , Author = new User() },
                 new EBook() { Genre = new Genre(), Author = new User() } });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var result = await controller.Index();
             Assert.NotNull(result);

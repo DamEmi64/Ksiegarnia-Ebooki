@@ -2,6 +2,7 @@
 using Domain.Entitites;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
+using Microsoft.Extensions.Hosting;
 using Moq;
 
 namespace Tests.Controllers.EbookController
@@ -12,9 +13,14 @@ namespace Tests.Controllers.EbookController
 
         private readonly IGenreRepository _genreRepository;
 
+        private readonly IHostEnvironment _hostEnviroment;
+
         public DetailsTest()
         {
-            _genreRepository = new Mock<IGenreRepository>().Object;
+            var genreRepo = new Mock<IGenreRepository>();
+            _genreRepository = genreRepo.Object;
+            var host = new Mock<IHostEnvironment>();
+            _hostEnviroment = host.Object;
         }
 
 
@@ -25,7 +31,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Accepted });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
 
             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Details(Guid.Empty));
@@ -38,7 +44,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Accepted });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -50,7 +56,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Rejected });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             Assert.ThrowsAsync<BookNotVerifiedException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -62,7 +68,7 @@ namespace Tests.Controllers.EbookController
             var bookRepo = new Mock<IEBookRepository>();
             bookRepo.Setup(x => x.Get(BookId)).ReturnsAsync(new EBook() { Verification = Domain.Enums.VerificationType.Accepted, Genre = new Genre(), Author = new User() });
 
-            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository);
+            var controller = new EBooksController(bookRepo.Object, userRepo.Object, _genreRepository, _hostEnviroment);
 
             var result = await controller.Details(BookId);
             Assert.NotNull(result);
