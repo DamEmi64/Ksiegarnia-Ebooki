@@ -161,7 +161,7 @@ const EbookDetails = () => {
         </Grid>
         <BigData label="Opis" value={ebook.description} />
         <BigData label="Oceny" value={<EbookGrades/>} />
-        <EbooksReviews ebookId={ebookId}/>
+        <EbooksReviews ebook={ebook}/>
         <EbooksSlider title="Polecane" searchBestsellers={true} />
       </Grid>
     </CategoriesContent>

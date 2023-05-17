@@ -77,3 +77,7 @@ img{
 .ebook-rounded{
   border-radius: 16px;
 }
+
+.hover-red:hover{
+  color: #EB4B36;
+}
