@@ -3,7 +3,7 @@ import Ebook from "../models/api/ebook";
 import Image from "./Image";
 import Rate from "./Rate";
 import { ShoppingCartOutlined } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { BasketContext } from "../context/BasketContext";
@@ -25,21 +25,20 @@ const BasicEbookView = (props: {
   const navigate = useNavigate();
 
   const checkShowAddToCart = (): boolean => {
-
-    if(!props.showAddToCart){
+    if (!props.showAddToCart) {
       return false;
     }
 
-    if(userId === ebook.author.id){
+    if (userId === ebook.author.id) {
       return false;
     }
 
-    if(basketContext?.containsEbook(ebook.id)){
+    if (basketContext?.containsEbook(ebook.id)) {
       return false;
     }
 
     return true;
-  }
+  };
 
   return (
     <Grid
@@ -57,17 +56,18 @@ const BasicEbookView = (props: {
         container
         justifyContent="center"
         alignItems="center"
-        onClick={() => {
-          if (!props.preventRedirect) {
-            navigate(`/Ebook/${ebook.id}`);
-          }
-        }}
       >
-        <Image
-          alt={ebook.title}
-          src={ebook.picture}
-          style={{ maxWidth: "100%", width: "auto", height: "100%" }}
-        />
+        <Link
+          to={`/Ebook/${ebook.id}`}
+          aria-disabled={props.preventRedirect}
+          style={{ height: "100%" }}
+        >
+          <Image
+            alt={ebook.title}
+            src={ebook.picture}
+            style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+          />
+        </Link>
       </Grid>
       <Grid item>
         <Typography variant="h6" textAlign="center">

@@ -33,6 +33,7 @@ import Regulamin from "./pages/Regulamin";
 import axios from "axios";
 import Content from "./layouts/Content";
 import Navbar from "./layouts/Navbar";
+import EbookDetails from "./features/searching-ebooks/ebook-details/EBookDetails";
 
 axios.defaults.withCredentials = true;
 
@@ -99,6 +100,10 @@ function App() {
                     <Register />
                   </ProtectedRoute>
                 }
+              />
+              <Route
+                path="/Ebook/:id"
+                element={<EbookDetails/>}
               />
               <Route path="/ebooks" element={<SearchEbooks />} />
               <Route

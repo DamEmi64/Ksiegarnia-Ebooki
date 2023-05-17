@@ -121,7 +121,7 @@ const CreateEbook = () => {
       author: user,
     } as CreateEbookProps)
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data);
         navigate("/account-settings/authors-panel");
         notificationContext?.setNotification({
           isVisible: true,
@@ -130,7 +130,7 @@ const CreateEbook = () => {
         });
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: false,
@@ -142,10 +142,11 @@ const CreateEbook = () => {
   return (
     <CategoriesContent>
       <Grid item container direction="column" rowGap={3}>
-        <Grid item container columnGap={6}>
+        <Grid item container columnGap={6} rowGap={4}>
           <Grid
             item
-            xs={3}
+            xs={12}
+            md={4}
             container
             direction="column"
             alignItems="center"
@@ -177,7 +178,7 @@ const CreateEbook = () => {
             </Grid>
             <Typography>Sugerowane wymiary okładki: 320px / 220px</Typography>
           </Grid>
-          <Grid item xs={4} container direction="column" rowGap={2}>
+          <Grid item xs={12} md={7} lg={5} container direction="column" rowGap={2}>
             <BasicTextField
               label="Tytuł"
               value={form.title}
@@ -189,7 +190,7 @@ const CreateEbook = () => {
               }}
               disableSpaceBetween={true}
               fullWidth={true}
-              formSize={10}
+              formSize={8}
             />
             <ChooseFile
               label="Plik z ebookiem"
@@ -271,21 +272,21 @@ const CreateEbook = () => {
           />
         </Grid>
         <Grid item container justifyContent="center" columnGap={8}>
-          <Grid item xs={1}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={() => navigate("../account-settings/authors-panel")}
-            >
-              Anuluj
-            </Button>
-          </Grid>
-          <Grid item xs={1}>
-            <Button fullWidth variant="contained" onClick={handleCreate}>
-              Utwórz
-            </Button>
-          </Grid>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate("../account-settings/authors-panel")}
+            style={{ paddingLeft: 30, paddingRight: 30 }}
+          >
+            Anuluj
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleCreate}
+            style={{ paddingLeft: 30, paddingRight: 30 }}
+          >
+            Utwórz
+          </Button>
         </Grid>
       </Grid>
     </CategoriesContent>
