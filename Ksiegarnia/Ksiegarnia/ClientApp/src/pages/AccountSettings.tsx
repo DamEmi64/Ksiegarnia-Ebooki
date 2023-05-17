@@ -84,6 +84,7 @@ const AccountSettings = () => {
             justifyContent: "stretch",
             marginTop: 40,
             left: 20,
+            zIndex: 100,
           },
           position: "fixed",
         }}

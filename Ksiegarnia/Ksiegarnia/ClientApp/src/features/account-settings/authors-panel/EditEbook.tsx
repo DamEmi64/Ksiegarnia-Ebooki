@@ -93,7 +93,7 @@ const EditableField = (props: {
 const EditEbook = () => {
   const ebookId: string = useParams().id as string;
 
-  const notificationContext = useContext(NotificationContext)
+  const notificationContext = useContext(NotificationContext);
 
   const [form, setForm] = useState<FormProps>();
 
@@ -101,28 +101,29 @@ const EditEbook = () => {
 
   const navigate = useNavigate();
 
-  const NOT_FOUND_BOOK = "Nie znaleziono takiej książki"
-  const NOT_VERIFIED_BOOK = "Książka nie została jeszcze zweryfikowana"
-  const SUCCESSFULY_EDITED_EBOOK = "Zmieniono dane książki" 
+  const NOT_FOUND_BOOK = "Nie znaleziono takiej książki";
+  const NOT_VERIFIED_BOOK = "Książka nie została jeszcze zweryfikowana";
+  const SUCCESSFULY_EDITED_EBOOK = "Zmieniono dane książki";
 
   let ebookAuthor: UserDTO;
 
   useEffect(() => {
     EbookService.getById(ebookId)
-     .then((response) => {
-      const gotEboot: Ebook = response.data;
-      setForm(gotEboot);
-      ebookAuthor = gotEboot.author;
-    })
-    .catch((error) => {
-      console.log(error)
-      navigate("/account-settings/authors-panel")
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: false,
-        message: error.response.status == 406 ? NOT_VERIFIED_BOOK :  NOT_FOUND_BOOK
+      .then((response) => {
+        const gotEboot: Ebook = response.data;
+        setForm(gotEboot);
+        ebookAuthor = gotEboot.author;
       })
-    })
+      .catch((error) => {
+        console.log(error);
+        navigate("/account-settings/authors-panel");
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message:
+            error.response.status == 406 ? NOT_VERIFIED_BOOK : NOT_FOUND_BOOK,
+        });
+      });
   }, []);
 
   if (!form?.title) {
@@ -177,29 +178,30 @@ const EditEbook = () => {
       return;
     }
 
-    console.log({...form, author: ebookAuthor})
+    console.log({ ...form, author: ebookAuthor });
 
     EbookService.update(ebookId, { ...form, author: ebookAuthor })
-    .then(() => {
-      navigate("../account-settings/authors-panel");
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: true,
-        message: SUCCESSFULY_EDITED_EBOOK
+      .then(() => {
+        navigate("../account-settings/authors-panel");
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: SUCCESSFULY_EDITED_EBOOK,
+        });
       })
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
     <CategoriesContent>
       <Grid item container direction="column" rowGap={3}>
-        <Grid item container columnGap={6}>
+        <Grid item container columnGap={6} rowGap={4}>
           <Grid
             item
-            xs={3}
+            xs={12}
+            md={4}
             container
             direction="column"
             alignItems="center"
@@ -231,7 +233,15 @@ const EditEbook = () => {
             </Grid>
             <Typography>Sugerowane wymiary okładki: 320px / 220px</Typography>
           </Grid>
-          <Grid item xs={4} container direction="column" rowGap={2}>
+          <Grid
+            item
+            xs={12}
+            md={7}
+            lg={5}
+            container
+            direction="column"
+            rowGap={2}
+          >
             <EditableField
               nonEditableLabel="Tytuł"
               nonEditableValue={form.title}
@@ -347,21 +357,23 @@ const EditEbook = () => {
           </EditableField>
         </Grid>
         <Grid item container justifyContent="center" columnGap={8}>
-          <Grid item xs={1}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={() => navigate("../account-settings/authors-panel")}
-            >
-              Anuluj
-            </Button>
-          </Grid>
-          <Grid item xs={1}>
-            <Button fullWidth variant="contained" onClick={handleUpdate}>
-              Zapisz
-            </Button>
-          </Grid>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate("../account-settings/authors-panel")}
+            style={{ paddingLeft: 30, paddingRight: 30 }}
+          >
+            Anuluj
+          </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleUpdate}
+            style={{ paddingLeft: 30, paddingRight: 30 }}
+          >
+            Zapisz
+          </Button>
         </Grid>
       </Grid>
     </CategoriesContent>
