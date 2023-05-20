@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TransactionService from "../../services/TransactionService";
 import Loading from "../../pages/Loading";
 import { NotificationContext } from "../../context/NotificationContext";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import EbookService from "../../services/EbookService";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
@@ -29,7 +29,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
       rowSpacing={4}
     >
       <Grid item xs={12} lg={9} md={8} container columnGap={3} justifyContent={{xs: "center", sm: "start"}}>
-        <Grid item height="195px">
+        <Grid xs={5} item height="195px">
           <Image
             alt={ebook.title}
             src={ebook.picture}
@@ -109,6 +109,11 @@ const Basket = () => {
       (ebook: Ebook) => ebook.id
     );
 
+    EbookService.getGiftTokens(basketEbooksIds[0])
+    .then((response) => {
+      console.log(response.data)
+    })
+
     axios
       .all(
         basketEbooksIds.map((ebookId: string) =>
@@ -116,8 +121,32 @@ const Basket = () => {
         )
       )
       .then((response) => {
-        console.log(response);
-      });
+        let tokens: string[] = []
+        response.forEach((resp: AxiosResponse<any, any>) => {
+          tokens.concat(resp.data)
+        })
+        
+        //= response.map((resp: AxiosResponse<any, any>) => resp.data).
+        TransactionService.handleTransaction(userId!, basketEbooksIds, tokens)
+        .then((response) => {
+          console.log(response)
+          basketContext?.clear()
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: SUCCESSFULY_SUBMITED_TRANSACTION
+          })
+          navigate("/account-settings/transactions")
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message: NOT_SUBMITED_TRANSACTION
+        })
+      })
 
     /*TransactionService.handleTransaction(userId!, basketEbooksIds)
     .then((response) => {

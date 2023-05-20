@@ -45,7 +45,7 @@ const BuyPremiumDialog = (props: {
 
     return (
       <Grid item container justifyContent="center">
-        <Grid item xs={7}>
+        <Grid item xs={10} sm={8} md={7}>
           <Button
             fullWidth
             className="premium-button"

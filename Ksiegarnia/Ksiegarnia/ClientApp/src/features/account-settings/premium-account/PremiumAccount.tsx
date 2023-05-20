@@ -1,5 +1,5 @@
 ﻿import { Close, Done } from "@mui/icons-material";
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Grid, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import PremiumHistory from "../../../models/api/premiumHistory";
 import PremiumAccountOrder from "./PremiumAccountOrder";
@@ -13,7 +13,9 @@ const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
     <Grid
       item
-      xs={3}
+      xs={8}
+      lg={6}
+      xl={4}
       container
       justifyContent="space-between"
       borderBottom="1px solid silver"
@@ -112,15 +114,17 @@ const PremiumAccount = () => {
 
   const BenefitInfo = (props: { benefit: string }) => {
     return (
-      <Grid item xs={5} container alignItems="center">
+      <Grid item xs={12} lg={5} container alignItems="center">
+        <Stack direction="row" alignItems="center">
         {premiumInfo?.isActive ? (
           <Done className="success" fontSize="large" />
         ) : (
-          <Close className="error" />
+          <Close className="error" fontSize="medium"/>
         )}
-        <Typography variant="h5" marginLeft={1} display="inline">
+        <Typography variant="h5" marginLeft={2} display="inline">
           {props.benefit}
         </Typography>
+        </Stack>
       </Grid>
     );
   };
@@ -128,9 +132,9 @@ const PremiumAccount = () => {
   return (
     <Grid item marginTop={-4} container direction="column" rowGap={8}>
       <Grid item container direction="column" rowGap={2}>
-        <Grid item container columnGap={2}>
+        <Grid item container columnGap={2} rowGap={1}>
           <StatisticData
-            title="Status konta premium"
+            title="Status premium"
             value={
               premiumInfo?.isActive ? (
                 <Typography variant="h6" style={{ color: "#24FF00" }}>
@@ -163,7 +167,7 @@ const PremiumAccount = () => {
         </Grid>
         <Grid item container>
           <StatisticData
-            title="Premium wygasa dnia"
+            title="Wygasa dnia"
             value={
               <Typography variant="h6">
                 {premiumInfo.isActive
@@ -175,7 +179,7 @@ const PremiumAccount = () => {
         </Grid>
         <Grid item container>
           <StatisticData
-            title="Ostatnia data zakupu"
+            title="Ostatni zakup"
             value={
               <Typography variant="h6">
                 {premiumInfo.isActive
@@ -187,19 +191,15 @@ const PremiumAccount = () => {
         </Grid>
       </Grid>
       <Grid item container justifyContent="center">
-        <Grid item xs={10} container direction="column" rowGap={2}>
-          <Grid item container justifyContent="space-between">
-            <BenefitInfo benefit="Zniżki na książki" />
-            <BenefitInfo benefit="Nielimitowana ilość dodanych ebooków" />
-          </Grid>
-          <Grid item container justifyContent="space-between">
-            <BenefitInfo benefit="Darmowe wyróżnienia ebooka" />
-            <BenefitInfo benefit="Nieograniczona pojemność na ebooka" />
-          </Grid>
+        <Grid item xs={12} lg={10} container justifyContent="space-between" rowGap={2}>
+          <BenefitInfo benefit="Zniżki na książki" />
+          <BenefitInfo benefit="Nielimitowana liczba dodanych ebooków" />
+          <BenefitInfo benefit="Darmowe wyróżnienia ebooka" />
+          <BenefitInfo benefit="Nieograniczona pojemność na ebooka" />
         </Grid>
       </Grid>
       <Grid item container justifyContent="center" marginTop={2}>
-        <Grid item xs={8} container justifyContent="center" rowGap={2}>
+        <Grid item xs={12} xl={10} container justifyContent="center" rowGap={2}>
           <Typography variant="h4" marginBottom={4}>
             Historia zakupu premium:
           </Typography>
