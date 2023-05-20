@@ -34,7 +34,8 @@ export interface UpdateEbookProps {
 }
 
 class EbookService {
-  private api: string = "https://localhost:7270/Books";
+  private host: string = "https://localhost:7270"
+  private api: string = `${this.host}/Books`;
 
   getById(ebookId: string) {
     return axios.get(`${this.api}/${ebookId}`);
@@ -65,7 +66,7 @@ class EbookService {
   }
 
   getGiftTokens(ebookId: string){
-    return axios.get(`${this.api}/tokens`)
+    return axios.get(`${this.api}/${ebookId}/tokens`)
   }
 
   create(createEbookProps: CreateEbookProps) {
@@ -77,7 +78,7 @@ class EbookService {
   }
 
   delete(ebookId: string) {
-    return axios.delete(`https://localhost:7270/${ebookId}`);
+    return axios.delete(`${this.host}/${ebookId}`);
   }
 }
 

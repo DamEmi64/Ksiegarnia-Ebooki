@@ -110,6 +110,8 @@ const Register = () => {
       birthDate: form.birthDate.toISOString(),
     };
 
+    console.log(request)
+
     UserService.register(request)
       .then((response) => {
         console.log(response);

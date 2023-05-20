@@ -358,7 +358,6 @@ const EditEbook = () => {
         </Grid>
         <Grid item container justifyContent="center" columnGap={8}>
           <Button
-            fullWidth
             variant="contained"
             color="secondary"
             onClick={() => navigate("../account-settings/authors-panel")}
@@ -367,7 +366,6 @@ const EditEbook = () => {
             Anuluj
           </Button>
           <Button
-            fullWidth
             variant="contained"
             onClick={handleUpdate}
             style={{ paddingLeft: 30, paddingRight: 30 }}

@@ -138,7 +138,7 @@ const AddEditEbookReview = (props: {
   };
 
   return (
-    <Grid item container direction="column" rowGap={2}>
+    <Grid item container direction="column" rowGap={2} marginBottom={2}>
       <FormControl fullWidth={true}>
         <TextField
           fullWidth

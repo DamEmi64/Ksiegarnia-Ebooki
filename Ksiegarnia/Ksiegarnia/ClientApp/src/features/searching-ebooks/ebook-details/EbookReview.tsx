@@ -74,11 +74,11 @@ const EbookReview = (props: {
   return (
     <Grid item container direction="column" rowGap={2}>
       <Grid item container alignItems="center" columnGap={1}>
-        <Typography variant="h5" fontWeight="bold">
+        <Typography variant="h6" fontWeight="bold">
           {review.reviewer}
         </Typography>
-        <Typography variant="h5">{review.date}</Typography>
-        {userId !== review.reviewerId && (
+        <Typography variant="h6">{review.date}</Typography>
+        {userId === review.reviewerId && (
           <React.Fragment>
             <IconButton
               style={{ marginTop: -3 }}

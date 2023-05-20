@@ -50,6 +50,11 @@ const SmallScreenNavbar = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleClickOnOption = (linkUrl: string) => {
+    handleCloseMenu()
+    navigate(`/${linkUrl}`)
+  }
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
@@ -68,7 +73,7 @@ const SmallScreenNavbar = () => {
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
         {links.map((link: LinkProps, index: number) => (
-          <MenuItem key={index} onClick={() => navigate(`/${link.url}`)}>
+          <MenuItem key={index} onClick={() => handleClickOnOption(link.url)}>
             {link.title}
           </MenuItem>
         ))}

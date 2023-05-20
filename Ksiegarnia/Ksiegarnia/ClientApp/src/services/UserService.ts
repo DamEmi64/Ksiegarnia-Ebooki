@@ -86,6 +86,7 @@ class UserService {
   }
 
   updatePassword(userId: string, oldPassword: string, newPassword: string){
+    console.log(oldPassword, " ", newPassword)
     return axios.post(`${this.api}/${userId}/passwordChange`, {
       oldPassword: oldPassword,
       password: newPassword

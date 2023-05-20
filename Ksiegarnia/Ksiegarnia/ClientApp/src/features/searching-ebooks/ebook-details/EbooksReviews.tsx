@@ -61,7 +61,9 @@ const reviews: MockReview[] = [
 ];
 
 const EbooksReviews = (props: { ebook: Ebook }) => {
-  const userId = useContext(UserContext)?.user.data?.id;
+  const userContext = useContext(UserContext);
+  const isUserLogged = userContext?.user.logged;
+  const userId = userContext?.user.data?.id;
 
   const [isAddingReview, setIsAddingReview] = useState<boolean>(false);
 
@@ -71,20 +73,25 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
         Recenzje (32)
       </Typography>
       <Grid item container direction="column" rowGap={1}>
-        {userId !== props.ebook.author.id && !isAddingReview ? (
-          <Grid item>
-            <Button variant="contained" onClick={() => setIsAddingReview(true)}>
-              Dodaj recenzję
-            </Button>
-          </Grid>
-        ) : (
-          <AddEditEbookReview
-            ebook={props.ebook}
-            handleUpdate={() => console.log("Updated")}
-            handleClose={() => setIsAddingReview(false)}
-          />
-        )}
-        <Grid item container direction="column" rowGap={4} marginTop={4}>
+        {isUserLogged &&
+          userId !== props.ebook.author.id &&
+          (!isAddingReview ? (
+            <Grid item marginBottom={2}>
+              <Button
+                variant="contained"
+                onClick={() => setIsAddingReview(true)}
+              >
+                Dodaj recenzję
+              </Button>
+            </Grid>
+          ) : (
+            <AddEditEbookReview
+              ebook={props.ebook}
+              handleUpdate={() => console.log("Updated")}
+              handleClose={() => setIsAddingReview(false)}
+            />
+          ))}
+        <Grid item container direction="column" rowGap={4}>
           {reviews.map((review: MockReview, index: number) => (
             <EbookReview
               key={index}

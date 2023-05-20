@@ -19,7 +19,7 @@ class TransactionService {
     });
   };
 
-  handleTransaction = (userId: string, bookIds: string[]) => {
+  handleTransaction = (userId: string, bookIds: string[], giftTokens: string[]) => {
     return axios.post(
       `${this.api}/buy`,
       {
@@ -29,6 +29,7 @@ class TransactionService {
       {
         params: {
           transactionType: "Token", //docelowo Paypal
+          tokens: giftTokens
         },
       }
     );
