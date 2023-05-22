@@ -51,13 +51,12 @@ const AuthorsEbooks = () => {
       phrase: searchPhrase,
       page: page.current,
       pageSize: actualPageSize.current,
-    })
-    .then((response) => {
+    }).then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages;
-      console.log(response.data)
+      console.log(response.data);
     });
   };
 
@@ -69,8 +68,7 @@ const AuthorsEbooks = () => {
       phrase: searchPhrase,
       page: page.current,
       pageSize: actualPageSize.current,
-    })
-    .then((response) => {
+    }).then((response) => {
       const data = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
@@ -105,7 +103,7 @@ const AuthorsEbooks = () => {
         Lista dodanych książek:
       </Typography>
       <Grid item container alignItems="stretch" columnGap={4}>
-        <Grid item xs={8}>
+        <Grid item xs={6} sm={7} md={8}>
           <TextField
             fullWidth
             placeholder="Wpisz tytuł"
@@ -120,37 +118,37 @@ const AuthorsEbooks = () => {
             }}
           />
         </Grid>
-        <Grid item xs={3} container alignItems="center">
-          <Grid item>
-            <Button
-              variant="contained"
-              style={{ padding: "8px 24px", borderRadius: "12px" }}
-              onClick={() => navigate("/ebook/create")}
-            >
-              Dodaj ebooka
-            </Button>
-          </Grid>
-        </Grid>
+        <Button
+          variant="contained"
+          style={{
+            padding: "8px 24px",
+            borderRadius: "12px",
+            alignSelf: "center",
+          }}
+          onClick={() => navigate("/ebook/create")}
+        >
+          Dodaj ebooka
+        </Button>
       </Grid>
-      <Grid item container justifyContent="space-between">
-        <Grid item xs={4}>
+      <Grid item container justifyContent="space-between" rowGap={4}>
+        <Grid item xs={12} lg={5} xl={4}>
           <SortEbooks
             sortValue={sort ? sort : ""}
             handleSetSort={handleSetSort}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} lg={5} xl={4}>
           <SelectPageSize
             pageSize={pageSize}
             handleSetPageSize={handleSelectPageSize}
           />
         </Grid>
       </Grid>
-      <Grid item container rowGap={6} marginTop={2}>
-        {ebooks.map((ebook: Ebook) => (
-          <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch} />
-        ))}
-      </Grid>
+        <Grid item container rowGap={6} marginTop={2}>
+          {ebooks.map((ebook: Ebook) => (
+            <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch} />
+          ))}
+        </Grid>
     </Grid>
   );
 };

@@ -219,16 +219,18 @@ const Header = () => {
   };
 
   return (
-    <AppBar
-      position="static"
-      color="secondary"
-      style={{ padding: "20px 40px" }}
-    >
-      <Toolbar>
-        <WideScreenMenu />
-        <SmallScreenMenu />
-      </Toolbar>
-    </AppBar>
+    <Grid item container position="sticky" top="0" zIndex="100">
+      <AppBar
+        position="static"
+        color="secondary"
+        style={{ padding: "20px 40px" }}
+      >
+        <Toolbar>
+          <WideScreenMenu />
+          <SmallScreenMenu />
+        </Toolbar>
+      </AppBar>
+    </Grid>
   );
 };
 

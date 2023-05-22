@@ -4,6 +4,7 @@
   FormControl,
   TextField,
   FormHelperText,
+  GridSize,
 } from "@mui/material";
 import RedAsterisk from "./RedAsterisk";
 import { useState } from "react";
@@ -12,6 +13,7 @@ const ChooseFile = (props: {
   label: string;
   errorMessage?: string;
   isRequired?: boolean;
+  formSize?: GridSize;
   handleSelectFile: (file: string) => void;
 }) => {
   const handleSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +34,7 @@ const ChooseFile = (props: {
         </Typography>
         {props.isRequired && <RedAsterisk />}
       </Grid>
-      <Grid item>
+      <Grid item xs={6}>
         <FormControl>
           <input
             className="pointer"

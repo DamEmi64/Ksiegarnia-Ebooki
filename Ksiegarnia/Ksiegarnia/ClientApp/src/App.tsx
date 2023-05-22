@@ -4,7 +4,6 @@ import "./index.css";
 import "./App.css";
 import React, { useState } from "react";
 import Header from "./layouts/header/Header";
-import Content from "./layouts/Content";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
 import { Box, createTheme, CssBaseline, Grid, makeStyles } from "@mui/material";
@@ -32,6 +31,9 @@ import Basket from "./features/transaction/Basket";
 import Contact from "./pages/Contact";
 import Regulamin from "./pages/Regulamin";
 import axios from "axios";
+import Content from "./layouts/Content";
+import Navbar from "./layouts/Navbar";
+import EbookDetails from "./features/searching-ebooks/ebook-details/EBookDetails";
 
 axios.defaults.withCredentials = true;
 
@@ -74,130 +76,84 @@ const ContextProviders = (props: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <React.Fragment>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Grid
-          container
-          minHeight="100vh"
-          direction="column"
-          justifyContent="stretch"
-        >
-          <ContextProviders>
-            <Grid item container position="sticky" top="0" zIndex="100">
-              <Header />
-            </Grid>
-            <Grid item container flexGrow={2}>
-              <Grid item xs={1} container justifyContent="center">
-                <Box
-                  sx={{
-                    display: { xs: "none", md: "flex" },
-                  }}
-                >
-                  <div
-                    style={{
-                      top: "50%",
-                      transform: "translate(0, -50%)",
-                      position: "fixed",
-                    }}
-                  >
-                    <SideAd />
-                  </div>
-                </Box>
-              </Grid>
-              <Grid item xs={10} container rowGap={10}>
-                <Grid item xs={12}>
-                  <Content>
-                    <Routes>
-                      <Route index path="/" element={<Home />} />
-                      <Route
-                        path="/login"
-                        element={
-                          <ProtectedRoute requiresLogged={false}>
-                            <Login />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path="/register"
-                        element={
-                          <ProtectedRoute requiresLogged={false}>
-                            <Register />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route path="/ebooks" element={<SearchEbooks />} />
-                      <Route
-                        path="/account-settings"
-                        element={
-                          <ProtectedRoute requiresLogged={true}>
-                            <AccountSettings />
-                          </ProtectedRoute>
-                        }
-                      >
-                        <Route index element={<AccountDetails />} />
-                        <Route path="details" element={<AccountDetails />} />
-                        <Route
-                          path="authors-panel"
-                          element={<AuthorsPanel />}
-                        />
-                        <Route path="owned-ebooks" element={<Outlet />}>
-                          <Route index element={<OwnedEbooks />} />
-                          <Route path=":id" element={<EbookContentViewer />} />
-                        </Route>
-                        <Route
-                          path="transactions"
-                          element={<TransactionsHistory />}
-                        />
-                        <Route path="premium" element={<PremiumAccount />} />
-                        <Route path="logout" element={<Logout />} />
-                      </Route>
-                      <Route
-                        path="/ebook/create"
-                        element={
-                          <ProtectedRoute requiresLogged={true}>
-                            <CreateEbook />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path="/ebook/:id/edit"
-                        element={
-                          <ProtectedRoute requiresLogged={true}>
-                            <EditEbook />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route path="/transaction" element={<Outlet />}>
-                        <Route index element={<Basket />} />
-                      </Route>
-                      <Route path="contact" element={<Contact />} />
-                      <Route path="regulamin" element={<Regulamin />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Content>
-                </Grid>
-                <Grid item xs={12} container alignItems="end">
-                  <Footer />
-                </Grid>
-              </Grid>
-              <Grid item xs={1} container justifyContent="center">
-                <div
-                  style={{
-                    top: "50%",
-                    transform: "translate(0, -50%)",
-                    position: "fixed",
-                  }}
-                >
-                  <SideAd />
-                </div>
-              </Grid>
-            </Grid>
-            <Notification />
-          </ContextProviders>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <ContextProviders>
+        <Grid container direction="column" justifyContent="start">
+          <Header />
+          <Navbar />
+          <Content>
+            <Routes>
+              <Route index path="/" element={<Home />} />
+              <Route
+                path="/login"
+                element={
+                  <ProtectedRoute requiresLogged={false}>
+                    <Login />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <ProtectedRoute requiresLogged={false}>
+                    <Register />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/Ebook/:id"
+                element={<EbookDetails/>}
+              />
+              <Route path="/ebooks" element={<SearchEbooks />} />
+              <Route
+                path="/account-settings"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <AccountSettings />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<AccountDetails />} />
+                <Route path="details" element={<AccountDetails />} />
+                <Route path="authors-panel" element={<AuthorsPanel />} />
+                <Route path="owned-ebooks" element={<Outlet />}>
+                  <Route index element={<OwnedEbooks />} />
+                  <Route path=":id" element={<EbookContentViewer />} />
+                </Route>
+                <Route path="transactions" element={<TransactionsHistory />} />
+                <Route path="premium" element={<PremiumAccount />} />
+                <Route path="logout" element={<Logout />} />
+              </Route>
+              <Route
+                path="/ebook/create"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <CreateEbook />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ebook/:id/edit"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <EditEbook />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/transaction" element={<Outlet />}>
+                <Route index element={<Basket />} />
+              </Route>
+              <Route path="contact" element={<Contact />} />
+              <Route path="regulamin" element={<Regulamin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Content>
+          <Footer />
         </Grid>
-      </ThemeProvider>
-    </React.Fragment>
+        <Notification />
+      </ContextProviders>
+    </ThemeProvider>
   );
 }
 

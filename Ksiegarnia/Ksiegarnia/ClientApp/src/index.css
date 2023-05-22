@@ -4,6 +4,8 @@ body {
 
 #root{
   min-height: 100vh;
+  display: flex;
+  align-items: stretch;
 }
 
 .inputRounded .MuiOutlinedInput-root {
@@ -70,4 +72,12 @@ img{
 .ebook:hover{
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.ebook-rounded{
+  border-radius: 16px;
+}
+
+.hover-red:hover{
+  color: #EB4B36;
 }

@@ -7,6 +7,11 @@ import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
 import { UserContext } from "../../context/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import TransactionService from "../../services/TransactionService";
+import Loading from "../../pages/Loading";
+import { NotificationContext } from "../../context/NotificationContext";
+import axios, { AxiosResponse } from "axios";
+import EbookService from "../../services/EbookService";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -18,11 +23,13 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
       item
       container
       padding={4}
-      justifyContent="space-between"
       borderBottom="1px solid silver"
+      justifyContent="space-between"
+      alignItems="center"
+      rowSpacing={4}
     >
-      <Grid item xs={9} container columnGap={6}>
-        <Grid item height="195px">
+      <Grid item xs={12} lg={9} md={8} container columnGap={3} justifyContent={{xs: "center", sm: "start"}}>
+        <Grid xs={5} item height="195px">
           <Image
             alt={ebook.title}
             src={ebook.picture}
@@ -31,7 +38,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
         </Grid>
         <Grid
           item
-          xs={8}
+          xs={6}
           container
           direction="column"
           justifyContent="space-between"
@@ -52,12 +59,19 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item alignSelf="center">
+      <Grid item xs={4} md={3} lg={2} container justifyContent="center" alignItems="center">
         <Typography variant="h4" textAlign="center">
           {ebook.prize} zł
         </Typography>
       </Grid>
-      <Grid item alignSelf="center">
+      <Grid
+        item
+        xs={1}
+        container
+        justifySelf="end"
+        justifyContent="center"
+        alignItems="center"
+      >
         <IconButton
           onClick={() => basketContext?.removeEbook(ebook.id, ebook.prize)}
         >
@@ -69,74 +83,160 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
 };
 
 const Basket = () => {
-  const isLogged = useContext(UserContext)?.user.logged;
-  const basket = useContext(BasketContext)?.basket;
+  const userContext = useContext(UserContext);
+  const userId = userContext?.user.data?.id;
+  const isLogged = userContext?.user.logged;
+
+  const notificationContext = useContext(NotificationContext);
+
+  const basketContext = useContext(BasketContext);
+  const basket = basketContext?.basket;
 
   const basketEbooks = basket?.ebooks;
 
   const locationUrl = useLocation().pathname;
   const navigate = useNavigate();
 
+  const NOT_SUBMITED_TRANSACTION = "Nie udało się złożyć zamówienia";
+  const SUCCESSFULY_SUBMITED_TRANSACTION = "Udało się złożyć zamówienie";
+
+  if (!basketEbooks || !userContext) {
+    return <Loading />;
+  }
+
+  const handleTransaction = () => {
+    const basketEbooksIds: string[] = basketEbooks.map(
+      (ebook: Ebook) => ebook.id
+    );
+
+    EbookService.getGiftTokens(basketEbooksIds[0])
+    .then((response) => {
+      console.log(response.data)
+    })
+
+    axios
+      .all(
+        basketEbooksIds.map((ebookId: string) =>
+          EbookService.getGiftTokens(ebookId)
+        )
+      )
+      .then((response) => {
+        let tokens: string[] = []
+        response.forEach((resp: AxiosResponse<any, any>) => {
+          tokens.concat(resp.data)
+        })
+        
+        //= response.map((resp: AxiosResponse<any, any>) => resp.data).
+        TransactionService.handleTransaction(userId!, basketEbooksIds, tokens)
+        .then((response) => {
+          console.log(response)
+          basketContext?.clear()
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: SUCCESSFULY_SUBMITED_TRANSACTION
+          })
+          navigate("/account-settings/transactions")
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message: NOT_SUBMITED_TRANSACTION
+        })
+      })
+
+    /*TransactionService.handleTransaction(userId!, basketEbooksIds)
+    .then((response) => {
+      axios.all(
+        basketEbooksIds.map((ebookId: string) => (
+          EbookService.getGiftTokens(ebookId)
+        ))
+      )
+      .then((response) => {
+
+      })
+      console.log(response)
+      basketContext?.clear()
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_SUBMITED_TRANSACTION
+      })
+      navigate("/account-settings/transactions")
+    })
+    .catch((error) => {
+      console.log(error)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: NOT_SUBMITED_TRANSACTION
+      })
+    })*/
+  };
+
   return (
-    <Grid
-      item
-      container
-      direction="column"
-      marginLeft={20}
-      marginRight={20}
-      marginTop={4}
-    >
-      <Typography variant="h4">Twój koszyk ({basketEbooks?.length})</Typography>
-      <Grid
-        item
-        container
-        direction="column"
-        borderTop="1px solid silver"
-        marginTop={4}
-      >
-        {basketEbooks?.map((ebook: Ebook) => (
-          <BasketEbookView key={ebook.id} ebook={ebook} />
-        ))}
-      </Grid>
-      {basketEbooks?.length != 0 && (
-        <Grid
-          item
-          container
-          direction="column"
-          alignItems="end"
-          marginTop={2}
-          rowSpacing={2}
-        >
-          <Grid item>
-            <Typography variant="h5" display="inline">
-              Razem do zapłaty:
-            </Typography>
-            <Typography variant="h5" display="inline" fontWeight="bold">
-              {` ${basket?.totalPrice}`} zł
-            </Typography>
-          </Grid>
-          <Grid item>
-            {isLogged ? (
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ paddingLeft: 40, paddingRight: 40 }}
-              >
-                Zamawiam {`>>`}
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ paddingLeft: 40, paddingRight: 40 }}
-                onClick={() => navigate("/login", { state: locationUrl })}
-              >
-                Zaloguj
-              </Button>
-            )}
+    <Grid item container justifyContent="center" marginTop={2}>
+      <Grid item xs={10} container direction="column">
+        <Grid item container direction="column">
+          <Typography variant="h4">
+            Twój koszyk ({basketEbooks?.length})
+          </Typography>
+          <Grid
+            item
+            container
+            direction="column"
+            borderTop="1px solid silver"
+            marginTop={4}
+          >
+            {basketEbooks?.map((ebook: Ebook) => (
+              <BasketEbookView key={ebook.id} ebook={ebook} />
+            ))}
           </Grid>
         </Grid>
-      )}
+        {basketEbooks?.length != 0 && (
+          <Grid
+            item
+            container
+            direction="column"
+            alignItems="end"
+            marginTop={2}
+            rowSpacing={2}
+          >
+            <Grid item>
+              <Typography variant="h5" display="inline">
+                Razem do zapłaty:
+              </Typography>
+              <Typography variant="h5" display="inline" fontWeight="bold">
+                {` ${basket?.totalPrice}`} zł
+              </Typography>
+            </Grid>
+            <Grid item>
+              {isLogged ? (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  style={{ paddingLeft: 40, paddingRight: 40 }}
+                  onClick={handleTransaction}
+                >
+                  Zamawiam {`>>`}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  style={{ paddingLeft: 40, paddingRight: 40 }}
+                  onClick={() => navigate("/login", { state: locationUrl })}
+                >
+                  Zaloguj
+                </Button>
+              )}
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
     </Grid>
   );
 };

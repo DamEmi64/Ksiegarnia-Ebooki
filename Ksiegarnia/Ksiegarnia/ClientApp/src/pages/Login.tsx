@@ -18,23 +18,24 @@ const Login = () => {
   const userContext = React.useContext(UserContext);
   const notificationContext = useContext(NotificationContext);
 
-  const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie"
-  const LOGGED_FAILED_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle"
+  const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie";
+  const LOGGED_FAILED_MESSAGE =
+    "Nie istnieje konto o takim adresie e-mail i/lub haśle";
 
   const initForm: LoginForm = {
     email: "",
     password: "",
   };
 
-  const [form, setForm] = React.useState<LoginForm>({...initForm});
+  const [form, setForm] = React.useState<LoginForm>({ ...initForm });
 
-  const [errors, setErrors] = React.useState<LoginForm>({...initForm});
+  const [errors, setErrors] = React.useState<LoginForm>({ ...initForm });
 
-  const redirectUrl = useLocation().state
-  const navigate = useNavigate()
+  const redirectUrl = useLocation().state;
+  const navigate = useNavigate();
 
   const validateForm = () => {
-    let newErrors: LoginForm = {...initForm};
+    let newErrors: LoginForm = { ...initForm };
 
     let passedValidation = true;
 
@@ -51,7 +52,7 @@ const Login = () => {
       newErrors.password = FormService.requiredMessage;
     }
 
-    setErrors(newErrors)
+    setErrors(newErrors);
 
     return passedValidation;
   };
@@ -62,63 +63,78 @@ const Login = () => {
     }
 
     UserService.login(form)
-    .then((response) => {
-      console.log(response)
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: true,
-        message: LOGGED_SUCCESSFULY_MESSAGE
+      .then((response) => {
+        console.log(response);
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: LOGGED_SUCCESSFULY_MESSAGE,
+        });
+        userContext?.setAll({
+          logged: true,
+          data: response.data,
+        });
+        setErrors(initForm);
+        navigate(redirectUrl);
       })
-      userContext?.setAll({
-        logged: true,
-        data: response.data
-      })
-      setErrors(initForm)
-      navigate(redirectUrl)
-    })
-    .catch((error) => {
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: false,
-        message: LOGGED_FAILED_MESSAGE
-      })
-    })
+      .catch((error) => {
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message: LOGGED_FAILED_MESSAGE,
+        });
+      });
   };
 
   return (
-    <CategoriesContent>
-      <Grid item container justifyContent="center" rowGap={8} marginTop={4}>
-        <Grid item xs={12}>
-          <Typography variant="h4" textAlign="center">Logowanie</Typography>
-        </Grid>
-        <Grid item xs={10} md={5} lg={3} container direction="column" alignItems="center" rowGap={6}>
-          <BasicTextField
-            label="E-mail"
-            formSize={7}
-            value={form.email}
-            errorMessage={errors.email}
-            handleChange={(value: string) => {
-                setForm({ ...form, email: value})
-                setErrors({...errors, email: ""})
-            }}
-          />
-          <BasicTextField
-            settings={{ type: "password" }}
-            label="Hasło"
-            formSize={7}
-            value={form.password}
-            errorMessage={errors.password}
-            handleChange={(value: string) => {
-              setForm({ ...form, password: value})
-              setErrors({...errors, password: ""})
-            }}
-          />
-          <Button variant="contained" style={{width: "50%"}} onClick={handleLogin}>
-            Zaloguj się
-          </Button>
-        </Grid>
+    <Grid item container justifyContent="center" alignContent="start" rowGap={8} marginTop={4}>
+      <Grid item xs={12}>
+        <Typography variant="h4" textAlign="center">
+          Logowanie
+        </Typography>
       </Grid>
-    </CategoriesContent>
+      <Grid
+        item
+        xs={10}
+        sm={8}
+        md={6}
+        lg={4}
+        xl={3}
+        container
+        direction="column"
+        alignItems="center"
+        rowGap={6}
+      >
+        <BasicTextField
+          label="E-mail"
+          formSize={7}
+          value={form.email}
+          errorMessage={errors.email}
+          handleChange={(value: string) => {
+            setForm({ ...form, email: value });
+            setErrors({ ...errors, email: "" });
+          }}
+        />
+        <BasicTextField
+          settings={{ type: "password" }}
+          label="Hasło"
+          formSize={7}
+          value={form.password}
+          errorMessage={errors.password}
+          handleChange={(value: string) => {
+            setForm({ ...form, password: value });
+            setErrors({ ...errors, password: "" });
+          }}
+        />
+        <Button
+          variant="contained"
+          style={{ width: "50%" }}
+          onClick={handleLogin}
+        >
+          Zaloguj się
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

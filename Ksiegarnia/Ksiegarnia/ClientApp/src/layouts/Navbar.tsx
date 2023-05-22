@@ -44,11 +44,16 @@ const SmallScreenNavbar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleClickOnOption = (linkUrl: string) => {
+    handleCloseMenu()
+    navigate(`/${linkUrl}`)
+  }
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -68,7 +73,7 @@ const SmallScreenNavbar = () => {
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
         {links.map((link: LinkProps, index: number) => (
-          <MenuItem key={index} onClick={() => navigate(`/${link.url}`)}>
+          <MenuItem key={index} onClick={() => handleClickOnOption(link.url)}>
             {link.title}
           </MenuItem>
         ))}
@@ -105,10 +110,12 @@ const WideScreenNavbar = () => {
 
 const Navbar = () => {
   return (
-    <nav>
-      <SmallScreenNavbar />
-      <WideScreenNavbar />
-    </nav>
+    <Grid item container justifyContent="center" padding="20px 0">
+      <nav>
+        <SmallScreenNavbar />
+        <WideScreenNavbar />
+      </nav>
+    </Grid>
   );
 };
 

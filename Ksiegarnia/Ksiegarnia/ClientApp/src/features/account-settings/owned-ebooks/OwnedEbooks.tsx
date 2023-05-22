@@ -34,8 +34,8 @@ const OwnedEbooks = () => {
   const numberOfPages = useRef<number>(0);
 
   useEffect(() => {
-    //handleSearch()
-    EbookService.search({
+    handleSearch();
+    /*EbookService.search({
       ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
       pageSize: actualPageSize.current,
@@ -43,7 +43,7 @@ const OwnedEbooks = () => {
       const data: PagedResponse = response.data;
       setEbooks(data.result);
       numberOfPages.current = data.number_of_pages;
-    });
+    });*/
   }, []);
 
   if (!userId) {
@@ -62,7 +62,7 @@ const OwnedEbooks = () => {
         const newEbooks: Ebook[] = data.result;
         setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
         numberOfPages.current = data.number_of_pages;
-        console.log(response.data)
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -106,7 +106,7 @@ const OwnedEbooks = () => {
       direction="column"
       alignItems="center"
       rowGap={6}
-      marginTop={-2}
+      marginTop={-1}
     >
       <Grid
         item
@@ -114,8 +114,9 @@ const OwnedEbooks = () => {
         direction="row"
         justifyContent="space-between"
         marginBottom={2}
+        rowGap={4}
       >
-        <Grid item xs={8}>
+        <Grid item xs={12} lg={5} xl={7}>
           <TextField
             fullWidth
             placeholder="Wpisz tytuł lub autora książki"
@@ -130,7 +131,17 @@ const OwnedEbooks = () => {
             }}
           />
         </Grid>
-        <Grid item xs={3} container direction="row" alignItems="center">
+        <Grid
+          item
+          xs={12}
+          sm={10}
+          md={8}
+          lg={5}
+          xl={4}
+          container
+          direction="row"
+          alignItems="center"
+        >
           <SelectPageSize
             pageSize={pageSize}
             handleSetPageSize={handleSelectPageSize}
