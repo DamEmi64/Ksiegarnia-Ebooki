@@ -13,6 +13,9 @@ using System.Security.Claims;
 
 namespace Infrastructure.Repositories
 {
+    /// <summary>
+    ///     User repo
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly KsiegarniaContext _context;
@@ -22,8 +25,16 @@ namespace Infrastructure.Repositories
         private readonly IUserEmailStore<User> _emailStore;
         private readonly IRoleStore<Role> _roleStore;
         private readonly ISmtpService _authService;
-        private readonly IHttpContextAccessor httpContextAccessor;
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="ksiegarniaContext"></param>
+        /// <param name="signInManager"></param>
+        /// <param name="userManager"></param>
+        /// <param name="userStore"></param>
+        /// <param name="authService"></param>
+        /// <param name="roleStore"></param>
         public UserRepository(KsiegarniaContext ksiegarniaContext,
             SignInManager<User> signInManager,
             UserManager<User> userManager,
@@ -40,6 +51,11 @@ namespace Infrastructure.Repositories
             _roleStore = roleStore;
         }
 
+        /// <summary>
+        ///     Generate token for password reset
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns></returns>
         public async Task<SendTokenDto> GeneratePasswordToken(string id)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -52,6 +68,12 @@ namespace Infrastructure.Repositories
             };
         }
 
+        /// <summary>
+        ///     Generate token for change email
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="newEmail"></param>
+        /// <returns></returns>
         public async Task<SendTokenDto> ChangeEmailToken(string id, string newEmail)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -64,6 +86,13 @@ namespace Infrastructure.Repositories
             };
         }
 
+        /// <summary>
+        ///     Change email
+        /// </summary>
+        /// <param name="id">User Id</param>
+        /// <param name="token">Token</param>
+        /// <param name="newEmail">New email</param>
+        /// <returns></returns>
         public async Task<bool> ChangeEmail(string id, string token, string newEmail)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -72,32 +101,65 @@ namespace Infrastructure.Repositories
             return result.Succeeded;
         }
 
+        /// <summary>
+        ///     Reset Password
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <param name="token">Token</param>
+        /// <param name="newPassword">New password</param>
+        /// <returns></returns>
         public async Task ResetPassword(string id, string token, string newPassword)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
-            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+            _ = _userManager.ResetPasswordAsync(user, token, newPassword);
         }
 
+        /// <summary>
+        ///     Change Password
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <param name="oldPassword">Old password</param>
+        /// <param name="newPassword">New password</param>
+        /// <returns></returns>
+        /// <exception cref="ChangePasswordFailedException"></exception>
         public async Task ChangePassword(string id, string oldPassword, string newPassword)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             if (!changePasswordResult.Succeeded)
             {
-                throw new Exception("Password change failed");
+                throw new ChangePasswordFailedException(changePasswordResult.Errors.Select(x => x.Description));
             }
         }
 
+        /// <summary>
+        ///     Get User
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <returns></returns>
         public async Task<User> Get(string id)
         {
             return await _userStore.FindByIdAsync(id, CancellationToken.None);
         }
+
+        /// <summary>
+        ///     Remove User
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task Remove(string id)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
             await _userManager.DeleteAsync(user);
         }
 
+        /// <summary>
+        ///     Login user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<User> Login(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -121,18 +183,30 @@ namespace Infrastructure.Repositories
             throw new Exception("Login Failed");
         }
 
+        /// <summary>
+        ///     Log out
+        /// </summary>
+        /// <returns></returns>
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
         }
 
+        /// <summary>
+        ///     Register
+        /// </summary>
+        /// <param name="userData">user data</param>
+        /// <param name="password">password</param>
+        /// <returns></returns>
+        /// <exception cref="ExceptionBase"></exception>
         public async Task<SendTokenDto> Register(RegisterDto userData, string password)
         {
             var user = CreateUser();
             user.FirstName = userData.FirstName;
             user.LastName = userData.LastName;
             user.PhoneNumber = userData.PhoneNumber;
-            user.Nick = userData.Nick;
+            user.Nick = userData.Nick ?? string.Empty;
+            user.BirthDate = userData.BirthDate;
             await _userStore.SetUserNameAsync(user, userData.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, userData.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, password);
@@ -175,6 +249,13 @@ namespace Infrastructure.Repositories
             }
         }
 
+        
+        /// <summary>
+        ///     Confirm email
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task Confirm(string id, string token)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -185,6 +266,12 @@ namespace Infrastructure.Repositories
             }
         }
 
+        /// <summary>
+        ///     Add role to user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public async Task AddRole(string id, Roles role)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -203,6 +290,12 @@ namespace Infrastructure.Repositories
             }
         }
 
+        /// <summary>
+        ///     Remove role from user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public async Task RemoveRole(string id, Roles role)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -221,6 +314,12 @@ namespace Infrastructure.Repositories
             }
         }
 
+        /// <summary>
+        ///     Check role for user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public async Task<bool> CheckRole(string id, Roles role)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
@@ -237,11 +336,21 @@ namespace Infrastructure.Repositories
             return false;
         }
 
+        /// <summary>
+        ///     Get user by principal
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <returns></returns>
         public async Task<User> Get(ClaimsPrincipal principal)
         {
             return await _userManager.GetUserAsync(principal);
         }
 
+        /// <summary>
+        ///     Update user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task Update(User user)
         {
             await _userManager.UpdateAsync(user);
@@ -264,11 +373,20 @@ namespace Infrastructure.Repositories
             }
         }
 
+        /// <summary>
+        ///     Get list of users
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<User>> GetUsers()
         {
             return await _userManager.Users.ToListAsync();
         }
 
+        /// <summary>
+        ///     Get user by nick
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<User> GetByNick(string name)
         {
             return await _userStore.FindByNameAsync(name, CancellationToken.None);

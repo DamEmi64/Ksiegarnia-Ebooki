@@ -20,7 +20,7 @@ namespace Domain.Entitites
         /// <summary>
         ///     Email
         /// </summary>
-        public override string Email { get; set; }
+        public override string Email { get; set; } = string.Empty;
 
         /// <summary>
         ///     Phone No
@@ -30,7 +30,7 @@ namespace Domain.Entitites
         /// <summary>
         ///     User name
         /// </summary>
-        public string Nick { get; set; }
+        public string Nick { get; set; } = string.Empty;
 
         /// <summary>
         ///     Documents
@@ -52,6 +52,9 @@ namespace Domain.Entitites
         /// </summary>
         public DateTime BirthDate { get; set; }
 
+        /// <summary>
+        ///     Information about hiding personal data
+        /// </summary>
         public HideInfo? HideInfo { get; set; }
     }
 }

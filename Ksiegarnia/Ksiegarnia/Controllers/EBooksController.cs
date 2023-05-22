@@ -25,6 +25,9 @@ namespace Application.Controllers
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
+        /// <param name="userRepository"></param>
+        /// <param name="genreRepository"></param>
+        /// <param name="environment"></param>
         public EBooksController(IEBookRepository repository, IUserRepository userRepository, IGenreRepository genreRepository, IHostEnvironment environment)
         {
             _bookRepository = repository;
@@ -59,7 +62,7 @@ namespace Application.Controllers
                                                 [FromQuery] decimal? minPrize = 0,
                                                 [FromQuery] int page = 1)
         {
-            var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName);
+            var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName ?? string.Empty);
 
             if (!string.IsNullOrEmpty(phrase))
             {
@@ -150,7 +153,7 @@ namespace Application.Controllers
         [HttpPost("{id}/distinct")]
         public async Task<HttpStatusCode> Distinct(Guid id, [FromBody] DistinctionDto distinction)
         {
-            var user = await _userRepository.GetByNick(User.Identity.Name ?? String.Empty);
+            var user = await _userRepository.GetByNick(User.Identity?.Name ?? string.Empty);
             var book = await _bookRepository.Get(id);
 
             if (book == null)
@@ -158,15 +161,20 @@ namespace Application.Controllers
                 throw new BookNotFoundException(id.ToString());
             }
 
-            if (user == null || book.Author != user || user.Publications.Count(x => x.Distinction != null) > 3)
+            if (user == null)
             {
-                if (!(await _userRepository.CheckRole(user.Id, Roles.PremiumUser) || await _userRepository.CheckRole(user.Id, Roles.Admin)))
+                throw new UserNotFoundException(string.Empty);
+            }
+
+            if (book.Author != user || user.Publications?.Count(x => x.Distinction != null) > 3)
+            {
+                if (!(await _userRepository.CheckRole(user?.Id ?? "", Roles.PremiumUser) || await _userRepository.CheckRole(user?.Id ?? "", Roles.Admin)))
                 {
                     throw new ExceptionBase();
                 }
                 else
                 {
-                    if (await _userRepository.CheckRole(user.Id, Roles.PremiumUser) && CountFreeDistinctions(user) < user.Publications?.Count(x => x.Promotion != null))
+                    if (await _userRepository.CheckRole(user?.Id ?? string.Empty, Roles.PremiumUser) && CountFreeDistinctions(user) < user?.Publications?.Count(x => x.Promotion != null))
                     {
                         throw new ExceptionBase();
                     }
@@ -226,7 +234,8 @@ namespace Application.Controllers
                         list.Add(Convert.ToBase64String(bytes));
                     }
 
-                }    
+                    book.Tokens = JsonConvert.SerializeObject(list);
+                }
             }
 
             await _bookRepository.SaveChanges();
@@ -243,7 +252,7 @@ namespace Application.Controllers
         [HttpPost("{id}/promote")]
         public async Task<HttpStatusCode> Promote(Guid id, [FromBody] PromotionDto promotion)
         {
-            var user = await _userRepository.GetByNick(User.Identity.Name ?? String.Empty);
+            var user = await _userRepository.GetByNick(User.Identity?.Name ?? String.Empty);
             var book = await _bookRepository.Get(id);
 
             if (book == null)
@@ -322,18 +331,18 @@ namespace Application.Controllers
         {
             if (ModelState.IsValid)
             {
-                var author = await _userRepository.Get(eBook.Author.Id);
+                var author = await _userRepository.Get(eBook.Author?.Id ?? string.Empty);
                 if (author == null)
                 {
-                    throw new UserNotFoundException(eBook.Author.Id);
+                    throw new UserNotFoundException(eBook?.Author?.Id ?? string.Empty);
                 }
 
-                if (await _bookRepository.CheckIfExist(Convert.FromBase64String(eBook.Content)))
+                if (await _bookRepository.CheckIfExist(Convert.FromBase64String(eBook.Content ?? string.Empty)))
                 {
-                    throw new BookHasThisContentException(eBook.Title);
+                    throw new BookHasThisContentException(eBook.Title ?? string.Empty);
                 }
 
-                var genre = await _genreRepository.Get(eBook.Genre.Id);
+                var genre = await _genreRepository.Get(eBook.Genre?.Id ?? Guid.Empty);
 
                 if (genre == null)
                 {
@@ -344,12 +353,12 @@ namespace Application.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Author = author,
-                    Content = Convert.FromBase64String(eBook.Content),
-                    Description = eBook.Description,
+                    Content = Convert.FromBase64String(eBook.Content ?? string.Empty),
+                    Description = eBook.Description ?? string.Empty,
                     PageNumber = eBook.PageNumber ?? 0,
-                    Title = eBook.Title,
+                    Title = eBook.Title ?? string.Empty,
                     Date = DateTime.UtcNow,
-                    Picture = Convert.FromBase64String(eBook.Picture),
+                    Picture = Convert.FromBase64String(eBook.Picture ?? string.Empty),
                     Genre = genre,
                     Prize = eBook.Prize ?? 0,
                     Verification = VerificationType.Verifing
@@ -371,6 +380,7 @@ namespace Application.Controllers
         ///     Update book
         /// </summary>
         /// <param name="eBook">Ebook</param>
+        /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         [HttpPut("{id}")]
@@ -398,6 +408,28 @@ namespace Application.Controllers
                 if (eBook.Title != null)
                 {
                     book.Title = eBook.Title;
+                }
+
+                var newGenre = await _genreRepository.Get(eBook.Genre?.Id ?? Guid.Empty);
+
+                if (newGenre != null)
+                {
+                    book.Genre = newGenre;
+                }
+
+                if (eBook.Prize != null)
+                {
+                    book.Prize = eBook.Prize ?? 0;
+                }
+
+                if (!string.IsNullOrEmpty(eBook.Picture))
+                {
+                    book.Picture = Convert.FromBase64String(eBook.Picture);
+                }
+
+                if (eBook.PageNumber != null)
+                {
+                    book.PageNumber = eBook.PageNumber ?? 0;
                 }
 
                 await _bookRepository.SaveChanges();
@@ -446,9 +478,9 @@ namespace Application.Controllers
             return HttpStatusCode.OK;
         }
 
-        private int CountFreeDistinctions(User user)
+        private int CountFreeDistinctions(User? user)
         {
-            switch (user.Premium.DaysToFinishPremium)
+            switch (user?.Premium?.DaysToFinishPremium)
             {
                 case 30: return 1;
                 case 60: return 2;

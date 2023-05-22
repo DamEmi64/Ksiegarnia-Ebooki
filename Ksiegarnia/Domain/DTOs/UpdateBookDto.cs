@@ -1,5 +1,8 @@
 ﻿namespace Domain.DTOs
 {
+    /// <summary>
+    ///     Create book - dto
+    /// </summary>
     public class CreateBookDto
     {
         /// <summary>
