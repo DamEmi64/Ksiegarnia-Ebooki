@@ -1,18 +1,16 @@
 ﻿using Domain.Entitites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.DTOs
 {
+    /// <summary>
+    ///     User Dto
+    /// </summary>
     public class UserDto
     {
         /// <summary>
-        ///     User Id
+        ///      Id
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         ///     User nickname
@@ -45,8 +43,16 @@ namespace Domain.DTOs
         public int Age { get; set; }
     }
 
+    /// <summary>
+    ///     User Convertion
+    /// </summary>
     public static class UserConvert
     {
+        /// <summary>
+        ///     To Dto
+        /// </summary>
+        /// <param name="users">List of users</param>
+        /// <returns></returns>
         public static IEnumerable<UserDto> ToDTOs(this List<User> users)
         {
             foreach (var user in users)
@@ -55,6 +61,11 @@ namespace Domain.DTOs
             }
         }
 
+        /// <summary>
+        ///     To Dto
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <returns></returns>
         public static UserDto ToDTO(this User user)
         {
             return new UserDto()

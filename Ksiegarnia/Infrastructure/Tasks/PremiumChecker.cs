@@ -19,6 +19,7 @@ namespace Infrastructure.Tasks
             _serviceScopeFactory = serviceScopeFactory;
         }
 
+
         public async override Task Execute()
         {
             using (var scope = _serviceScopeFactory.CreateScope())

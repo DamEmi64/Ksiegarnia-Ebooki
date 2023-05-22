@@ -27,6 +27,9 @@ namespace Application.Controllers
         ///     Constructor
         /// </summary>
         /// <param name="userRepository"></param>
+        /// <param name="authService"></param>
+        /// <param name="environment"></param>
+        /// <param name="eBookRepository"></param>
         public UsersController(IUserRepository userRepository, ISmtpService authService, IHostEnvironment environment, IEBookRepository eBookRepository)
         {
             _userRepository = userRepository;
@@ -222,7 +225,7 @@ namespace Application.Controllers
 
             try
             {
-                var user = await _userRepository.Register(data, data.Password);
+                var user = await _userRepository.Register(data, data.Password ?? String.Empty);
                 var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
                 var callbackUrl = Url.Action("EmailConfirm", values: new { id = user.Id, token = token });
                 if (!_environment.IsDevelopment())
@@ -243,6 +246,7 @@ namespace Application.Controllers
         ///     Update
         /// </summary>
         /// <param name="data">register data</param>
+        /// <param name="id">user id</param>
         /// <returns></returns>
         /// <exception cref="RegisterFailedException">when register fail...</exception>
         [HttpPut("{id}")]
@@ -258,9 +262,9 @@ namespace Application.Controllers
             user.PhoneNumber = data.PhoneNumber;
             user.FirstName = data.FirstName;
             user.LastName = data.LastName;
-            user.Nick = data.Nick;
+            user.Nick = data.Nick ?? string.Empty;
 
-            if (user.HideInfo != null)
+            if (data.HideInfo != null)
             {
                 user.HideInfo = new HideInfo()
                 {
@@ -307,9 +311,8 @@ namespace Application.Controllers
 
 
         /// <summary>
-        ///     Login
+        ///     Logout
         /// </summary>
-        /// <param name="data">Login data</param>
         /// <returns></returns>
         /// <exception cref="LoginFailedException">when login fail...</exception>
         [HttpPost("logout")]

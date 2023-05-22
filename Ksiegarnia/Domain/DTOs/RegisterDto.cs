@@ -1,5 +1,8 @@
 ﻿namespace Domain.DTOs
 {
+    /// <summary>
+    ///     Register - dto
+    /// </summary>
     public class RegisterDto
     {
         /// <summary>
@@ -30,7 +33,7 @@
         /// <summary>
         ///     Username
         /// </summary>
-        public string Nick { get; set; }
+        public string? Nick { get; set; }
 
         /// <summary>
         ///     Birth date
@@ -40,6 +43,6 @@
         /// <summary>
         ///     What is to hide
         /// </summary>
-        public HideInfoDto HideInfo { get; set; }
+        public HideInfoDto? HideInfo { get; set; }
     }
 }

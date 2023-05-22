@@ -18,6 +18,11 @@ namespace Application.Controllers
         private readonly IReviewsRepository _reviewsRepository;
         private readonly IEBookReaderRepository _eBookReaderRepository;
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="reviewsRepository"></param>
+        /// <param name="eBookReaderRepository"></param>
         public ReviewController(IReviewsRepository reviewsRepository, IEBookReaderRepository eBookReaderRepository)
         {
             _reviewsRepository = reviewsRepository;
@@ -87,17 +92,21 @@ namespace Application.Controllers
         [HttpGet("{id}")]
         public async Task<ReviewDto> Details(Guid? id)
         {
-            return (await _reviewsRepository.Get(id ?? Guid.Empty)).ToDTO();
+            return (await _reviewsRepository.Get(id ?? Guid.Empty))?.ToDTO() ?? new();
         }
 
         /// <summary>
         ///     Add Review
         /// </summary>
-        /// <param name="genreDto">Genre data</param>
         /// <returns></returns>
         [HttpPost("")]
         public async Task<HttpStatusCode> Create([FromBody] ReviewDto reviewDto)
         {
+            if (reviewDto is null)
+            {
+                throw new ExceptionBase(HttpStatusCode.NotFound, "Missing review body.");
+            }
+
             var reader = await _eBookReaderRepository.Get(reviewDto.Reviewer.Id,reviewDto.Book.Id);
 
             if (reader == null)

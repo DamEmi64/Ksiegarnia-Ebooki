@@ -25,6 +25,9 @@ namespace Application.Controllers
         ///     Constructor
         /// </summary>
         /// <param name="repository">Repo</param>
+        /// <param name="eBookRepository"></param>
+        /// <param name="userRepository"></param>
+        /// <param name="paymentService"></param>
         public TransactionsController(IEBookReaderRepository repository,
                                         IEBookRepository eBookRepository,
                                         IUserRepository userRepository,
@@ -54,16 +57,16 @@ namespace Application.Controllers
             {
                 return transactionType switch
                 {
-                    TransactionType.Token => await BuyViaToken(buyer, tokens),
-                    TransactionType.Paypal => await BuyViaPaypal(buyer, currency),
-                    _ => await BuyViaToken(buyer, tokens),
+                    TransactionType.Token => await BuyViaToken(buyer, tokens ?? new()),
+                    TransactionType.Paypal => await BuyViaPaypal(buyer, currency ?? string.Empty),
+                    _ => await BuyViaToken(buyer, tokens ?? new()),
                 };
             }
             catch (PayPal.PaymentsException e)
             {
                 var list = new List<string>();
-                
-                foreach ( var detail in e.Details.details)
+
+                foreach (var detail in e.Details.details)
                 {
                     list.Add(detail.issue);
                 }
@@ -97,7 +100,7 @@ namespace Application.Controllers
                     throw new BookNotVerifiedException();
                 }
 
-                var tokensFromBase = JsonConvert.DeserializeObject<List<string>>(book.Tokens ?? String.Empty);
+                var tokensFromBase = JsonConvert.DeserializeObject<List<string>>(book.Tokens ?? string.Empty);
 
                 if (tokensFromBase != null)
                 {
@@ -313,7 +316,7 @@ namespace Application.Controllers
             var buyingCash = GetCash(buying);
 
             var selling = _eBookReaderRepository.GetTransactions(string.Empty)
-                            .Where(x => x.EBookReaders.Any(x => x.EBook?.Author.Id == id)).ToDTOs().ToList();
+                            .Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author.Id == id)).ToDTOs().ToList();
 
             var sellingCash = GetCash(selling);
 
@@ -349,7 +352,7 @@ namespace Application.Controllers
             {
                 var list = _eBookReaderRepository.GetTransactions(userId);
 
-                result = list.Where(x => x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().ToList();
+                result = list.Where(x => x.EBookReaders!=null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().ToList();
             }
 
             return Paging(result, page, pageSize);
