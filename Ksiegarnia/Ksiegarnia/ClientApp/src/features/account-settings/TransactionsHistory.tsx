@@ -109,7 +109,8 @@ const TransactionsHistory = () => {
   }
 
   const handleSearchTransactions = () => {
-    TransactionService.getUserTransactions(userId, userId, page, pageSize).then(
+    TransactionService.getUserTransactions(userId, page, pageSize)
+    .then(
       (response) => {
         const data: PagedResponse = response.data;
         const newTransactions: Transaction[] = data.result;

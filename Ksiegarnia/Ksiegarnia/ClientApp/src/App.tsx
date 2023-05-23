@@ -33,7 +33,7 @@ import Regulamin from "./pages/Regulamin";
 import axios from "axios";
 import Content from "./layouts/Content";
 import Navbar from "./layouts/Navbar";
-import EbookDetails from "./features/searching-ebooks/ebook-details/EBookDetails";
+import EbookDetails from "./features/ebook-details/EBookDetails";
 
 axios.defaults.withCredentials = true;
 
@@ -79,7 +79,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ContextProviders>
-        <Grid container direction="column" justifyContent="start">
+        <Grid container direction="column" justifyContent="center">
           <Header />
           <Navbar />
           <Content>

@@ -88,8 +88,8 @@ const BasicEbookView = (props: {
           color="secondary"
           onClick={() => basketContext?.addEbook(ebook)}
         >
-          <ShoppingCartOutlined fontSize="large" style={{ color: "white" }} />
-          {ebook.prize} zł
+          <ShoppingCartOutlined fontSize="large" style={{ color: "white", marginRight: 6 }} />
+          <Typography variant="h6" display="inline">{ebook.prize.toPrecision(3)} zł</Typography>
         </Button>
       )}
     </Grid>

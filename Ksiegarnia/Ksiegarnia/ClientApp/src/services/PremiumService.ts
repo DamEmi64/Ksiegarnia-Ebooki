@@ -1,12 +1,25 @@
-﻿import axios from "axios"
+﻿import axios from "axios";
+import { Currency } from "../models/api/currency";
 
-class PremiumService {
-
-    private api: string = "https://localhost:7270/Premium"
-
-    checkPremium(userId: string){
-        return axios.get(`${this.api}/${userId}/Check`)
-    }
+export interface BuyPremiumRequest {
+  isActive: boolean;
+  userId: string;
+  buyDate: string;
+  days: number;
 }
 
-export default new PremiumService()
+class PremiumService {
+  private api: string = "https://localhost:7270/Premium";
+
+  buyPremium(request: BuyPremiumRequest) {
+    return axios.post(`${this.api}/buy`, request, {
+      params: { currency: "PLN" },
+    });
+  }
+
+  checkPremium(userId: string) {
+    return axios.get(`${this.api}/${userId}/Check`);
+  }
+}
+
+export default new PremiumService();

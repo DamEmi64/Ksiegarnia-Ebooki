@@ -41,7 +41,7 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
           title="Kategorie"
           links={genres.map((genre: Genre) => ({
             title: genre.name,
-            url: genre.name,
+            url: `/ebooks?genre1=${genre.name}`,
           }))}
         />
       </Box>
@@ -86,7 +86,7 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
           {[
             genres.map((genre: Genre) => (
-              <MenuItem key={genre.id} onClick={() => navigate(genre.name)}>
+              <MenuItem key={genre.id} onClick={() => navigate(`/ebooks?genre1=${genre.name}`)}>
                 {genre.name}
               </MenuItem>
             )),

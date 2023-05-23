@@ -9,7 +9,6 @@ import AuthorsStatistics from "./AuthorsStatistics";
 import AuthorsEbooks from "./AuthorsEbooks";
 
 const AuthorsPanel = () => {
-
   return (
     <Grid item container direction="column" marginTop={-3} rowGap={8}>
       <AuthorsStatistics/>

@@ -1,25 +1,29 @@
-﻿import axios from "axios";
+﻿import axios, { ParamsSerializerOptions } from "axios";
+import { AnySrvRecord } from "dns";
+import qs from "qs";
 
 class TransactionService {
   private api: string = "https://localhost:7270/Transactions";
 
   getUserTransactions = (
     userId: string,
-    authorId: string,
     page?: number,
     pageSize?: number
   ) => {
     return axios.get(this.api, {
       params: {
         userId,
-        authorId,
         page,
         pageSize,
       },
     });
   };
 
-  handleTransaction = (userId: string, bookIds: string[], giftTokens: string[]) => {
+  handleTransaction = (
+    userId: string,
+    bookIds: string[],
+    giftTokens: string[]
+  ) => {
     return axios.post(
       `${this.api}/buy`,
       {
@@ -31,6 +35,9 @@ class TransactionService {
           transactionType: "Token", //docelowo Paypal
           tokens: giftTokens
         },
+        paramsSerializer: {
+          indexes: null // by default: false
+        }
       }
     );
   };
