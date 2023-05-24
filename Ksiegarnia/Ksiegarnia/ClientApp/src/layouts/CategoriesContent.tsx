@@ -41,7 +41,7 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
           title="Kategorie"
           links={genres.map((genre: Genre) => ({
             title: genre.name,
-            url: `/ebooks?genre1=${genre.name}`,
+            url: `/ebooks?genre=${genre.name}`,
           }))}
         />
       </Box>

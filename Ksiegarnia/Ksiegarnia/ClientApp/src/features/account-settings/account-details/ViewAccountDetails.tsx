@@ -45,7 +45,7 @@ const ViewAccountDetails = (props: {
         <Data label={"E-mail"} value={user.email} />
         <Data label={"Pseudonim"} value={user.nick} />
         <Data label={"Numer tel."} value={user.phone} />
-        <Data label={"Wiek"} value={(user.age - 1970).toString()} />
+        <Data label={"Wiek"} value={(user.age).toString()} />
         <Grid item xs={12} container justifyContent="center"  marginTop={4}>
           <Button
             variant="contained"
