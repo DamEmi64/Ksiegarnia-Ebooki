@@ -14,11 +14,8 @@ const SelectPageSize = (props: {
   pageSize: number;
   handleSetPageSize: (pageSize: number) => void;
 }) => {
-  const [pageSize, setPageSize] = useState<number>(props.pageSize);
-
   const handleChangeSize = (event: SelectChangeEvent) => {
     const newPageSize: number = +event.target.value
-    setPageSize(newPageSize)
     props.handleSetPageSize(newPageSize);
   };
 
@@ -29,7 +26,7 @@ const SelectPageSize = (props: {
       </Typography>
       <Grid item xs={6}>
         <FormControl fullWidth>
-          <Select value={pageSize.toString()} onChange={handleChangeSize}>
+          <Select value={props.pageSize.toString()} onChange={handleChangeSize}>
             {pageSizes.map((size: number) => (
               <MenuItem key={size} value={size}>
                 {size}

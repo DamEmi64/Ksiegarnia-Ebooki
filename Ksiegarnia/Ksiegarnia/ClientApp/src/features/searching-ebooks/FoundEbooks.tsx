@@ -1,80 +1,96 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import Ebook from "../../models/api/ebook";
 import { Grid, Pagination, Stack } from "@mui/material";
 import BasicEbookView from "../../components/BasicEbookView";
-import EbookService from "../../services/EbookService";
+import EbookService, { SearchEbookProps } from "../../services/EbookService";
 import PagedResponse from "../../models/api/pagedResponse";
 import SortEbooks from "../../components/SortEbooks";
 import SelectPageSize from "../../components/SelectPageSize";
 import { useSearchParams } from "react-router-dom";
 import EbookSearchCriteria from "../../models/ebookSearchCriteria";
+import { EbookSearchCategories } from "../../models/ebookSearchCategories";
+import { EbookSortOptions } from "../../models/ebookSortOptions";
 
 const FoundEbooks = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(12);
-  const [sort, setSort] = useState<string | undefined>(undefined);
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchCriteria, setSearchCriteria] = useState<EbookSearchCriteria>({})
+  const [searchEbooksProps, setSearchEbooksProps] = useState<SearchEbookProps>({
+    page: 1,
+    pageSize: 12,
+  })
+  const actualEbooksProps = useRef<SearchEbookProps>(searchEbooksProps)
+
+  let isSearchingBestsellers: boolean = false;
 
   useEffect(() => {
     const phraseFromParams = searchParams.get("phrase")
     const genreFromParams = searchParams.getAll("genre");
     const minPriceFromParams = searchParams.get("minPrice");
     const maxPriceFromParams = searchParams.get("maxPrice");
-
-    const newSearchCriteria = {
-      phrase: phraseFromParams ? phraseFromParams : undefined,
-      genre: genreFromParams ? genreFromParams : undefined,
-      minPrize: minPriceFromParams ? (minPriceFromParams as unknown as number) : undefined,
-      maxPrize: maxPriceFromParams ? (maxPriceFromParams as unknown as number) : undefined
+    const searchCategory = searchParams.get("searchCategory");
+    const newSearchEbooksProps: SearchEbookProps = {
+      ...searchEbooksProps, 
+      ebookSearchCriteria: {
+        phrase: phraseFromParams ? phraseFromParams : undefined,
+        genre: genreFromParams ? genreFromParams : undefined,
+        minPrize: minPriceFromParams ? (minPriceFromParams as unknown as number) : undefined,
+        maxPrize: maxPriceFromParams ? (maxPriceFromParams as unknown as number) : undefined
+      }
     }
 
-    setSearchCriteria(newSearchCriteria)
+    if(searchCategory){
+      switch(searchCategory){
+        case EbookSearchCategories.News:
+          newSearchEbooksProps.sort = EbookSortOptions.DescByDate
+          break;
+        case EbookSearchCategories.Bestseller:
+          isSearchingBestsellers = true;
+          break;
+        case EbookSearchCategories.Promotion:
+          newSearchEbooksProps.ebookSearchCriteria!.onlyOnPromotion = true
+          break;
+      }
+    }
+
+    actualEbooksProps.current = newSearchEbooksProps
+    setSearchEbooksProps(newSearchEbooksProps)
   }, [searchParams])
 
   useEffect(() => {
     handleSearch();
-  }, [page, pageSize, sort, searchCriteria]);
+  }, [searchEbooksProps]);
 
   const handleSearch = () => {
-    console.log({
-      ebookSearchCriteria: searchCriteria,
-      sort: sort,
-      page: page,
-      pageSize: pageSize,
-    })
-    EbookService.search({
-      ebookSearchCriteria: searchCriteria,
-      sort: sort,
-      page: page,
-      pageSize: pageSize,
-    }).then((response) => {
+    EbookService.search(actualEbooksProps.current)
+    .then((response) => {
       const pagedResponse: PagedResponse = response.data;
       setEbooks(pagedResponse.result);
     });
   };
 
   const handleSelectPageSize = (newPageSize: number) => {
-    setPageSize(newPageSize);
+    actualEbooksProps.current.pageSize = newPageSize
+    setSearchEbooksProps({...searchEbooksProps, pageSize: newPageSize});
   };
 
   const handleSetSort = (newSort: string) => {
-    setSort(newSort);
+    actualEbooksProps.current.sort = newSort
+    setSearchEbooksProps({...searchEbooksProps, sort: newSort});
   };
 
   const handleSetPage = (event: any, newPage: number) => {
-    setPage(newPage)
+    actualEbooksProps.current.page = newPage
+    setSearchEbooksProps({...searchEbooksProps, page: newPage});
   }
 
   const CustomPagination = () => {
     return (
       <Stack alignItems="center">
         <Pagination
-          page={page}
+          page={searchEbooksProps.page}
           count={numberOfPages}
           onChange={handleSetPage}
           color="primary"
@@ -90,13 +106,13 @@ const FoundEbooks = () => {
       <Grid item container justifyContent="space-between" rowGap={4}>
         <Grid item xs={12} lg={5} xl={4}>
           <SortEbooks
-            sortValue={sort ? sort : ""}
+            sortValue={searchEbooksProps.sort ? searchEbooksProps.sort  : ""}
             handleSetSort={handleSetSort}
           />
         </Grid>
         <Grid item xs={12} lg={5} xl={4}>
           <SelectPageSize
-            pageSize={pageSize}
+            pageSize={searchEbooksProps.pageSize ? searchEbooksProps.pageSize  : 12}
             handleSetPageSize={handleSelectPageSize}
           />
         </Grid>

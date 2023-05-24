@@ -25,17 +25,37 @@ const SelectGenre = () => {
 
   const [searchGenreName, setSearchGenreName] = useState<string>("");
 
-  const [searchParams, setSearchParams] = useSearchParams()
-  const genreFromParam = searchParams.get("genre")
+  const [searchParams, setSearchParams] = useSearchParams();
+  const genreFromParam = searchParams.getAll("genre");
 
   useEffect(() => {
-    GenreService.getAll().then((response) => {
+    GenreService.getAll()
+    .then((response) => {
       const gotGenres: Genre[] = response.data;
-      let newGenreStates = gotGenres.map((genre: Genre) => ({
+      let newGenreStates: GenreState[] = gotGenres.map((genre: Genre) => ({
         name: genre.name,
         checked: false,
         visible: true,
       }));
+
+      if (genreFromParam) {
+        const foundGenreStates: GenreState[] = [];
+
+        newGenreStates = newGenreStates.filter((genreState: GenreState) => {
+          if (genreFromParam.includes(genreState.name)) {
+            foundGenreStates.push(genreState);
+            return false;
+          }
+          return true;
+        });
+
+        foundGenreStates.forEach(
+          (genreState: GenreState) => (genreState.checked = true)
+        );
+
+        newGenreStates = [...foundGenreStates, ...newGenreStates];
+      }
+
       setGenresStates(newGenreStates);
     });
   }, []);
@@ -62,34 +82,40 @@ const SelectGenre = () => {
 
     let newGenresStates = [...genresStates];
     const oldGenreState = newGenresStates[genreIndex];
-    let newGenreState = {...oldGenreState, checked: !oldGenreState.checked};
+    let newGenreState = { ...oldGenreState, checked: !oldGenreState.checked };
     newGenresStates.splice(genreIndex, 1);
 
     if (newGenreState.checked) {
-      if (!(genresStates[0].checked && genresStates[1].checked && genresStates[2].checked)) {
-        newGenresStates = [newGenreState, ...newGenresStates]
+      if (
+        !(
+          genresStates[0].checked &&
+          genresStates[1].checked &&
+          genresStates[2].checked
+        )
+      ) {
+        newGenresStates = [newGenreState, ...newGenresStates];
       }
     } else {
-      newGenresStates = [...newGenresStates, newGenreState]
+      newGenresStates = [...newGenresStates, newGenreState];
     }
 
     setGenresStates(newGenresStates);
 
-    searchParams.delete("genre")
+    searchParams.delete("genre");
 
-    let checkedGenres: string[] = []
+    let checkedGenres: string[] = [];
 
-    for(let i=0; i < 3; i++){
-      const genreState = newGenresStates[i]
-      if(!genreState.checked){
+    for (let i = 0; i < 3; i++) {
+      const genreState = newGenresStates[i];
+      if (!genreState.checked) {
         break;
       }
 
-      searchParams.append("genre", genreState.name)
-      checkedGenres.push(genreState.name)
+      searchParams.append("genre", genreState.name);
+      checkedGenres.push(genreState.name);
     }
 
-    setSearchParams(searchParams)
+    setSearchParams(searchParams);
   };
 
   return (

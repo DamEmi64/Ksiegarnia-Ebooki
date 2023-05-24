@@ -66,11 +66,9 @@ const SortEbooks = (props: {
   sortValue: string;
   handleSetSort: (sortValue: string) => void;
 }) => {
-  const [sortValue, setSortValue] = useState<string>(props.sortValue);
 
   const handleChangeSize = (event: SelectChangeEvent) => {
     const newSortValue: string = event.target.value
-    setSortValue(newSortValue);
     props.handleSetSort(newSortValue);
   };
 
@@ -81,7 +79,7 @@ const SortEbooks = (props: {
       </Typography>
       <Grid item xs={7}>
         <FormControl fullWidth>
-          <Select value={sortValue} onChange={handleChangeSize}>
+          <Select value={props.sortValue} onChange={handleChangeSize}>
             {sortNameMappings.map((sortNameMapping: SortNameMapping) => (
               <MenuItem key={sortNameMapping.sort} value={sortNameMapping.sort}>
                 {sortNameMapping.name}
