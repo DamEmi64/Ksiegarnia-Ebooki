@@ -29,11 +29,11 @@ const sortNameMappings: SortNameMapping[] = [
     sort: EbookSortOptions.DescByGenre,
   },
   {
-    name: "Cena: najmniejsza",
+    name: "Cena: największa",
     sort: EbookSortOptions.DescByPrize,
   },
   {
-    name: "Data: najwcześniej",
+    name: "Data: najpóźniej",
     sort: EbookSortOptions.DescByDate,
   },
   {
@@ -49,11 +49,11 @@ const sortNameMappings: SortNameMapping[] = [
     sort: EbookSortOptions.AscByGenre,
   },
   {
-    name: "Cena: największa",
+    name: "Cena: najmniejsza",
     sort: EbookSortOptions.AscByPrize,
   },
   {
-    name: "Data: najpóźniej",
+    name: "Data: najwcześniej",
     sort: EbookSortOptions.AscByDate,
   },
   {

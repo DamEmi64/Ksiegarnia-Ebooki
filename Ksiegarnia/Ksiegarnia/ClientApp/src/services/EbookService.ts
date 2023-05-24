@@ -53,6 +53,9 @@ class EbookService {
         page: props.page,
         pageSize: props.pageSize,
       },
+      paramsSerializer: {
+        indexes: null // by default: false
+      }
     });
   }
 

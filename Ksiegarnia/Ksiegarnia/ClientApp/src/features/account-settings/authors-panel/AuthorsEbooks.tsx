@@ -144,11 +144,11 @@ const AuthorsEbooks = () => {
           />
         </Grid>
       </Grid>
-        <Grid item container rowGap={6} marginTop={2}>
-          {ebooks.map((ebook: Ebook) => (
-            <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch} />
-          ))}
-        </Grid>
+      <Grid item container rowGap={6} marginTop={2}>
+        {ebooks.map((ebook: Ebook) => (
+          <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch} />
+        ))}
+      </Grid>
     </Grid>
   );
 };

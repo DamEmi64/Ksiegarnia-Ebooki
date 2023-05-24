@@ -99,17 +99,30 @@ const PremiumAccount = () => {
   }
 
   const handleBuyPremium = (numberOfDays: number) => {
+
     const newBuyDate = new Date();
     let newEndDate = premiumInfo.endDate ? premiumInfo.endDate : new Date(newBuyDate);
     newEndDate.setDate(newBuyDate.getDate() + numberOfDays);
 
-    setPremiumInfo({
-      ...premiumInfo,
+    PremiumService.buyPremium({
       isActive: true,
-      buyDate: newBuyDate,
-      endDate: newEndDate,
-    });
-    setIsVisibleBuyPremiumDialog(false);
+      userId: userId,
+      buyDate: newBuyDate.toISOString(),
+      days: numberOfDays
+    })
+    .then((response) => {
+      console.log(response)
+      setPremiumInfo({
+        ...premiumInfo,
+        isActive: true,
+        buyDate: newBuyDate,
+        endDate: newEndDate,
+      });
+      setIsVisibleBuyPremiumDialog(false);
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   };
 
   const BenefitInfo = (props: { benefit: string }) => {

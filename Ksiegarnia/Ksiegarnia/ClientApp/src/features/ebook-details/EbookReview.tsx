@@ -1,16 +1,16 @@
 ﻿import { Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { Review } from "../../../models/api/review";
+import { Review } from "../../models/api/review";
 import { MockReview } from "./EbooksReviews";
-import Rate from "../../../components/Rate";
+import Rate from "../../components/Rate";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 import { MoreVert } from "@mui/icons-material";
 import React from "react";
-import ConfirmationDialog from "../../../components/ConfirmationDialog";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 import AddEditEbookReview from "./AddEditEbookReview";
-import Ebook from "../../../models/api/ebook";
-import ReviewService from "../../../services/ReviewService";
-import { NotificationContext } from "../../../context/NotificationContext";
+import Ebook from "../../models/api/ebook";
+import ReviewService from "../../services/ReviewService";
+import { NotificationContext } from "../../context/NotificationContext";
 
 const EbookReview = (props: {
   ebook: Ebook;

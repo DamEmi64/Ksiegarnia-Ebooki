@@ -28,8 +28,8 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
       alignItems="center"
       rowSpacing={4}
     >
-      <Grid item xs={12} lg={9} md={8} container columnGap={3} justifyContent={{xs: "center", sm: "start"}}>
-        <Grid xs={5} item height="195px">
+      <Grid item xs={12} lg={9} md={8} container columnGap={3} justifyContent={{xs: "center", sm: "start"}} rowGap={2}>
+        <Grid item height="195px">
           <Image
             alt={ebook.title}
             src={ebook.picture}
@@ -109,11 +109,6 @@ const Basket = () => {
       (ebook: Ebook) => ebook.id
     );
 
-    EbookService.getGiftTokens(basketEbooksIds[0])
-    .then((response) => {
-      console.log(response.data)
-    })
-
     axios
       .all(
         basketEbooksIds.map((ebookId: string) =>
@@ -121,10 +116,14 @@ const Basket = () => {
         )
       )
       .then((response) => {
+        console.log(response)
         let tokens: string[] = []
         response.forEach((resp: AxiosResponse<any, any>) => {
-          tokens.concat(resp.data)
+          const firstToken = resp.data[2]
+          tokens = [...tokens, firstToken]
         })
+
+        console.log(tokens)
         
         //= response.map((resp: AxiosResponse<any, any>) => resp.data).
         TransactionService.handleTransaction(userId!, basketEbooksIds, tokens)

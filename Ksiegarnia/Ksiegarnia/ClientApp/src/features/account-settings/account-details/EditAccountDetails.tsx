@@ -90,7 +90,7 @@ const EditAccountDetails = (props: {
       return UserService.getEmailUpdateToken(user.id, form.email).then(
         (response) => {
           const token: string = response.data;
-          console.log(response)
+          console.log(token, form.email)
 
           return UserService.updateEmail(user.id, token, form.email).catch(
             (error) => {

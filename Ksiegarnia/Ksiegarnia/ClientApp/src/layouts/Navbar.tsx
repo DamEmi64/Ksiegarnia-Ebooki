@@ -12,6 +12,7 @@ import { accountMenuLinks } from "./header/AccountMenu";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
+import { EbookSearchCategories } from "../models/ebookSearchCategories";
 
 const links: LinkProps[] = [
   {
@@ -20,15 +21,15 @@ const links: LinkProps[] = [
   },
   {
     title: "Nowości",
-    url: "news",
+    url: `ebooks?searchCategory=${EbookSearchCategories.News}`,
   },
   {
     title: "Promocje",
-    url: "promotions",
+    url: `ebooks?searchCategory=${EbookSearchCategories.Promotion}`,
   },
   {
     title: "Bestsellery",
-    url: "bestsellers",
+    url: `ebooks?searchCategory=${EbookSearchCategories.Bestseller}`,
   },
   {
     title: "Kontakt",
