@@ -39,6 +39,22 @@ namespace Application.Controllers
         }
 
         /// <summary>
+        ///     Search users
+        /// </summary>
+        /// <param name="phrase">Phrase</param>
+        /// <returns></returns>
+        [HttpGet("search")]
+        public async Task<object> Search([FromQuery] string? phrase)
+        {
+            if (string.IsNullOrEmpty(phrase))
+            {
+                return (await _userRepository.GetUsers());
+            }
+
+            return (await _userRepository.GetUsers()).Where(x => x.Nick.Contains(phrase));
+        }
+
+        /// <summary>
         ///     Get user by id
         /// </summary>
         /// <param name="id">id</param>
@@ -81,7 +97,7 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var books = user.EBooks.Select(x => x.EBook);
+            var books = (await _eBookRepository.GetEBooks()).Where(x=>x.Readers!=null && x.Readers.Any(y=>y.User.Id == user.Id)).ToList();
 
             if (books == null)
             {
@@ -166,7 +182,7 @@ namespace Application.Controllers
 
             var list = sort switch
             {
-                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ThenBy(x=>x.Distinction!=null).ToDTOs().ToList(),
+                SortType.DescByPrize => books.OrderByDescending(x => x.Prize).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
                 SortType.DescByGenre => books.OrderByDescending(x => x.Genre).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
                 SortType.DescByDate => books.OrderByDescending(x => x.Prize).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),
                 SortType.DescByAuthor => books.OrderByDescending(x => x.Author.Nick).ThenBy(x => x.Distinction != null).ToDTOs().ToList(),

@@ -338,8 +338,8 @@ namespace Application.Controllers
         /// <param name="pageSize">Page size</param>
         /// <returns></returns>
         [HttpGet("")]
-        public object GetAll([FromQuery] string userId,
-                            [FromQuery] string authorId,
+        public object GetAll([FromQuery] string userId = "",
+                            [FromQuery] string? authorId = "",
                             [FromQuery] int page = 1,
                             [FromQuery] int pageSize = 100)
         {
@@ -352,7 +352,10 @@ namespace Application.Controllers
             {
                 var list = _eBookReaderRepository.GetTransactions(userId);
 
-                result = list.Where(x => x.EBookReaders!=null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().ToList();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    result = list.Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().ToList();
+                }
             }
 
             return Paging(result, page, pageSize);

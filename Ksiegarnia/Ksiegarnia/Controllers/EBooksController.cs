@@ -64,6 +64,15 @@ namespace Application.Controllers
         {
             var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName ?? string.Empty);
 
+            if (maxPrize > 0)
+            {
+                books = books.Where(x => x.Prize <= maxPrize).ToList();
+            }
+            if (minPrize > 0 )
+            {
+                books = books.Where(x => x.Prize >= minPrize).ToList();
+            }
+
             if (!string.IsNullOrEmpty(phrase))
             {
                 books = books.Where(x => x.Title.Contains(phrase) || x.Author.Nick.Contains(phrase)).ToList();
@@ -86,6 +95,7 @@ namespace Application.Controllers
                 SortType.AscByPrize => books.OrderBy(x => x.Prize).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
                 SortType.DescByName => books.OrderByDescending(x => x.Title).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
                 SortType.AscByName => books.OrderBy(x => x.Title).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
+                SortType.BestSeller => books.OrderBy(x => x.Readers.Count).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList(),
                 _ => books.OrderBy(x => x.Title).ThenBy(x => x.Distinction != null && x.Distinction.StartDate.AddDays(7) > DateTime.Now).ToDTOs().ToList()
             };
 
