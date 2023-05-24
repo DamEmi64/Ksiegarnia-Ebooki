@@ -39,7 +39,8 @@ namespace Infrastructure.Repositories
                                                 .Include(x => x.Author)
                                                 .Include(x => x.Promotion)
                                                 .Include(x => x.Distinction)
-                                                .Include(x=>x.Readers)
+                                                .Include(x => x.Readers)
+                                                .ThenInclude(x => x.User)
                                                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 

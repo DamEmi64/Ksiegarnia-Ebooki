@@ -53,6 +53,11 @@ namespace Domain.Enums
         /// Ascending by author
         /// </summary>
         [JsonProperty("AscByAuthor")] 
-        AscByAuthor
+        AscByAuthor,
+        /// <summary>
+        /// Ascending by author
+        /// </summary>
+        [JsonProperty("BestSeller")]
+        BestSeller
     }
 }
