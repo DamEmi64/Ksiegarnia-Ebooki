@@ -17,7 +17,7 @@ import {
   Card,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../assets/logo.png";
 import { UserContext } from "../../context/UserContext";
 import AccountMenu, { accountMenuLinks } from "./AccountMenu";
@@ -27,6 +27,7 @@ import { LinkProps } from "../../models/linkProps";
 import { useNavigate } from "react-router-dom";
 import UserService from "../../services/UserService";
 import { NotificationContext } from "../../context/NotificationContext";
+import SearchEbooksByPhrase from "./SearchEbooksByPhrase";
 
 const Header = () => {
   const isUserLogged = React.useContext(UserContext)?.user.logged;
@@ -52,18 +53,7 @@ const Header = () => {
           alignItems="center"
         >
           <Grid item lg={6} xl={7} marginLeft={6}>
-            <TextField
-              className="inputRounded"
-              placeholder="Wpisz zagadnienie, tytuł lub autora"
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <IconButton onClick={() => console.log("AA")}>
-                    <Search />
-                  </IconButton>
-                ),
-              }}
-            />
+            <SearchEbooksByPhrase/>
           </Grid>
           <Grid
             item
@@ -168,18 +158,7 @@ const Header = () => {
           columnGap={2}
         >
           <Grid item flexGrow={1}>
-            <TextField
-              className="inputRounded"
-              placeholder="Wpisz zagadnienie, tytuł lub autora"
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <IconButton onClick={() => console.log("AA")}>
-                    <Search />
-                  </IconButton>
-                ),
-              }}
-            />
+            <SearchEbooksByPhrase/>
           </Grid>
           <IconButton onClick={handleClick}>
             <MenuIcon fontSize="large" style={{ color: "white" }} />

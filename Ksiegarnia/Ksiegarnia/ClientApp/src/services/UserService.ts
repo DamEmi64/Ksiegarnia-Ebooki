@@ -96,7 +96,7 @@ class UserService {
   getEmailUpdateToken(userId: string, newEmail: string){
     return axios.get(`${this.api}/${userId}/emailToken`, {
       params: {
-        newEmail
+        newEmail: newEmail
       }
     })
   }

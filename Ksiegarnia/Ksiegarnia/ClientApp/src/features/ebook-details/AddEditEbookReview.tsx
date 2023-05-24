@@ -6,15 +6,15 @@
   Button,
 } from "@mui/material";
 import { useContext, useState } from "react";
-import FormService from "../../../services/FormService";
-import Rate from "../../../components/Rate";
-import { Review } from "../../../models/api/review";
+import FormService from "../../services/FormService";
+import Rate from "../../components/Rate";
+import { Review } from "../../models/api/review";
 import { MockReview } from "./EbooksReviews";
-import Ebook from "../../../models/api/ebook";
-import ReviewService, { CreateEditReview } from "../../../services/ReviewService";
-import { UserContext } from "../../../context/UserContext";
-import Loading from "../../../pages/Loading";
-import { NotificationContext } from "../../../context/NotificationContext";
+import Ebook from "../../models/api/ebook";
+import ReviewService, { CreateEditReview } from "../../services/ReviewService";
+import { UserContext } from "../../context/UserContext";
+import Loading from "../../pages/Loading";
+import { NotificationContext } from "../../context/NotificationContext";
 
 interface FormProps {
   opinion: string;

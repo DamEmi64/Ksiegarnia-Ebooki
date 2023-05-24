@@ -1,5 +1,5 @@
 ﻿import { Box, Grid, LinearProgress, Stack, Typography } from "@mui/material";
-import Rate from "../../../components/Rate";
+import Rate from "../../components/Rate";
 import React from "react";
 
 const stats: number[] = [100, 80, 30, 50, 25];
@@ -9,11 +9,17 @@ const EbookGrades = () => {
     <Grid item marginTop={2} container justifyContent="space-evenly">
       <Grid item xs={5.5}>
         {stats.map((stat: number, index: number) => (
-          <Stack direction="row" alignItems="center" marginBottom="16" columnGap={2}>
+          <Stack
+            key={index}
+            direction="row"
+            alignItems="center"
+            marginBottom="16"
+            columnGap={2}
+          >
             <Typography variant="h5" display="inline">
-                {5 - index}
-              </Typography>
-              <LinearProgress
+              {5 - index}
+            </Typography>
+            <LinearProgress
               key={stat}
               variant="determinate"
               value={stat}
