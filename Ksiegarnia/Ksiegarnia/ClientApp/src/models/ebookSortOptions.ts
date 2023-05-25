@@ -9,4 +9,5 @@
   AscByPrize = "AscByPrize",
   AscByDate = "AscByDate",
   AscByAuthor = "AscByAuthor",
+  BestSeller = "BestSeller",
 }

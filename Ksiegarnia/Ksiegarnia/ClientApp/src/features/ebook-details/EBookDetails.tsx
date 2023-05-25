@@ -19,6 +19,7 @@ import { BasketContext } from "../../context/BasketContext";
 import { UserContext } from "../../context/UserContext";
 import EbookGrades from "./EbookGrades";
 import EbooksReviews from "./EbooksReviews";
+import { EbookSortOptions } from "../../models/ebookSortOptions";
 
 const Data = (props: { label: string; value: string | React.ReactNode }) => {
   return (
@@ -162,7 +163,7 @@ const EbookDetails = () => {
         <BigData label="Opis" value={ebook.description} />
         <BigData label="Oceny" value={<EbookGrades/>} />
         <EbooksReviews ebook={ebook}/>
-        <EbooksSlider title="Polecane" searchBestsellers={true} />
+        <EbooksSlider title="Polecane" sort={EbookSortOptions.BestSeller} />
       </Grid>
     </CategoriesContent>
   );

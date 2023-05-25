@@ -60,6 +60,10 @@ const sortNameMappings: SortNameMapping[] = [
     name: "Autor: rosnąco",
     sort: EbookSortOptions.AscByAuthor,
   },
+  {
+    name: "Bestsellery",
+    sort: EbookSortOptions.BestSeller
+  }
 ];
 
 const SortEbooks = (props: {
