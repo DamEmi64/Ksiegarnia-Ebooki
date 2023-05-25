@@ -43,8 +43,16 @@ export interface GetPublishedEbooksProps {
 class UserService {
   private api: string = "https://localhost:7270/Users";
 
-  getLoggedUser(){
-    return axios.get(this.api)
+  search(phrase: string) {
+    return axios.get(`${this.api}/search`, {
+      params: {
+        phrase
+      },
+    });
+  }
+
+  getLoggedUser() {
+    return axios.get(this.api);
   }
 
   register(request: RegisterProps) {
@@ -85,29 +93,29 @@ class UserService {
     });
   }
 
-  updatePassword(userId: string, oldPassword: string, newPassword: string){
-    console.log(oldPassword, " ", newPassword)
+  updatePassword(userId: string, oldPassword: string, newPassword: string) {
+    console.log(oldPassword, " ", newPassword);
     return axios.post(`${this.api}/${userId}/passwordChange`, {
       oldPassword: oldPassword,
-      password: newPassword
-    })
+      password: newPassword,
+    });
   }
 
-  getEmailUpdateToken(userId: string, newEmail: string){
+  getEmailUpdateToken(userId: string, newEmail: string) {
     return axios.get(`${this.api}/${userId}/emailToken`, {
       params: {
-        newEmail: newEmail
-      }
-    })
+        newEmail: newEmail,
+      },
+    });
   }
 
-  updateEmail(userId: string, token: string, newEmail: string){
+  updateEmail(userId: string, token: string, newEmail: string) {
     return axios.post(`${this.api}/${userId}/emailChange`, {
       params: {
         token: token,
-        newEmail: newEmail
-      }
-    })
+        newEmail: newEmail,
+      },
+    });
   }
 
   getOwnedEbooks(props: GetOwnedEbooksProps) {

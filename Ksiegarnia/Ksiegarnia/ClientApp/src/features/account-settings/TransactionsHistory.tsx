@@ -118,7 +118,10 @@ const TransactionsHistory = () => {
         setNumberOfPages(data.number_of_pages);
         console.log(response.data);
       }
-    );
+    )
+    .catch((error) => {
+      console.log(error)
+    })
   };
 
   const CustomPagination = () => {
