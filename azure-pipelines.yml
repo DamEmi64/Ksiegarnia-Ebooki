@@ -1,0 +1,46 @@
+pool:
+  name: Azure Pipelines
+  demands: npm
+
+steps:
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    workingDir: Ksiegarnia/Ksiegarnia/ClientApp
+    verbose: false
+
+- task: Npm@1
+  displayName: 'npm run build'
+  inputs:
+    command: custom
+    workingDir: Ksiegarnia/Ksiegarnia/ClientApp
+    verbose: false
+    customCommand: 'run build'
+
+- script: |
+   mv Ksiegarnia/Ksiegarnia/ClientApp/build Ksiegarnia/Ksiegarnia/wwwroot
+   
+  displayName: 'Command Line Script'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: Ksiegarnia/Ksiegarnia/Application.csproj
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: Ksiegarnia/Ksiegarnia/Application.csproj
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish'
+  inputs:
+    command: publish
+    arguments: '-c Release -o $(Build.ArtifactStagingDirectory)/publish'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: ebookworld-backend'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+    ArtifactName: 'ebookworld-backend'
