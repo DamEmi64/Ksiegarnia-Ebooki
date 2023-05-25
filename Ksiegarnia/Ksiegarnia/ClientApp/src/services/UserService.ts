@@ -121,7 +121,6 @@ class UserService {
   getOwnedEbooks(props: GetOwnedEbooksProps) {
     return axios.get(`${this.api}/${props.userId}/ebooks`, {
       params: {
-        author: props.authorId ? props.authorId : null,
         title: props.phrase ? props.phrase : null,
         page: props.page,
         pageSize: props.pageSize,

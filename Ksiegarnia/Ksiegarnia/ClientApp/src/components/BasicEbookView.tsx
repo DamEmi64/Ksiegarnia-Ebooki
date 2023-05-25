@@ -57,17 +57,21 @@ const BasicEbookView = (props: {
         justifyContent="center"
         alignItems="center"
       >
-        <Link
-          to={`/Ebook/${ebook.id}`}
-          aria-disabled={props.preventRedirect}
-          style={{ height: "100%" }}
-        >
+        {!props.preventRedirect ? (
+          <Link to={`/Ebook/${ebook.id}`} style={{ height: "100%" }}>
+            <Image
+              alt={ebook.title}
+              src={ebook.picture}
+              style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+            />
+          </Link>
+        ) : (
           <Image
             alt={ebook.title}
             src={ebook.picture}
             style={{ maxWidth: "100%", width: "auto", height: "100%" }}
           />
-        </Link>
+        )}
       </Grid>
       <Grid item>
         <Typography variant="h6" textAlign="center">
@@ -88,8 +92,13 @@ const BasicEbookView = (props: {
           color="secondary"
           onClick={() => basketContext?.addEbook(ebook)}
         >
-          <ShoppingCartOutlined fontSize="large" style={{ color: "white", marginRight: 6 }} />
-          <Typography variant="h6" display="inline">{ebook.prize.toPrecision(3)} zł</Typography>
+          <ShoppingCartOutlined
+            fontSize="large"
+            style={{ color: "white", marginRight: 6 }}
+          />
+          <Typography variant="h6" display="inline">
+            {ebook.prize.toPrecision(3)} zł
+          </Typography>
         </Button>
       )}
     </Grid>

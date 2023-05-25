@@ -94,14 +94,14 @@ const TransactionsHistory = () => {
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
 
   useEffect(() => {
-    handleSearchTransactions();
-    /*EbookService.search({page: 1, pageSize: 10})
+    //handleSearchTransactions();
+    EbookService.search({page: 1, pageSize: 10})
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
       console.log(response.data)
-    });*/
+    });
   }, [page]);
 
   if (!userId) {
@@ -250,10 +250,12 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
       item
       container
       padding={6}
+      paddingBottom={4}
       justifyContent="space-between"
       borderBottom="1px solid silver"
+      rowGap={4}
     >
-      <Grid item xs={9} container columnGap={4}>
+      <Grid item xs={12} md={9} container columnGap={4} rowGap={2}>
         <Grid item height="260px">
           <Image
             alt={ebook.title}
