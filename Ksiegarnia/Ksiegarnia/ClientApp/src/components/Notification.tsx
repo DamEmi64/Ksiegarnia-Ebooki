@@ -1,12 +1,9 @@
 ﻿import {
   Alert,
-  Dialog,
-  DialogTitle,
   Snackbar,
-  Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import { NotificationContext, NotificationProps } from "../context/NotificationContext";
+import React, { useContext } from "react";
+import { NotificationContext } from "../context/NotificationContext";
 
 const Notification = () => {
   const notificationContext = useContext(NotificationContext);

@@ -1,20 +1,13 @@
-﻿import {
-  FormControl,
+import {
   Grid,
   IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
   TextField,
-  Typography,
-  useScrollTrigger,
 } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../../context/UserContext";
 import { Search } from "@mui/icons-material";
 import Ebook from "../../../models/api/ebook";
 import EbookService from "../../../services/EbookService";
-import BasicEbookView from "../../../components/BasicEbookView";
 import useScrollPosition from "../../../components/useScrollPosition";
 import SelectPageSize from "../../../components/SelectPageSize";
 import Loading from "../../../pages/Loading";
@@ -46,6 +39,15 @@ const OwnedEbooks = () => {
       numberOfPages.current = data.number_of_pages;
     });
   }, []);
+
+  useScrollPosition({
+    handleScrollBottom() {
+      if (page.current + 1 <= numberOfPages.current) {
+        page.current++;
+        handleSearch();
+      }
+    },
+  });
 
   if (!userId) {
     return <Loading />;
@@ -101,15 +103,6 @@ const OwnedEbooks = () => {
     setPageSize(newPageSize);
     handleSearchWithReplace();
   };
-    //eslint-disable-next-line react-hooks/rules-of-hooks
-  useScrollPosition({
-    handleScrollBottom() {
-      if (page.current + 1 <= numberOfPages.current) {
-        page.current++;
-        handleSearch();
-      }
-    },
-  });
 
   return (
     <Grid

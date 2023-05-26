@@ -1,20 +1,16 @@
-﻿import { Search } from "@mui/icons-material";
-import {
+﻿import {
   Box,
   Button,
   Grid,
-  IconButton,
   Menu,
   MenuItem,
-  Paper,
   Typography,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import LinksSidePanel from "./LinksSidePanel";
 import { useEffect, useState } from "react";
 import GenreService from "../services/GenreService";
 import Genre from "../models/api/genre";
-import Navbar from "./Navbar";
 import React from "react";
 
 const CategoriesContent = (props: { children: React.ReactNode }) => {

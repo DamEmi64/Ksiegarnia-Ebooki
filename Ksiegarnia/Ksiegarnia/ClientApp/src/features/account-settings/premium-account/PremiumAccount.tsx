@@ -1,6 +1,6 @@
 ﻿import { Close, Done } from "@mui/icons-material";
 import { Button, Grid, Stack, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PremiumHistory from "../../../models/api/premiumHistory";
 import PremiumAccountOrder from "./PremiumAccountOrder";
 import BuyPremiumDialog from "./BuyPremiumDialog";
@@ -79,7 +79,7 @@ const PremiumAccount = () => {
       }
 
       const buyDate = new Date(premiumInfoData.buyDate as string);
-      let endDate = new Date(buyDate);
+      const endDate = new Date(buyDate);
       endDate.setDate(buyDate.getDate() + premiumInfoData.days!);
 
       setPremiumInfo({
@@ -101,7 +101,7 @@ const PremiumAccount = () => {
   const handleBuyPremium = (numberOfDays: number) => {
 
     const newBuyDate = new Date();
-    let newEndDate = premiumInfo.endDate ? premiumInfo.endDate : new Date(newBuyDate);
+    const newEndDate = premiumInfo.endDate ? premiumInfo.endDate : new Date(newBuyDate);
     newEndDate.setDate(newBuyDate.getDate() + numberOfDays);
 
     PremiumService.buyPremium({

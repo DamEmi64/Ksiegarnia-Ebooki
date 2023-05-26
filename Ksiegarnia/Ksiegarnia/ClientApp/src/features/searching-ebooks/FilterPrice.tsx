@@ -1,6 +1,5 @@
-﻿import { Rectangle } from "@mui/icons-material";
-import { Grid, Slider, Typography } from "@mui/material";
-import { useState } from "react";
+﻿import { Grid, Slider, Typography } from "@mui/material";
+import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const FilterPrice = () => {

@@ -1,11 +1,9 @@
 ﻿import { Box, Button, Grid, Menu, MenuItem, Typography } from "@mui/material";
 import LinksSidePanel from "../layouts/LinksSidePanel";
-import Navbar from "../layouts/Navbar";
 import { LinkProps } from "../models/linkProps";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
-import Genre from "../models/api/genre";
 
 const links: LinkProps[] = [
   {

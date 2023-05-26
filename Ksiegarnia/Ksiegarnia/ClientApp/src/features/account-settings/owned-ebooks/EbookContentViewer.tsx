@@ -1,10 +1,9 @@
 ﻿import { useEffect, useState } from "react";
-import { Document, Page } from "react-pdf";
 import EbookService from "../../../services/EbookService";
 import { useParams } from "react-router-dom";
-import { Dialog, DialogContent, Grid, IconButton } from "@mui/material";
-import { CloseOutlined } from "@mui/icons-material";
+import { Dialog } from "@mui/material";
 import Loading from "../../../pages/Loading";
+import React from "react";
 
 const EbookContentViewer = () => {
 

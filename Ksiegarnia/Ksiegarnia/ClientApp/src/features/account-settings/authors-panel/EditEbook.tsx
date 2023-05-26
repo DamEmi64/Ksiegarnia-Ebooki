@@ -4,7 +4,6 @@ import Genre from "../../../models/api/genre";
 import React, { useContext, useEffect, useState } from "react";
 import EbookService from "../../../services/EbookService";
 import Ebook from "../../../models/api/ebook";
-import NotFound from "../../../pages/NotFound";
 import { Grid, Typography, Button, IconButton } from "@mui/material";
 import BasicTextField from "../../../components/BasicTextField";
 import ChoosePicture from "../../../components/ChoosePicture";
@@ -131,7 +130,7 @@ const EditEbook = () => {
   }
 
   const validateForm = () => {
-    let newErrors: FormErrors = { ...initErrors };
+    const newErrors: FormErrors = { ...initErrors };
 
     let passedValidation = true;
 

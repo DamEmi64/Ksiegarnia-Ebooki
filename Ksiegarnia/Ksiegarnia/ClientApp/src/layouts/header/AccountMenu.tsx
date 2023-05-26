@@ -5,7 +5,6 @@ import { NotificationContext } from "../../context/NotificationContext";
 import { UserContext } from "../../context/UserContext";
 import UserService from "../../services/UserService";
 import { LinkProps } from "../../models/linkProps";
-import ShoppingCartOutlined from "@mui/icons-material/ShoppingCartOutlined";
 import PersonIcon from "@mui/icons-material/Person";
 
 export const accountMenuLinks: LinkProps[] = [

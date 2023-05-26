@@ -1,9 +1,7 @@
-﻿import axios, { ParamsSerializerOptions } from "axios";
-import { AnySrvRecord } from "dns";
-import qs from "qs";
+﻿import axios from "axios";
 
 class TransactionService {
-  private api: string = "https://localhost:7270/Transactions";
+  private api = "https://localhost:7270/Transactions";
 
   getUserTransactions = (
     userId: string,

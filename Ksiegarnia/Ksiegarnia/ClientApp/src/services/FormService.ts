@@ -1,7 +1,7 @@
 ﻿class FormService {
 
-    public requiredMessage: string = "Pole nie może być puste"
-    public invalidFormatMessage: string = "Niepoprawny format"
+    public requiredMessage = "Pole nie może być puste"
+    public invalidFormatMessage = "Niepoprawny format"
 
     checkIfIsRequired(input?: string){
         return input && input !== ""

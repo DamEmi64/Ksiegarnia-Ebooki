@@ -1,10 +1,8 @@
-﻿import { Search } from "@mui/icons-material";
-import { Grid, IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
+﻿import { Grid } from "@mui/material";
 import CategoriesContent from "../layouts/CategoriesContent";
 import EbooksSlider from "../components/EbooksSlider";
 import { EbookSortOptions } from "../models/ebookSortOptions";
-import { useEffect } from "react";
+import React from "react";
 
 const Home = () => {
   const prevYear: number = new Date().getFullYear() - 1;

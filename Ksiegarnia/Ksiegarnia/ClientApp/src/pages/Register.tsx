@@ -1,12 +1,9 @@
-﻿import React, { useContext, useEffect } from "react";
-import CategoriesContent from "../layouts/CategoriesContent";
+﻿import React, { useContext } from "react";
 import FormService from "../services/FormService";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
-import Notification from "../components/Notification";
 import UserService, { RegisterProps } from "../services/UserService";
 import { NotificationContext } from "../context/NotificationContext";
-import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import CustomDatePicker from "../components/CustomDatePicker";
 
@@ -58,7 +55,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    let newErrors: ErrorsForm = { ...errorsInitForm };
+    const newErrors: ErrorsForm = { ...errorsInitForm };
 
     let passedValidation = true;
 

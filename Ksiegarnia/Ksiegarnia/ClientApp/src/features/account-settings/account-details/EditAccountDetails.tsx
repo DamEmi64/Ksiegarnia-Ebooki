@@ -1,15 +1,12 @@
-﻿import { Grid, Button, Typography } from "@mui/material";
-import UserDTO from "../../../models/api/userDTO";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useContext } from "react";
 import BasicTextField from "../../../components/BasicTextField";
-import Notification from "../../../components/Notification";
 import FormService from "../../../services/FormService";
 import UserService from "../../../services/UserService";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
 import { NotificationContext } from "../../../context/NotificationContext";
 import axios from "axios";
-import { AxiosError } from "axios";
 import { AxiosResponse } from "axios";
 
 interface FormProps {
@@ -39,20 +36,20 @@ const EditAccountDetails = (props: {
   const userContext = useContext(UserContext);
   const user = userContext?.user.data;
 
-  if (!user) {
-    return <Loading />;
-  }
-
   const [form, setForm] = React.useState<FormProps>({
-    ...user,
+    ...user!,
     previousPassword: "",
     newPassword: "",
   });
 
   const [errors, setErrors] = React.useState<FormProps>(initErrors);
 
+  if (!user) {
+    return <Loading />;
+  }
+
   const validateForm = () => {
-    let newErrors: FormProps = { ...initErrors };
+    const newErrors: FormProps = { ...initErrors };
 
     let passedValidation = true;
 

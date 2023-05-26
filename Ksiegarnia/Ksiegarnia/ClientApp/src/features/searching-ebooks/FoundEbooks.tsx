@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import Ebook from "../../models/api/ebook";
 import { Grid, Pagination, Stack } from "@mui/material";
 import BasicEbookView from "../../components/BasicEbookView";
@@ -7,7 +7,6 @@ import PagedResponse from "../../models/api/pagedResponse";
 import SortEbooks from "../../components/SortEbooks";
 import SelectPageSize from "../../components/SelectPageSize";
 import { useSearchParams } from "react-router-dom";
-import EbookSearchCriteria from "../../models/ebookSearchCriteria";
 import { EbookSearchCategories } from "../../models/ebookSearchCategories";
 import { EbookSortOptions } from "../../models/ebookSortOptions";
 
@@ -22,8 +21,6 @@ const FoundEbooks = () => {
     pageSize: 12,
   })
   const actualEbooksProps = useRef<SearchEbookProps>(searchEbooksProps)
-
-  let isSearchingBestsellers: boolean = false;
 
   useEffect(() => {
     const phraseFromParams = searchParams.get("phrase")

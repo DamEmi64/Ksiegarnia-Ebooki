@@ -3,7 +3,7 @@ import Ebook from "../models/api/ebook";
 import Image from "./Image";
 import Rate from "./Rate";
 import { ShoppingCartOutlined } from "@mui/icons-material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { BasketContext } from "../context/BasketContext";
@@ -21,8 +21,6 @@ const BasicEbookView = (props: {
   useEffect(() => {
     setEbook(props.ebook);
   }, [props.ebook]);
-
-  const navigate = useNavigate();
 
   const checkShowAddToCart = (): boolean => {
     if (!props.showAddToCart) {
