@@ -1,23 +1,15 @@
-﻿import Search from "@mui/icons-material/Search";
-import {
+﻿import {
   AppBar,
-  Container,
   Toolbar,
-  Typography,
   Box,
   IconButton,
   Menu,
   MenuItem,
   Button,
-  Tooltip,
   Link,
-  Avatar,
-  InputAdornment,
   Grid,
-  Card,
 } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+import React from "react";
 import logo from "../../assets/logo.png";
 import { UserContext } from "../../context/UserContext";
 import AccountMenu, { accountMenuLinks } from "./AccountMenu";

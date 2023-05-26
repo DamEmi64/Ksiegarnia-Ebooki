@@ -41,7 +41,7 @@ export interface GetPublishedEbooksProps {
 }
 
 class UserService {
-  private api: string = "https://localhost:7270/Users";
+  private api = "https://localhost:7270/Users";
 
   search(phrase: string) {
     return axios.get(`${this.api}/search`, {

@@ -1,5 +1,6 @@
 ﻿import { Grid, Typography } from "@mui/material";
 import Statistics from "../../../models/api/statistics";
+import React from "react";
 
 const StatisticData = (props: { title: string; value: string }) => {
   return (

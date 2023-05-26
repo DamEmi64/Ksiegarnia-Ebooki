@@ -2,7 +2,7 @@
 import Rate from "../../components/Rate";
 import Ebook from "../../models/api/ebook";
 import Image from "../../components/Image";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
 import { UserContext } from "../../context/UserContext";

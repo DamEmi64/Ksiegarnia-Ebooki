@@ -1,11 +1,8 @@
-﻿import { Grid, IconButton } from "@mui/material";
+﻿import { Grid } from "@mui/material";
 import BasicEbookView from "../../../components/BasicEbookView";
 import Ebook from "../../../models/api/ebook";
-import { useEffect, useState } from "react";
-import EbookContentViewer from "./EbookContentViewer";
-import { CloseOutlined } from "@mui/icons-material";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import EbookService from "../../../services/EbookService";
+import { Link } from "react-router-dom";
+import React from "react";
 
 const OwnedEbook = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;

@@ -1,7 +1,5 @@
 ﻿import axios from "axios";
-import { EbookSortOptions } from "../models/ebookSortOptions";
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
-import Ebook from "../models/api/ebook";
 import Genre from "../models/api/genre";
 import UserDTO from "../models/api/userDTO";
 
@@ -34,8 +32,8 @@ export interface UpdateEbookProps {
 }
 
 class EbookService {
-  private host: string = "https://localhost:7270"
-  private api: string = `${this.host}/Books`;
+  private host = "https://localhost:7270"
+  private api = `${this.host}/Books`;
 
   getById(ebookId: string) {
     return axios.get(`${this.api}/${ebookId}`);

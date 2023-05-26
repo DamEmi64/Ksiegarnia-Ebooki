@@ -7,7 +7,6 @@
   Grid,
 } from "@mui/material";
 import { EbookSortOptions } from "../models/ebookSortOptions";
-import { useState, useEffect } from "react";
 import React from "react";
 
 interface SortNameMapping {

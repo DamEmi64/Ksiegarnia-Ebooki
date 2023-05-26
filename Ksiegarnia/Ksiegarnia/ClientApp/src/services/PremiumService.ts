@@ -1,5 +1,4 @@
 ﻿import axios from "axios";
-import { Currency } from "../models/api/currency";
 
 export interface BuyPremiumRequest {
   isActive: boolean;
@@ -9,7 +8,7 @@ export interface BuyPremiumRequest {
 }
 
 class PremiumService {
-  private api: string = "https://localhost:7270/Premium";
+  private api = "https://localhost:7270/Premium";
 
   buyPremium(request: BuyPremiumRequest) {
     return axios.post(`${this.api}/buy`, request, {

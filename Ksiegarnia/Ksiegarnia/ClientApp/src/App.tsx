@@ -1,13 +1,12 @@
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import "./index.css";
 import "./App.css";
-import React, { useState } from "react";
+import React from "react";
 import Header from "./layouts/header/Header";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
-import { Box, createTheme, CssBaseline, Grid, makeStyles } from "@mui/material";
-import SideAd from "./layouts/SideAd";
+import { createTheme, CssBaseline, Grid } from "@mui/material";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";

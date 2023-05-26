@@ -1,5 +1,4 @@
 ﻿import { Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { Review } from "../../models/api/review";
 import { MockReview } from "./EbooksReviews";
 import Rate from "../../components/Rate";
 import { useContext, useEffect, useState } from "react";

@@ -5,10 +5,9 @@
   FormHelperText,
   Button,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import FormService from "../../services/FormService";
 import Rate from "../../components/Rate";
-import { Review } from "../../models/api/review";
 import { MockReview } from "./EbooksReviews";
 import Ebook from "../../models/api/ebook";
 import ReviewService, { CreateEditReview } from "../../services/ReviewService";
@@ -58,8 +57,8 @@ const AddEditEbookReview = (props: {
   const FAILED_EDITED_MESSAGE = "Nie udało się zmienić danych recenzji";
 
   const validateForm = () => {
-    let newErrors: FormErrors = { ...initFormErrors };
-    let succeeded: boolean = true;
+    const newErrors: FormErrors = { ...initFormErrors };
+    let succeeded = true;
 
     if (!FormService.checkIfIsRequired(form.opinion)) {
       newErrors.opinion = FormService.requiredMessage;

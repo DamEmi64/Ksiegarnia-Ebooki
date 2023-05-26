@@ -1,6 +1,5 @@
 ﻿import { Close, Search } from "@mui/icons-material";
 import {
-  Autocomplete,
   Grid,
   IconButton,
   List,
@@ -9,9 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import UserService from "../../services/UserService";
-import UserDTO from "../../models/api/userDTO";
 
 interface BasicUserData {
   firstName: string;

@@ -1,6 +1,6 @@
-﻿import React, { useContext, useEffect } from "react";
+﻿import React from "react";
 import { UserContext } from "../context/UserContext";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = (props: {
   requiresLogged: boolean;

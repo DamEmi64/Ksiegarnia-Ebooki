@@ -1,6 +1,5 @@
 ﻿import { Grid, Typography, Button } from "@mui/material";
 import React, { useContext } from "react";
-import UserDTO from "../../../models/api/userDTO";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
 

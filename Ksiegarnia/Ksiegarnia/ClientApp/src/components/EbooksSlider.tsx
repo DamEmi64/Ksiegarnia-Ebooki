@@ -1,7 +1,6 @@
 ﻿import {
   Grid,
   IconButton,
-  Paper,
   Typography,
   useMediaQuery,
   useTheme,
@@ -11,9 +10,7 @@ import BasicEbookView from "./BasicEbookView";
 import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import EbookService from "../services/EbookService";
-import { EbookSortOptions } from "../models/ebookSortOptions";
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
-import { AxiosResponse } from "axios";
 import PagedResponse from "../models/api/pagedResponse";
 import useWindowResize from "./useWindowResize";
 

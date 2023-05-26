@@ -3,7 +3,6 @@
   IconButton,
   Pagination,
   Stack,
-  TableRow,
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
@@ -12,8 +11,6 @@ import TransactionService from "../../services/TransactionService";
 import {
   ArrowDropDown,
   ArrowDropUp,
-  ExpandLess,
-  ExpandMore,
 } from "@mui/icons-material";
 import Ebook from "../../models/api/ebook";
 import EbookService from "../../services/EbookService";
@@ -94,7 +91,7 @@ const TransactionsHistory = () => {
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
 
   useEffect(() => {
-    //handleSearchTransactions();
+    handleSearchTransactions();
     EbookService.search({page: 1, pageSize: 10})
     .then((response) => {
       const data: PagedResponse = response.data;
