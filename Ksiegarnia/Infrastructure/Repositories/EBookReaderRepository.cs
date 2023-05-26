@@ -20,22 +20,33 @@ namespace Infrastructure.Repositories
 
         public async Task<EBookReader?> Get(Guid id)
         {
-            return await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Set<EBookReader>()
+                        .Include(x => x.User)
+                    .Include(x => x.EBook)
+                    .ThenInclude(X => X.Genre)
+                    .Include(x => x.EBook)
+                    .ThenInclude(x => x.Author)
+                     .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<EBookReader?> Get(string userId, Guid bookdId)
         {
             return await _context.Set<EBookReader>()
                         .Include(x => x.User)
-                        .Include(x => x.EBook)
+                    .Include(x => x.EBook)
+                    .ThenInclude(X => X.Genre)
+                    .Include(x => x.EBook)
+                    .ThenInclude(x => x.Author)
                         .FirstOrDefaultAsync(x => x.User.Id == userId && x.EBook.Id == bookdId);
         }
 
         public async Task<Transaction?> GetTransaction(Guid id)
         {
             return (await _context.Set<EBookReader>()
-                    .Include(x=>x.EBook)
-                    .ThenInclude(x=>x.Author)
+                    .Include(x => x.EBook)
+                    .ThenInclude(X => X.Genre)
+                    .Include(x => x.EBook)
+                    .ThenInclude(x => x.Author)
                     .FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
         }
 
