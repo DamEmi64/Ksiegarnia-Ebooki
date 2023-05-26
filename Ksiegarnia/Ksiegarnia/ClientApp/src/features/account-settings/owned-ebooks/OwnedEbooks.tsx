@@ -101,7 +101,7 @@ const OwnedEbooks = () => {
     setPageSize(newPageSize);
     handleSearchWithReplace();
   };
-
+    //eslint-disable-next-line react-hooks/rules-of-hooks
   useScrollPosition({
     handleScrollBottom() {
       if (page.current + 1 <= numberOfPages.current) {
