@@ -7,7 +7,7 @@ env:
   AZURE_WEBAPP_NAME: Ksiegarnia-ZIWG
   AZURE_WEBAPP_PACKAGE_PATH: Ksiegarnia/publish
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.Ksiegarnia_ZIWG_3610 }}
-  CONFIGURATION: Release
+  CONFIGURATION: Debug
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: Ksiegarnia
 jobs:
