@@ -87,7 +87,7 @@ const AuthorsEbooks = () => {
     actualSort.current = newSort;
     setSort(newSort);
   };
-
+  //eslint-disable-next-line react-hooks/rules-of-hooks
   useScrollPosition({
     handleScrollBottom() {
       if (page.current + 1 <= numberOfPages.current) {
