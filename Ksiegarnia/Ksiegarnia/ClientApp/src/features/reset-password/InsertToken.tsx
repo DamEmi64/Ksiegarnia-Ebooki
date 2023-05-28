@@ -23,7 +23,7 @@ const initForm: FormProps = {
   newPassword: "",
 };
 
-const InsertToken = (props: { handleClose: () => void }) => {
+const InsertToken = (props: { email: string; handleClose: () => void }) => {
   const [form, setForm] = React.useState<FormProps>({ ...initForm });
   const [errors, setErrors] = React.useState<FormProps>({ ...initForm });
 
@@ -60,18 +60,10 @@ const InsertToken = (props: { handleClose: () => void }) => {
       return;
     }
 
-    props.handleClose();
-
-    notificationContext?.setNotification({
-      isVisible: true,
-      isSuccessful: false,
-      message: SUCCESSFUL_MESSAGE,
-    });
-
-    /*UserService.resetPassword(form.token)
+    UserService.resetPassword(form.token, props.email, form.newPassword)
       .then((response) => {
         console.log(response);
-        props.setNextState();
+        props.handleClose();
       })
       .catch((error) => {
         console.log(error);
@@ -80,7 +72,7 @@ const InsertToken = (props: { handleClose: () => void }) => {
           isSuccessful: false,
           message: FAILED_MESSAGE,
         });
-      });*/
+      });
   };
 
   return (

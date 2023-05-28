@@ -27,8 +27,8 @@ const OwnedEbooks = () => {
   const numberOfPages = useRef<number>(0);
 
   useEffect(() => {
-    //handleSearch();
-    EbookService.search({
+    handleSearch();
+    /*EbookService.search({
       ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
       pageSize: actualPageSize.current,
@@ -37,7 +37,7 @@ const OwnedEbooks = () => {
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages;
-    });
+    });*/
   }, []);
 
   useScrollPosition({
@@ -54,23 +54,25 @@ const OwnedEbooks = () => {
   }
 
   const handleSearch = () => {
-    EbookService.search({
+    /*EbookService.search({
       ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
       pageSize: actualPageSize.current,
     }).then((response) => {
+      console.log(response)
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages;
-    });
-    /*UserService.getOwnedEbooks({
+    });*/
+    UserService.getOwnedEbooks({
       userId: userId,
       phrase: searchPhrase,
       page: page.current,
       pageSize: actualPageSize.current,
     })
       .then((response) => {
+         console.log(response)
         const data: PagedResponse = response.data;
         const newEbooks: Ebook[] = data.result;
         setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
@@ -80,12 +82,11 @@ const OwnedEbooks = () => {
       .catch((error) => {
         console.log(error);
       });
-      */
   };
 
   const handleSearchWithReplace = () => {
     page.current = 1;
-    /*UserService.getOwnedEbooks({
+    UserService.getOwnedEbooks({
       userId: userId,
       phrase: searchPhrase,
       page: page.current,
@@ -95,7 +96,8 @@ const OwnedEbooks = () => {
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages;
-    });*/
+    });
+    /*
     EbookService.search({
       ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
@@ -105,7 +107,7 @@ const OwnedEbooks = () => {
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages;
-    });
+    });*/
   };
 
   const handleSelectPageSize = (newPageSize: number) => {

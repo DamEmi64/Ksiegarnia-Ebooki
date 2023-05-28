@@ -94,13 +94,21 @@ class UserService {
   }
 
   getPasswordResetToken(email: string) {
-    return axios.get(`${this.api}/${email}/passwordResetToken`);
+    return axios.get(`${this.api}/a/passwordResetToken`, {
+      params: {
+        email,
+      },
+    });
   }
 
-  resetPassword(resetToken: string, newPassword: string) {
-    return axios.post(`${this.api}/passwordReset`, newPassword, {
+  resetPassword(resetToken: string, email: string, newPassword: string) {
+    return axios.post(`${this.api}/a/passwordReset`, newPassword, {
       params: {
+        email: email,
         token: resetToken,
+      },
+      headers: {
+        "Content-Type": "application/json",
       },
     });
   }
@@ -112,11 +120,11 @@ class UserService {
     });
   }
 
-  getEmailUpdateToken(userId: string, newEmail: string) {
-    return axios.get(`${this.api}/${userId}/emailToken`, {
+  getEmailUpdateToken(email: string) {
+    return axios.get(`${this.api}/${email}/emailToken`, {
       params: {
-        newEmail: newEmail,
-      },
+        newEmail: email
+      }
     });
   }
 
