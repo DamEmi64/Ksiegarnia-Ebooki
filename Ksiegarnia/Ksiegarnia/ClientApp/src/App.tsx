@@ -33,35 +33,41 @@ import axios from "axios";
 import Content from "./layouts/Content";
 import Navbar from "./layouts/Navbar";
 import EbookDetails from "./features/ebook-details/EBookDetails";
+import { plPL as corePlPL } from '@mui/material/locale';
+import { plPL } from '@mui/x-date-pickers/locales';
 
 axios.defaults.withCredentials = true;
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#0A3F5C",
-      dark: "#1470a3",
+const theme = createTheme(
+  {
+    palette: {
+      primary: {
+        main: "#0A3F5C",
+        dark: "#1470a3",
+      },
+      secondary: {
+        main: "#EB4B36",
+      },
+      info: {
+        main: "#87CEEB",
+      },
+      success: {
+        main: "#10CE00",
+      },
     },
-    secondary: {
-      main: "#EB4B36",
-    },
-    info: {
-      main: "#87CEEB",
-    },
-    success: {
-      main: "#10CE00",
+    typography: {
+      fontSize: 13,
+      fontWeightLight: 300,
+      fontWeightRegular: 400,
+      fontWeightMedium: 500,
+      button: {
+        textTransform: "none",
+      },
     },
   },
-  typography: {
-    fontSize: 13,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
-    button: {
-      textTransform: "none",
-    },
-  },
-});
+  corePlPL,
+  plPL
+);
 
 const ContextProviders = (props: { children: React.ReactNode }) => {
   return (
@@ -100,10 +106,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/Ebook/:id"
-                element={<EbookDetails/>}
-              />
+              <Route path="/Ebook/:id" element={<EbookDetails />} />
               <Route path="/ebooks" element={<SearchEbooks />} />
               <Route
                 path="/account-settings"

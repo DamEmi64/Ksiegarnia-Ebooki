@@ -49,7 +49,7 @@ const BuyPremiumDialog = (props: {
         <Grid item xs={10} sm={8} md={7}>
           <Button
             fullWidth
-            className="premium-button"
+            className="premium-button button-rounded"
             onClick={() => handleAccept(premiumPlan.duration * 30)}
             style={{ padding: "12px 16px" }}
           >

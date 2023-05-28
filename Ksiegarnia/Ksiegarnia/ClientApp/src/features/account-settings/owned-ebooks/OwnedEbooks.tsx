@@ -85,9 +85,19 @@ const OwnedEbooks = () => {
 
   const handleSearchWithReplace = () => {
     page.current = 1;
-    UserService.getOwnedEbooks({
+    /*UserService.getOwnedEbooks({
       userId: userId,
       phrase: searchPhrase,
+      page: page.current,
+      pageSize: actualPageSize.current,
+    }).then((response) => {
+      const data: PagedResponse = response.data;
+      const newEbooks: Ebook[] = data.result;
+      setEbooks(newEbooks);
+      numberOfPages.current = data.number_of_pages;
+    });*/
+    EbookService.search({
+      ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
       pageSize: actualPageSize.current,
     }).then((response) => {

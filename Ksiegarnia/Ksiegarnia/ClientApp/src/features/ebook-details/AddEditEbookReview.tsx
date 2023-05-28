@@ -14,6 +14,7 @@ import ReviewService, { CreateEditReview } from "../../services/ReviewService";
 import { UserContext } from "../../context/UserContext";
 import Loading from "../../pages/Loading";
 import { NotificationContext } from "../../context/NotificationContext";
+import { Review } from "../../models/api/review";
 
 interface FormProps {
   opinion: string;
@@ -37,7 +38,7 @@ const initFormErrors: FormErrors = {
 
 const AddEditEbookReview = (props: {
   ebook: Ebook;
-  review?: MockReview;
+  review?: Review;
   handleUpdate: () => void;
   handleClose: () => void;
 }) => {

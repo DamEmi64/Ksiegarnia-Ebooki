@@ -69,7 +69,7 @@ const Header = () => {
               <React.Fragment>
                 <AccountMenu />
                 <Button
-                  className="premium-button"
+                  className="premium-button button-rounded"
                   variant="contained"
                   href="account-settings/premium"
                 >

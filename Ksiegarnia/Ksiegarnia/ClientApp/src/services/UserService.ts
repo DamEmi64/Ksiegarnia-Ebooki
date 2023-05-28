@@ -46,7 +46,7 @@ class UserService {
   search(phrase: string) {
     return axios.get(`${this.api}/search`, {
       params: {
-        phrase
+        phrase,
       },
     });
   }
@@ -93,8 +93,19 @@ class UserService {
     });
   }
 
+  getPasswordResetToken(email: string) {
+    return axios.get(`${this.api}/${email}/passwordResetToken`);
+  }
+
+  resetPassword(resetToken: string, newPassword: string) {
+    return axios.post(`${this.api}/passwordReset`, newPassword, {
+      params: {
+        token: resetToken,
+      },
+    });
+  }
+
   updatePassword(userId: string, oldPassword: string, newPassword: string) {
-    console.log(oldPassword, " ", newPassword);
     return axios.post(`${this.api}/${userId}/passwordChange`, {
       oldPassword: oldPassword,
       password: newPassword,
@@ -110,12 +121,16 @@ class UserService {
   }
 
   updateEmail(userId: string, token: string, newEmail: string) {
-    return axios.post(`${this.api}/${userId}/emailChange`, {
-      params: {
-        token: token,
-        newEmail: newEmail,
-      },
-    });
+    return axios.post(
+      `${this.api}/${userId}/emailChange`,
+      {},
+      {
+        params: {
+          token: token,
+          newEmail: newEmail,
+        },
+      }
+    );
   }
 
   getOwnedEbooks(props: GetOwnedEbooksProps) {

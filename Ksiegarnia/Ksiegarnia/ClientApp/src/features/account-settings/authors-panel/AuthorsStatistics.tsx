@@ -26,6 +26,7 @@ const stats: Statistics = {
   profit: 1832,
   numberOfReceivers: 2000,
   profitPerEbook: 100,
+  leftBooksToCreate: 7
 };
 
 const AuthorsStatistics = () => {
@@ -59,6 +60,10 @@ const AuthorsStatistics = () => {
           <StatisticData
             title="Średni przychód na książkę:"
             value={stats.profitPerEbook.toString() + "zł"}
+          />
+          <StatisticData
+            title="Pozostało książek do dodania:"
+            value={stats.leftBooksToCreate.toString()}
           />
         </Grid>
       </Grid>
