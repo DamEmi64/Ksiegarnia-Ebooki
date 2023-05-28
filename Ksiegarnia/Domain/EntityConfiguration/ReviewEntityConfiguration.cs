@@ -10,7 +10,6 @@ namespace Domain.EntityConfiguration
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Grade).HasPrecision(2,1).HasColumnType("decimal");
-            builder.HasOne(x => x.Reader).WithMany(x => x.Reviews).OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

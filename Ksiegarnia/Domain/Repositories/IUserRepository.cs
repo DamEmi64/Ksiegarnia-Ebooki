@@ -23,7 +23,7 @@ namespace Domain.Repositories
 
         Task ChangePassword(string id, string oldPassword, string newPassword);
 
-        Task<SendTokenDto> GeneratePasswordToken(string id);
+        Task<SendTokenDto> GeneratePasswordToken(string name);
 
         Task Remove(string id);
 

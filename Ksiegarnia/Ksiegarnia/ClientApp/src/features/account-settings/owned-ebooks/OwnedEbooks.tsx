@@ -35,15 +35,16 @@ const OwnedEbooks = () => {
 
   useEffect(() => {
     handleSearch();
-    /*EbookService.search({
+    EbookService.search({
       ebookSearchCriteria: { phrase: searchPhrase },
       page: page.current,
       pageSize: actualPageSize.current,
     }).then((response) => {
       const data: PagedResponse = response.data;
-      setEbooks(data.result);
+      const newEbooks: Ebook[] = data.result;
+      setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages;
-    });*/
+    });
   }, []);
 
   if (!userId) {
@@ -51,7 +52,17 @@ const OwnedEbooks = () => {
   }
 
   const handleSearch = () => {
-    UserService.getOwnedEbooks({
+    EbookService.search({
+      ebookSearchCriteria: { phrase: searchPhrase },
+      page: page.current,
+      pageSize: actualPageSize.current,
+    }).then((response) => {
+      const data: PagedResponse = response.data;
+      const newEbooks: Ebook[] = data.result;
+      setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
+      numberOfPages.current = data.number_of_pages;
+    });
+    /*UserService.getOwnedEbooks({
       userId: userId,
       phrase: searchPhrase,
       page: page.current,
@@ -67,6 +78,7 @@ const OwnedEbooks = () => {
       .catch((error) => {
         console.log(error);
       });
+      */
   };
 
   const handleSearchWithReplace = () => {
@@ -88,8 +100,8 @@ const OwnedEbooks = () => {
     actualPageSize.current = newPageSize;
     setPageSize(newPageSize);
     handleSearchWithReplace();
-  };
-    //eslint-disable-next-line react-hooks/rules-of-hooks
+    };
+
   useScrollPosition({
     handleScrollBottom() {
       if (page.current + 1 <= numberOfPages.current) {

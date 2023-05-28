@@ -580,7 +580,7 @@ namespace Domain.Migrations
                     b.HasOne("Domain.Entitites.EBookReader", "Reader")
                         .WithMany("Reviews")
                         .HasForeignKey("ReaderId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Reader");
