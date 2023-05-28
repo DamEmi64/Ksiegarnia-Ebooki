@@ -342,17 +342,17 @@ namespace Application.Controllers
         /// <summary>
         ///     Send refresh token (for password reset)
         /// </summary>
-        /// <param name="id">user id</param>
+        /// <param name="email">user email</param>
         /// <returns></returns>
         /// <exception cref="UserNotFoundException">when user not found...</exception>
         [HttpGet("{id}/passwordResetToken")]
-        public async Task<HttpStatusCode> SendToken(string id)
+        public async Task<HttpStatusCode> SendToken(string email)
         {
-            var user = await _userRepository.GeneratePasswordToken(id);
+            var user = await _userRepository.GeneratePasswordToken(email);
 
             if (user == null)
             {
-                throw new UserNotFoundException(id);
+                throw new UserNotFoundException(email);
             }
 
             var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
@@ -365,21 +365,21 @@ namespace Application.Controllers
         /// <summary>
         ///     Reset password
         /// </summary>
-        /// <param name="id">user id</param>
+        /// <param name="email">user email</param>
         /// <param name="token">refresh token</param>
         /// <param name="newPassword">password</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         /// <exception cref="TokenNotFoundException">when token is empty...</exception>
         [HttpPost("{id}/passwordReset")]
-        public async Task PasswordReset(string id, [FromQuery] string token, [FromBody] string newPassword)
+        public async Task PasswordReset(string email, [FromQuery] string token, [FromBody] string newPassword)
         {
             if (string.IsNullOrEmpty(token))
             {
                 throw new TokenNotFoundException();
             }
 
-            await _userRepository.ResetPassword(id, token, newPassword);
+            await _userRepository.ResetPassword(email, token, newPassword);
         }
 
         /// <summary>
