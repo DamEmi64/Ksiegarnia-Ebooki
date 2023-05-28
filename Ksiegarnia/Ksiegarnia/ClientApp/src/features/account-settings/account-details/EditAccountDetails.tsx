@@ -1,5 +1,5 @@
 ﻿import { Grid, Button } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import BasicTextField from "../../../components/BasicTextField";
 import FormService from "../../../services/FormService";
 import UserService from "../../../services/UserService";
@@ -8,6 +8,8 @@ import Loading from "../../../pages/Loading";
 import { NotificationContext } from "../../../context/NotificationContext";
 import axios from "axios";
 import { AxiosResponse } from "axios";
+import SaveEmail from "./SaveEmail";
+import { Save } from "@mui/icons-material";
 
 interface FormProps {
   firstName?: string;
@@ -30,11 +32,15 @@ const EditAccountDetails = (props: {
   setIsEditMode: (isEditMode: boolean) => void;
 }) => {
   const SUCCESSFULY_CHANGED_DATA_MESSAGE = "Zapisano dane";
+  const TOO_FREQUENTLY_PASSWORD_CHANGE = "Zbyt częsta zmiana hasła";
+  const INVALID_PASSWORD_MESSAGE = "Wprowadzono niepoprawne hasło";
   const FAILED_CHANGED_DATA_MESSAGE = "Nie udało się zapisać danych";
 
   const notificationContext = useContext(NotificationContext);
   const userContext = useContext(UserContext);
   const user = userContext?.user.data;
+
+  const [openSaveEmail, setOpenSaveEmail] = useState<boolean>(false)
 
   const [form, setForm] = React.useState<FormProps>({
     ...user!,
@@ -70,8 +76,7 @@ const EditAccountDetails = (props: {
       if (!FormService.checkIfIsRequired(form.newPassword)) {
         passedValidation = false;
         newErrors.newPassword = FormService.requiredMessage;
-      }
-      else if(!FormService.checkPassword(form.newPassword)){
+      } else if (!FormService.checkPassword(form.newPassword)) {
         passedValidation = false;
         newErrors.newPassword = FormService.invalidFormatMessage;
       }
@@ -87,20 +92,11 @@ const EditAccountDetails = (props: {
       return;
     }
 
-    const updateEmail = (): Promise<AxiosResponse<any, any>> => {
-      return UserService.getEmailUpdateToken(user.id, form.email).then(
-        (response) => {
-          const token: string = response.data;
-          console.log(token, form.email)
-
-          return UserService.updateEmail(user.id, token, form.email).catch(
-            (error) => {
-              throw error;
-            }
-          );
-        }
-      );
-    };
+    if(form.email !== user.email){
+      setOpenSaveEmail(true)
+      UserService.getEmailUpdateToken(user!.email);
+      return;
+    }
 
     axios
       .all([
@@ -111,7 +107,6 @@ const EditAccountDetails = (props: {
               form.newPassword
             )
           : undefined,
-        form.email !== user.email ? updateEmail() : undefined,
         UserService.update(user.id, form),
       ])
       .then((response) => {
@@ -127,11 +122,32 @@ const EditAccountDetails = (props: {
       })
       .catch((error) => {
         console.log(error);
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: false,
-          message: FAILED_CHANGED_DATA_MESSAGE,
-        });
+        const errorDescription = error.response.data.description;
+
+        if (!errorDescription) {
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: FAILED_CHANGED_DATA_MESSAGE,
+          });
+          return;
+        }
+
+        if (errorDescription.includes("Incorrect password")) {
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: INVALID_PASSWORD_MESSAGE,
+          });
+        } else if (
+          errorDescription.includes("Optimistic concurrency failure")
+        ) {
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: TOO_FREQUENTLY_PASSWORD_CHANGE,
+          });
+        }
       });
   };
 
@@ -177,6 +193,7 @@ const EditAccountDetails = (props: {
             setErrors({ ...errors, email: "" });
           }}
         />
+        <SaveEmail open={openSaveEmail} setOpen={setOpenSaveEmail} newEmail={form.email}/>
       </Grid>
       <Grid item xs={12} md={8} lg={5.5}>
         <BasicTextField
@@ -203,7 +220,10 @@ const EditAccountDetails = (props: {
       </Grid>
       <Grid item xs={12} md={8} lg={5.5}>
         <BasicTextField
-          settings={{ type: "password", title: FormService.passwordFormatMessage }}
+          settings={{
+            type: "password",
+            title: FormService.passwordFormatMessage,
+          }}
           label="Nowe hasło"
           value={form.newPassword}
           errorMessage={errors.newPassword}

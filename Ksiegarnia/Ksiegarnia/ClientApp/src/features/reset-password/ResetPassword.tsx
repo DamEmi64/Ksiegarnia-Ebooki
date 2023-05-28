@@ -25,6 +25,8 @@ const ResetPassword = () => {
 
   const [actualState, setActualState] = React.useState<State>(State.InsertEmail)
 
+  const [email, setEmail] = React.useState<string>("")
+
   const setNextState = () => {
     setActualState(actualState + 1)
   }
@@ -37,9 +39,9 @@ const ResetPassword = () => {
   const getStateView = () => {
     switch(actualState){
       case State.InsertEmail:
-        return <InsertEmail setNextState={setNextState}/>
+        return <InsertEmail email={email} setEmail={setEmail} setNextState={setNextState}/>
       case State.InsertToken:
-        return <InsertToken handleClose={handleClose}/>
+        return <InsertToken email={email} handleClose={handleClose}/>
     }
   }
 
