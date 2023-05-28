@@ -10,7 +10,7 @@ env:
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: Ksiegarnia
 jobs:
-  build-backend:
+  build-and-deploy:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -24,24 +24,17 @@ jobs:
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-  build-frontend:
-      needs: build-backend
-      runs-on: windows-latest
-      steps:
-      - name: Publish
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-  deploy:
-      runs-on: windows-latest
-      needs: build-frontend
-      steps:
-      - name: Deploy to Azure WebApp
-        uses: azure/webapps-deploy@v2
-        with:
-         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A30D035CC5604DA3A867DC3FE94615F1 }}
-      - name: Publish Artifacts
-        uses: actions/upload-artifact@v1.0.0
-        with:
-         name: webapp
-         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A30D035CC5604DA3A867DC3FE94615F1 }}
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
