@@ -33,6 +33,7 @@ namespace Infrastructure.Repositories
                        .ThenInclude(x => x.User)
                        .Include(x => x.Reader)
                        .ThenInclude(x => x.EBook)
+                       .ThenInclude(x => x.Genre)
                         .ToListAsync();
             }
 

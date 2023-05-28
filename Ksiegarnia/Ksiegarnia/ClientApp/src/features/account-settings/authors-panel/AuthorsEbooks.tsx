@@ -93,7 +93,7 @@ const AuthorsEbooks = () => {
   const handleSetSort = (newSort: string) => {
     actualSort.current = newSort;
     setSort(newSort);
-  };
+    };
 
   return (
     <Grid item container rowGap={5}>

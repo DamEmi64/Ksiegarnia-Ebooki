@@ -2,6 +2,7 @@
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using PayPal.Api;
+using System.Globalization;
 
 namespace Infrastructure.Services.Paypal
 {
@@ -203,7 +204,7 @@ namespace Infrastructure.Services.Paypal
             var amount = new Amount()
             {
                 currency = currencyEnum.ToString(),
-                total = currency.ToString()
+                total = currency.ToString(CultureInfo.InvariantCulture)
             };
 
             var transactionPaypal = new List<Transaction>();

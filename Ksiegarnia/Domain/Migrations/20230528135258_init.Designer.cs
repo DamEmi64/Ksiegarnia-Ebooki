@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(KsiegarniaContext))]
-    [Migration("20230509211720_gift_tokens")]
-    partial class gift_tokens
+    [Migration("20230528135258_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,7 +89,6 @@ namespace Domain.Migrations
                         .HasColumnType("nvarchar(86)");
 
                     b.Property<string>("Tokens")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Verification")
@@ -242,7 +241,8 @@ namespace Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Grade")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(2, 1)
+                        .HasColumnType("decimal(2,1)");
 
                     b.Property<string>("Opinion")
                         .IsRequired()

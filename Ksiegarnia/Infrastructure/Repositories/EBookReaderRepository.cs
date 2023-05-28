@@ -20,33 +20,27 @@ namespace Infrastructure.Repositories
 
         public async Task<EBookReader?> Get(Guid id)
         {
-            return await _context.Set<EBookReader>()
-                        .Include(x => x.User)
-                    .Include(x => x.EBook)
-                    .ThenInclude(X => X.Genre)
-                    .Include(x => x.EBook)
-                    .ThenInclude(x => x.Author)
-                     .FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Set<EBookReader>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<EBookReader?> Get(string userId, Guid bookdId)
         {
             return await _context.Set<EBookReader>()
                         .Include(x => x.User)
-                    .Include(x => x.EBook)
-                    .ThenInclude(X => X.Genre)
-                    .Include(x => x.EBook)
-                    .ThenInclude(x => x.Author)
+                        .Include(x => x.EBook)
+                        .ThenInclude(x=>x.Author)
+                        .Include(x => x.EBook)
+                        .ThenInclude(x => x.Genre)
                         .FirstOrDefaultAsync(x => x.User.Id == userId && x.EBook.Id == bookdId);
         }
 
         public async Task<Transaction?> GetTransaction(Guid id)
         {
             return (await _context.Set<EBookReader>()
+                    .Include(x=>x.EBook)
+                    .ThenInclude(x=>x.Author)
                     .Include(x => x.EBook)
-                    .ThenInclude(X => X.Genre)
-                    .Include(x => x.EBook)
-                    .ThenInclude(x => x.Author)
+                    .ThenInclude(x => x.Genre)
                     .FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
         }
 
@@ -59,12 +53,19 @@ namespace Infrastructure.Repositories
                     .ThenInclude(y => y.EBook)
                     .ThenInclude(z => z.Author)
                     .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.EBook)
+                    .ThenInclude(z => z.Genre)
+                    .Include(x => x.EBookReaders)
                     .ThenInclude(y => y.User)
                     .Where(x => x.EBookReaders.Any(y => y.User.Id == id));
             }
             return _context.Set<Transaction>()
                     .Include(x => x.EBookReaders)
                     .ThenInclude(y => y.EBook)
+                    .ThenInclude(z => z.Author)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.EBook)
+                    .ThenInclude(z => z.Genre)
                     .Include(x => x.EBookReaders)
                     .ThenInclude(y => y.User);
         }
