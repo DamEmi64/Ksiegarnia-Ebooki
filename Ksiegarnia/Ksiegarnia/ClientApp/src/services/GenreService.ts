@@ -2,7 +2,7 @@
 
 class GenreService {
 
-    private api: string = "https://localhost:7270/Genres"
+    private api = "https://localhost:7270/Genres"
 
     getAll(){
         return axios.get(this.api)

@@ -1,7 +1,7 @@
-﻿import { useEffect } from "react";
+﻿import React from "react"
 
-const srcBeginning: string = 'data'
-const srcBeginningPng: string = 'data:image/png;base64,'
+const srcBeginning = 'data'
+const srcBeginningPng = 'data:image/png;base64,'
 
 const Image = (props: {
   src: string;

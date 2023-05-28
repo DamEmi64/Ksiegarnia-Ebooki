@@ -8,7 +8,6 @@
   Typography,
 } from "@mui/material";
 import { LinkProps } from "../models/linkProps";
-import { accountMenuLinks } from "./header/AccountMenu";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";

@@ -5,6 +5,7 @@
   DialogTitle,
   Grid,
 } from "@mui/material";
+import React from "react";
 
 const ConfirmationDialog = (props: {
   message: string;

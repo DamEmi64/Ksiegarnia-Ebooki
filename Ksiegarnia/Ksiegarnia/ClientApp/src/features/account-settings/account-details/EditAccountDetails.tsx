@@ -1,15 +1,12 @@
-﻿import { Grid, Button, Typography } from "@mui/material";
-import UserDTO from "../../../models/api/userDTO";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useContext } from "react";
 import BasicTextField from "../../../components/BasicTextField";
-import Notification from "../../../components/Notification";
 import FormService from "../../../services/FormService";
 import UserService from "../../../services/UserService";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
 import { NotificationContext } from "../../../context/NotificationContext";
 import axios from "axios";
-import { AxiosError } from "axios";
 import { AxiosResponse } from "axios";
 
 interface FormProps {
@@ -39,20 +36,20 @@ const EditAccountDetails = (props: {
   const userContext = useContext(UserContext);
   const user = userContext?.user.data;
 
-  if (!user) {
-    return <Loading />;
-  }
-
   const [form, setForm] = React.useState<FormProps>({
-    ...user,
+    ...user!,
     previousPassword: "",
     newPassword: "",
   });
 
   const [errors, setErrors] = React.useState<FormProps>(initErrors);
 
+  if (!user) {
+    return <Loading />;
+  }
+
   const validateForm = () => {
-    let newErrors: FormProps = { ...initErrors };
+    const newErrors: FormProps = { ...initErrors };
 
     let passedValidation = true;
 
@@ -73,6 +70,10 @@ const EditAccountDetails = (props: {
       if (!FormService.checkIfIsRequired(form.newPassword)) {
         passedValidation = false;
         newErrors.newPassword = FormService.requiredMessage;
+      }
+      else if(!FormService.checkPassword(form.newPassword)){
+        passedValidation = false;
+        newErrors.newPassword = FormService.invalidFormatMessage;
       }
     }
 
@@ -114,7 +115,6 @@ const EditAccountDetails = (props: {
         UserService.update(user.id, form),
       ])
       .then((response) => {
-        console.log("A");
         console.log(response);
         userContext.setUser({ ...user, ...form });
         notificationContext?.setNotification({
@@ -203,7 +203,7 @@ const EditAccountDetails = (props: {
       </Grid>
       <Grid item xs={12} md={8} lg={5.5}>
         <BasicTextField
-          settings={{ type: "password" }}
+          settings={{ type: "password", title: FormService.passwordFormatMessage }}
           label="Nowe hasło"
           value={form.newPassword}
           errorMessage={errors.newPassword}
@@ -215,7 +215,7 @@ const EditAccountDetails = (props: {
       </Grid>
       <Grid item xs={12} md={8} lg={5.5}>
         <BasicTextField
-          settings={{ type: "number", maxRows: 9, minRows: 9 }}
+          settings={{ type: "number", placeholder: "123 456 789" }}
           label="Numer tel."
           value={form.phone}
           errorMessage={errors.phone}

@@ -1,13 +1,12 @@
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import "./index.css";
 import "./App.css";
-import React, { useState } from "react";
+import React from "react";
 import Header from "./layouts/header/Header";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
-import { Box, createTheme, CssBaseline, Grid, makeStyles } from "@mui/material";
-import SideAd from "./layouts/SideAd";
+import { createTheme, CssBaseline, Grid } from "@mui/material";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -34,35 +33,41 @@ import axios from "axios";
 import Content from "./layouts/Content";
 import Navbar from "./layouts/Navbar";
 import EbookDetails from "./features/ebook-details/EBookDetails";
+import { plPL as corePlPL } from '@mui/material/locale';
+import { plPL } from '@mui/x-date-pickers/locales';
 
 axios.defaults.withCredentials = true;
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#0A3F5C",
-      dark: "#1470a3",
+const theme = createTheme(
+  {
+    palette: {
+      primary: {
+        main: "#0A3F5C",
+        dark: "#1470a3",
+      },
+      secondary: {
+        main: "#EB4B36",
+      },
+      info: {
+        main: "#87CEEB",
+      },
+      success: {
+        main: "#10CE00",
+      },
     },
-    secondary: {
-      main: "#EB4B36",
-    },
-    info: {
-      main: "#87CEEB",
-    },
-    success: {
-      main: "#10CE00",
+    typography: {
+      fontSize: 13,
+      fontWeightLight: 300,
+      fontWeightRegular: 400,
+      fontWeightMedium: 500,
+      button: {
+        textTransform: "none",
+      },
     },
   },
-  typography: {
-    fontSize: 13,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
-    button: {
-      textTransform: "none",
-    },
-  },
-});
+  corePlPL,
+  plPL
+);
 
 const ContextProviders = (props: { children: React.ReactNode }) => {
   return (
@@ -101,10 +106,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/Ebook/:id"
-                element={<EbookDetails/>}
-              />
+              <Route path="/Ebook/:id" element={<EbookDetails />} />
               <Route path="/ebooks" element={<SearchEbooks />} />
               <Route
                 path="/account-settings"

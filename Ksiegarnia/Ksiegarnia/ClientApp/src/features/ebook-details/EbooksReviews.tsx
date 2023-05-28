@@ -1,18 +1,14 @@
 ﻿import {
   Button,
-  FormControl,
-  FormHelperText,
   Grid,
-  TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
-import BasicTextField from "../../components/BasicTextField";
+import React, { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import AddEditEbookReview from "./AddEditEbookReview";
-import { Review } from "../../models/api/review";
 import EbookReview from "./EbookReview";
 import Ebook from "../../models/api/ebook";
+import { Review } from "../../models/api/review";
 
 export interface MockReview {
   date: string;
@@ -22,7 +18,7 @@ export interface MockReview {
   grade: number;
 }
 
-const reviews: MockReview[] = [
+const movkedReviews: MockReview[] = [
   {
     date: new Date().toLocaleDateString(),
     reviewer: "Adam Nowak",
@@ -65,7 +61,13 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const isUserLogged = userContext?.user.logged;
   const userId = userContext?.user.data?.id;
 
+  const [reviews, setReviews] = useState<Review[]>([]);
+
   const [isAddingReview, setIsAddingReview] = useState<boolean>(false);
+
+  React.useEffect(() => {
+
+  }, [])
 
   return (
     <Grid item container direction="column" rowGap={1} marginBottom={2}>
@@ -92,7 +94,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
             />
           ))}
         <Grid item container direction="column" rowGap={4}>
-          {reviews.map((review: MockReview, index: number) => (
+          {reviews.map((review: Review, index: number) => (
             <EbookReview
               key={index}
               ebook={props.ebook}

@@ -1,6 +1,6 @@
 ﻿import { Close, Done } from "@mui/icons-material";
 import { Button, Grid, Stack, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PremiumHistory from "../../../models/api/premiumHistory";
 import PremiumAccountOrder from "./PremiumAccountOrder";
 import BuyPremiumDialog from "./BuyPremiumDialog";
@@ -79,7 +79,7 @@ const PremiumAccount = () => {
       }
 
       const buyDate = new Date(premiumInfoData.buyDate as string);
-      let endDate = new Date(buyDate);
+      const endDate = new Date(buyDate);
       endDate.setDate(buyDate.getDate() + premiumInfoData.days!);
 
       setPremiumInfo({
@@ -99,44 +99,45 @@ const PremiumAccount = () => {
   }
 
   const handleBuyPremium = (numberOfDays: number) => {
-
     const newBuyDate = new Date();
-    let newEndDate = premiumInfo.endDate ? premiumInfo.endDate : new Date(newBuyDate);
+    const newEndDate = premiumInfo.endDate
+      ? premiumInfo.endDate
+      : new Date(newBuyDate);
     newEndDate.setDate(newBuyDate.getDate() + numberOfDays);
 
     PremiumService.buyPremium({
       isActive: true,
       userId: userId,
       buyDate: newBuyDate.toISOString(),
-      days: numberOfDays
+      days: numberOfDays,
     })
-    .then((response) => {
-      console.log(response)
-      setPremiumInfo({
-        ...premiumInfo,
-        isActive: true,
-        buyDate: newBuyDate,
-        endDate: newEndDate,
+      .then((response) => {
+        console.log(response);
+        setPremiumInfo({
+          ...premiumInfo,
+          isActive: true,
+          buyDate: newBuyDate,
+          endDate: newEndDate,
+        });
+        setIsVisibleBuyPremiumDialog(false);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      setIsVisibleBuyPremiumDialog(false);
-    })
-    .catch((error) => {
-      console.log(error)
-    })
   };
 
   const BenefitInfo = (props: { benefit: string }) => {
     return (
       <Grid item xs={12} lg={5} container alignItems="center">
         <Stack direction="row" alignItems="center">
-        {premiumInfo?.isActive ? (
-          <Done className="success" fontSize="large" />
-        ) : (
-          <Close className="error" fontSize="medium"/>
-        )}
-        <Typography variant="h5" marginLeft={2} display="inline">
-          {props.benefit}
-        </Typography>
+          {premiumInfo?.isActive ? (
+            <Done className="success" fontSize="large" />
+          ) : (
+            <Close className="error" fontSize="medium" />
+          )}
+          <Typography variant="h5" marginLeft={2} display="inline">
+            {props.benefit}
+          </Typography>
         </Stack>
       </Grid>
     );
@@ -162,7 +163,7 @@ const PremiumAccount = () => {
           />
           {premiumInfo?.isActive ? (
             <Button
-              className="premium-button"
+              className="premium-button button-rounded"
               variant="contained"
               onClick={() => setIsVisibleBuyPremiumDialog(true)}
             >
@@ -170,7 +171,7 @@ const PremiumAccount = () => {
             </Button>
           ) : (
             <Button
-              className="premium-button"
+              className="premium-button button-rounded"
               variant="contained"
               onClick={() => setIsVisibleBuyPremiumDialog(true)}
             >
@@ -202,9 +203,24 @@ const PremiumAccount = () => {
             }
           />
         </Grid>
+        {premiumInfo.isActive && (
+          <Grid item container>
+            <StatisticData
+              title="Liczba dostępnych wyróżnień"
+              value={<Typography variant="h6">5</Typography>}
+            />
+          </Grid>
+        )}
       </Grid>
       <Grid item container justifyContent="center">
-        <Grid item xs={12} lg={10} container justifyContent="space-between" rowGap={2}>
+        <Grid
+          item
+          xs={12}
+          lg={10}
+          container
+          justifyContent="space-between"
+          rowGap={2}
+        >
           <BenefitInfo benefit="Zniżki na książki" />
           <BenefitInfo benefit="Nielimitowana liczba dodanych ebooków" />
           <BenefitInfo benefit="Darmowe wyróżnienia ebooka" />

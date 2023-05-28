@@ -3,7 +3,6 @@
   IconButton,
   Pagination,
   Stack,
-  TableRow,
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
@@ -12,8 +11,6 @@ import TransactionService from "../../services/TransactionService";
 import {
   ArrowDropDown,
   ArrowDropUp,
-  ExpandLess,
-  ExpandMore,
 } from "@mui/icons-material";
 import Ebook from "../../models/api/ebook";
 import EbookService from "../../services/EbookService";
@@ -95,13 +92,13 @@ const TransactionsHistory = () => {
 
   useEffect(() => {
     handleSearchTransactions();
-    /*EbookService.search({page: 1, pageSize: 10})
+    EbookService.search({page: 1, pageSize: 10})
     .then((response) => {
       const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
       console.log(response.data)
-    });*/
+    });
   }, [page]);
 
   if (!userId) {
@@ -118,7 +115,10 @@ const TransactionsHistory = () => {
         setNumberOfPages(data.number_of_pages);
         console.log(response.data);
       }
-    );
+    )
+    .catch((error) => {
+      console.log(error)
+    })
   };
 
   const CustomPagination = () => {
@@ -247,10 +247,12 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
       item
       container
       padding={6}
+      paddingBottom={4}
       justifyContent="space-between"
       borderBottom="1px solid silver"
+      rowGap={4}
     >
-      <Grid item xs={9} container columnGap={4}>
+      <Grid item xs={12} md={9} container columnGap={4} rowGap={2}>
         <Grid item height="260px">
           <Image
             alt={ebook.title}

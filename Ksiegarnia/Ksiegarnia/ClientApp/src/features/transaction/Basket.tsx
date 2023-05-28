@@ -2,7 +2,7 @@
 import Rate from "../../components/Rate";
 import Ebook from "../../models/api/ebook";
 import Image from "../../components/Image";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
 import { UserContext } from "../../context/UserContext";
@@ -109,71 +109,13 @@ const Basket = () => {
       (ebook: Ebook) => ebook.id
     );
 
-    axios
-      .all(
-        basketEbooksIds.map((ebookId: string) =>
-          EbookService.getGiftTokens(ebookId)
-        )
-      )
-      .then((response) => {
-        console.log(response)
-        let tokens: string[] = []
-        response.forEach((resp: AxiosResponse<any, any>) => {
-          const firstToken = resp.data[2]
-          tokens = [...tokens, firstToken]
-        })
-
-        console.log(tokens)
-        
-        //= response.map((resp: AxiosResponse<any, any>) => resp.data).
-        TransactionService.handleTransaction(userId!, basketEbooksIds, tokens)
-        .then((response) => {
-          console.log(response)
-          basketContext?.clear()
-          notificationContext?.setNotification({
-            isVisible: true,
-            isSuccessful: true,
-            message: SUCCESSFULY_SUBMITED_TRANSACTION
-          })
-          navigate("/account-settings/transactions")
-        })
-      })
-      .catch((error) => {
-        console.log(error)
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: false,
-          message: NOT_SUBMITED_TRANSACTION
-        })
-      })
-
-    /*TransactionService.handleTransaction(userId!, basketEbooksIds)
+    TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
     .then((response) => {
-      axios.all(
-        basketEbooksIds.map((ebookId: string) => (
-          EbookService.getGiftTokens(ebookId)
-        ))
-      )
-      .then((response) => {
-
-      })
-      console.log(response)
-      basketContext?.clear()
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: true,
-        message: SUCCESSFULY_SUBMITED_TRANSACTION
-      })
-      navigate("/account-settings/transactions")
+      console.log(response.data)
     })
     .catch((error) => {
       console.log(error)
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: false,
-        message: NOT_SUBMITED_TRANSACTION
-      })
-    })*/
+    })
   };
 
   return (

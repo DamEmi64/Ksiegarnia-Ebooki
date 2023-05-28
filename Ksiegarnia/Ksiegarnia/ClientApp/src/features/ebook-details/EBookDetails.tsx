@@ -8,10 +8,6 @@ import { Button, Grid, Typography } from "@mui/material";
 import CategoriesContent from "../../layouts/CategoriesContent";
 import Image from "../../components/Image";
 import React from "react";
-import BasicTextField from "../../components/BasicTextField";
-import ChooseFile from "../../components/ChooseFile";
-import SelectEbookGenre from "../../components/SelectEbookGenre";
-import Genre from "../../models/api/genre";
 import Rate from "../../components/Rate";
 import { PictureAsPdf } from "@mui/icons-material";
 import EbooksSlider from "../../components/EbooksSlider";
@@ -19,6 +15,7 @@ import { BasketContext } from "../../context/BasketContext";
 import { UserContext } from "../../context/UserContext";
 import EbookGrades from "./EbookGrades";
 import EbooksReviews from "./EbooksReviews";
+import { EbookSortOptions } from "../../models/ebookSortOptions";
 
 const Data = (props: { label: string; value: string | React.ReactNode }) => {
   return (
@@ -66,7 +63,7 @@ const EbookDetails = () => {
       .then((response) => {
         setEbook(response.data);
       })
-      .catch((error) => {
+      .catch(() => {
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: false,
@@ -162,7 +159,7 @@ const EbookDetails = () => {
         <BigData label="Opis" value={ebook.description} />
         <BigData label="Oceny" value={<EbookGrades/>} />
         <EbooksReviews ebook={ebook}/>
-        <EbooksSlider title="Polecane" searchBestsellers={true} />
+        <EbooksSlider title="Polecane" sort={EbookSortOptions.BestSeller} />
       </Grid>
     </CategoriesContent>
   );

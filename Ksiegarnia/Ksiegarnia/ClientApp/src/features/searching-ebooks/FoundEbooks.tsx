@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import Ebook from "../../models/api/ebook";
 import { Grid, Pagination, Stack } from "@mui/material";
 import BasicEbookView from "../../components/BasicEbookView";
@@ -7,7 +7,6 @@ import PagedResponse from "../../models/api/pagedResponse";
 import SortEbooks from "../../components/SortEbooks";
 import SelectPageSize from "../../components/SelectPageSize";
 import { useSearchParams } from "react-router-dom";
-import EbookSearchCriteria from "../../models/ebookSearchCriteria";
 import { EbookSearchCategories } from "../../models/ebookSearchCategories";
 import { EbookSortOptions } from "../../models/ebookSortOptions";
 
@@ -23,17 +22,18 @@ const FoundEbooks = () => {
   })
   const actualEbooksProps = useRef<SearchEbookProps>(searchEbooksProps)
 
-  let isSearchingBestsellers: boolean = false;
-
   useEffect(() => {
     const phraseFromParams = searchParams.get("phrase")
     const genreFromParams = searchParams.getAll("genre");
     const minPriceFromParams = searchParams.get("minPrice");
     const maxPriceFromParams = searchParams.get("maxPrice");
-    const searchCategory = searchParams.get("searchCategory");
+    const searchCategoryFromParams = searchParams.get("searchCategory");
+    const authorPhraseFromParams = searchParams.get("author-phrase");
+
     const newSearchEbooksProps: SearchEbookProps = {
       ...searchEbooksProps, 
       ebookSearchCriteria: {
+        authorName: authorPhraseFromParams ? authorPhraseFromParams : undefined,
         phrase: phraseFromParams ? phraseFromParams : undefined,
         genre: genreFromParams ? genreFromParams : undefined,
         minPrize: minPriceFromParams ? (minPriceFromParams as unknown as number) : undefined,
@@ -41,13 +41,13 @@ const FoundEbooks = () => {
       }
     }
 
-    if(searchCategory){
-      switch(searchCategory){
+    if(searchCategoryFromParams){
+      switch(searchCategoryFromParams){
         case EbookSearchCategories.News:
           newSearchEbooksProps.sort = EbookSortOptions.DescByDate
           break;
         case EbookSearchCategories.Bestseller:
-          isSearchingBestsellers = true;
+          newSearchEbooksProps.sort = EbookSortOptions.BestSeller
           break;
         case EbookSearchCategories.Promotion:
           newSearchEbooksProps.ebookSearchCriteria!.onlyOnPromotion = true
@@ -102,7 +102,7 @@ const FoundEbooks = () => {
   };
 
   return (
-    <Grid item container justifyContent="center" rowGap={6}>
+    <Grid item container justifyContent="center" alignItems="start" alignContent="start" rowGap={6}>
       <Grid item container justifyContent="space-between" rowGap={4}>
         <Grid item xs={12} lg={5} xl={4}>
           <SortEbooks
@@ -122,6 +122,7 @@ const FoundEbooks = () => {
         item
         container
         rowGap={4}
+        flexGrow={1}
         justifyContent={{ xs: "center", md: "start" }}
       >
         {ebooks.map((ebook: Ebook) => (

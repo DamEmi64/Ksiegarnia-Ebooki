@@ -1,14 +1,20 @@
 ﻿class FormService {
 
-    public requiredMessage: string = "Pole nie może być puste"
-    public invalidFormatMessage: string = "Niepoprawny format"
+    public requiredMessage = "Pole nie może być puste"
+    public invalidFormatMessage = "Niepoprawny format"
+    public passwordFormatMessage = "Min. 8 znaków, min. 1 mała litera, min. 1 duża litera, min. 1 cyfra, min. 1 znak specjalny"
 
     checkIfIsRequired(input?: string){
         return input && input !== ""
     }
 
     checkIfIsEmail(input: string){
-        const  re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(input);
+    }
+
+    checkPassword(input: string){
+        const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/
         return re.test(input);
     }
 

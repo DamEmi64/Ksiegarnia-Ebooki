@@ -6,7 +6,7 @@
   Grid,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import React from "react";
 
 const pageSizes: number[] = [12, 20, 40, 80, 100];
 

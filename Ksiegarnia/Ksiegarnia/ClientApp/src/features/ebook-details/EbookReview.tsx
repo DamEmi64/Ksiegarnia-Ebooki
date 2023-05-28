@@ -1,5 +1,4 @@
 ﻿import { Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { Review } from "../../models/api/review";
 import { MockReview } from "./EbooksReviews";
 import Rate from "../../components/Rate";
 import { useContext, useEffect, useState } from "react";
@@ -11,17 +10,18 @@ import AddEditEbookReview from "./AddEditEbookReview";
 import Ebook from "../../models/api/ebook";
 import ReviewService from "../../services/ReviewService";
 import { NotificationContext } from "../../context/NotificationContext";
+import { Review } from "../../models/api/review";
 
 const EbookReview = (props: {
   ebook: Ebook;
-  review: MockReview;
+  review: Review;
   handleUpdate: () => void;
 }) => {
   const userId = useContext(UserContext)?.user.data?.id;
 
   const notificationContext = useContext(NotificationContext);
 
-  const [review, setReview] = useState<MockReview>(props.review);
+  const [review, setReview] = useState<Review>(props.review);
 
   const [anchorReviewOptions, setAchnorReviewOptions] =
     React.useState<null | HTMLElement>(null);
@@ -75,10 +75,10 @@ const EbookReview = (props: {
     <Grid item container direction="column" rowGap={2}>
       <Grid item container alignItems="center" columnGap={1}>
         <Typography variant="h6" fontWeight="bold">
-          {review.reviewer}
+          {review.reviewer.nick}
         </Typography>
         <Typography variant="h6">{review.date}</Typography>
-        {userId === review.reviewerId && (
+        {userId === review.reviewer.id && (
           <React.Fragment>
             <IconButton
               style={{ marginTop: -3 }}

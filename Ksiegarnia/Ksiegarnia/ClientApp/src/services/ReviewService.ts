@@ -12,7 +12,7 @@ export interface CreateEditReview {
 
 
 class ReviewService {
-    private api: string = "https://localhost:7270/Review";
+    private api = "https://localhost:7270/Review";
 
     create(request: CreateEditReview){
         return axios.post(this.api, request)

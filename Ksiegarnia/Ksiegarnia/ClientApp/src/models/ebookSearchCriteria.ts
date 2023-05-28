@@ -1,7 +1,4 @@
-﻿import Genre from "./api/genre";
-import { EbookSortOptions } from "./ebookSortOptions";
-
-export default interface EbookSearchCriteria {
+﻿export default interface EbookSearchCriteria {
     authorName?: string,
     phrase?: string,
     genre?: string[],

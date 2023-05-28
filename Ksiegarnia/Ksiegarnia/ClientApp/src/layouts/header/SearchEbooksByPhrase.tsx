@@ -1,11 +1,11 @@
 ﻿import { Search } from "@mui/icons-material";
 import { TextField, IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SearchEbooksByPhrase = () => {
 
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const queryParamSearchPhrase = searchParams.get("phrase")
   
   const [ebooksSearchPhrase, setEbooksSearchPhrase] = useState<string>(queryParamSearchPhrase ? queryParamSearchPhrase : "")

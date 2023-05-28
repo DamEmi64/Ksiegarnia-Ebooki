@@ -1,17 +1,15 @@
-﻿import { Grid, Typography, TextField, Button, IconButton } from "@mui/material";
+import { Grid, Typography, TextField, Button, IconButton } from "@mui/material";
 import SelectPageSize from "../../../components/SelectPageSize";
 import SortEbooks from "../../../components/SortEbooks";
-import { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import Ebook from "../../../models/api/ebook";
 import { Search } from "@mui/icons-material";
 import AuthorsEbook from "./AuthorsEbook";
-import EbookService from "../../../services/EbookService";
 import useScrollPosition from "../../../components/useScrollPosition";
 import { useNavigate } from "react-router-dom";
 import UserService from "../../../services/UserService";
 import { UserContext } from "../../../context/UserContext";
 import Loading from "../../../pages/Loading";
-import PagedResponse from "../../../models/api/pagedResponse";
 
 const AuthorsEbooks = () => {
   const userId = useContext(UserContext)?.user.data?.id;
@@ -39,6 +37,15 @@ const AuthorsEbooks = () => {
       numberOfPages.current = data.number_of_pages
     })*/
   }, []);
+
+  useScrollPosition({
+    handleScrollBottom() {
+      if (page.current + 1 <= numberOfPages.current) {
+        page.current++;
+        handleSearchPage();
+      }
+    },
+  });
 
   if (!userId) {
     return <Loading />;
@@ -87,15 +94,6 @@ const AuthorsEbooks = () => {
     actualSort.current = newSort;
     setSort(newSort);
     };
-
-  useScrollPosition({
-    handleScrollBottom() {
-      if (page.current + 1 <= numberOfPages.current) {
-        page.current++;
-        handleSearchPage();
-      }
-    },
-  });
 
   return (
     <Grid item container rowGap={5}>

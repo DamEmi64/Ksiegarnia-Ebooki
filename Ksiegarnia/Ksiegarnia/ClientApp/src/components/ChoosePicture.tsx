@@ -1,6 +1,7 @@
 ﻿import { AddAPhoto } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useState } from "react";
+import React from "react";
 
 const ChoosePicture = (props: {
   file?: string;

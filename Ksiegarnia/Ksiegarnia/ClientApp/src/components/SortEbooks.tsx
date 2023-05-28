@@ -7,7 +7,6 @@
   Grid,
 } from "@mui/material";
 import { EbookSortOptions } from "../models/ebookSortOptions";
-import { useState, useEffect } from "react";
 import React from "react";
 
 interface SortNameMapping {
@@ -60,6 +59,10 @@ const sortNameMappings: SortNameMapping[] = [
     name: "Autor: rosnąco",
     sort: EbookSortOptions.AscByAuthor,
   },
+  {
+    name: "Bestsellery",
+    sort: EbookSortOptions.BestSeller
+  }
 ];
 
 const SortEbooks = (props: {

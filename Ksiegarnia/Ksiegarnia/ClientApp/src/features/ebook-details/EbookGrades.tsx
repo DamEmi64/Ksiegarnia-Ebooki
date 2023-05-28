@@ -1,4 +1,4 @@
-﻿import { Box, Grid, LinearProgress, Stack, Typography } from "@mui/material";
+﻿import { Grid, LinearProgress, Stack, Typography } from "@mui/material";
 import Rate from "../../components/Rate";
 import React from "react";
 

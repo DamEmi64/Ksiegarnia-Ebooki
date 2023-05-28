@@ -7,7 +7,7 @@ import BasicTextField from "../../../components/BasicTextField";
 import ChooseFile from "../../../components/ChooseFile";
 import SelectEbookGenre from "../../../components/SelectEbookGenre";
 import FormService from "../../../services/FormService";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EbookService, { CreateEbookProps } from "../../../services/EbookService";
 import { NotificationContext } from "../../../context/NotificationContext";
@@ -55,14 +55,13 @@ const CreateEbook = () => {
   const navigate = useNavigate();
 
   const CREATED_SUCCESSFULY_MESSAGE = "Utworzono ebooka";
-  const CREATED_FAILED_MESSAGE = "Nie udało się utworzyć ebooka";
 
   if (!user) {
     return <Loading />;
   }
 
   const validateForm = () => {
-    let newErrors: FormErrors = { ...initErrors };
+    const newErrors: FormErrors = { ...initErrors };
 
     let passedValidation = true;
 

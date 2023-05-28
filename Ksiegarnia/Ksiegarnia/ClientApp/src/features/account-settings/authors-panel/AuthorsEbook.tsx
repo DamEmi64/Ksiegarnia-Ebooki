@@ -1,6 +1,6 @@
 ﻿import { Button, Grid, Typography } from "@mui/material";
 import Ebook from "../../../models/api/ebook";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Rate from "../../../components/Rate";
 import { useNavigate } from "react-router-dom";
 import Image from "../../../components/Image";
@@ -34,7 +34,7 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
       })
       props.update()
     })
-    .catch((error) => {
+    .catch(() => {
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: false,
@@ -84,6 +84,17 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
               onClick={() => navigate(`/ebook/${ebook.id}/edit`)}
             >
               Edytuj
+            </Button>
+          </Grid>
+          <Grid item xs={6} container justifyContent="center">
+            <Button
+              fullWidth
+              className="premium-button"
+              variant="contained"
+              style={{ borderRadius: 10 }}
+              onClick={() => setVisibleDeleteConfirmation(true)}
+            >
+              Wyróżnij
             </Button>
           </Grid>
           <Grid item xs={6} container justifyContent="center">

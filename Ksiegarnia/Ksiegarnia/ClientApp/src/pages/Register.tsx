@@ -1,14 +1,20 @@
-﻿import React, { useContext, useEffect } from "react";
-import CategoriesContent from "../layouts/CategoriesContent";
+﻿import React, { useContext } from "react";
 import FormService from "../services/FormService";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Typography,
+} from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
-import Notification from "../components/Notification";
 import UserService, { RegisterProps } from "../services/UserService";
 import { NotificationContext } from "../context/NotificationContext";
-import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import CustomDatePicker from "../components/CustomDatePicker";
+import { CheckBox } from "@mui/icons-material";
+import AcceptRegulamin from "../features/register/AcceptRegulamin";
 
 interface RegisterForm {
   firstName?: string;
@@ -19,6 +25,7 @@ interface RegisterForm {
   repeatedPassword: string;
   birthDate: Date;
   phone?: string;
+  acceptedRegulamin: boolean;
 }
 
 interface ErrorsForm {
@@ -27,28 +34,31 @@ interface ErrorsForm {
   password: string;
   repeatedPassword: string;
   birthDate: string;
+  acceptedRegulamin: string;
 }
 
 const Register = () => {
   const notificationContext = useContext(NotificationContext);
 
   const REGISTERED_SUCCESSFULY_MESSAGE = "Zarejestrowano pomyślnie";
-  const REGISTERED_FAILED_MESSAGE = "Wprowadzone dane są niepoprawne";
+  const REGISTERED_FAILED_MESSAGE = "Istnieje już konto o takim adresie e-mail";
 
-  const initForm = {
+  const initForm: RegisterForm = {
     email: "",
     nick: "",
     password: "",
     repeatedPassword: "",
     birthDate: new Date(),
+    acceptedRegulamin: false,
   };
 
-  const errorsInitForm = {
+  const errorsInitForm: ErrorsForm = {
     email: "",
     nick: "",
     password: "",
     repeatedPassword: "",
     birthDate: "",
+    acceptedRegulamin: "",
   };
 
   const [form, setForm] = React.useState<RegisterForm>({ ...initForm });
@@ -58,7 +68,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    let newErrors: ErrorsForm = { ...errorsInitForm };
+    const newErrors: ErrorsForm = { ...errorsInitForm };
 
     let passedValidation = true;
 
@@ -78,6 +88,9 @@ const Register = () => {
     if (!FormService.checkIfIsRequired(form.password)) {
       passedValidation = false;
       newErrors.password = FormService.requiredMessage;
+    } else if (!FormService.checkPassword(form.password)) {
+      passedValidation = false;
+      newErrors.password = FormService.invalidFormatMessage;
     }
 
     if (!FormService.checkIfIsRequired(form.repeatedPassword)) {
@@ -92,7 +105,11 @@ const Register = () => {
     if (!FormService.checkIfIsAdult(new Date(form.birthDate))) {
       passedValidation = false;
       newErrors.birthDate = "Wymagane jest 18 lat";
-      console.log("A");
+    }
+
+    if (!form.acceptedRegulamin) {
+      passedValidation = false;
+      newErrors.acceptedRegulamin = FormService.requiredMessage;
     }
 
     setErrors(newErrors);
@@ -110,7 +127,7 @@ const Register = () => {
       birthDate: form.birthDate.toISOString(),
     };
 
-    console.log(request)
+    console.log(request);
 
     UserService.register(request)
       .then((response) => {
@@ -196,7 +213,10 @@ const Register = () => {
         </Grid>
         <Grid item xs={12} md={8} lg={5.5}>
           <BasicTextField
-            settings={{ type: "password" }}
+            settings={{
+              type: "password",
+              title: FormService.passwordFormatMessage,
+            }}
             label="Hasło"
             isRequired={true}
             value={form.password}
@@ -222,7 +242,7 @@ const Register = () => {
         </Grid>
         <Grid item xs={12} md={8} lg={5.5}>
           <BasicTextField
-            settings={{ type: "number", maxRows: 9, minRows: 9 }}
+            settings={{ type: "number", placeholder: "123 456 789" }}
             label="Numer tel."
             value={form.phone}
             handleChange={(value: string) => {
@@ -243,6 +263,15 @@ const Register = () => {
           />
         </Grid>
         <Grid item xs={12} container justifyContent="center">
+          <AcceptRegulamin
+            value={form.acceptedRegulamin}
+            errorMessage={errors.acceptedRegulamin}
+            onChange={(newValue: boolean) =>
+              setForm({ ...form, acceptedRegulamin: newValue })
+            }
+          />
+        </Grid>
+        <Grid item xs={12} container justifyContent="center" marginTop={-1}>
           <Button variant="contained" onClick={handleRegister}>
             Zarejestruj się
           </Button>

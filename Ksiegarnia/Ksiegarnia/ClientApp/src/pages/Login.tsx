@@ -1,13 +1,12 @@
-﻿import React, { useContext, useEffect } from "react";
-import CategoriesContent from "../layouts/CategoriesContent";
+﻿import React, { useContext } from "react";
 import FormService from "../services/FormService";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import BasicTextField from "../components/BasicTextField";
-import Notification from "../components/Notification";
 import UserService from "../services/UserService";
 import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import ResetPassword from "../features/reset-password/ResetPassword";
 
 interface LoginForm {
   email: string;
@@ -35,7 +34,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    let newErrors: LoginForm = { ...initForm };
+    const newErrors: LoginForm = { ...initForm };
 
     let passedValidation = true;
 
@@ -87,7 +86,14 @@ const Login = () => {
   };
 
   return (
-    <Grid item container justifyContent="center" alignContent="start" rowGap={8} marginTop={4}>
+    <Grid
+      item
+      container
+      justifyContent="center"
+      alignContent="start"
+      rowGap={8}
+      marginTop={4}
+    >
       <Grid item xs={12}>
         <Typography variant="h4" textAlign="center">
           Logowanie
@@ -126,13 +132,16 @@ const Login = () => {
             setErrors({ ...errors, password: "" });
           }}
         />
-        <Button
-          variant="contained"
-          style={{ width: "50%" }}
-          onClick={handleLogin}
-        >
-          Zaloguj się
-        </Button>
+        <Grid item container direction="column" alignItems="center" rowGap={2}>
+          <Button
+            variant="contained"
+            style={{ width: "50%" }}
+            onClick={handleLogin}
+          >
+            Zaloguj się
+          </Button>
+          <ResetPassword/>
+        </Grid>
       </Grid>
     </Grid>
   );

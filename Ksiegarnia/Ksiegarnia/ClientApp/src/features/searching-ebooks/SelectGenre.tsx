@@ -8,7 +8,7 @@
   Checkbox,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Genre from "../../models/api/genre";
 import GenreService from "../../services/GenreService";
 import { Search } from "@mui/icons-material";
@@ -82,7 +82,7 @@ const SelectGenre = () => {
 
     let newGenresStates = [...genresStates];
     const oldGenreState = newGenresStates[genreIndex];
-    let newGenreState = { ...oldGenreState, checked: !oldGenreState.checked };
+    const newGenreState = { ...oldGenreState, checked: !oldGenreState.checked };
     newGenresStates.splice(genreIndex, 1);
 
     if (newGenreState.checked) {
@@ -103,7 +103,7 @@ const SelectGenre = () => {
 
     searchParams.delete("genre");
 
-    let checkedGenres: string[] = [];
+    const checkedGenres: string[] = [];
 
     for (let i = 0; i < 3; i++) {
       const genreState = newGenresStates[i];

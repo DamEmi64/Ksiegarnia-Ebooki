@@ -4,8 +4,6 @@ import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider } from "@emotion/react";
-import { StyledEngineProvider } from "@mui/material/styles";
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const container = document.getElementById('root');
@@ -13,9 +11,7 @@ const root = createRoot(container!);
 
 root.render(
     <BrowserRouter basename={baseUrl ? baseUrl : undefined}>
-      <StrictMode>
         <App />
-      </StrictMode>
     </BrowserRouter>
 );
 
