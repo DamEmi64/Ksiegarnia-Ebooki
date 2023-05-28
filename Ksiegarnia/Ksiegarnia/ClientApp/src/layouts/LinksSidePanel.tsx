@@ -16,7 +16,7 @@ const LinksSidePanel = (props: { title: string; links: LinkProps[] }) => (
         <Typography variant="h5">{props.title}</Typography>
         <Grid item container direction="column" className="links-panel">
           {props.links.map((link: LinkProps, index: number) => (
-            <Link key={index} to={link.url}>
+            <Link key={index} to={link.url} title={link.hint}>
               <Typography>{link.title}</Typography>
             </Link>
           ))}

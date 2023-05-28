@@ -71,6 +71,10 @@ const EditAccountDetails = (props: {
         passedValidation = false;
         newErrors.newPassword = FormService.requiredMessage;
       }
+      else if(!FormService.checkPassword(form.newPassword)){
+        passedValidation = false;
+        newErrors.newPassword = FormService.invalidFormatMessage;
+      }
     }
 
     setErrors(newErrors);
@@ -111,7 +115,6 @@ const EditAccountDetails = (props: {
         UserService.update(user.id, form),
       ])
       .then((response) => {
-        console.log("A");
         console.log(response);
         userContext.setUser({ ...user, ...form });
         notificationContext?.setNotification({
@@ -200,7 +203,7 @@ const EditAccountDetails = (props: {
       </Grid>
       <Grid item xs={12} md={8} lg={5.5}>
         <BasicTextField
-          settings={{ type: "password" }}
+          settings={{ type: "password", title: FormService.passwordFormatMessage }}
           label="Nowe hasło"
           value={form.newPassword}
           errorMessage={errors.newPassword}
@@ -212,7 +215,7 @@ const EditAccountDetails = (props: {
       </Grid>
       <Grid item xs={12} md={8} lg={5.5}>
         <BasicTextField
-          settings={{ type: "number", maxRows: 9, minRows: 9 }}
+          settings={{ type: "number", placeholder: "123 456 789" }}
           label="Numer tel."
           value={form.phone}
           errorMessage={errors.phone}

@@ -1,4 +1,5 @@
 ﻿export interface LinkProps {
     title: string,
-    url: string
+    url: string,
+    hint?: string
 }

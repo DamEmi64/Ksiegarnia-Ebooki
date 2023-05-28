@@ -39,10 +39,13 @@ img{
 .premium-button{
   background-color: #FFE176 !important;
   color: black !important;
-  border-radius: 24px !important;
   padding-left: 24px !important;
   padding-right: 24px !important;
   font-weight: 600 !important;
+}
+
+.button-rounded{
+  border-radius: 24px !important;
 }
 
 .premium-button:hover{

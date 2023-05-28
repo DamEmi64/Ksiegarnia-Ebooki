@@ -1,3 +1,3 @@
 ﻿export enum Currency{
-    PLN= "PLN",
+    PLN="PLN",
 }

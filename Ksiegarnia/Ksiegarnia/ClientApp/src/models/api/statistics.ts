@@ -2,5 +2,6 @@
     createdEbooks: number,
     profit: number,
     numberOfReceivers: number,
-    profitPerEbook: number
+    profitPerEbook: number,
+    leftBooksToCreate: number
 }

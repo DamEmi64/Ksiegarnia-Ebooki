@@ -89,6 +89,17 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
           <Grid item xs={6} container justifyContent="center">
             <Button
               fullWidth
+              className="premium-button"
+              variant="contained"
+              style={{ borderRadius: 10 }}
+              onClick={() => setVisibleDeleteConfirmation(true)}
+            >
+              Wyróżnij
+            </Button>
+          </Grid>
+          <Grid item xs={6} container justifyContent="center">
+            <Button
+              fullWidth
               variant="contained"
               color="secondary"
               style={{ borderRadius: 10 }}
