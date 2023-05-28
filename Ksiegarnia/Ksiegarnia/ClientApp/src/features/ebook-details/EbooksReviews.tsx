@@ -65,10 +65,6 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
 
   const [isAddingReview, setIsAddingReview] = useState<boolean>(false);
 
-  React.useEffect(() => {
-
-  }, [])
-
   return (
     <Grid item container direction="column" rowGap={1} marginBottom={2}>
       <Typography variant="h5" marginBottom={2} fontWeight="bold">
