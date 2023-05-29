@@ -29,7 +29,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
       rowSpacing={4}
     >
       <Grid item xs={12} lg={9} md={8} container columnGap={3} justifyContent={{xs: "center", sm: "start"}} rowGap={2}>
-        <Grid item height="195px">
+        <Grid item xs={5} lg={3} container justifyContent="center" height="195px">
           <Image
             alt={ebook.title}
             src={ebook.picture}
