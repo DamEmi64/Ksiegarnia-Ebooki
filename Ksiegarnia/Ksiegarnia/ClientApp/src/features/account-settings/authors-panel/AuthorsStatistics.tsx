@@ -51,7 +51,7 @@ const AuthorsStatistics = () => {
           />
           <StatisticData
             title="Łączny przychód z książek:"
-            value={stats.profit.toString() + "zł"}
+            value={stats.profit.toString() + " zł"}
           />
           <StatisticData
             title="Liczba odbiorców:"
@@ -59,7 +59,7 @@ const AuthorsStatistics = () => {
           />
           <StatisticData
             title="Średni przychód na książkę:"
-            value={stats.profitPerEbook.toString() + "zł"}
+            value={stats.profitPerEbook.toString() + " zł"}
           />
           <StatisticData
             title="Pozostało książek do dodania:"

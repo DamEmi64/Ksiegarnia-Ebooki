@@ -92,13 +92,6 @@ const TransactionsHistory = () => {
 
   useEffect(() => {
     handleSearchTransactions();
-    EbookService.search({page: 1, pageSize: 10})
-    .then((response) => {
-      const data: PagedResponse = response.data;
-      const newEbooks: Ebook[] = data.result;
-      setEbooks(newEbooks);
-      console.log(response.data)
-    });
   }, [page]);
 
   if (!userId) {
@@ -138,17 +131,17 @@ const TransactionsHistory = () => {
 
   return (
     <Grid item marginTop={-2} container direction="column" rowGap={8}>
-      {mockedTransactions.length > 0 ? (
+      {transactions.length > 0 ? (
         <React.Fragment>
           {numberOfPages > 1 && <CustomPagination />}
           <Grid item container direction="column" rowGap={6}>
-            {mockedTransactions.map(
+            {transactions.map(
               (transaction: Transaction, index: number) => (
                 <TransactionRow
                   key={transaction.id}
                   index={index + 1}
                   transaction={transaction}
-                  ebooks={ebooks}
+                  ebooks={transaction.books}
                 />
               )
             )}
@@ -251,9 +244,9 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
       justifyContent="space-between"
       borderBottom="1px solid silver"
       rowGap={4}
-    >
-      <Grid item xs={12} md={9} container columnGap={4} rowGap={2}>
-        <Grid item height="260px">
+    > 
+      <Grid item xs={12} md={9} container columnGap={3} rowGap={3}>
+        <Grid item xs={12} md={6} lg={3} container justifyContent="center" height="260px">
           <Image
             alt={ebook.title}
             src={ebook.picture}
@@ -263,6 +256,7 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
         <Grid
           item
           xs={8}
+          md={5}
           container
           direction="column"
           justifyContent="space-between"

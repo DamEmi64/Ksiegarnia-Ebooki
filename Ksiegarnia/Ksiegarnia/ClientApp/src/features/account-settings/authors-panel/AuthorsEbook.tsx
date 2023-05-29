@@ -7,6 +7,7 @@ import Image from "../../../components/Image";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import EbookService from "../../../services/EbookService";
 import { NotificationContext } from "../../../context/NotificationContext";
+import DistinctEbook from "../../distinct-ebooks/DistinctEbook";
 
 const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
   const [ebook, setEbook] = useState<Ebook>(props.ebook);
@@ -87,15 +88,7 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
             </Button>
           </Grid>
           <Grid item xs={6} container justifyContent="center">
-            <Button
-              fullWidth
-              className="premium-button"
-              variant="contained"
-              style={{ borderRadius: 10 }}
-              onClick={() => setVisibleDeleteConfirmation(true)}
-            >
-              Wyróżnij
-            </Button>
+            <DistinctEbook ebookId={ebook.id}/>
           </Grid>
           <Grid item xs={6} container justifyContent="center">
             <Button
