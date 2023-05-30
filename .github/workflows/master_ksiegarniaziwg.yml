@@ -60,5 +60,5 @@ jobs:
         with:
           app-name: 'KsiegarniaZIWG'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_90c31c9ff1df4e53b7ce2b4a7493498f }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9C3C52C5E884420ABB00F51826768970 }}
           package: .
