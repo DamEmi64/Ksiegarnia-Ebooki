@@ -21,8 +21,11 @@ const initForm: FormProps = {
   email: "",
 };
 
-const InsertEmail = (props: { setNextState: () => void }) => {
-  const [form, setForm] = React.useState<FormProps>({ ...initForm });
+const InsertEmail = (props: {
+  email: string;
+  setEmail: (newEmail: string) => void;
+  setNextState: () => void;
+}) => {
   const [errors, setErrors] = React.useState<FormProps>({ ...initForm });
 
   const notificationContext = React.useContext(NotificationContext);
@@ -34,10 +37,10 @@ const InsertEmail = (props: { setNextState: () => void }) => {
 
     let passedValidation = true;
 
-    if (!FormService.checkIfIsRequired(form.email)) {
+    if (!FormService.checkIfIsRequired(props.email)) {
       passedValidation = false;
       newErrors.email = FormService.requiredMessage;
-    } else if (!FormService.checkIfIsEmail(form.email)) {
+    } else if (!FormService.checkIfIsEmail(props.email)) {
       passedValidation = false;
       newErrors.email = FormService.invalidFormatMessage;
     }
@@ -52,37 +55,32 @@ const InsertEmail = (props: { setNextState: () => void }) => {
       return;
     }
 
-    notificationContext?.setNotification({
-      isVisible: true,
-      isSuccessful: true,
-      message: SUCCESSUL_MESSAGE,
-    });
-
-    props.setNextState();
-
-    /*UserService.getPasswordResetToken(form.email)
-    .then((response) => {
-        props.setNextState()
+    UserService.getPasswordResetToken(props.email).then((response) => {
+      props.setNextState();
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
         message: SUCCESSUL_MESSAGE,
       });
-    });*/
+    });
   };
 
   return (
     <Grid item container justifyContent="center" rowGap={6}>
       <BasicTextField
         label="E-mail"
-        value={form.email}
+        value={props.email}
         errorMessage={errors.email}
         handleChange={(value: string) => {
-          setForm({ ...form, email: value });
+          props.setEmail(value)
           setErrors({ ...errors, email: "" });
         }}
       />
-      <Button variant="contained" onClick={handleReset} style={{width: "50%"}}>
+      <Button
+        variant="contained"
+        onClick={handleReset}
+        style={{ width: "50%" }}
+      >
         Zresetuj hasło
       </Button>
     </Grid>

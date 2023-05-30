@@ -25,14 +25,12 @@ jobs:
     - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
   build-frontend:
-      needs: build-backend
       runs-on: windows-latest
       steps:
       - name: Publish
         run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
   deploy:
       runs-on: windows-latest
-      needs: build-frontend
       steps:
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2

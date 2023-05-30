@@ -31,6 +31,11 @@ export interface UpdateEbookProps {
   prize: number;
 }
 
+export interface CreateDistinction {
+  startDate: string;
+  howLong: number;
+}
+
 class EbookService {
   private host = "https://localhost:7270"
   private api = `${this.host}/Books`;
@@ -76,6 +81,10 @@ class EbookService {
 
   update(ebookId: string, updateEbookProps: UpdateEbookProps) {
     return axios.put(`${this.api}/${ebookId}`, updateEbookProps);
+  }
+
+  distinct(ebookId: string, createDistinction: CreateDistinction){
+    return axios.post(`${this.api}/${ebookId}/distinct`, createDistinction)
   }
 
   delete(ebookId: string) {
