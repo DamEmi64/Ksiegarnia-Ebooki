@@ -55,7 +55,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'Ksiegarnia-ZIWG'
+          app-name: 'KsiegarniaZIWG'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9C3C52C5E884420ABB00F51826768970 }}
           package: .
