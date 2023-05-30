@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.WORKING_DIRECTORY}}/myapp
   deploy:
     runs-on: windows-latest
     needs: build
@@ -56,6 +56,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: .net-app
+          path: ${{env.WORKING_DIRECTORY}}/myapp
           
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
