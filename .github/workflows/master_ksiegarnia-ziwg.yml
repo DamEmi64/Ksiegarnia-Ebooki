@@ -14,7 +14,7 @@ env:
   WORKING_DIRECTORY: Ksiegarnia
 
 jobs:
-  build_backend:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -36,15 +36,6 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
-  build_frontend:
-    runs-on: windows-latest
-    needs: build_backend
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
       - name: Publish
         run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
       - name: dotnet publish
