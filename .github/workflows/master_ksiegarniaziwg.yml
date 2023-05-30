@@ -1,13 +1,13 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy .NET Core app to Windows WebApp Ksiegarnia-ZIWG
+name: Build and deploy .NET Core app to Windows WebApp KsiegarniaZIWG
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: Ksiegarnia-ZIWG
+  AZURE_WEBAPP_NAME: KsiegarniaZIWG
   AZURE_WEBAPP_PACKAGE_PATH: Ksiegarnia/publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
