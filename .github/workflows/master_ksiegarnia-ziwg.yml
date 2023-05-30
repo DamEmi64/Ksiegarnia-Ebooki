@@ -48,7 +48,7 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/myapp
   deploy:
     runs-on: windows-latest
-    needs: build_frontend
+    needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
