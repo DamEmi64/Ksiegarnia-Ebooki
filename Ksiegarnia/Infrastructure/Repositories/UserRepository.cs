@@ -7,9 +7,11 @@ using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 
 namespace Infrastructure.Repositories
 {
@@ -96,7 +98,14 @@ namespace Infrastructure.Repositories
         public async Task<bool> ChangeEmail(string id, string token, string newEmail)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
-            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token)));
+            _ = await _userManager.SetUserNameAsync(user, newEmail);
+            _ = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new ChangeEmailFailedException(result.Errors.Select(x => x.Description));
+            }
 
             return result.Succeeded;
         }
@@ -111,7 +120,13 @@ namespace Infrastructure.Repositories
         public async Task ResetPassword(string email, string token, string newPassword)
         {
             var user = await _userStore.FindByNameAsync(email, CancellationToken.None);
-            _ = _userManager.ResetPasswordAsync(user, token, newPassword);
+            var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token)), newPassword);
+            _ = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new ChangeEmailFailedException(result.Errors.Select(x => x.Description));
+            }
         }
 
         /// <summary>
