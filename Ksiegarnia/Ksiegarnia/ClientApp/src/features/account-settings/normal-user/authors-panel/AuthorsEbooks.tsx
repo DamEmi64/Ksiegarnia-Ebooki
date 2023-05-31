@@ -1,15 +1,16 @@
 import { Grid, Typography, TextField, Button, IconButton } from "@mui/material";
-import SelectPageSize from "../../../components/SelectPageSize";
-import SortEbooks from "../../../components/SortEbooks";
+import SelectPageSize from "../../../../components/SelectPageSize";
+import SortEbooks from "../../../../components/SortEbooks";
 import React, { useState, useRef, useEffect, useContext } from "react";
-import Ebook from "../../../models/api/ebook";
+import Ebook from "../../../../models/api/ebook";
 import { Search } from "@mui/icons-material";
 import AuthorsEbook from "./AuthorsEbook";
-import useScrollPosition from "../../../components/useScrollPosition";
+import useScrollPosition from "../../../../components/useScrollPosition";
 import { useNavigate } from "react-router-dom";
-import UserService from "../../../services/UserService";
-import { UserContext } from "../../../context/UserContext";
-import Loading from "../../../pages/Loading";
+import UserService from "../../../../services/UserService";
+import { UserContext } from "../../../../context/UserContext";
+import Loading from "../../../../pages/Loading";
+import PagedResponse from "../../../../models/api/pagedResponse";
 
 const AuthorsEbooks = () => {
   const userId = useContext(UserContext)?.user.data?.id;
@@ -19,6 +20,7 @@ const AuthorsEbooks = () => {
 
   const page = useRef<number>(1);
   const numberOfPages = useRef<number>(0);
+  const [numberOfEbooks, setNumberOfEbooks] = useState<number>(0)
 
   const [pageSize, setPageSize] = useState<number>(12);
   const actualPageSize = useRef<number>(12);
@@ -30,12 +32,6 @@ const AuthorsEbooks = () => {
 
   useEffect(() => {
     handleSearch();
-    /*EbookService.search({phrase: searchPhrase}, actualSort.current, page.current, actualPageSize.current)
-    .then((response) => {
-      const data: PagedResponse = response.data
-      setEbooks(data.result)
-      numberOfPages.current = data.number_of_pages
-    })*/
   }, []);
 
   useScrollPosition({
@@ -59,11 +55,11 @@ const AuthorsEbooks = () => {
       page: page.current,
       pageSize: actualPageSize.current,
     }).then((response) => {
-      const data = response.data;
+      const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
       numberOfPages.current = data.number_of_pages;
-      console.log(response.data);
+      setNumberOfEbooks(data.all)
     });
   };
 
@@ -76,10 +72,11 @@ const AuthorsEbooks = () => {
       page: page.current,
       pageSize: actualPageSize.current,
     }).then((response) => {
-      const data = response.data;
+      const data: PagedResponse = response.data;
       const newEbooks: Ebook[] = data.result;
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages;
+      setNumberOfEbooks(data.all)
     });
   };
 
@@ -98,7 +95,7 @@ const AuthorsEbooks = () => {
   return (
     <Grid item container rowGap={5}>
       <Typography variant="h5" fontWeight="bold">
-        Lista dodanych książek:
+        Lista dodanych książek ({numberOfEbooks}):
       </Typography>
       <Grid item container alignItems="stretch" columnGap={4}>
         <Grid item xs={6} sm={7} md={8}>

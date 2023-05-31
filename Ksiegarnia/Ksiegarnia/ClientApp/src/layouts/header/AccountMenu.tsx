@@ -1,13 +1,10 @@
 ﻿import { IconButton, Typography, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { NotificationContext } from "../../context/NotificationContext";
-import { UserContext } from "../../context/UserContext";
-import UserService from "../../services/UserService";
 import { LinkProps } from "../../models/linkProps";
 import PersonIcon from "@mui/icons-material/Person";
 
-export const accountMenuLinks: LinkProps[] = [
+export const normalUserlinks: LinkProps[] = [
   {
     title: "Dane konta",
     url: "details",
@@ -28,19 +25,36 @@ export const accountMenuLinks: LinkProps[] = [
     title: "Konto premium",
     url: "premium",
   },
+  {
+    title: "Wyloguj",
+    url: "logout",
+  },
 ];
 
-const AccountMenu = () => {
-  const userContext = React.useContext(UserContext);
-  const notificationContext = React.useContext(NotificationContext);
+export const adminLinks: LinkProps[] = [
+  {
+    title: "Dane konta",
+    url: "details",
+  },
+  {
+    title: "Dane Użytkowników",
+    url: "owned-ebooks",
+  },
+  {
+    title: "Przegląd zgłoszeń",
+    url: "owned-ebooks",
+  },
+  {
+    title: "Wyloguj",
+    url: "logout",
+  },
+]
 
+const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
-
-  const SUCCESSFUL_LOGGOUT_MSG = "Wylogowano pomyślnie";
-  const FAILED_LOGGOUT_MSG = "Nie udało się wylogować";
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -55,41 +69,20 @@ const AccountMenu = () => {
     navigate(`/account-settings/${url}`);
   };
 
-  const handleLogout = () => {
-    UserService.logout()
-      .then(() => {
-        handleCloseMenu();
-        userContext?.setLogged(false);
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: true,
-          message: SUCCESSFUL_LOGGOUT_MSG,
-        });
-      })
-      .catch(() => {
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: false,
-          message: FAILED_LOGGOUT_MSG,
-        });
-      });
-  };
-
   return (
     <React.Fragment>
       <IconButton onClick={handleClick}>
         <PersonIcon fontSize="large" style={{ color: "white" }} />
-        <Typography variant="h6" color="white" marginLeft={2}>
-          Konto
+        <Typography variant="h6" color="white" display={{xs: "none", md: "block"}} marginLeft={2}>
+          Panel
         </Typography>
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-        {accountMenuLinks.map((link: LinkProps, index: number) => (
+        {normalUserlinks.map((link: LinkProps, index: number) => (
           <MenuItem key={index} onClick={() => handleAccountSettings(link.url)}>
             {link.title}
           </MenuItem>
-        ))}
-        <MenuItem onClick={handleLogout}>Wyloguj</MenuItem>
+      ))}
       </Menu>
     </React.Fragment>
   );

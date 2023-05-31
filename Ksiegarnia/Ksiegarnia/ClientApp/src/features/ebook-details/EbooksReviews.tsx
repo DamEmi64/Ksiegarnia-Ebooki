@@ -1,14 +1,12 @@
-﻿import {
-  Button,
-  Grid,
-  Typography,
-} from "@mui/material";
-import React, { useContext, useState } from "react";
+﻿import { Button, Grid, Typography } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import AddEditEbookReview from "./AddEditEbookReview";
 import EbookReview from "./EbookReview";
 import Ebook from "../../models/api/ebook";
 import { Review } from "../../models/api/review";
+import ReviewService from "../../services/ReviewService";
+import PagedResponse from "../../models/api/pagedResponse";
 
 export interface MockReview {
   date: string;
@@ -62,13 +60,33 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const userId = userContext?.user.data?.id;
 
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [numberOfPages, setNumberOfPages] = useState<number>(0);
+  const [numberOfReviews, setNumberOfReviews] = useState<number>(0);
+  const pageSize = 10;
 
   const [isAddingReview, setIsAddingReview] = useState<boolean>(false);
+
+  useEffect(() => {
+    handleSearch();
+  }, [page]);
+
+  const handleSearch = () => {
+    ReviewService.getEbookReviews(props.ebook.id, page, pageSize).then(
+      (response) => {
+        const pagedResponse: PagedResponse = response.data;
+        setReviews(pagedResponse.result);
+        setPage(pagedResponse.page);
+        setNumberOfPages(pagedResponse.number_of_pages);
+        setNumberOfReviews(pagedResponse.all);
+      }
+    );
+  };
 
   return (
     <Grid item container direction="column" rowGap={1} marginBottom={2}>
       <Typography variant="h5" marginBottom={2} fontWeight="bold">
-        Recenzje (32)
+        Recenzje ({numberOfReviews})
       </Typography>
       <Grid item container direction="column" rowGap={1}>
         {isUserLogged &&
@@ -95,16 +113,19 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
               key={index}
               ebook={props.ebook}
               review={review}
-              handleUpdate={() => console.log("Updated")}
+              handleUpdate={handleSearch}
             />
           ))}
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            className="pointer hover-red"
-          >
-            Pokaż więcej...
-          </Typography>
+          {page < numberOfPages && (
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              className="pointer hover-red"
+              onClick={() => setPage(page + 1)}
+            >
+              Pokaż więcej...
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </Grid>

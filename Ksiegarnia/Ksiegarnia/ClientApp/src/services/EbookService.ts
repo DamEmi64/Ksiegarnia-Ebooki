@@ -36,6 +36,14 @@ export interface CreateDistinction {
   howLong: number;
 }
 
+export interface CreatePromotion {
+  startDate: string,
+  endDate: string,
+  prize: number,
+  premiumPrize: number,
+  isPremiumOnly: boolean
+}
+
 class EbookService {
   private host = "https://localhost:7270"
   private api = `${this.host}/Books`;
@@ -85,6 +93,10 @@ class EbookService {
 
   distinct(ebookId: string, createDistinction: CreateDistinction){
     return axios.post(`${this.api}/${ebookId}/distinct`, createDistinction)
+  }
+
+  promote(ebookId: string, createPromotion: CreatePromotion){
+    return axios.post(`${this.api}/${ebookId}/promote`, createPromotion)
   }
 
   delete(ebookId: string) {
