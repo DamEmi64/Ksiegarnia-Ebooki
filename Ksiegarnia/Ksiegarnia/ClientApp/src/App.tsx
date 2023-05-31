@@ -26,7 +26,6 @@ import { plPL as corePlPL } from '@mui/material/locale';
 import { plPL } from '@mui/x-date-pickers/locales';
 import EbooksNotifications from "./features/account-settings/admin/EbooksNotifications";
 import UsersManagement from "./features/account-settings/admin/UsersManagement";
-import { Logout } from "@mui/icons-material";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotificationProvider from "./context/NotificationContext";
 import TransactionsHistory from "./features/account-settings/TransactionsHistory";
@@ -38,6 +37,7 @@ import OwnedEbooks from "./features/account-settings/normal-user/owned-ebooks/Ow
 import PremiumAccount from "./features/account-settings/normal-user/premium-account/PremiumAccount";
 import Notification from "./components/Notification";
 import Forbidden from "./pages/Forbidden";
+import Logout from "./features/account-settings/Logout";
 
 axios.defaults.withCredentials = true;
 
