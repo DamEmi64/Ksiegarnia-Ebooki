@@ -31,6 +31,8 @@ namespace Domain.Repositories
 
         Task<bool> CheckRole(string id, Roles role);
 
+        Task<IEnumerable<string>> GetRoles(string id);
+
         Task RemoveRole(string id, Roles roles);
 
         Task Confirm(string id, string token);

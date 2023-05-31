@@ -6,6 +6,7 @@
         {
             base.Title = "Register failed";
             base.StatusCode = System.Net.HttpStatusCode.BadRequest;
+            ErrorCode = ErrorCode.RegisterFailed;
         }
     }
 }

@@ -7,6 +7,7 @@
         {
             base.Title = "Ebook not veirfied.";
             base.StatusCode = System.Net.HttpStatusCode.NotAcceptable;
+            ErrorCode = ErrorCode.BookNotVerified;
         }
     }
 }

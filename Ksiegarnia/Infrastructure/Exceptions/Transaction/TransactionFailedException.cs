@@ -21,6 +21,7 @@ namespace Infrastructure.Exceptions
 
             base.Title = $"Transaction failed. Contact with website owners. Errors: {builder}";
             base.StatusCode = System.Net.HttpStatusCode.NotFound;
+            ErrorCode = ErrorCode.TransactionFailed;
         }
     }
 }

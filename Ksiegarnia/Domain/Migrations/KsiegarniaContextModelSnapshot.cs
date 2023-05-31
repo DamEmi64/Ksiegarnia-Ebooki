@@ -42,7 +42,7 @@ namespace Domain.Migrations
                     b.HasIndex("BookId")
                         .IsUnique();
 
-                    b.ToTable("Distinction");
+                    b.ToTable("Distinction", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.EBook", b =>
@@ -100,7 +100,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("Ebooks");
+                    b.ToTable("Ebooks", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.EBookReader", b =>
@@ -130,7 +130,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Readers");
+                    b.ToTable("Readers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.Genre", b =>
@@ -149,7 +149,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genre", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.HideInfo", b =>
@@ -175,7 +175,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HideInfo");
+                    b.ToTable("HideInfo", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.Premium", b =>
@@ -192,7 +192,7 @@ namespace Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Premiums");
+                    b.ToTable("Premiums", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.Promotion", b =>
@@ -226,7 +226,7 @@ namespace Domain.Migrations
                     b.HasIndex("BookId")
                         .IsUnique();
 
-                    b.ToTable("Promotions");
+                    b.ToTable("Promotions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.Review", b =>
@@ -253,7 +253,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("ReaderId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.Role", b =>
@@ -309,7 +309,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("PremiumId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitites.User", b =>

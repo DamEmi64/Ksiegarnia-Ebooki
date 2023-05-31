@@ -6,6 +6,7 @@
         {
             base.Title = "Login Failed";
             base.StatusCode = System.Net.HttpStatusCode.BadRequest;
+            ErrorCode = ErrorCode.LoginFailed;
         }
     }
 }

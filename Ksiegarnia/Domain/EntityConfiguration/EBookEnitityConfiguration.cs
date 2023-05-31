@@ -18,8 +18,8 @@ namespace Domain.EntityConfiguration
             builder.Property(x => x.Tokens).IsRequired(false);
             builder.HasOne(x=>x.Genre).WithMany(x=>x.Books).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.Author).WithMany(x => x.Publications).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(x => x.Distinction).WithOne(x => x.Book).HasForeignKey<Distinction>(x => x.BookId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(x => x.Promotion).WithOne(x => x.Book).HasForeignKey<Promotion>(x => x.BookId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.Distinction).WithOne(x => x.Book).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
+            builder.HasOne(x => x.Promotion).WithOne(x => x.Book).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
         }
     }
 }

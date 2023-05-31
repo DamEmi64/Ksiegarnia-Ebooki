@@ -8,6 +8,7 @@ namespace Infrastructure.Exceptions
         {
             base.Title = $"Nie znaleziono ksiązki {bookId}";
             base.StatusCode = HttpStatusCode.NotFound;
+            ErrorCode = ErrorCode.BookNotFound;
         }
     }
 }

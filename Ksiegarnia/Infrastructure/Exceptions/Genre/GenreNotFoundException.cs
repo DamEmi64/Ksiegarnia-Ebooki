@@ -6,6 +6,7 @@
         {
             base.Title = "Genre not found";
             base.StatusCode = System.Net.HttpStatusCode.NotFound;
+            ErrorCode = ErrorCode.GenreNotFound;
         }
     }
 }

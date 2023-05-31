@@ -3,15 +3,16 @@
     /// <summary>
     ///     Review not found exception
     /// </summary>
-    public class BookReviewNotFound : ExceptionBase
+    public class BookReviewNotFoundException : ExceptionBase
     {
         /// <summary>
         ///     Constructor
         /// </summary>
-        public BookReviewNotFound()
+        public BookReviewNotFoundException()
         {
             StatusCode = System.Net.HttpStatusCode.NotFound;
             Title = "Review not found";
+            ErrorCode = ErrorCode.BookNotVerified;
         }
     }
 }
