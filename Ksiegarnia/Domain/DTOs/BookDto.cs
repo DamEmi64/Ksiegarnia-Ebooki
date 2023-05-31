@@ -45,14 +45,17 @@ namespace Domain.DTOs
         /// <summary>
         ///     Promotion
         /// </summary>
-        public PromotionDto Promotion { get; set; }
+        public PromotionDto? Promotion { get; set; }
 
         /// <summary>
         ///     Distinction
         /// </summary>
-        public DistinctionDto Distinction { get; set; }
+        public DistinctionDto? Distinction { get; set; }
     }
 
+    /// <summary>
+    ///     Convert to dto
+    /// </summary>
     public static class BookConvert
     {
         public static IEnumerable<BookDto> ToDTOs(this IEnumerable<EBook> eBooks)
@@ -65,6 +68,31 @@ namespace Domain.DTOs
 
         public static BookDto ToDTO(this EBook eBook)
         {
+            PromotionDto promotion = null;
+
+            if (eBook.Promotion != null)
+            {
+                promotion = new PromotionDto
+                {
+                    IsPremiumOnly = eBook.Promotion?.OnlyForPremium ?? false,
+                    StartDate = eBook.Promotion?.StartDate ?? default,
+                    EndDate = eBook.Promotion?.EndDate ?? default,
+                    PremiumPrize = eBook.Promotion?.PremiumPrize ?? default,
+                    Prize = eBook.Promotion?.Prize ?? default
+                };
+            }
+
+            DistinctionDto distinction = null;
+
+            if (eBook.Distinction != null)
+            {
+                distinction = new DistinctionDto
+                {
+                    StartDate = eBook.Distinction?.StartDate ?? default,
+                    HowLong = eBook.Distinction?.HowLong ?? 0,
+                };
+            }
+
             return new BookDto()
             {
                 Id = eBook.Id,
@@ -75,19 +103,8 @@ namespace Domain.DTOs
                 Author = eBook.Author.ToDTO(),
                 Prize = eBook.Prize,
                 Picture = eBook.Picture,
-                Promotion = new PromotionDto
-                {
-                    IsPremiumOnly = eBook.Promotion?.OnlyForPremium ?? false,
-                    StartDate = eBook.Promotion?.StartDate ?? default,
-                    EndDate = eBook.Promotion?.EndDate ?? default,
-                    PremiumPrize = eBook.Promotion?.PremiumPrize ?? default,
-                    Prize = eBook.Promotion?.Prize ?? default
-                },
-                Distinction = new DistinctionDto
-                {
-                    StartDate = eBook.Distinction?.StartDate ?? default,
-                    HowLong = eBook.Distinction?.HowLong ?? 0,
-                }
+                Promotion = promotion,
+                Distinction = distinction
             };
         }
     }

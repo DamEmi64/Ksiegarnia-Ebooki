@@ -104,6 +104,16 @@ namespace Application.Controllers
             return Url.Action("example");
         }
 
+        /// <summary>
+        ///     Return exception
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Exception")]
+        public string GetErrorCode()
+        {
+            throw new UserNotFoundException(string.Empty);
+        }
+
         private async Task<SendTokenDto> RegisterAdmin(string email, string password)
         {
             var registerData = new RegisterDto()

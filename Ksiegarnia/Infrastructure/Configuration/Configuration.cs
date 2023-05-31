@@ -64,7 +64,7 @@ namespace Infrastructure.Configuration
                 if (exception is ExceptionBase defaultException)
                 {
                     context.Response.StatusCode = (int)defaultException.StatusCode;
-                    await context.Response.WriteAsJsonAsync(new { Title = defaultException.Title, Description = defaultException.Description });
+                    await context.Response.WriteAsJsonAsync(new { Title = defaultException.Title, Description = defaultException.Description, Error = Enum.GetName(defaultException.ErrorCode) });
                 }
                 else
                 {

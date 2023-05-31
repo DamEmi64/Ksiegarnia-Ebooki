@@ -4,9 +4,10 @@
     {
         public BookHasThisContentException(string id)
         {
-            base.StatusCode = System.Net.HttpStatusCode.Conflict;
-            base.Title = "Istnieje książka o podanej treści";
-            base.Description = $"Książka {id} zawiera podaną treść.";
+            StatusCode = System.Net.HttpStatusCode.Conflict;
+            Title = "Istnieje książka o podanej treści";
+            Description = $"Książka {id} zawiera podaną treść.";
+            ErrorCode = ErrorCode.BookHasThisContent;
         }
     }
 }

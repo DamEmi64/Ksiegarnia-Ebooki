@@ -61,7 +61,7 @@ namespace Infrastructure.Repositories
         public async Task<SendTokenDto> GeneratePasswordToken(string name)
         {
             var user = await _userStore.FindByNameAsync(name, CancellationToken.None);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return new()
             {
                 Email = user.Email,
@@ -98,7 +98,7 @@ namespace Infrastructure.Repositories
         public async Task<bool> ChangeEmail(string id, string token, string newEmail)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
-            var result = await _userManager.ChangeEmailAsync(user, newEmail, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token)));
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
             _ = await _userManager.SetUserNameAsync(user, newEmail);
             _ = await _userManager.UpdateAsync(user);
 
@@ -120,7 +120,7 @@ namespace Infrastructure.Repositories
         public async Task ResetPassword(string email, string token, string newPassword)
         {
             var user = await _userStore.FindByNameAsync(email, CancellationToken.None);
-            var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token)), newPassword);
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
             _ = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
@@ -413,6 +413,23 @@ namespace Infrastructure.Repositories
         public async Task<User> GetByNick(string name)
         {
             return await _userStore.FindByNameAsync(name, CancellationToken.None);
+        }
+
+        /// <summary>
+        ///     Get user roles
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<string>> GetRoles(string id)
+        {
+            var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
+
+            if (user != null)
+            {
+                return await _userManager.GetRolesAsync(user);
+            }
+
+            return Enumerable.Empty<string>();
         }
     }
 }

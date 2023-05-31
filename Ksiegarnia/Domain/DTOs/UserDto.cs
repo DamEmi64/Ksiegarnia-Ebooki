@@ -41,6 +41,11 @@ namespace Domain.DTOs
         ///     User age
         /// </summary>
         public int Age { get; set; }
+
+        /// <summary>
+        ///     User roles
+        /// </summary>
+        public IEnumerable<string>? Roles { get; set; }
     }
 
     /// <summary>
@@ -65,8 +70,9 @@ namespace Domain.DTOs
         ///     To Dto
         /// </summary>
         /// <param name="user">User</param>
+        /// <param name="roles">User roles</param>
         /// <returns></returns>
-        public static UserDto ToDTO(this User user)
+        public static UserDto ToDTO(this User user, IEnumerable<string>? roles = null)
         {
             return new UserDto()
             {
@@ -76,7 +82,8 @@ namespace Domain.DTOs
                 LastName = user.LastName,
                 Nick = user.Nick,
                 Phone = user.PhoneNumber,
-                Age = (int)(DateTime.UtcNow - user.BirthDate).TotalDays / 365
+                Age = (int)(DateTime.UtcNow - user.BirthDate).TotalDays / 365,
+                Roles = roles
             };
         }
     }

@@ -6,6 +6,7 @@ using Domain.DTOs;
 using Domain.Enums;
 using Infrastructure.Exceptions;
 using Newtonsoft.Json;
+using Infrastructure;
 
 namespace Application.Controllers
 {
@@ -68,7 +69,7 @@ namespace Application.Controllers
             {
                 books = books.Where(x => x.Prize <= maxPrize).ToList();
             }
-            if (minPrize > 0 )
+            if (minPrize > 0)
             {
                 books = books.Where(x => x.Prize >= minPrize).ToList();
             }
@@ -176,17 +177,17 @@ namespace Application.Controllers
                 throw new UserNotFoundException(string.Empty);
             }
 
-            if (book.Author != user || user.Publications?.Count(x => x.Distinction != null) > 3)
+            if (book.Author != user || user.Publications?.Count(x => x.Distinction != null) > ConfigurationConst.FreeTimeDistinct)
             {
                 if (!(await _userRepository.CheckRole(user?.Id ?? "", Roles.PremiumUser) || await _userRepository.CheckRole(user?.Id ?? "", Roles.Admin)))
                 {
-                    throw new ExceptionBase();
+                    throw new FreeBonusUsedException();
                 }
                 else
                 {
                     if (await _userRepository.CheckRole(user?.Id ?? string.Empty, Roles.PremiumUser) && CountFreeDistinctions(user) < user?.Publications?.Count(x => x.Promotion != null))
                     {
-                        throw new ExceptionBase();
+                        throw new PremiumBonusUsedException();
                     }
                 }
             }
@@ -357,6 +358,12 @@ namespace Application.Controllers
                 if (genre == null)
                 {
                     throw new GenreNotFoundException();
+                }
+
+                if ((await _bookRepository.GetEBooks(AuthorName: author.Nick)).Count >= 10
+                    && !((await _userRepository.CheckRole(author.Id, Roles.PremiumUser)) || (await _userRepository.CheckRole(author.Id, Roles.Admin))))
+                {
+                    throw new FreeBonusUsedException();
                 }
 
                 var book = new EBook()

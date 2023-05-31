@@ -12,6 +12,7 @@
         public ChangePasswordFailedException(IEnumerable<string> reasons)
         {
             StatusCode = System.Net.HttpStatusCode.NotFound;
+            ErrorCode = ErrorCode.ChangePasswordFailed;
             Title = "Change password failed.";
 
             var desc = "";

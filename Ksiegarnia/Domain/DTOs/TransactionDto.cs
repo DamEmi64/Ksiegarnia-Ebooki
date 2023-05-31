@@ -23,7 +23,7 @@ namespace Domain.DTOs
         /// <summary>
         ///     Transaction Buyer (simplified)
         /// </summary>
-        public UserDto Buyer { get; set; }
+        public UserDto? Buyer { get; set; }
 
         /// <summary>
         ///     Transaction Book
@@ -38,8 +38,8 @@ namespace Domain.DTOs
 
             return new TransactionDto()
             {
-                Books = transaction.EBookReaders.GetBooks(),
-                Buyer = transaction.EBookReaders.First().User.ToDTO(),
+                Books = transaction.EBookReaders?.GetBooks() ?? Array.Empty<BookDto>(),
+                Buyer = transaction.EBookReaders?.FirstOrDefault()?.User.ToDTO() ?? null,
                 Currency = transaction.Currency,
                 DateTime = transaction.DateTime,
                 Id = transaction.Id

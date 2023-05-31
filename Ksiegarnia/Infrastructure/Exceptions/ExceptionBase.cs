@@ -15,6 +15,8 @@ namespace Infrastructure.Exceptions
             Description = description;
         }
         public HttpStatusCode StatusCode { get; set; }
+
+        public ErrorCode ErrorCode { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
     }

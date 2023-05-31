@@ -142,7 +142,7 @@ namespace Application.Controllers
             var review = await _reviewsRepository.Get(id);
             if (review == null)
             {
-                throw new BookReviewNotFound();
+                throw new BookReviewNotFoundException();
             }
 
             review.Opinion = reviewDto.Opinion;
@@ -166,7 +166,7 @@ namespace Application.Controllers
             var review = await _reviewsRepository.Get(id);
             if (review == null)
             {
-                throw new BookReviewNotFound();
+                throw new BookReviewNotFoundException();
             }
 
             await _reviewsRepository.Remove(id);

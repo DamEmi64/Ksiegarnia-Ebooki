@@ -13,6 +13,7 @@
         {
             StatusCode = System.Net.HttpStatusCode.NotFound;
             Title = "Change password failed.";
+            ErrorCode = ErrorCode.ChangeEmailFailed;
 
             var desc = "";
 

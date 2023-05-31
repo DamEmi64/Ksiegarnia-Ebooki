@@ -25,11 +25,23 @@ namespace Infrastructure
         /// </summary>
         public static PaypalStruct Paypal { get; set; }
 
+        /// <summary>
+        ///     Number of days of free distinction
+        /// </summary>
+        public static int FreeTimeDistinct { get; set; }
+
+        /// <summary>
+        ///     Number of free books to add
+        /// </summary>
+        public static int FreeStorage { get; set; }
+
         public static void ConfigureConst(this WebApplicationBuilder builder)
         {
             CopyLeak = builder.Configuration.GetSection("CopyLeak").Get<CopyLeakStruct>();
             SMTP = builder.Configuration.GetSection("SMTP").Get<SMTPstruct>(); ;
-            Paypal = builder.Configuration.GetSection("Paypal").Get<PaypalStruct>(); ;
+            Paypal = builder.Configuration.GetSection("Paypal").Get<PaypalStruct>();
+            FreeStorage = builder.Configuration.GetValue<int>("FreeStorage");
+            FreeTimeDistinct = builder.Configuration.GetValue<int>("FreeTimeDistinct");
         }
     }
 }
