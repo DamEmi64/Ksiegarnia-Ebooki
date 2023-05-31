@@ -1,6 +1,6 @@
 ﻿import { Grid } from "@mui/material";
-import BasicEbookView from "../../../components/BasicEbookView";
-import Ebook from "../../../models/api/ebook";
+import BasicEbookView from "../../../../components/BasicEbookView";
+import Ebook from "../../../../models/api/ebook";
 import { Link } from "react-router-dom";
 import React from "react";
 

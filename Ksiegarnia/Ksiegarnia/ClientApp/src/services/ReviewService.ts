@@ -14,6 +14,17 @@ export interface CreateEditReview {
 class ReviewService {
     private api = "https://localhost:7270/Review";
 
+    getEbookReviews(ebookId: string, page: number, pageSize: number){
+        return axios.get(`${this.api}/search`, {
+            params: {
+                bookId: ebookId,
+                page: page,
+                pageSize: pageSize,
+                sort: "DescByDate"
+            }
+        })
+    }
+
     create(request: CreateEditReview){
         return axios.post(this.api, request)
     }

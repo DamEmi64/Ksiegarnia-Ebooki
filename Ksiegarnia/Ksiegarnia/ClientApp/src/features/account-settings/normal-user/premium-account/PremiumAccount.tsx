@@ -1,13 +1,14 @@
-﻿import { Close, Done } from "@mui/icons-material";
-import { Button, Grid, Stack, Typography } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import PremiumHistory from "../../../models/api/premiumHistory";
-import PremiumAccountOrder from "./PremiumAccountOrder";
+﻿import { Done, Close } from "@mui/icons-material";
+import { Grid, Typography, Stack, Button } from "@mui/material";
+import { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../../../context/UserContext";
+import PremiumCheck from "../../../../models/api/premiumCheck";
+import PremiumHistory from "../../../../models/api/premiumHistory";
+import Loading from "../../../../pages/Loading";
+import PremiumService from "../../../../services/PremiumService";
 import BuyPremiumDialog from "./BuyPremiumDialog";
-import { UserContext } from "../../../context/UserContext";
-import PremiumService from "../../../services/PremiumService";
-import PremiumCheck from "../../../models/api/premiumCheck";
-import Loading from "../../../pages/Loading";
+import PremiumAccountOrder from "./PremiumAccountOrder";
+import React from "react";
 
 const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
@@ -203,14 +204,6 @@ const PremiumAccount = () => {
             }
           />
         </Grid>
-        {premiumInfo.isActive && (
-          <Grid item container>
-            <StatisticData
-              title="Liczba dostępnych wyróżnień"
-              value={<Typography variant="h6">5</Typography>}
-            />
-          </Grid>
-        )}
       </Grid>
       <Grid item container justifyContent="center">
         <Grid

@@ -4,38 +4,14 @@ import { LinkProps } from "../models/linkProps";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
-
-const links: LinkProps[] = [
-  {
-    title: "Dane konta",
-    url: "details",
-  },
-  {
-    title: "Zakupione ebooki",
-    url: "owned-ebooks",
-  },
-  {
-    title: "Historia zamówień",
-    url: "transactions",
-  },
-  {
-    title: "Panel twórcy",
-    url: "authors-panel",
-  },
-  {
-    title: "Konto premium",
-    url: "premium",
-  },
-  {
-    title: "Wyloguj",
-    url: "logout",
-  },
-];
+import { adminLinks, normalUserlinks } from "../layouts/header/AccountMenu";
 
 const AccountSettings = () => {
   const location = useLocation();
 
   const [subPath, setSubPath] = useState<string | undefined>("");
+
+  const links: LinkProps[] = normalUserlinks
 
   useEffect(() => {
     const lastPart = location.pathname.split("/").pop();
@@ -54,7 +30,7 @@ const AccountSettings = () => {
           display: { xs: "none", lg: "flex", justifyContent: "start" },
         }}
       >
-        <LinksSidePanel title="Konto" links={links} />
+        <LinksSidePanel title="Panel" links={links} />
       </Box>
     );
   };
@@ -92,7 +68,7 @@ const AccountSettings = () => {
           onClick={handleClick}
           style={{ padding: "5px 20px" }}
         >
-          <Typography variant="h5">Konto</Typography>
+          <Typography variant="h5">Panel</Typography>
         </Button>
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
           {[

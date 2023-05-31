@@ -84,3 +84,12 @@ img{
 .hover-red:hover{
   color: #EB4B36;
 }
+
+.promotion{
+  background-color: teal !important;
+  color: white !important;
+}
+
+.promotion:hover{
+  background-color: rgb(2, 90, 90) !important;
+}

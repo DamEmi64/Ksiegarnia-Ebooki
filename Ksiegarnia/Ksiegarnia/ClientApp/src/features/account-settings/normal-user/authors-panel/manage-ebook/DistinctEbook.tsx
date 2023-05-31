@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import BasicTextField from "../../components/BasicTextField";
-import FormService from "../../services/FormService";
-import EbookService from "../../services/EbookService";
+import BasicTextField from "../../../../../components/BasicTextField";
+import FormService from "../../../../../services/FormService";
+import EbookService from "../../../../../services/EbookService";
 
 const DistinctEbook = (props: { ebookId: string }) => {
   const [open, setOpen] = React.useState<boolean>(false);

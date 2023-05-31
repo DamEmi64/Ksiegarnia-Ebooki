@@ -12,13 +12,10 @@
 import React from "react";
 import logo from "../../assets/logo.png";
 import { UserContext } from "../../context/UserContext";
-import AccountMenu, { accountMenuLinks } from "./AccountMenu";
+import AccountMenu from "./AccountMenu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Cart from "./Cart";
-import { LinkProps } from "../../models/linkProps";
 import { useNavigate } from "react-router-dom";
-import UserService from "../../services/UserService";
-import { NotificationContext } from "../../context/NotificationContext";
 import SearchEbooksByPhrase from "./SearchEbooksByPhrase";
 
 const Header = () => {
@@ -45,7 +42,7 @@ const Header = () => {
           alignItems="center"
         >
           <Grid item lg={6} xl={7} marginLeft={6}>
-            <SearchEbooksByPhrase/>
+            <SearchEbooksByPhrase />
           </Grid>
           <Grid
             item
@@ -85,14 +82,8 @@ const Header = () => {
   };
 
   const SmallScreenMenu = () => {
-    const userContext = React.useContext(UserContext);
-    const notificationContext = React.useContext(NotificationContext);
-
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-
-    const SUCCESSFUL_LOGGOUT_MSG = "Wylogowano pomyślnie";
-    const FAILED_LOGGOUT_MSG = "Nie udało się wylogować";
 
     const navigate = useNavigate();
 
@@ -102,26 +93,6 @@ const Header = () => {
 
     const handleCloseMenu = () => {
       setAnchorEl(null);
-    };
-
-    const handleLogout = () => {
-      UserService.logout()
-        .then(() => {
-          handleCloseMenu();
-          userContext?.setLogged(false);
-          notificationContext?.setNotification({
-            isVisible: true,
-            isSuccessful: true,
-            message: SUCCESSFUL_LOGGOUT_MSG,
-          });
-        })
-        .catch(() => {
-          notificationContext?.setNotification({
-            isVisible: true,
-            isSuccessful: false,
-            message: FAILED_LOGGOUT_MSG,
-          });
-        });
     };
 
     return (
@@ -150,40 +121,25 @@ const Header = () => {
           columnGap={2}
         >
           <Grid item flexGrow={1}>
-            <SearchEbooksByPhrase/>
+            <SearchEbooksByPhrase />
           </Grid>
-          <IconButton onClick={handleClick}>
-            <MenuIcon fontSize="large" style={{ color: "white" }} />
-          </IconButton>
-          <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-            {!isUserLogged
-              ? [
-                  <MenuItem key={1} onClick={() => navigate("/register")}>
-                    Zarejestruj
-                  </MenuItem>,
-                  <MenuItem key={2} onClick={() => navigate("/login")}>
-                    Zaloguj się
-                  </MenuItem>,
-                ]
-              : [
-                  ...[
-                    accountMenuLinks.map((link: LinkProps, index: number) => (
-                      <MenuItem
-                        key={index}
-                        onClick={() => {
-                          handleCloseMenu();
-                          navigate(`/account-settings/${link.url}`);
-                        }}
-                      >
-                        {link.title}
-                      </MenuItem>
-                    )),
-                    <MenuItem key={"l"} onClick={handleLogout}>
-                      Wyloguj
-                    </MenuItem>,
-                  ],
-                ]}
-          </Menu>
+          {isUserLogged ? (
+            <AccountMenu />
+          ) : (
+            <React.Fragment>
+              <IconButton onClick={handleClick}>
+                <MenuIcon fontSize="large" style={{ color: "white" }} />
+              </IconButton>
+              <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+                <MenuItem key={1} onClick={() => navigate("/register")}>
+                  Zarejestruj
+                </MenuItem>
+                <MenuItem key={2} onClick={() => navigate("/login")}>
+                  Zaloguj się
+                </MenuItem>
+              </Menu>
+            </React.Fragment>
+          )}
         </Grid>
       </Box>
     );

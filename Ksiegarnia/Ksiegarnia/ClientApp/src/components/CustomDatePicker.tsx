@@ -7,11 +7,12 @@
   Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import RedAsterisk from "./RedAsterisk";
 import { Dayjs } from "dayjs";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import React from "react";
+import 'dayjs/locale/pl';
 
 const CustomDatePicker = (props: {
   label: string;
@@ -38,20 +39,25 @@ const CustomDatePicker = (props: {
       </Grid>
       <Grid item xs={props.formSize ? props.formSize : 6}>
         <FormControl fullWidth>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="pl"
+          >
             <DatePicker
               {...props.settings}
               fullWidth
               value={props.value === undefined ? null : dayjs(props.value)}
               onChange={(newValue: Dayjs | null) => {
-                if(newValue){
-                    props.onChange(newValue.toDate());
+                if (newValue) {
+                  props.onChange(newValue.toDate());
                 }
               }}
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  error={props.errorMessage != undefined && props.errorMessage !== ""}
+                  error={
+                    props.errorMessage != undefined && props.errorMessage !== ""
+                  }
                   color="secondary"
                 />
               )}
