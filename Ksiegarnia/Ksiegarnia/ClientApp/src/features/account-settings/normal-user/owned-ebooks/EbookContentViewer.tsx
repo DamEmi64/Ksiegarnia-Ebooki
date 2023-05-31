@@ -1,8 +1,8 @@
 ﻿import { useEffect, useState } from "react";
-import EbookService from "../../../services/EbookService";
+import EbookService from "../../../../services/EbookService";
 import { useParams } from "react-router-dom";
 import { Dialog } from "@mui/material";
-import Loading from "../../../pages/Loading";
+import Loading from "../../../../pages/Loading";
 import React from "react";
 
 const EbookContentViewer = () => {

@@ -5,6 +5,15 @@ import { Currency } from "../models/api/currency";
 class TransactionService {
   private api = "https://localhost:7270/Transactions";
 
+  getUserStats = (userId: string) => {
+    return axios.get(`${this.api}/${userId}/summary`, {
+      params: {
+        page: 1,
+        pageSize: 1
+      }
+    })
+  }
+
   getUserTransactions = (userId: string, page?: number, pageSize?: number) => {
     return axios.get(this.api, {
       params: {

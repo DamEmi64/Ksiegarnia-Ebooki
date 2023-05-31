@@ -1,19 +1,19 @@
 ﻿import { useNavigate, useParams } from "react-router-dom";
-import CategoriesContent from "../../../layouts/CategoriesContent";
-import Genre from "../../../models/api/genre";
+import CategoriesContent from "../../../../../layouts/CategoriesContent";
+import Genre from "../../../../../models/api/genre";
 import React, { useContext, useEffect, useState } from "react";
-import EbookService from "../../../services/EbookService";
-import Ebook from "../../../models/api/ebook";
+import EbookService from "../../../../../services/EbookService";
+import Ebook from "../../../../../models/api/ebook";
 import { Grid, Typography, Button, IconButton } from "@mui/material";
-import BasicTextField from "../../../components/BasicTextField";
-import ChoosePicture from "../../../components/ChoosePicture";
-import SelectEbookGenre from "../../../components/SelectEbookGenre";
-import Image from "../../../components/Image";
-import UserDTO from "../../../models/api/userDTO";
+import BasicTextField from "../../../../../components/BasicTextField";
+import ChoosePicture from "../../../../../components/ChoosePicture";
+import SelectEbookGenre from "../../../../../components/SelectEbookGenre";
+import Image from "../../../../../components/Image";
+import UserDTO from "../../../../../models/api/userDTO";
 import { Close, Edit } from "@mui/icons-material";
-import FormService from "../../../services/FormService";
-import Loading from "../../../pages/Loading";
-import { NotificationContext } from "../../../context/NotificationContext";
+import FormService from "../../../../../services/FormService";
+import Loading from "../../../../../pages/Loading";
+import { NotificationContext } from "../../../../../context/NotificationContext";
 
 interface FormProps {
   title: string;

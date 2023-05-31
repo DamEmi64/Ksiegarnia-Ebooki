@@ -4,16 +4,16 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { UserContext } from "../../../context/UserContext";
-import { Search } from "@mui/icons-material";
-import Ebook from "../../../models/api/ebook";
-import EbookService from "../../../services/EbookService";
-import useScrollPosition from "../../../components/useScrollPosition";
-import SelectPageSize from "../../../components/SelectPageSize";
-import Loading from "../../../pages/Loading";
-import UserService from "../../../services/UserService";
-import PagedResponse from "../../../models/api/pagedResponse";
+import SelectPageSize from "../../../../components/SelectPageSize";
+import useScrollPosition from "../../../../components/useScrollPosition";
+import { UserContext } from "../../../../context/UserContext";
+import Ebook from "../../../../models/api/ebook";
+import PagedResponse from "../../../../models/api/pagedResponse";
+import Loading from "../../../../pages/Loading";
+import UserService from "../../../../services/UserService";
 import OwnedEbook from "./OwnedEbook";
+import { Search } from "@mui/icons-material";
+
 
 const OwnedEbooks = () => {
   const userId = useContext(UserContext)?.user.data?.id;
@@ -28,16 +28,6 @@ const OwnedEbooks = () => {
 
   useEffect(() => {
     handleSearch();
-    /*EbookService.search({
-      ebookSearchCriteria: { phrase: searchPhrase },
-      page: page.current,
-      pageSize: actualPageSize.current,
-    }).then((response) => {
-      const data: PagedResponse = response.data;
-      const newEbooks: Ebook[] = data.result;
-      setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
-      numberOfPages.current = data.number_of_pages;
-    });*/
   }, []);
 
   useScrollPosition({
@@ -54,17 +44,6 @@ const OwnedEbooks = () => {
   }
 
   const handleSearch = () => {
-    /*EbookService.search({
-      ebookSearchCriteria: { phrase: searchPhrase },
-      page: page.current,
-      pageSize: actualPageSize.current,
-    }).then((response) => {
-      console.log(response)
-      const data: PagedResponse = response.data;
-      const newEbooks: Ebook[] = data.result;
-      setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
-      numberOfPages.current = data.number_of_pages;
-    });*/
     UserService.getOwnedEbooks({
       userId: userId,
       phrase: searchPhrase,
@@ -97,17 +76,6 @@ const OwnedEbooks = () => {
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages;
     });
-    /*
-    EbookService.search({
-      ebookSearchCriteria: { phrase: searchPhrase },
-      page: page.current,
-      pageSize: actualPageSize.current,
-    }).then((response) => {
-      const data: PagedResponse = response.data;
-      const newEbooks: Ebook[] = data.result;
-      setEbooks(newEbooks);
-      numberOfPages.current = data.number_of_pages;
-    });*/
   };
 
   const handleSelectPageSize = (newPageSize: number) => {

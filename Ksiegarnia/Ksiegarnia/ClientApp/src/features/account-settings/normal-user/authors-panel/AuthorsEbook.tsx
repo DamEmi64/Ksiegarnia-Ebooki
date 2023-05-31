@@ -1,13 +1,14 @@
 ﻿import { Button, Grid, Typography } from "@mui/material";
-import Ebook from "../../../models/api/ebook";
+import Ebook from "../../../../models/api/ebook";
 import React, { useContext, useEffect, useState } from "react";
-import Rate from "../../../components/Rate";
+import Rate from "../../../../components/Rate";
 import { useNavigate } from "react-router-dom";
-import Image from "../../../components/Image";
-import ConfirmationDialog from "../../../components/ConfirmationDialog";
-import EbookService from "../../../services/EbookService";
-import { NotificationContext } from "../../../context/NotificationContext";
-import DistinctEbook from "../../distinct-ebooks/DistinctEbook";
+import Image from "../../../../components/Image";
+import ConfirmationDialog from "../../../../components/ConfirmationDialog";
+import EbookService from "../../../../services/EbookService";
+import { NotificationContext } from "../../../../context/NotificationContext";
+import DistinctEbook from "./manage-ebook/DistinctEbook";
+import PromoteEbook from "./manage-ebook/PromoteEbook";
 
 const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
   const [ebook, setEbook] = useState<Ebook>(props.ebook);
@@ -69,9 +70,9 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
             </Typography>
           </Grid>
           <Grid item container justifyContent="center" columnGap={1}>
-            <Typography variant="h6">Przychód:</Typography>
+            <Typography variant="h6">Cena:</Typography>
             <Typography variant="h6" fontWeight="bold">
-              200 zł
+              {ebook.prize} zł
             </Typography>
           </Grid>
           <Grid item container justifyContent="center">
@@ -86,6 +87,9 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
             >
               Edytuj
             </Button>
+          </Grid>
+          <Grid item xs={6} container justifyContent="center">
+            <PromoteEbook ebookId={ebook.id} ebookPrize={ebook.prize}/>
           </Grid>
           <Grid item xs={6} container justifyContent="center">
             <DistinctEbook ebookId={ebook.id}/>

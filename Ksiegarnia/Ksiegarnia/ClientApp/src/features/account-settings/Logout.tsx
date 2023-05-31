@@ -29,7 +29,7 @@ const Logout = () => {
           message: FAILED_LOGGOUT_MSG,
         });
       });
-  });
+  }, []);
 
   return <Navigate to="/" />;
 };
