@@ -31,6 +31,7 @@ const initErrors: FormProps = {
 const EditAccountDetails = (props: {
   setIsEditMode: (isEditMode: boolean) => void;
 }) => {
+  const SUCCESSFULY_SEND_EMAIL_CHANGE_TOKEN_MESSAGE = "Wysłano token do zmiany adresu e-mail";
   const SUCCESSFULY_CHANGED_DATA_MESSAGE = "Zapisano dane";
   const TOO_FREQUENTLY_PASSWORD_CHANGE = "Zbyt częsta zmiana hasła";
   const INVALID_PASSWORD_MESSAGE = "Wprowadzono niepoprawne hasło";
@@ -94,7 +95,16 @@ const EditAccountDetails = (props: {
 
     if(form.email !== user.email){
       setOpenSaveEmail(true)
-      UserService.getEmailUpdateToken(user.id, form.email);
+      UserService.getEmailUpdateToken(user.id, form.email)
+      .then((response) => {
+        console.log(response)
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: SUCCESSFULY_SEND_EMAIL_CHANGE_TOKEN_MESSAGE,
+        });
+      })
+
       return;
     }
 

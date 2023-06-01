@@ -6,7 +6,7 @@ import React, { useContext } from "react";
 import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
 import { UserContext } from "../../context/UserContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { RelativeRoutingType, useLocation, useNavigate } from "react-router-dom";
 import TransactionService from "../../services/TransactionService";
 import Loading from "../../pages/Loading";
 import { NotificationContext } from "../../context/NotificationContext";
@@ -137,7 +137,9 @@ const Basket = () => {
 
     TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
       .then((response) => {
-        console.log(response.data);
+        const paypalRedirect: string = response.data
+        console.log(paypalRedirect);
+        window.location.href = paypalRedirect;
       })
       .catch((error) => {
         console.log(error);
