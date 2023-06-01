@@ -196,8 +196,11 @@ namespace Application.Controllers
             {
                 StartDate = distinction.StartDate,
                 HowLong = distinction.HowLong,
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                Book = book
             };
+
+            await _bookRepository.AddDistinction(book.Distinction);
 
             await _bookRepository.SaveChanges();
 
@@ -277,6 +280,8 @@ namespace Application.Controllers
                 EndDate = promotion.EndDate ?? default,
                 Prize = promotion.Prize
             };
+
+            await _bookRepository.AddPromotion(book.Promotion);
 
             await _bookRepository.SaveChanges();
 

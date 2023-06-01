@@ -12,6 +12,10 @@ namespace Domain.Repositories
 
         Task<EBook?> Get(Guid id);
 
+        Task AddDistinction(Distinction distinction);
+
+        Task AddPromotion(Promotion promotion);
+
         Task SaveChanges();
 
         Task Verify(Guid id, string data);

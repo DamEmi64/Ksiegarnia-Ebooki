@@ -20,6 +20,16 @@ namespace Infrastructure.Repositories
             await _context.Set<EBook>().AddAsync(book);
         }
 
+        public async Task AddDistinction(Distinction distinction)
+        {
+            await _context.Set<Distinction>().AddAsync(distinction);
+        }
+
+        public async Task AddPromotion(Promotion promotion)
+        {
+            await _context.Set<Promotion>().AddAsync(promotion);
+        }
+
         public async Task<bool> CheckIfExist(byte[] data)
         {
             foreach (var book in await _context.Set<EBook>().ToListAsync())
@@ -49,6 +59,7 @@ namespace Infrastructure.Repositories
             return await _context.Set<EBook>()
                 .Include(x => x.Genre)
                 .Include(x => x.Author)
+                .ThenInclude(x => x.Publications)
                 .Include(x => x.Promotion)
                 .Where(x => (string.IsNullOrEmpty(AuthorName) || x.Author.Nick == AuthorName)
                             && (years == null || years.Count == 0 || years.Contains(x.Date.Year))
@@ -68,7 +79,16 @@ namespace Infrastructure.Repositories
 
         public async Task SaveChanges()
         {
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync(true);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                ex.Entries.Single().Reload();
+                _context.SaveChanges();
+            }
+
         }
 
         public async Task Verify(Guid id, string data)
