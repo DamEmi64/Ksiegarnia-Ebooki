@@ -405,7 +405,7 @@ namespace Application.Controllers
             }
 
             //   var callbackUrl = Url.Action("EmailChange", values: new { id = user.Id, token = token, newEmail = newEmail });
-            _authService.SendEmail($"Change Email by using this token:{user.Token}", user.Email);
+            _authService.SendEmail($"Change Email by using this token:{user.Token}", newEmail);
 
             return HttpStatusCode.OK;
         }
