@@ -244,7 +244,7 @@ namespace Application.Controllers
                 var user = await _userRepository.Register(data, data.Password ?? String.Empty);
                 var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
                 var callbackUrl = Url.Action("EmailConfirm", "Users", new { id = user.Id, token = token }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value);
-                //   if (!_environment.IsDevelopment())
+               if (!_environment.IsDevelopment())
                 {
                     _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
                 }
@@ -405,7 +405,7 @@ namespace Application.Controllers
             }
 
             //   var callbackUrl = Url.Action("EmailChange", values: new { id = user.Id, token = token, newEmail = newEmail });
-            _authService.SendEmail($"Change Email by using this token:{user.Token}", user.Email);
+            _authService.SendEmail($"Change Email by using this token:{user.Token}", newEmail);
 
             return HttpStatusCode.OK;
         }

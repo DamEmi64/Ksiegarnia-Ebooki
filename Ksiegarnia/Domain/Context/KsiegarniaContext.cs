@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Context
 {
+    /// <summary>
+    ///     Context of database
+    /// </summary>
     public class KsiegarniaContext : IdentityDbContext<User,Role,string>
     {
         public KsiegarniaContext(DbContextOptions<KsiegarniaContext> options)
