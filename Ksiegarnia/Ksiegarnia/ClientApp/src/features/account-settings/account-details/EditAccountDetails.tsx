@@ -94,7 +94,7 @@ const EditAccountDetails = (props: {
 
     if(form.email !== user.email){
       setOpenSaveEmail(true)
-      UserService.getEmailUpdateToken(user!.email);
+      UserService.getEmailUpdateToken(user.id, form.email);
       return;
     }
 

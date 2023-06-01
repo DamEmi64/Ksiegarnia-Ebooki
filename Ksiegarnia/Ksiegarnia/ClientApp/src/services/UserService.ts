@@ -115,10 +115,10 @@ class UserService {
     });
   }
 
-  getEmailUpdateToken(email: string) {
-    return axios.get(`${this.api}/${email}/emailToken`, {
+  getEmailUpdateToken(userId: string, newEmail: string) {
+    return axios.get(`${this.api}/${userId}/emailToken`, {
       params: {
-        newEmail: email
+        newEmail: newEmail
       }
     });
   }
