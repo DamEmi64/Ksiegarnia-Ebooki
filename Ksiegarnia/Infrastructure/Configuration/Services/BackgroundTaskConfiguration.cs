@@ -4,8 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Configuration.Services
 {
+    /// <summary>
+    ///     Background Task - configuration
+    /// </summary>
     public static class BackgroundTaskConfiguration
-    {// <summary>
+    {
+        /// <summary>
         ///     Configure ASP.NET Identity
         /// </summary>
         /// <param name="builder"></param>
