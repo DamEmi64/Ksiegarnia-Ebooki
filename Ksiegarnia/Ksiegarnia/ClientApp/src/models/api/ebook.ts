@@ -1,4 +1,6 @@
-﻿import Genre from "./genre";
+﻿import { Distinction } from "./distinction";
+import Genre from "./genre";
+import { Promotion } from "./promotion";
 import UserDTO from "./userDTO";
 
 export default interface Ebook{
@@ -9,5 +11,7 @@ export default interface Ebook{
     pageNumber: number,
     author: UserDTO,
     picture: string,
-    prize: number
+    prize: number,
+    promotion?: Promotion,
+    distinction?: Distinction
 }

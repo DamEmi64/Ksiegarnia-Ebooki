@@ -53,6 +53,7 @@ const AddEditEbookReview = (props: {
   const [errors, setErrors] = useState<FormErrors>(initFormErrors);
 
   const SUCCESSFULLY_CREATED_MESSAGE = "Utworzono recenzję";
+  const NOT_BOUGHT_MESSAGE = "Nie zakupiono tego ebooka"
   const FAILED_CREATED_MESSAGE = "Nie udało się utworzyć recenzji";
   const SUCCESSFULLY_EDITED_MESSAGE = "Zmieniono dane recenzji";
   const FAILED_EDITED_MESSAGE = "Nie udało się zmienić danych recenzji";
@@ -128,11 +129,20 @@ const AddEditEbookReview = (props: {
       })
       .catch((error) => {
         console.log(error)
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: false,
-          message: FAILED_CREATED_MESSAGE,
-        });
+        if(error.response.status == 404){
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: NOT_BOUGHT_MESSAGE,
+          });
+        }
+        else{
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: FAILED_CREATED_MESSAGE,
+          });
+        }
       });
     }
   };

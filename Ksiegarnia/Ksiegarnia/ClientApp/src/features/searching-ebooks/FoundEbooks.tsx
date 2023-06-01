@@ -68,6 +68,7 @@ const FoundEbooks = () => {
     .then((response) => {
       const pagedResponse: PagedResponse = response.data;
       setEbooks(pagedResponse.result);
+      setNumberOfPages(pagedResponse.number_of_pages)
     });
   };
 
@@ -87,6 +88,11 @@ const FoundEbooks = () => {
   }
 
   const CustomPagination = () => {
+
+    if(numberOfPages < 2){
+      return <></>
+    }
+
     return (
       <Stack alignItems="center">
         <Pagination
@@ -117,7 +123,7 @@ const FoundEbooks = () => {
           />
         </Grid>
       </Grid>
-      {numberOfPages > 0 && <CustomPagination />}
+      <CustomPagination/>
       <Grid
         item
         container
@@ -147,7 +153,7 @@ const FoundEbooks = () => {
           </Grid>
         ))}
       </Grid>
-      {numberOfPages > 0 && <CustomPagination />}
+      <CustomPagination/>
     </Grid>
   );
 };

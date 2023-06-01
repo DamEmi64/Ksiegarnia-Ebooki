@@ -220,19 +220,6 @@ const PremiumAccount = () => {
           <BenefitInfo benefit="Nieograniczona pojemność na ebooka" />
         </Grid>
       </Grid>
-      <Grid item container justifyContent="center" marginTop={2}>
-        <Grid item xs={12} xl={10} container justifyContent="center" rowGap={2}>
-          <Typography variant="h4" marginBottom={4}>
-            Historia zakupu premium:
-          </Typography>
-          {premiumHistories.map((premiumHistory: PremiumHistory) => (
-            <PremiumAccountOrder
-              key={premiumHistory.id}
-              premiumHistory={premiumHistory}
-            />
-          ))}
-        </Grid>
-      </Grid>
       <BuyPremiumDialog
         open={isVisibleBuyPremiumDialog}
         handleAccept={handleBuyPremium}

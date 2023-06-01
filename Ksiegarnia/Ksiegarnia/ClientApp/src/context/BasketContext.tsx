@@ -1,5 +1,6 @@
 ﻿import React, { useEffect, useState } from "react";
 import Ebook from "../models/api/ebook";
+import { UserContext } from "./UserContext";
 
 export interface BasketProps {
   ebooks: Ebook[];
@@ -14,7 +15,7 @@ const initialBasket: BasketProps = {
 export interface BasketContextType {
   basket: BasketProps;
   addEbook: (ebook: Ebook) => void;
-  removeEbook: (ebookId: string, price: number) => void;
+  removeEbook: (toRemoveEbook: Ebook) => void;
   containsEbook: (ebookId: string) => void;
   clear: () => void;
 }
@@ -34,9 +35,27 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
     }
   });
 
+  const isUserPremium = React.useContext(UserContext)?.user.isPremium
+
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket));
   }, [basket]);
+
+  const getEbookPrice = (ebook: Ebook) => {
+    if(!ebook.promotion){
+      return ebook.prize
+    }
+      
+    if(ebook.promotion?.isPremiumOnly && isUserPremium){
+      return ebook.promotion.premiumPrize
+    }
+    
+    if(ebook.promotion.prize != 0){
+      return ebook.promotion.prize
+    }
+
+    return ebook.prize
+  }
 
   const addEbook = (newEbook: Ebook) => {
     if (
@@ -47,18 +66,23 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
       return;
     }
 
+    const newEbookPrice = getEbookPrice(newEbook)
+
     setBasket({
       ebooks: [...basket.ebooks, newEbook],
-      totalPrice: +(basket.totalPrice + newEbook.prize).toFixed(2),
+      totalPrice: +(basket.totalPrice + newEbookPrice).toFixed(2),
     });
   };
 
-  const removeEbook = (toRemoveEbookId: string, price: number) => {
+  const removeEbook = (toRemoveEbook: Ebook) => {
+
+    const toRemoveEbookPrice = getEbookPrice(toRemoveEbook)
+
     setBasket({
       ebooks: basket.ebooks.filter(
-        (ebook: Ebook) => ebook.id !== toRemoveEbookId
+        (ebook: Ebook) => ebook.id !== toRemoveEbook.id
       ),
-      totalPrice: +(basket.totalPrice - price).toFixed(2),
+      totalPrice: +(basket.totalPrice - toRemoveEbookPrice).toFixed(2),
     });
   };
 

@@ -2,6 +2,8 @@
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
 import Genre from "../models/api/genre";
 import UserDTO from "../models/api/userDTO";
+import { Promotion } from "../models/api/promotion";
+import { Distinction } from "../models/api/distinction";
 
 export interface SearchEbookProps {
   ebookSearchCriteria?: EbookSearchCriteria;
@@ -29,19 +31,6 @@ export interface UpdateEbookProps {
   author: UserDTO;
   picture: string;
   prize: number;
-}
-
-export interface CreateDistinction {
-  startDate: string;
-  howLong: number;
-}
-
-export interface CreatePromotion {
-  startDate: string,
-  endDate: string,
-  prize: number,
-  premiumPrize: number,
-  isPremiumOnly: boolean
 }
 
 class EbookService {
@@ -91,12 +80,16 @@ class EbookService {
     return axios.put(`${this.api}/${ebookId}`, updateEbookProps);
   }
 
-  distinct(ebookId: string, createDistinction: CreateDistinction){
-    return axios.post(`${this.api}/${ebookId}/distinct`, createDistinction)
+  distinct(ebookId: string, distinction: Distinction){
+    return axios.post(`${this.api}/${ebookId}/distinct`, distinction)
   }
 
-  promote(ebookId: string, createPromotion: CreatePromotion){
-    return axios.post(`${this.api}/${ebookId}/promote`, createPromotion)
+  promote(ebookId: string, promotion: Promotion){
+    return axios.post(`${this.api}/${ebookId}/promote`, promotion)
+  }
+
+  deletePromotion(ebookId: string){
+    return axios.post(`${this.api}/${ebookId}/promote`, {})
   }
 
   delete(ebookId: string) {

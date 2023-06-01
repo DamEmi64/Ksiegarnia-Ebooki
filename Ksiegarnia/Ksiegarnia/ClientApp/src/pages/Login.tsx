@@ -7,6 +7,9 @@ import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import ResetPassword from "../features/reset-password/ResetPassword";
+import PremiumService from "../services/PremiumService";
+import PremiumCheck from "../models/api/premiumCheck";
+import UserDTO from "../models/api/userDTO";
 
 interface LoginForm {
   email: string;
@@ -63,18 +66,27 @@ const Login = () => {
 
     UserService.login(form)
       .then((response) => {
-        console.log(response);
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: true,
-          message: LOGGED_SUCCESSFULY_MESSAGE,
-        });
-        userContext?.setAll({
-          logged: true,
-          data: response.data,
-        });
-        setErrors(initForm);
-        navigate(redirectUrl);
+        const userData: UserDTO = response.data
+        console.log(userData);
+
+        PremiumService.checkPremium(userData.id)
+        .then((premiumResponse) => {
+          const premiumData: PremiumCheck = premiumResponse.data
+          console.log(premiumData);
+
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: LOGGED_SUCCESSFULY_MESSAGE,
+          });
+          userContext?.setAll({
+            logged: true,
+            data: response.data,
+            isPremium: premiumData.isActive
+          });
+          setErrors(initForm);
+          navigate(redirectUrl);
+        })
       })
       .catch((error) => {
         notificationContext?.setNotification({
