@@ -125,7 +125,7 @@ namespace Infrastructure.Services.Paypal
                     currency = transaction.Currency.ToString(),
                     quantity = "1",
                     sku = "asd",
-                    price = prize.ToString(),
+                    price = Math.Round(prize,2).ToString(CultureInfo.InvariantCulture),
                 });
 
             }
@@ -139,7 +139,7 @@ namespace Infrastructure.Services.Paypal
             var amount = new Amount()
             {
                 currency = transaction.Currency.ToString(),
-                total = currency.ToString()
+                total = Math.Round(currency, 2).ToString(CultureInfo.InvariantCulture)
             };
 
             var transactionPaypal = new List<Transaction>();
@@ -168,8 +168,6 @@ namespace Infrastructure.Services.Paypal
         /// <param name="apiContext">api context</param>
         /// <param name="redirectUri">redirect uri</param>
         /// <param name="cancelUri">cancel uri</param>
-        /// <param name="transaction">Transaction</param>
-        /// <param name="commission">commision where 10 % is 0.1</param>
         /// <returns></returns>
         public async Task<Payment> CreatePaymentForUser(APIContext apiContext, string redirectUri, string cancelUri, BookDto book, Domain.Enums.Currency currencyEnum)
         {
@@ -204,7 +202,7 @@ namespace Infrastructure.Services.Paypal
             var amount = new Amount()
             {
                 currency = currencyEnum.ToString(),
-                total = currency.ToString(CultureInfo.InvariantCulture)
+                total = Math.Round(currency, 2).ToString(CultureInfo.InvariantCulture)
             };
 
             var transactionPaypal = new List<Transaction>();

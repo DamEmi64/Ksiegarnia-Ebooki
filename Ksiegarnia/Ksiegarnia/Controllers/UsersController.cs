@@ -397,7 +397,7 @@ namespace Application.Controllers
         [HttpGet("{id}/emailToken")]
         public async Task<HttpStatusCode> SendEmailToken(string id, [FromQuery] string newEmail)
         {
-            var user = await _userRepository.GeneratePasswordToken(id);
+            var user = await _userRepository.ChangeEmailToken(id, newEmail);
 
             if (user == null)
             {
