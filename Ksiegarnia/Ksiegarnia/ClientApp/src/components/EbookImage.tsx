@@ -1,5 +1,6 @@
 ﻿import { Distinction } from "../models/api/distinction";
 import Image from "./Image";
+import React from "react";
 
 const EbookImage = (props: {
   src: string;

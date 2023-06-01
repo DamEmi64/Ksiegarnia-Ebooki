@@ -66,7 +66,7 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
       return;
     }
 
-    let newEbookPrice = getEbookPrice(newEbook)
+    const newEbookPrice = getEbookPrice(newEbook)
 
     setBasket({
       ebooks: [...basket.ebooks, newEbook],
@@ -76,7 +76,7 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
 
   const removeEbook = (toRemoveEbook: Ebook) => {
 
-    let toRemoveEbookPrice = getEbookPrice(toRemoveEbook)
+    const toRemoveEbookPrice = getEbookPrice(toRemoveEbook)
 
     setBasket({
       ebooks: basket.ebooks.filter(
