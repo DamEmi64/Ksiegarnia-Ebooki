@@ -16,6 +16,8 @@ import { UserContext } from "../../context/UserContext";
 import EbookGrades from "./EbookGrades";
 import EbooksReviews from "./EbooksReviews";
 import { EbookSortOptions } from "../../models/ebookSortOptions";
+import EbookPrice from "../../components/EbookPrice";
+import EbookImage from "../../components/EbookImage";
 
 const Data = (props: { label: string; value: string | React.ReactNode }) => {
   return (
@@ -103,7 +105,7 @@ const EbookDetails = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Image
+            <EbookImage
               alt={ebook.title}
               src={ebook.picture}
               style={{ maxWidth: "100%", width: "auto", height: "100%" }}
@@ -144,7 +146,9 @@ const EbookDetails = () => {
             marginBottom={2}
           >
             <Grid item xs={6} container alignItems="end">
-              <Typography variant="h4">{ebook.prize} zł</Typography>
+              <Typography variant="h4">
+                <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
+              </Typography>
             </Grid>
             {checkShowAddToCart() && (
               <Button
@@ -157,8 +161,8 @@ const EbookDetails = () => {
           </Grid>
         </Grid>
         <BigData label="Opis" value={ebook.description} />
-        <BigData label="Oceny" value={<EbookGrades/>} />
-        <EbooksReviews ebook={ebook}/>
+        <BigData label="Oceny" value={<EbookGrades />} />
+        <EbooksReviews ebook={ebook} />
         <EbooksSlider title="Polecane" sort={EbookSortOptions.BestSeller} />
       </Grid>
     </CategoriesContent>

@@ -4,6 +4,7 @@ import UserDTO from "../models/api/userDTO";
 export interface UserProps {
   logged: boolean;
   data?: UserDTO;
+  isPremium: boolean;
 }
 
 export interface UserContextType {
@@ -28,6 +29,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     else {
       return {
         logged: false,
+        isPremium: false
       };
     }
   });
@@ -38,7 +40,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
 
   const setLogged = (logged: boolean) => {
     if(!logged){
-      setUser({logged: logged });
+      setUser({logged: logged, isPremium: false });
     }
     else{
       setUser({...user, logged: logged})

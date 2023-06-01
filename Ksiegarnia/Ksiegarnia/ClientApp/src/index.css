@@ -93,3 +93,8 @@ img{
 .promotion:hover{
   background-color: rgb(2, 90, 90) !important;
 }
+
+.distincted-ebook{
+  border: 4px solid gold !important;
+  border-color: gold;
+}

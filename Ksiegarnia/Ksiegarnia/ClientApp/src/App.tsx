@@ -40,6 +40,7 @@ import Forbidden from "./pages/Forbidden";
 import Logout from "./features/account-settings/Logout";
 
 axios.defaults.withCredentials = true;
+axios.defaults.headers['Content-Type'] = "application/json"
 
 const theme = createTheme(
   {

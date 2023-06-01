@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { BasketContext } from "../context/BasketContext";
+import EbookPrice from "./EbookPrice";
+import EbookImage from "./EbookImage";
 
 const BasicEbookView = (props: {
   ebook: Ebook;
@@ -57,7 +59,7 @@ const BasicEbookView = (props: {
       >
         {!props.preventRedirect ? (
           <Link to={`/Ebook/${ebook.id}`} style={{ height: "100%" }}>
-            <Image
+            <EbookImage
               alt={ebook.title}
               src={ebook.picture}
               style={{ maxWidth: "100%", width: "auto", height: "100%" }}
@@ -95,7 +97,7 @@ const BasicEbookView = (props: {
             style={{ color: "white", marginRight: 6 }}
           />
           <Typography variant="h6" display="inline">
-            {ebook.prize.toPrecision(3)} zł
+            <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
           </Typography>
         </Button>
       )}

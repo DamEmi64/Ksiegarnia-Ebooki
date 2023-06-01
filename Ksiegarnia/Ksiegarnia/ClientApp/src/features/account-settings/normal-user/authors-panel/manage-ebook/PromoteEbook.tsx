@@ -12,9 +12,9 @@ import BasicTextField from "../../../../../components/BasicTextField";
 import FormService from "../../../../../services/FormService";
 import CustomDatePicker from "../../../../../components/CustomDatePicker";
 import CustomCheckbox from "../../../../../components/CustomCheckbox";
-import EbookService, {
-  CreatePromotion,
-} from "../../../../../services/EbookService";
+import EbookService from "../../../../../services/EbookService";
+import { Promotion } from "../../../../../models/api/promotion";
+import dayjs, { Dayjs } from "dayjs";
 
 interface FormProps {
   startDate: Date;
@@ -34,7 +34,12 @@ const initErrors: ErrorsProps = {
   premiumPrize: "",
 };
 
-const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
+const PromoteEbook = (props: {
+  ebookId: string;
+  ebookPrize: number;
+  ebookPromotion?: Promotion;
+  update: () => void;
+}) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const [form, setForm] = React.useState<FormProps>({
@@ -56,15 +61,30 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
 
     let passedValidation = true;
 
-    if (form.prize == 0) {
+    if (form.prize <= 0) {
       passedValidation = false;
       newErrors.prize = FormService.requiredMessage;
     }
+    else if(form.prize >= props.ebookPrize){
+      passedValidation = false;
+      newErrors.prize = "Promocja powinna obniżyć cenę";
+    }
 
-    if (form.premiumPrize == 0) {
+    if (form.premiumPrize <= 0) {
       passedValidation = false;
       newErrors.premiumPrize = FormService.requiredMessage;
     }
+    else if(form.prize >= props.ebookPrize){
+      passedValidation = false;
+      newErrors.prize = "Promocja powinna obniżyć cenę";
+    } 
+    else if (form.premiumPrize > form.prize) {
+      passedValidation = false;
+      newErrors.premiumPrize =
+        "Cena dla promocji premium nie może być wyższa niż dla zwykłej promocji";
+    }
+
+    setErrors(newErrors);
 
     return passedValidation;
   };
@@ -74,15 +94,34 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
       return;
     }
 
-    const request: CreatePromotion = {
+    const convertedStartedDate = new Date(form.startDate);
+    convertedStartedDate.setHours(0, 0, 0, 0);
+
+    const convertedEndDate = new Date(form.startDate);
+    convertedEndDate.setHours(23, 59, 59, 99);
+
+    const request: Promotion = {
       ...form,
-      startDate: form.startDate.toISOString(),
-      endDate: form.endDate.toISOString(),
+      startDate: convertedStartedDate.toISOString(),
+      endDate: convertedEndDate.toISOString(),
     };
 
     EbookService.promote(props.ebookId, request)
       .then((response) => {
         console.log(response);
+        setOpen(false);
+        props.update();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const deletePromotion = () => {
+    EbookService.deletePromotion(props.ebookId)
+      .then((response) => {
+        console.log(response);
+        props.update();
       })
       .catch((error) => {
         console.log(error);
@@ -91,14 +130,26 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
 
   return (
     <React.Fragment>
-      <Button
-        fullWidth
-        className="promotion"
-        style={{ borderRadius: 10 }}
-        onClick={() => setOpen(true)}
-      >
-        Ustal promocję
-      </Button>
+      {!(props.ebookPromotion && props.ebookPromotion.prize != 0) ? (
+        <Button
+          fullWidth
+          className="promotion"
+          style={{ borderRadius: 10 }}
+          onClick={() => setOpen(true)}
+        >
+          Ustal promocję
+        </Button>
+      ) : (
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          style={{ borderRadius: 10 }}
+          onClick={deletePromotion}
+        >
+          Usuń promocję
+        </Button>
+      )}
       <Dialog
         fullWidth={true}
         maxWidth="sm"
@@ -125,6 +176,7 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
             <Grid item xs={11} md={8} container rowGap={4}>
               <CustomDatePicker
                 label="Od"
+                settings={{ minDate: dayjs(), maxDate: dayjs(form.endDate) }}
                 value={form.startDate}
                 onChange={(newValue: Date) => {
                   setForm({ ...form, startDate: newValue });
@@ -132,6 +184,7 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
               />
               <CustomDatePicker
                 label="Do"
+                settings={{ minDate: dayjs(form.startDate) }}
                 value={form.endDate}
                 onChange={(newValue: Date) => {
                   setForm({ ...form, endDate: newValue });
@@ -139,7 +192,10 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
               />
               <BasicTextField
                 label="Cena"
-                settings={{ type: "number" }}
+                settings={{
+                  type: "number",
+                  InputProps: { inputProps: { min: props.ebookPrize } },
+                }}
                 value={form.prize.toString()}
                 errorMessage={errors.prize}
                 handleChange={(value: string) => {
@@ -149,7 +205,12 @@ const PromoteEbook = (props: { ebookId: string; ebookPrize: number }) => {
               />
               <BasicTextField
                 label="Cena premium"
-                settings={{ type: "number" }}
+                settings={{
+                  type: "number",
+                  InputProps: {
+                    inputProps: { min: props.ebookPrize, max: form.prize },
+                  },
+                }}
                 value={form.premiumPrize.toString()}
                 errorMessage={errors.premiumPrize}
                 handleChange={(value: string) => {

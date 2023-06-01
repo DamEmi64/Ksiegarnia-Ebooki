@@ -12,8 +12,13 @@ import React from "react";
 import BasicTextField from "../../../../../components/BasicTextField";
 import FormService from "../../../../../services/FormService";
 import EbookService from "../../../../../services/EbookService";
+import { Distinction } from "../../../../../models/api/distinction";
 
-const DistinctEbook = (props: { ebookId: string }) => {
+const DistinctEbook = (props: {
+  ebookId: string;
+  ebookDistinction?: Distinction;
+  update: () => void;
+}) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const [howLong, setHowLong] = React.useState<number>(0);
@@ -43,6 +48,7 @@ const DistinctEbook = (props: { ebookId: string }) => {
     })
       .then((response) => {
         console.log(response);
+        setOpen(false)
       })
       .catch((error) => {
         console.log(error);
@@ -51,15 +57,17 @@ const DistinctEbook = (props: { ebookId: string }) => {
 
   return (
     <React.Fragment>
-      <Button
-        fullWidth
-        className="premium-button"
-        variant="contained"
-        style={{ borderRadius: 10 }}
-        onClick={() => setOpen(true)}
-      >
-        Wyróżnij
-      </Button>
+      {!(props.ebookDistinction && props.ebookDistinction.howLong != 0) && (
+        <Button
+          fullWidth
+          className="premium-button"
+          variant="contained"
+          style={{ borderRadius: 10 }}
+          onClick={() => setOpen(true)}
+        >
+          Wyróżnij
+        </Button>
+      )}
       <Dialog
         fullWidth={true}
         maxWidth="sm"

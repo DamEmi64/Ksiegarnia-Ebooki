@@ -12,6 +12,8 @@ import Loading from "../../pages/Loading";
 import { NotificationContext } from "../../context/NotificationContext";
 import axios, { AxiosResponse } from "axios";
 import EbookService from "../../services/EbookService";
+import EbookPrice from "../../components/EbookPrice";
+import EbookImage from "../../components/EbookImage";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -28,9 +30,25 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
       alignItems="center"
       rowSpacing={4}
     >
-      <Grid item xs={12} lg={9} md={8} container columnGap={3} justifyContent={{xs: "center", sm: "start"}} rowGap={2}>
-        <Grid item xs={5} lg={3} container justifyContent="center" height="195px">
-          <Image
+      <Grid
+        item
+        xs={12}
+        lg={9}
+        md={8}
+        container
+        columnGap={3}
+        justifyContent={{ xs: "center", sm: "start" }}
+        rowGap={2}
+      >
+        <Grid
+          item
+          xs={5}
+          lg={3}
+          container
+          justifyContent="center"
+          height="195px"
+        >
+          <EbookImage
             alt={ebook.title}
             src={ebook.picture}
             style={{ maxWidth: "100%", width: "auto", height: "100%" }}
@@ -59,9 +77,17 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={4} md={3} lg={2} container justifyContent="center" alignItems="center">
+      <Grid
+        item
+        xs={4}
+        md={3}
+        lg={2}
+        container
+        justifyContent="center"
+        alignItems="center"
+      >
         <Typography variant="h4" textAlign="center">
-          {ebook.prize} zł
+          <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
         </Typography>
       </Grid>
       <Grid
@@ -73,7 +99,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
         alignItems="center"
       >
         <IconButton
-          onClick={() => basketContext?.removeEbook(ebook.id, ebook.prize)}
+          onClick={() => basketContext?.removeEbook(ebook)}
         >
           <Delete fontSize="large" htmlColor="black" />
         </IconButton>
@@ -110,12 +136,12 @@ const Basket = () => {
     );
 
     TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
-    .then((response) => {
-      console.log(response.data)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

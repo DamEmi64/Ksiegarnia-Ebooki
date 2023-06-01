@@ -94,17 +94,12 @@ class UserService {
   }
 
   getPasswordResetToken(email: string) {
-    return axios.get(`${this.api}/a/passwordResetToken`, {
-      params: {
-        email,
-      },
-    });
+    return axios.get(`${this.api}/${email}/passwordResetToken`);
   }
 
   resetPassword(resetToken: string, email: string, newPassword: string) {
-    return axios.post(`${this.api}/a/passwordReset`, newPassword, {
+    return axios.post(`${this.api}/${email}/passwordReset`, newPassword, {
       params: {
-        email: email,
         token: resetToken,
       },
       headers: {

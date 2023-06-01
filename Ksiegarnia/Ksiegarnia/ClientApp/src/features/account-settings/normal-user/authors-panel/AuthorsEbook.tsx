@@ -9,16 +9,19 @@ import EbookService from "../../../../services/EbookService";
 import { NotificationContext } from "../../../../context/NotificationContext";
 import DistinctEbook from "./manage-ebook/DistinctEbook";
 import PromoteEbook from "./manage-ebook/PromoteEbook";
+import EbookPrice from "../../../../components/EbookPrice";
+import EbookImage from "../../../../components/EbookImage";
 
-const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
+const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
   const [ebook, setEbook] = useState<Ebook>(props.ebook);
   const [visibleDeleteConfirmation, setVisibleDeleteConfirmation] =
     useState<boolean>(false);
 
   const notificationContext = useContext(NotificationContext);
 
-  const DELETED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie"
-  const DELETED_FAILED_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle"
+  const DELETED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie";
+  const DELETED_FAILED_MESSAGE =
+    "Nie istnieje konto o takim adresie e-mail i/lub haśle";
 
   const navigate = useNavigate();
 
@@ -28,25 +31,35 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
 
   const handleDelete = () => {
     EbookService.delete(ebook.id)
-    .then(() => {
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: true,
-        message: DELETED_SUCCESSFULY_MESSAGE
+      .then(() => {
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: DELETED_SUCCESSFULY_MESSAGE,
+        });
+        props.update();
       })
-      props.update()
-    })
-    .catch(() => {
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: false,
-        message: DELETED_FAILED_MESSAGE
-      })
-    })
+      .catch(() => {
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: false,
+          message: DELETED_FAILED_MESSAGE,
+        });
+      });
   };
 
   return (
-    <Grid key={ebook.id} item xs={12} sm={6} md={4} lg={3} xl={2.4} container justifyContent="center">
+    <Grid
+      key={ebook.id}
+      item
+      xs={12}
+      sm={6}
+      md={4}
+      lg={3}
+      xl={2.4}
+      container
+      justifyContent="center"
+    >
       <Grid item xs={10} className="ebook ebook-rounded">
         <Grid item container direction="column" alignItems="stretch" rowGap={2}>
           <Grid
@@ -58,7 +71,7 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
             alignItems="center"
             onClick={() => navigate(`/Ebook/${ebook.id}`)}
           >
-            <Image
+            <EbookImage
               alt={ebook.title}
               src={ebook.picture}
               style={{ maxWidth: "100%", width: "auto", height: "100%" }}
@@ -72,7 +85,7 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
           <Grid item container justifyContent="center" columnGap={1}>
             <Typography variant="h6">Cena:</Typography>
             <Typography variant="h6" fontWeight="bold">
-              {ebook.prize} zł
+              <EbookPrice price={ebook.prize} promotion={ebook.promotion}/>
             </Typography>
           </Grid>
           <Grid item container justifyContent="center">
@@ -89,10 +102,19 @@ const AuthorsEbook = (props: { ebook: Ebook, update: () => void }) => {
             </Button>
           </Grid>
           <Grid item xs={6} container justifyContent="center">
-            <PromoteEbook ebookId={ebook.id} ebookPrize={ebook.prize}/>
+            <PromoteEbook
+              ebookId={ebook.id}
+              ebookPrize={ebook.prize}
+              ebookPromotion={ebook.promotion}
+              update={props.update}
+            />
           </Grid>
           <Grid item xs={6} container justifyContent="center">
-            <DistinctEbook ebookId={ebook.id}/>
+            <DistinctEbook
+              ebookId={ebook.id}
+              ebookDistinction={ebook.distinction}
+              update={props.update}
+            />
           </Grid>
           <Grid item xs={6} container justifyContent="center">
             <Button

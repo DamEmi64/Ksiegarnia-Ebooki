@@ -5,14 +5,31 @@ import { useSearchParams } from "react-router-dom";
 const FilterPrice = () => {
   const [priceRange, setPriceRange] = useState<number[]>([0, 100]);
 
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const minPriceFromParam = searchParams.get("minPrice");
+  const maxPriceFromParam = searchParams.get("maxPrice");
+
+  React.useEffect(() => {
+    const newPriceRange = [0, 100];
+
+    if (minPriceFromParam) {
+      newPriceRange[0] = +minPriceFromParam;
+    }
+
+    if (maxPriceFromParam) {
+      newPriceRange[1] = +maxPriceFromParam;
+    }
+
+    setPriceRange(newPriceRange);
+  }, []);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
-    const newPriceRange: number[] = newValue as number[]
+    const newPriceRange: number[] = newValue as number[];
     setPriceRange(newPriceRange);
-    searchParams.set("minPrice", newPriceRange[0].toString())
-    searchParams.set("maxPrice", newPriceRange[1].toString())
-    setSearchParams(searchParams)
+    searchParams.set("minPrice", newPriceRange[0].toString());
+    searchParams.set("maxPrice", newPriceRange[1].toString());
+    setSearchParams(searchParams);
   };
 
   return (
@@ -26,9 +43,11 @@ const FilterPrice = () => {
         valueLabelDisplay="auto"
         max={100}
         disableSwap
-        style={{marginLeft: 10, marginRight: 10}}
+        style={{ marginLeft: 10, marginRight: 10 }}
       />
-      <Typography variant="h6" width="100%" textAlign="center">Od {priceRange[0]} zł do {priceRange[1]} zł</Typography>
+      <Typography variant="h6" width="100%" textAlign="center">
+        Od {priceRange[0]} zł do {priceRange[1]} zł
+      </Typography>
     </Grid>
   );
 };
