@@ -18,7 +18,6 @@ import axios, { AxiosResponse } from "axios";
 import EbookService from "../../services/EbookService";
 import EbookPrice from "../../components/EbookPrice";
 import EbookImage from "../../components/EbookImage";
-import PayPal from "../../components/PayPal";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
