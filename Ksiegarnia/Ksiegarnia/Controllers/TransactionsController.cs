@@ -193,8 +193,8 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action("Finish", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
-                var redirect = Url.Action("Finish", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+                var cancel = Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
+                var redirect = Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
@@ -229,8 +229,8 @@ namespace Application.Controllers
             {
                 if (transaction != null)
                 {
-                    var cancel = Url.Action(nameof(FinishSendingCashToUser), values: new { id = id, succeeded = false }) ?? string.Empty;
-                    var redirect = Url.Action(nameof(FinishSendingCashToUser), values: new { id = id, succeeded = true }) ?? string.Empty;
+                    var cancel = Url.Action("FinishToUser", "Transactions", values: new { id = id, succeeded = false }) ?? string.Empty;
+                    var redirect = Url.Action("FinishToUser", "Transactions", values: new { id = id, succeeded = true }) ?? string.Empty;
 
                     var transactionDto = (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
 
