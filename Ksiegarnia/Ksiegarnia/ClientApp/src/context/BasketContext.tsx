@@ -16,7 +16,7 @@ export interface BasketContextType {
   basket: BasketProps;
   addEbook: (ebook: Ebook) => void;
   removeEbook: (toRemoveEbook: Ebook) => void;
-  containsEbook: (ebookId: string) => void;
+  doShouldShowAddToBasket: (ebook: Ebook) => boolean;
   clear: () => void;
 }
 
@@ -35,38 +35,39 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
     }
   });
 
-  const isUserPremium = React.useContext(UserContext)?.user.isPremium
+  const userContext = React.useContext(UserContext);
+  const userId = userContext?.user.data?.id;
+  const isUserPremium = userContext?.user.isPremium;
 
   useEffect(() => {
     localStorage.setItem("basket", JSON.stringify(basket));
   }, [basket]);
 
   const getEbookPrice = (ebook: Ebook) => {
-    if(!ebook.promotion){
-      return ebook.prize
-    }
-      
-    if(ebook.promotion?.isPremiumOnly && isUserPremium){
-      return ebook.promotion.premiumPrize
-    }
-    
-    if(ebook.promotion.prize != 0){
-      return ebook.promotion.prize
+    if (!ebook.promotion) {
+      return ebook.prize;
     }
 
-    return ebook.prize
-  }
+    if (ebook.promotion?.isPremiumOnly && isUserPremium) {
+      return ebook.promotion.premiumPrize;
+    }
+
+    if (ebook.promotion.prize != 0) {
+      return ebook.promotion.prize;
+    }
+
+    return ebook.prize;
+  };
 
   const addEbook = (newEbook: Ebook) => {
     if (
-      basket.ebooks.filter((ebook: Ebook) => (
-        ebook.id === newEbook.id
-      )).length == 1
+      basket.ebooks.filter((ebook: Ebook) => ebook.id === newEbook.id).length ==
+      1
     ) {
       return;
     }
 
-    const newEbookPrice = getEbookPrice(newEbook)
+    const newEbookPrice = getEbookPrice(newEbook);
 
     setBasket({
       ebooks: [...basket.ebooks, newEbook],
@@ -75,8 +76,7 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
   };
 
   const removeEbook = (toRemoveEbook: Ebook) => {
-
-    const toRemoveEbookPrice = getEbookPrice(toRemoveEbook)
+    const toRemoveEbookPrice = getEbookPrice(toRemoveEbook);
 
     setBasket({
       ebooks: basket.ebooks.filter(
@@ -87,16 +87,26 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
   };
 
   const containsEbook = (ebookId: string): boolean => {
-    return basket.ebooks.filter((ebook: Ebook) => ebook.id === ebookId).length == 1 
+    return (
+      basket.ebooks.filter((ebook: Ebook) => ebook.id === ebookId).length == 1
+    );
   };
 
   const clear = () => {
     setBasket(initialBasket);
   };
 
+  const doShouldShowAddToBasket = (ebook: Ebook) => {
+    return !(
+      userId === ebook.author.id ||
+      containsEbook(ebook.id) ||
+      userContext?.containsEbookId(ebook.id)
+    );
+  };
+
   return (
     <BasketContext.Provider
-      value={{ basket, addEbook, removeEbook, containsEbook, clear }}
+      value={{ basket, addEbook, removeEbook, doShouldShowAddToBasket, clear }}
     >
       {props.children}
     </BasketContext.Provider>

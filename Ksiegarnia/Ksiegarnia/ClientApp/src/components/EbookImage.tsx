@@ -1,4 +1,5 @@
-﻿import { Distinction } from "../models/api/distinction";
+﻿import { Typography } from "@mui/material";
+import { Distinction } from "../models/api/distinction";
 import Image from "./Image";
 import React from "react";
 
@@ -11,23 +12,23 @@ const EbookImage = (props: {
   style?: any;
   ebookDistinction?: Distinction;
 }) => {
-  const ebookDistinctionLogic = () => {
-    if (props.ebookDistinction && props.ebookDistinction.howLong != 0) {
-      return "distincted-ebook";
-    }
-
-    return "";
+  const isDistincted = () => {
+    return props.ebookDistinction && props.ebookDistinction.howLong != 0;
   };
 
   return (
-    <Image
-      className={`${props.className} ${ebookDistinctionLogic()}`}
-      alt={props.alt}
-      height={props.height}
-      width={props.width}
-      src={props.src}
-      style={props.style}
-    />
+    <React.Fragment>
+      <Image
+        className={`${props.className ? props.className : ""} ${
+          isDistincted() ? "distincted-ebook" : ""
+        }`}
+        alt={props.alt}
+        height={props.height}
+        width={props.width}
+        src={props.src}
+        style={props.style}
+      />
+    </React.Fragment>
   );
 };
 

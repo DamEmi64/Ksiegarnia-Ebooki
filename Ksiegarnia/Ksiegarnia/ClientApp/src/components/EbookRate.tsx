@@ -2,7 +2,7 @@
 import { Rating } from "@mui/material";
 import React from "react";
 
-const Rate = (props: {
+const EbookRate = (props: {
   value: number;
   editable?: boolean;
   onChange?: (newValue: number) => void;
@@ -19,4 +19,4 @@ const Rate = (props: {
   />
 );
 
-export default Rate;
+export default EbookRate;

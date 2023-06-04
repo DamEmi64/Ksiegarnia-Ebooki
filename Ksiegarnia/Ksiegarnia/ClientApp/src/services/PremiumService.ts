@@ -8,7 +8,7 @@ export interface BuyPremiumRequest {
 }
 
 class PremiumService {
-  private api = "https://localhost:7270/Premium";
+  private api = `${process.env.REACT_APP_API}/Premium`;
 
   buyPremium(request: BuyPremiumRequest) {
     return axios.post(`${this.api}/buy`, request, {

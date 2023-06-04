@@ -1,12 +1,16 @@
 ﻿import { Button, Grid, IconButton, Typography } from "@mui/material";
-import Rate from "../../components/Rate";
+import Rate from "../../components/EbookRate";
 import Ebook from "../../models/api/ebook";
 import Image from "../../components/Image";
 import React, { useContext } from "react";
 import { BasketContext } from "../../context/BasketContext";
 import { Delete } from "@mui/icons-material";
 import { UserContext } from "../../context/UserContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  RelativeRoutingType,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import TransactionService from "../../services/TransactionService";
 import Loading from "../../pages/Loading";
 import { NotificationContext } from "../../context/NotificationContext";
@@ -14,6 +18,7 @@ import axios, { AxiosResponse } from "axios";
 import EbookService from "../../services/EbookService";
 import EbookPrice from "../../components/EbookPrice";
 import EbookImage from "../../components/EbookImage";
+import PayPal from "../../components/PayPal";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -98,9 +103,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
         justifyContent="center"
         alignItems="center"
       >
-        <IconButton
-          onClick={() => basketContext?.removeEbook(ebook)}
-        >
+        <IconButton onClick={() => basketContext?.removeEbook(ebook)}>
           <Delete fontSize="large" htmlColor="black" />
         </IconButton>
       </Grid>
@@ -135,13 +138,47 @@ const Basket = () => {
       (ebook: Ebook) => ebook.id
     );
 
-    TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+      TransactionService.handleTransactionByTokens(userId!, basketEbooksIds)
+        .then((response) => {
+          console.log(response);
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: SUCCESSFULY_SUBMITED_TRANSACTION,
+          });
+          navigate("/account-settings/transactions");
+        })
+        .catch((error) => {
+          console.log(error);
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: NOT_SUBMITED_TRANSACTION,
+          });
+        });
+    } else {
+      TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
+        .then((response) => {
+          const paypalRedirect: string = response.data;
+
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: SUCCESSFULY_SUBMITED_TRANSACTION,
+          });
+
+          window.location.href = paypalRedirect;
+        })
+        .catch((error) => {
+          console.log(error);
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: true,
+            message: NOT_SUBMITED_TRANSACTION,
+          });
+        });
+    }
   };
 
   return (
