@@ -72,6 +72,12 @@ class EbookService {
     return axios.get(`${this.api}/${ebookId}/tokens`)
   }
 
+  getGiftTokensFromEbooksList(ebooksIds: string[]){
+    return axios.all(
+      ebooksIds.map((ebookId: string) => this.getGiftTokens(ebookId))
+    )
+  }
+
   create(createEbookProps: CreateEbookProps) {
     return axios.post(this.api, createEbookProps);
   }

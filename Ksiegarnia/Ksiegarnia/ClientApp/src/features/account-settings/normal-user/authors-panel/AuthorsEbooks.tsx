@@ -13,7 +13,8 @@ import Loading from "../../../../pages/Loading";
 import PagedResponse from "../../../../models/api/pagedResponse";
 
 const AuthorsEbooks = () => {
-  const userId = useContext(UserContext)?.user.data?.id;
+  const userContext = useContext(UserContext)
+  const userId = userContext?.user.data?.id;
 
   const [searchPhrase, setSearchPhrase] = useState<string>("");
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
@@ -77,6 +78,7 @@ const AuthorsEbooks = () => {
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages;
       setNumberOfEbooks(data.all)
+      console.log(newEbooks)
     });
   };
 

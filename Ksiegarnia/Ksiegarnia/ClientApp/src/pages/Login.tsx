@@ -10,6 +10,11 @@ import ResetPassword from "../features/reset-password/ResetPassword";
 import PremiumService from "../services/PremiumService";
 import PremiumCheck from "../models/api/premiumCheck";
 import UserDTO from "../models/api/userDTO";
+import TransactionService from "../services/TransactionService";
+import axios from "axios";
+import Ebook from "../models/api/ebook";
+import Statistics from "../models/api/statistics";
+import { BasketContext } from "../context/BasketContext";
 
 interface LoginForm {
   email: string;
@@ -18,6 +23,7 @@ interface LoginForm {
 
 const Login = () => {
   const userContext = React.useContext(UserContext);
+  const basketContext = React.useContext(BasketContext);
   const notificationContext = useContext(NotificationContext);
 
   const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie";
@@ -66,27 +72,40 @@ const Login = () => {
 
     UserService.login(form)
       .then((response) => {
-        const userData: UserDTO = response.data
+        const userData: UserDTO = response.data;
         console.log(userData);
 
-        PremiumService.checkPremium(userData.id)
-        .then((premiumResponse) => {
-          const premiumData: PremiumCheck = premiumResponse.data
-          console.log(premiumData);
+        axios
+          .all([
+            TransactionService.getUserStats(userData.id),
+            PremiumService.checkPremium(userData.id),
+          ])
+          .then((responses) => {
+            const userTransactionsStats: Statistics = responses[0].data;
+            const premiumData: PremiumCheck = responses[1].data;
 
-          notificationContext?.setNotification({
-            isVisible: true,
-            isSuccessful: true,
-            message: LOGGED_SUCCESSFULY_MESSAGE,
+            const boughtBooksIds: string[] =
+              userTransactionsStats.buyed_books.result.map(
+                (ebook: Ebook) => ebook.id
+              );
+
+            userContext?.setAll({
+              logged: true,
+              data: response.data,
+              isPremium: premiumData.isActive,
+              boughtEbooksIds: boughtBooksIds,
+              numberOfAddedEbooks: 0
+            });
+
+            notificationContext?.setNotification({
+              isVisible: true,
+              isSuccessful: true,
+              message: LOGGED_SUCCESSFULY_MESSAGE,
+            });
+
+            setErrors(initForm);
+            navigate(redirectUrl);
           });
-          userContext?.setAll({
-            logged: true,
-            data: response.data,
-            isPremium: premiumData.isActive
-          });
-          setErrors(initForm);
-          navigate(redirectUrl);
-        })
       })
       .catch((error) => {
         notificationContext?.setNotification({
@@ -152,7 +171,7 @@ const Login = () => {
           >
             Zaloguj się
           </Button>
-          <ResetPassword/>
+          <ResetPassword />
         </Grid>
       </Grid>
     </Grid>

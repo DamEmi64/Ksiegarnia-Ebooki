@@ -8,7 +8,7 @@ import { Button, Grid, Typography } from "@mui/material";
 import CategoriesContent from "../../layouts/CategoriesContent";
 import Image from "../../components/Image";
 import React from "react";
-import Rate from "../../components/Rate";
+import Rate from "../../components/EbookRate";
 import { PictureAsPdf } from "@mui/icons-material";
 import EbooksSlider from "../../components/EbooksSlider";
 import { BasketContext } from "../../context/BasketContext";
@@ -51,8 +51,6 @@ const EbookDetails = () => {
   const ebookId = useParams().id as string;
   const [ebook, setEbook] = useState<Ebook>();
 
-  const userId = useContext(UserContext)?.user.data?.id;
-
   const basketContext = React.useContext(BasketContext);
   const notificationContext = useContext(NotificationContext);
 
@@ -79,18 +77,6 @@ const EbookDetails = () => {
     return <Loading />;
   }
 
-  const checkShowAddToCart = (): boolean => {
-    if (userId === ebook.author.id) {
-      return false;
-    }
-
-    if (basketContext?.containsEbook(ebook.id)) {
-      return false;
-    }
-
-    return true;
-  };
-
   return (
     <CategoriesContent>
       <Grid item container direction="column" rowGap={4} marginTop={2}>
@@ -109,13 +95,14 @@ const EbookDetails = () => {
               alt={ebook.title}
               src={ebook.picture}
               style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+              ebookDistinction={ebook.distinction}
             />
           </Grid>
           <Grid
             item
             xs={12}
             md={7}
-            lg={5}
+            lg={4.8}
             container
             direction="column"
             rowGap={2}
@@ -138,19 +125,19 @@ const EbookDetails = () => {
             item
             xs={12}
             md={8}
-            lg={2}
+            lg={2.2}
             container
             direction={{ md: "column" }}
             justifyContent={{ xs: "space-between", md: "end" }}
             rowGap={2}
             marginBottom={2}
           >
-            <Grid item xs={6} container alignItems="end">
+            <Grid item xs={12} container alignItems="end" justifyContent={{xs: "start", lg: "end"}}>
               <Typography variant="h4">
                 <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
               </Typography>
             </Grid>
-            {checkShowAddToCart() && (
+            {basketContext?.doShouldShowAddToBasket(ebook) && (
               <Button
                 variant="contained"
                 onClick={() => basketContext?.addEbook(ebook)}

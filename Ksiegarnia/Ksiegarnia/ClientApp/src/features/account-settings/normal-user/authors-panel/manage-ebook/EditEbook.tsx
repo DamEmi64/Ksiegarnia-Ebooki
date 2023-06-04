@@ -342,6 +342,9 @@ const EditEbook = () => {
               settings={{
                 multiline: true,
                 rows: 20,
+                inputProps: {
+                  maxLength: 255
+                },
               }}
               isRequired={true}
               errorMessage={errors.description}

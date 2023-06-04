@@ -1,7 +1,7 @@
 ﻿import { Button, Grid, Typography } from "@mui/material";
 import Ebook from "../../../../models/api/ebook";
 import React, { useContext, useEffect, useState } from "react";
-import Rate from "../../../../components/Rate";
+import Rate from "../../../../components/EbookRate";
 import { useNavigate } from "react-router-dom";
 import Image from "../../../../components/Image";
 import ConfirmationDialog from "../../../../components/ConfirmationDialog";
@@ -75,6 +75,7 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
               alt={ebook.title}
               src={ebook.picture}
               style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+              ebookDistinction={ebook.distinction}
             />
           </Grid>
           <Grid item>
@@ -85,7 +86,7 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
           <Grid item container justifyContent="center" columnGap={1}>
             <Typography variant="h6">Cena:</Typography>
             <Typography variant="h6" fontWeight="bold">
-              <EbookPrice price={ebook.prize} promotion={ebook.promotion}/>
+              <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
             </Typography>
           </Grid>
           <Grid item container justifyContent="center">
@@ -109,13 +110,15 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
               update={props.update}
             />
           </Grid>
-          <Grid item xs={6} container justifyContent="center">
-            <DistinctEbook
-              ebookId={ebook.id}
-              ebookDistinction={ebook.distinction}
-              update={props.update}
-            />
-          </Grid>
+          {!(ebook.distinction && ebook.distinction.howLong != 0) && (
+            <Grid item xs={6} container justifyContent="center">
+              <DistinctEbook
+                ebookId={ebook.id}
+                ebookDistinction={ebook.distinction}
+                update={props.update}
+              />
+            </Grid>
+          )}
           <Grid item xs={6} container justifyContent="center">
             <Button
               fullWidth

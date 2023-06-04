@@ -23,33 +23,36 @@ const StatisticData = (props: { title: string; value: string }) => {
   );
 };
 
-interface UserTransactionsStats{
-  numberOfSoldEbooks: number,
-  earnedCash: number,
-  earnedCashPerEbook: number
+interface UserTransactionsStats {
+  numberOfSoldEbooks: number;
+  earnedCash: number;
+  earnedCashPerEbook: number;
 }
 
 const AuthorsStatistics = () => {
-  const userId = React.useContext(UserContext)?.user.data?.id
+  const userContext = React.useContext(UserContext);
+  const userId = userContext?.user.data?.id;
 
   const [stats, setStats] = React.useState<UserTransactionsStats>({
     numberOfSoldEbooks: 0,
     earnedCash: 0,
-    earnedCashPerEbook: 0
-  })
+    earnedCashPerEbook: 0,
+  });
 
   React.useEffect(() => {
-    TransactionService.getUserStats(userId as string)
-    .then((response) => {
-      const rawStatistics: Statistics = response.data
-      const numberOfSoldEbooks = rawStatistics.selled_book.all
+    TransactionService.getUserStats(userId as string).then((response) => {
+      const rawStatistics: Statistics = response.data;
+      const numberOfSoldEbooks = rawStatistics.selled_book.all;
       setStats({
         numberOfSoldEbooks: numberOfSoldEbooks,
         earnedCash: rawStatistics.earned_cash,
-        earnedCashPerEbook: numberOfSoldEbooks == 0 ? numberOfSoldEbooks : rawStatistics.earned_cash / numberOfSoldEbooks
-      })
-    })
-  }, [])
+        earnedCashPerEbook:
+          numberOfSoldEbooks == 0
+            ? numberOfSoldEbooks
+            : rawStatistics.earned_cash / numberOfSoldEbooks,
+      });
+    });
+  }, []);
 
   return (
     <Grid item container direction="column" rowGap={6}>
@@ -78,10 +81,15 @@ const AuthorsStatistics = () => {
             title="Średni przychód na książkę:"
             value={stats?.earnedCashPerEbook.toString() + " zł"}
           />
-          <StatisticData
-            title="Pozostało książek do dodania:"
-            value={(7).toString()}
-          />
+          {!userContext?.user.isPremium && (
+            <StatisticData
+              title="Pozostało książek do dodania:"
+              value={(userContext?.user.numberOfAddedEbooks! < 10
+                ? 10 - userContext?.user.numberOfAddedEbooks!
+                : 0
+              ).toString()}
+            />
+          )}
           <StatisticData
             title="Pozostało darmowych wyróżnień:"
             value={(5).toString()}
