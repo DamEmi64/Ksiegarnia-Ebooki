@@ -4,7 +4,7 @@ import { Currency } from "../models/api/currency";
 import EbookService from "./EbookService";
 
 class TransactionService {
-  private api = "https://localhost:7270/Transactions";
+  private api = `${process.env.REACT_APP_API}/Transactions`;
 
   getUserStats = (userId: string) => {
     return axios.get(`${this.api}/${userId}/summary`, {

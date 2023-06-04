@@ -41,7 +41,7 @@ export interface GetPublishedEbooksProps {
 }
 
 class UserService {
-  private api = "https://localhost:7270/Users";
+  private api = `${process.env.REACT_APP_API}/Users`;
 
   search(phrase: string) {
     return axios.get(`${this.api}/search`, {
@@ -118,8 +118,8 @@ class UserService {
   getEmailUpdateToken(userId: string, newEmail: string) {
     return axios.get(`${this.api}/${userId}/emailToken`, {
       params: {
-        newEmail: newEmail
-      }
+        newEmail: newEmail,
+      },
     });
   }
 

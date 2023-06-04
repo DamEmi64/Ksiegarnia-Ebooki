@@ -34,8 +34,7 @@ export interface UpdateEbookProps {
 }
 
 class EbookService {
-  private host = "https://localhost:7270"
-  private api = `${this.host}/Books`;
+  private api = `${process.env.REACT_APP_API}/Books`;
 
   getById(ebookId: string) {
     return axios.get(`${this.api}/${ebookId}`);
@@ -99,7 +98,7 @@ class EbookService {
   }
 
   delete(ebookId: string) {
-    return axios.delete(`${this.host}/${ebookId}`);
+    return axios.delete(`${this.api}/${ebookId}`);
   }
 }
 

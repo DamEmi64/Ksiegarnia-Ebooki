@@ -84,8 +84,8 @@ const AuthorsStatistics = () => {
           {!userContext?.user.isPremium && (
             <StatisticData
               title="Pozostało książek do dodania:"
-              value={(userContext?.user.numberOfAddedEbooks! < 10
-                ? 10 - userContext?.user.numberOfAddedEbooks!
+              value={(userContext?.user.numberOfAddedEbooks as number < 10
+                ? 10 - (userContext?.user.numberOfAddedEbooks as number)
                 : 0
               ).toString()}
             />
