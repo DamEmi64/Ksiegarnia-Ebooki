@@ -354,7 +354,7 @@ namespace Application.Controllers
 
                 if (string.IsNullOrEmpty(userId))
                 {
-                    result = list.Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().ToList();
+                    result = list.Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().OrderBy(x=>x.Date).ToList();
                 }
             }
 

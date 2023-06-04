@@ -47,6 +47,16 @@ namespace Application.Controllers
         {
             var reviews = await _reviewsRepository.GetReviews(bookId ?? Guid.Empty);
 
+            var grade = Decimal.Zero;
+
+            foreach (var review in reviews)
+            {
+                if (reviews.LastOrDefault(x => x.Reader == review.Reader) == review)
+                {
+                    grade += review.Grade;
+                }
+            }
+
             if (!string.IsNullOrEmpty(authorName))
             {
                 reviews = reviews.Where(x => x.Reader.User.Nick == authorName).ToList();
@@ -76,11 +86,11 @@ namespace Application.Controllers
 
             if (count > pageSize)
             {
-                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, result = bookDtos.GetRange(page * pageSize, pageSize) };
+                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, grade = grade, result = bookDtos.GetRange(page * pageSize, pageSize) };
             }
             else
             {
-                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, result = bookDtos.GetRange(page * pageSize, count) };
+                return new { all = bookDtos.Count, page = page + 1, number_of_pages = bookDtos.Count / pageSize + 1, grade = grade, result = bookDtos.GetRange(page * pageSize, count) };
             }
         }
 
@@ -107,7 +117,7 @@ namespace Application.Controllers
                 throw new ExceptionBase(HttpStatusCode.NotFound, "Missing review body.");
             }
 
-            var reader = await _eBookReaderRepository.Get(reviewDto.Reviewer.Id,reviewDto.Book.Id);
+            var reader = await _eBookReaderRepository.Get(reviewDto.Reviewer.Id, reviewDto.Book.Id);
 
             if (reader == null)
             {
