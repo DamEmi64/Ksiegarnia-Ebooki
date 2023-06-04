@@ -1,6 +1,7 @@
 ﻿using Copyleaks.SDK.V3.API.Models.Callbacks;
 using Domain.DTOs;
 using Domain.Repositories;
+using Infrastructure;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Infrastructure.Services.PlagiatSystem;
@@ -39,6 +40,13 @@ namespace Application.Controllers
         [Route("submit")]
         public async Task<IActionResult> Submit([FromBody] PlagiarismDto content)
         {
+            var uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host, Request.Host.Port ?? -1);
+            if (uriBuilder.Uri.IsDefaultPort)
+            {
+                uriBuilder.Port = -1;
+            }
+
+            ConfigurationConst.CopyLeak.WebHookHost = new Uri(uriBuilder.Uri.AbsoluteUri);
             await _copyLeaksService.Submit(content);
 
             return Ok();
