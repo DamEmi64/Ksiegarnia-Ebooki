@@ -13,7 +13,7 @@ namespace Domain.DTOs
         /// <summary>
         ///     Transaction Date
         /// </summary>
-        public DateTime DateTime { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
         ///     Transaction Currency
@@ -41,7 +41,7 @@ namespace Domain.DTOs
                 Books = transaction.EBookReaders?.GetBooks() ?? Array.Empty<BookDto>(),
                 Buyer = transaction.EBookReaders?.FirstOrDefault()?.User.ToDTO() ?? null,
                 Currency = transaction.Currency,
-                DateTime = transaction.DateTime,
+                Date = transaction.DateTime,
                 Id = transaction.Id
             };
         }

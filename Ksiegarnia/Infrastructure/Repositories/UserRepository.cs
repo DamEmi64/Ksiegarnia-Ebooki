@@ -431,6 +431,20 @@ namespace Infrastructure.Repositories
 
             return Enumerable.Empty<string>();
         }
+
+        public async Task<bool> CheckPassword(string password, string id)
+        {
+            var user = await Get(id);
+
+            if (user != null)
+            {
+                var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+                return result == PasswordVerificationResult.Success;
+            }
+
+            return false;
+        }
     }
 }
 

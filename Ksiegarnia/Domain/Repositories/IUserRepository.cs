@@ -9,6 +9,8 @@ namespace Domain.Repositories
     {
         Task<List<User>> GetUsers();
 
+        Task<bool> CheckPassword(string password, string id);
+
         Task<User> Get(ClaimsPrincipal claimsPrincipal);
 
         Task<User> Get(string id);
