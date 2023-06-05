@@ -1,5 +1,5 @@
 ﻿import { Grid, LinearProgress, Stack, Typography } from "@mui/material";
-import Rate from "../../components/Rate";
+import Rate from "../../components/EbookRate";
 import React from "react";
 
 const stats: number[] = [100, 80, 30, 50, 25];

@@ -1,6 +1,6 @@
 ﻿import { Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { MockReview } from "./EbooksReviews";
-import Rate from "../../components/Rate";
+import Rate from "../../components/EbookRate";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { MoreVert } from "@mui/icons-material";

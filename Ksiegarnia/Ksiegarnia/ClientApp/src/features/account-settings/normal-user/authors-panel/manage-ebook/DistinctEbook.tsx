@@ -8,11 +8,12 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import BasicTextField from "../../../../../components/BasicTextField";
 import FormService from "../../../../../services/FormService";
 import EbookService from "../../../../../services/EbookService";
 import { Distinction } from "../../../../../models/api/distinction";
+import { NotificationContext } from "../../../../../context/NotificationContext";
 
 const DistinctEbook = (props: {
   ebookId: string;
@@ -23,6 +24,10 @@ const DistinctEbook = (props: {
 
   const [howLong, setHowLong] = React.useState<number>(0);
   const [howLongError, setHowLongError] = React.useState<string>("");
+
+  const notificationContext = React.useContext(NotificationContext);
+
+  const SUCCESSFULY_MESSAGE = "Wyróżniono ebooka";
 
   const handleClose = () => {
     setOpen(false);
@@ -49,6 +54,12 @@ const DistinctEbook = (props: {
       .then((response) => {
         console.log(response);
         setOpen(false)
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: SUCCESSFULY_MESSAGE,
+        });
+        props.update();
       })
       .catch((error) => {
         console.log(error);

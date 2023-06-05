@@ -1,7 +1,7 @@
 ﻿import { Button, Grid, Typography } from "@mui/material";
 import Ebook from "../models/api/ebook";
 import Image from "./Image";
-import Rate from "./Rate";
+import Rate from "./EbookRate";
 import { ShoppingCartOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
@@ -17,28 +17,11 @@ const BasicEbookView = (props: {
 }) => {
   const [ebook, setEbook] = React.useState<Ebook>(props.ebook);
 
-  const userId = useContext(UserContext)?.user.data?.id;
   const basketContext = React.useContext(BasketContext);
 
   useEffect(() => {
     setEbook(props.ebook);
   }, [props.ebook]);
-
-  const checkShowAddToCart = (): boolean => {
-    if (!props.showAddToCart) {
-      return false;
-    }
-
-    if (userId === ebook.author.id) {
-      return false;
-    }
-
-    if (basketContext?.containsEbook(ebook.id)) {
-      return false;
-    }
-
-    return true;
-  };
 
   return (
     <Grid
@@ -63,13 +46,15 @@ const BasicEbookView = (props: {
               alt={ebook.title}
               src={ebook.picture}
               style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+              ebookDistinction={ebook.distinction}
             />
           </Link>
         ) : (
-          <Image
+          <EbookImage
             alt={ebook.title}
             src={ebook.picture}
             style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+            ebookDistinction={ebook.distinction}
           />
         )}
       </Grid>
@@ -86,7 +71,7 @@ const BasicEbookView = (props: {
       <Grid item container justifyContent="center">
         <Rate value={5} />
       </Grid>
-      {checkShowAddToCart() && (
+      {(props.showAddToCart && basketContext?.doShouldShowAddToBasket(ebook)) && (
         <Button
           variant="contained"
           color="secondary"

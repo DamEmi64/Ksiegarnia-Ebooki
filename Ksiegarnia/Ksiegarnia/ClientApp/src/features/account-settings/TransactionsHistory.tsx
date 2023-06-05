@@ -15,7 +15,7 @@ import {
 import Ebook from "../../models/api/ebook";
 import EbookService from "../../services/EbookService";
 import Image from "../../components/Image";
-import Rate from "../../components/Rate";
+import Rate from "../../components/EbookRate";
 import { UserContext } from "../../context/UserContext";
 import Loading from "../../pages/Loading";
 import React from "react";
@@ -139,7 +139,7 @@ const TransactionsHistory = () => {
               (transaction: Transaction, index: number) => (
                 <TransactionRow
                   key={transaction.id}
-                  index={index + 1}
+                  index={(page - 1) * pageSize + (index + 1)}
                   transaction={transaction}
                   ebooks={transaction.books}
                 />
@@ -153,7 +153,6 @@ const TransactionsHistory = () => {
           Brak zamówień
         </Typography>
       )}
-      {numberOfPages > 1 && <CustomPagination />}
     </Grid>
   );
 };
@@ -196,7 +195,7 @@ const TransactionRow = (props: {
         >
           <Typography variant="h6">Zamówienie nr. {props.index},</Typography>
           <Typography variant="h6">
-            Łączna kwota: {transactionAmout} zł,
+            Łączna kwota: {transactionAmout.toFixed(2)} zł,
           </Typography>
           <Typography variant="h6">
             Data: {new Date(transaction.dateTime).toLocaleDateString()},
@@ -279,7 +278,7 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
       </Grid>
       <Grid item alignSelf="end">
         <Typography variant="h4" textAlign="center">
-          {ebook.prize} zł
+          {ebook.prize.toFixed(2)} zł
         </Typography>
       </Grid>
     </Grid>
