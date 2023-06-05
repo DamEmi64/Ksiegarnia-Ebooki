@@ -12,6 +12,7 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <UserSecretsId>c7430711-41b9-4254-9e64-3d03d4e5d851</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
