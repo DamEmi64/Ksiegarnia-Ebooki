@@ -95,6 +95,5 @@ img{
 }
 
 .distincted-ebook{
-  border: 4px solid gold !important;
-  border-color: gold;
+  border: 8px solid rgb(245, 222, 88) !important;
 }

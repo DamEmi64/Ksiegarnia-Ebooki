@@ -12,7 +12,7 @@ export interface CreateEditReview {
 
 
 class ReviewService {
-    private api = "https://localhost:7270/Review";
+    private api = `${process.env.REACT_APP_API}/Review`;
 
     getEbookReviews(ebookId: string, page: number, pageSize: number){
         return axios.get(`${this.api}/search`, {

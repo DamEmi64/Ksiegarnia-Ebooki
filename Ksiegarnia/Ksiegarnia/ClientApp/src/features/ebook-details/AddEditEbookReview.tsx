@@ -7,7 +7,7 @@
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import FormService from "../../services/FormService";
-import Rate from "../../components/Rate";
+import Rate from "../../components/EbookRate";
 import { MockReview } from "./EbooksReviews";
 import Ebook from "../../models/api/ebook";
 import ReviewService, { CreateEditReview } from "../../services/ReviewService";

@@ -15,6 +15,7 @@ import CustomCheckbox from "../../../../../components/CustomCheckbox";
 import EbookService from "../../../../../services/EbookService";
 import { Promotion } from "../../../../../models/api/promotion";
 import dayjs, { Dayjs } from "dayjs";
+import { NotificationContext } from "../../../../../context/NotificationContext";
 
 interface FormProps {
   startDate: Date;
@@ -51,6 +52,10 @@ const PromoteEbook = (props: {
   });
 
   const [errors, setErrors] = useState<ErrorsProps>({ ...initErrors });
+
+  const notificationContext = React.useContext(NotificationContext);
+
+  const SUCCESSFULY_MESSAGE = "Utworzono promocję";
 
   const handleClose = () => {
     setOpen(false);
@@ -110,6 +115,11 @@ const PromoteEbook = (props: {
       .then((response) => {
         console.log(response);
         setOpen(false);
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: SUCCESSFULY_MESSAGE,
+        });
         props.update();
       })
       .catch((error) => {

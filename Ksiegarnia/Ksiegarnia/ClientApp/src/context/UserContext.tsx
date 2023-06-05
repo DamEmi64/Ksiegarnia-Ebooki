@@ -5,12 +5,16 @@ export interface UserProps {
   logged: boolean;
   data?: UserDTO;
   isPremium: boolean;
+  boughtEbooksIds: string[];
+  numberOfAddedEbooks: number
 }
 
 export interface UserContextType {
   user: UserProps;
   setLogged: (logged: boolean) => void;
   setUser: (user: UserDTO) => void;
+  containsEbookId: (ebookId: string) => boolean;
+  setNumberOfAddedEbooks: (value: number) => void;
   setAll: (newData: UserProps) => void;
 }
 
@@ -29,7 +33,9 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     else {
       return {
         logged: false,
-        isPremium: false
+        isPremium: false,
+        boughtEbooksIds: [],
+        numberOfAddedEbooks: 0
       };
     }
   });
@@ -40,7 +46,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
 
   const setLogged = (logged: boolean) => {
     if(!logged){
-      setUser({logged: logged, isPremium: false });
+      setUser({logged: logged, isPremium: false, boughtEbooksIds: [], numberOfAddedEbooks: 0 });
     }
     else{
       setUser({...user, logged: logged})
@@ -55,8 +61,19 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     setUser(newData)
   }
 
+  const containsEbookId = (ebookId: string) => {
+    if(!user.boughtEbooksIds){
+      return false;
+    }
+    return user.boughtEbooksIds.includes(ebookId)
+  }
+
+  const setNumberOfAddedEbooks = (value: number) => {
+    setUser({...user, numberOfAddedEbooks: value})
+  }
+
   return (
-    <UserContext.Provider value={{ user, setLogged,  setUser: setNewUser, setAll}}>
+    <UserContext.Provider value={{ user, setLogged,  setUser: setNewUser, setAll, containsEbookId, setNumberOfAddedEbooks}}>
       {props.children}
     </UserContext.Provider>
   );
