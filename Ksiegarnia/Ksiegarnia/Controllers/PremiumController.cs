@@ -71,12 +71,12 @@ namespace Application.Controllers
                     EBookReaders = Enumerable.Empty<EBookReader>(),
                 };
 
-                var cancel = Url.Action("Finish", values: new
+                var cancel = Url.Action("Finish", "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = false
                 }) ?? string.Empty;
-                var redirect = Url.Action("Finish", values: new
+                var redirect = Url.Action("Finish", "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = true
@@ -84,7 +84,7 @@ namespace Application.Controllers
 
                 var transactionDto = transaction.ToDTO();
 
-                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1,false).FirstOrDefault();
+                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1, false).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
                 {
