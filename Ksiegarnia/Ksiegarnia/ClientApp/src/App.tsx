@@ -24,6 +24,7 @@ import Navbar from "./layouts/Navbar";
 import EbookDetails from "./features/ebook-details/EBookDetails";
 import { plPL as corePlPL } from '@mui/material/locale';
 import { plPL } from '@mui/x-date-pickers/locales';
+import { plPL as dataGridPlPL } from '@mui/x-data-grid';
 import EbooksNotifications from "./features/account-settings/admin/EbooksNotifications";
 import UsersManagement from "./features/account-settings/admin/UsersManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -38,6 +39,8 @@ import PremiumAccount from "./features/account-settings/normal-user/premium-acco
 import Notification from "./components/Notification";
 import Forbidden from "./pages/Forbidden";
 import Logout from "./features/account-settings/Logout";
+import UserManagement from "./features/account-settings/admin/UserManagement";
+import EbookNotificationView from "./features/account-settings/admin/EbookNotificationView";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers['Content-Type'] = "application/json"
@@ -70,7 +73,8 @@ const theme = createTheme(
     },
   },
   corePlPL,
-  plPL
+  plPL,
+  dataGridPlPL
 );
 
 const ContextProviders = (props: { children: React.ReactNode }) => {
@@ -129,8 +133,14 @@ function App() {
                 </Route>
                 <Route path="transactions" element={<TransactionsHistory />} />
                 <Route path="premium" element={<PremiumAccount />} />
-                <Route path="users-managment" element={<UsersManagement />} />
-                <Route path="ebooks-notifications" element={<EbooksNotifications />} />
+                <Route path="users-managment" element={<Outlet />} >
+                  <Route index element={<UsersManagement />} />
+                  <Route path=":userId" element={<UserManagement />} />
+                </Route>
+                <Route path="ebooks-notifications" element={<Outlet />} >
+                  <Route index element={<EbooksNotifications />} />
+                  <Route path=":ebookNotificationId" element={<EbookNotificationView />} />
+                </Route>
                 <Route path="logout" element={<Logout />} />
               </Route>
               <Route
