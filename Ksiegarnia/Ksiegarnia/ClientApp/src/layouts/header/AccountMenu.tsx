@@ -38,11 +38,11 @@ export const adminLinks: LinkProps[] = [
   },
   {
     title: "Dane Użytkowników",
-    url: "owned-ebooks",
+    url: "users-managment",
   },
   {
     title: "Przegląd zgłoszeń",
-    url: "owned-ebooks",
+    url: "ebooks-notifications",
   },
   {
     title: "Wyloguj",

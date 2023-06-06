@@ -11,7 +11,7 @@ const AccountSettings = () => {
 
   const [subPath, setSubPath] = useState<string | undefined>("");
 
-  const links: LinkProps[] = normalUserlinks
+  const links: LinkProps[] = adminLinks
 
   useEffect(() => {
     const lastPart = location.pathname.split("/").pop();

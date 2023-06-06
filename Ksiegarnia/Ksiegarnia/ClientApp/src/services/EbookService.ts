@@ -98,7 +98,7 @@ class EbookService {
   }
 
   delete(ebookId: string) {
-    return axios.delete(`${this.api}/${ebookId}`);
+    return axios.delete(`${process.env.REACT_APP_API}/${ebookId}`);
   }
 }
 
