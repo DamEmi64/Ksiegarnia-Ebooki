@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(KsiegarniaContext))]
-    [Migration("20230604191006_zwiekszenie_limitu_description")]
-    partial class zwiekszenie_limitu_description
+    [Migration("20230606165648_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

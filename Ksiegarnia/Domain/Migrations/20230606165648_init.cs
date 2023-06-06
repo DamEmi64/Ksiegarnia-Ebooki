@@ -242,7 +242,7 @@ namespace Domain.Migrations
                     Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Prize = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
                     Content = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1020)", maxLength: 1020, nullable: false),
                     PageNumber = table.Column<int>(type: "int", nullable: false),
                     GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
