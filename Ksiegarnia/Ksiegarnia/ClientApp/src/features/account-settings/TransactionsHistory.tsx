@@ -21,65 +21,6 @@ import Loading from "../../pages/Loading";
 import React from "react";
 import PagedResponse from "../../models/api/pagedResponse";
 
-const mockedTransactions: Transaction[] = [
-  {
-    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    dateTime: "2023-04-13T20:49:54.898Z",
-    books: [
-      {
-        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        title: "string",
-        genre: {
-          id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          name: "string",
-          description: "string",
-        },
-        description: "string",
-        pageNumber: 0,
-        author: {
-          id: "string",
-          nick: "string",
-          firstName: "string",
-          lastName: "string",
-          email: "string",
-          phone: "string",
-          age: 18,
-        },
-        picture: "string",
-        prize: 0,
-      },
-    ],
-  },
-  {
-    id: "3fa85f64-5717-4562-b3fc-2c963f66afa7",
-    dateTime: "2023-04-13T20:49:54.898Z",
-    books: [
-      {
-        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        title: "string",
-        genre: {
-          id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          name: "string",
-          description: "string",
-        },
-        description: "string",
-        pageNumber: 0,
-        author: {
-          id: "string",
-          nick: "string",
-          firstName: "string",
-          lastName: "string",
-          email: "string",
-          phone: "string",
-          age: 18,
-        },
-        picture: "string",
-        prize: 0,
-      },
-    ],
-  },
-];
-
 const TransactionsHistory = () => {
   const userId = useContext(UserContext)?.user.data?.id;
 

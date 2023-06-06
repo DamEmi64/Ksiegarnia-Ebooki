@@ -43,6 +43,10 @@ export interface GetPublishedEbooksProps {
 class UserService {
   private api = `${process.env.REACT_APP_API}/Users`;
 
+  getById(userId: string) {
+    return axios.get(`${this.api}/${userId}`);
+  }
+
   search(phrase: string) {
     return axios.get(`${this.api}/search`, {
       params: {

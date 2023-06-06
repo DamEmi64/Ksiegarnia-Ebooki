@@ -73,7 +73,7 @@ const Login = () => {
     UserService.login(form)
       .then((response) => {
         const userData: UserDTO = response.data;
-        console.log(userData);
+        console.log(response.data);
 
         axios
           .all([
