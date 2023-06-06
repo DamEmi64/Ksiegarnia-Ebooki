@@ -134,7 +134,7 @@ const EbookDetails = () => {
             rowGap={2}
             marginBottom={2}
           >
-            <Grid item xs={12} container alignItems="end" justifyContent={{xs: "start", lg: "end"}}>
+            <Grid item xs={6} container alignItems="end" justifyContent={{xs: "start", lg: "end"}}>
               <Typography variant="h4">
                 <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
               </Typography>
