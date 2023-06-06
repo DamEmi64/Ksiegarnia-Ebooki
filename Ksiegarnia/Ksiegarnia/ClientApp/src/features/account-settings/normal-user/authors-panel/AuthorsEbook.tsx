@@ -19,7 +19,7 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
 
   const notificationContext = useContext(NotificationContext);
 
-  const DELETED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie";
+  const DELETED_SUCCESSFULY_MESSAGE = "Usunięto ebooka";
   const DELETED_FAILED_MESSAGE =
     "Nie istnieje konto o takim adresie e-mail i/lub haśle";
 

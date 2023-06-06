@@ -18,6 +18,7 @@ import EbooksReviews from "./EbooksReviews";
 import { EbookSortOptions } from "../../models/ebookSortOptions";
 import EbookPrice from "../../components/EbookPrice";
 import EbookImage from "../../components/EbookImage";
+import ReportEbook from "./ReportEbook";
 
 const Data = (props: { label: string; value: string | React.ReactNode }) => {
   return (
@@ -107,10 +108,11 @@ const EbookDetails = () => {
             direction="column"
             rowGap={2}
           >
-            <Grid item container alignItems="start" columnGap={4}>
+            <Grid item container alignItems="start" justifyContent="space-between" columnGap={4}>
               <Typography variant="h4" marginBottom={2}>
                 {ebook.title}
               </Typography>
+              <ReportEbook/>
             </Grid>
             <Data
               label="Autor"

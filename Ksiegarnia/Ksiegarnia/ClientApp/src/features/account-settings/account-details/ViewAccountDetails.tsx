@@ -6,14 +6,14 @@ import Loading from "../../../pages/Loading";
 const Data = (props: { label: string; value: string }) => {
   return (
     <React.Fragment>
-      <Grid item xs={12} md={5.5} container justifyContent="space-between">
-        <Grid item>
-          <Typography variant="h6" display="inline" textAlign="end">
+      <Grid item xs={12} lg={5.5} xl={5} container justifyContent="space-between">
+        <Grid item xs={6} container>
+          <Typography variant="h6" display="inline" width="100%" textAlign="start">
             {props.label}
           </Typography>
         </Grid>
-        <Grid item xs={6}>
-          <Typography variant="h6" display="inline" textAlign="end">
+        <Grid item xs={6} container>
+          <Typography variant="h6" display="inline" width="100%" textAlign="end">
             {props.value}
           </Typography>
         </Grid>
@@ -35,6 +35,8 @@ const ViewAccountDetails = (props: {
     <Grid item container justifyContent="center">
       <Grid
         item
+        xs={12}
+        lg={11}
         container
         justifyContent={{ xs: "center", md: "space-between" }}
         rowGap={6}
