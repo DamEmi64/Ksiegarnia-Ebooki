@@ -61,6 +61,7 @@ namespace Infrastructure.Repositories
                 .Include(x => x.Author)
                 .ThenInclude(x => x.Publications)
                 .Include(x => x.Promotion)
+                .Include(x=>x.Readers)
                 .Include(x => x.Distinction)
                 .Where(x => (string.IsNullOrEmpty(AuthorName) || x.Author.Nick == AuthorName)
                             && (years == null || years.Count == 0 || years.Contains(x.Date.Year))

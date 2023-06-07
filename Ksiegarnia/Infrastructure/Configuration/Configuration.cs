@@ -9,8 +9,6 @@ using Infrastructure.Services.PlagiatSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net;
@@ -27,6 +25,7 @@ namespace Infrastructure.Configuration
                                     .AddScoped<IEBookRepository, EbookRepository>()
                                     .AddScoped<IEBookReaderRepository, EBookReaderRepository>()
                                     .AddScoped<IReviewsRepository, ReviewRepository>()
+                                    .AddScoped<INotifyRepository, NotifyRepository>()
                                     .AddScoped<IGenreRepository, GenreRepository>();
             //Services
             webApplicationBuilder.Services.AddScoped<ICopyLeaksService, CopyLeaksService>()

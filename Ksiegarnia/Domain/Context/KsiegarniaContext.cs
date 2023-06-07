@@ -14,7 +14,10 @@ namespace Domain.Context
         public KsiegarniaContext(DbContextOptions<KsiegarniaContext> options)
             : base(options)
         {
-      //     Database.EnsureCreated();
+            if (Database.GetPendingMigrations().Count() > 0)
+            {
+                Database.Migrate();
+            }
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
