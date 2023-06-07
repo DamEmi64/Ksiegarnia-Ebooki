@@ -160,6 +160,7 @@ const Basket = () => {
       TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
         .then((response) => {
           const paypalRedirect: string = response.data;
+          console.log(paypalRedirect)
 
           notificationContext?.setNotification({
             isVisible: true,
@@ -167,7 +168,7 @@ const Basket = () => {
             message: SUCCESSFULY_SUBMITED_TRANSACTION,
           });
 
-          window.location.href = paypalRedirect;
+          //window.location.href = paypalRedirect;
         })
         .catch((error) => {
           console.log(error);
@@ -213,7 +214,7 @@ const Basket = () => {
                 Razem do zapłaty:
               </Typography>
               <Typography variant="h5" display="inline" fontWeight="bold">
-                {basket?.totalPrice.toFixed(2)} zł
+                {` ${basket?.totalPrice.toFixed(2)}`} zł
               </Typography>
             </Grid>
             <Grid item>

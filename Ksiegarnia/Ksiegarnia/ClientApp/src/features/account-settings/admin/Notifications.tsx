@@ -55,7 +55,8 @@ const Notifications = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    AdminService.getAllNotifications().then((response) => {
+    AdminService.getAllNotifications()
+    .then((response) => {
       setEbooksNotifications(response.data);
     });
   }, []);

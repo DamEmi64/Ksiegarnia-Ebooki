@@ -23,6 +23,7 @@ const OwnedEbooks = () => {
   const numberOfPages = useRef<number>(0);
 
   useEffect(() => {
+    console.log("A")
     handleSearch();
   }, []);
 
