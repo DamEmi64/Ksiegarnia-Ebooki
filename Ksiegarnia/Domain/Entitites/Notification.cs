@@ -41,6 +41,6 @@ namespace Domain.Entitites
         /// <summary>
         ///     Object Type
         /// </summary>
-        public Type Type { get; set; } = typeof(Notification);
+        public string Type { get; set; } = nameof(Notification);
     }
 }
