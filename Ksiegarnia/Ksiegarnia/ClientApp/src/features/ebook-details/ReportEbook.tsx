@@ -10,12 +10,23 @@ import {
 import React from "react";
 import BasicTextField from "../../components/BasicTextField";
 import FormService from "../../services/FormService";
+import AdminService, { CreateNotitifaction } from "../../services/AdminService";
+import Notification from "../../models/api/notification";
+import { UserContext } from "../../context/UserContext";
+import UserDTO from "../../models/api/userDTO";
+import { NotificationStatus } from "../../models/api/notificationStatus";
+import { NotificationContext } from "../../context/NotificationContext";
 
-const ReportEbook = () => {
+const ReportEbook = (props: {ebookId: string}) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const [descripton, setDescription] = React.useState<string>("");
   const [descriptionError, setDescriptionError] = React.useState<string>("");
+
+  const userData = React.useContext(UserContext)?.user.data as UserDTO
+  const notificationContext = React.useContext(NotificationContext)
+
+  const SUCCESSFUL_MESSAGE = "Utworzono zgłoszenie"
 
   const handleClose = () => {
     setOpen(false);
@@ -29,6 +40,25 @@ const ReportEbook = () => {
         return;
     }
 
+    const creationDate = new Date().toISOString()
+
+    const request: CreateNotitifaction = {
+      objectId: props.ebookId,
+      user: userData,
+      description: descripton,
+      status: NotificationStatus.Reported,
+      creationDate: creationDate,
+      statusChangeDate: creationDate
+    }
+
+    AdminService.createNotification(request)
+    .then(() => {
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFUL_MESSAGE
+      })
+    })
   };
 
   return (

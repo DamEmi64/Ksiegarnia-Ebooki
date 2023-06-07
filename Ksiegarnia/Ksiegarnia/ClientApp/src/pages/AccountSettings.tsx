@@ -5,23 +5,13 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
 import { adminLinks, normalUserlinks } from "../layouts/header/AccountMenu";
+import { UserContext } from "../context/UserContext";
+import { Role } from "../models/api/role";
 
-const AccountSettings = () => {
-  const location = useLocation();
+const AccountSettings = (props: {title: string, children: React.ReactNode}) => {
 
-  const [subPath, setSubPath] = useState<string | undefined>("");
-
-  const links: LinkProps[] = adminLinks
-
-  useEffect(() => {
-    const lastPart = location.pathname.split("/").pop();
-    const foundSubPageName = links.filter(
-      (path: LinkProps) => path.url === lastPart
-    );
-    setSubPath(
-      foundSubPageName.length == 1 ? foundSubPageName[0].title : links[0].title
-    );
-  }, [location]);
+  const isUserAdmin = React.useContext(UserContext)?.containsRole(Role.Admin);
+  const links: LinkProps[] = !isUserAdmin ? normalUserlinks : adminLinks;
 
   const WideScreenSidePanel = () => {
     return (
@@ -104,12 +94,12 @@ const AccountSettings = () => {
           justifyContent="center"
           alignItems="stretch"
           alignContent="start"
-          rowGap={9}
+          rowGap={8}
         >
-          <Typography variant="h4" textAlign="center">
-            {subPath}
+          <Typography variant="h4" textAlign="center" marginTop={1}>
+            {props.title}
           </Typography>
-          <Outlet />
+          {props.children}
         </Grid>
       </Grid>
       <Grid item xs={1} lg={1.5}></Grid>

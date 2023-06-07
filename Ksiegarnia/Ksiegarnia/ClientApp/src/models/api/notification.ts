@@ -1,12 +1,12 @@
-﻿import { EbookNotificationStatus } from "./ebookNotificationStatus";
+﻿import { NotificationStatus } from "./notificationStatus";
 import UserDTO from "./userDTO";
 
-export default interface EbookNotification {
+export default interface Notification {
     id: string,
     objectId: string,
     description: string,
     user: UserDTO,
-    status: EbookNotificationStatus,
+    status: NotificationStatus,
     creationDate: string,
     statusChangeDate: string
 }
