@@ -17,7 +17,6 @@ const TransactionsHistory = () => {
   const userId = useContext(UserContext)?.user.data?.id;
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [ebooks, setEbooks] = useState<Ebook[]>([]);
 
   const pageSize = 10;
   const [page, setPage] = useState<number>(1);
