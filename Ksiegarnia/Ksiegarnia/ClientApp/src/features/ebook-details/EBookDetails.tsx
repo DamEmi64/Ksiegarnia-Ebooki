@@ -80,7 +80,7 @@ const EbookDetails = () => {
 
   return (
     <CategoriesContent>
-      <Grid item container direction="column" rowGap={4} marginTop={2}>
+      <Grid item container direction="column" rowGap={6} marginTop={2}>
         <Grid item container columnGap={4} rowGap={4}>
           <Grid
             item
@@ -112,7 +112,7 @@ const EbookDetails = () => {
               <Typography variant="h4" marginBottom={2}>
                 {ebook.title}
               </Typography>
-              <ReportEbook/>
+              <ReportEbook ebookId={ebook.id}/>
             </Grid>
             <Data
               label="Autor"
@@ -134,7 +134,7 @@ const EbookDetails = () => {
             rowGap={2}
             marginBottom={2}
           >
-            <Grid item xs={12} container alignItems="end" justifyContent={{xs: "start", lg: "end"}}>
+            <Grid item xs={6} container alignItems="end" justifyContent={{xs: "start", lg: "end"}}>
               <Typography variant="h4">
                 <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
               </Typography>

@@ -74,6 +74,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const handleSearch = () => {
     ReviewService.getEbookReviews(props.ebook.id, page, pageSize).then(
       (response) => {
+        console.log(response.data)
         const pagedResponse: PagedResponse = response.data;
         setReviews(pagedResponse.result);
         setPage(pagedResponse.page);

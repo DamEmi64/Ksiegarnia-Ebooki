@@ -213,7 +213,7 @@ const Basket = () => {
                 Razem do zapłaty:
               </Typography>
               <Typography variant="h5" display="inline" fontWeight="bold">
-                {` ${basket?.totalPrice}`} zł
+                {basket?.totalPrice.toFixed(2)} zł
               </Typography>
             </Grid>
             <Grid item>
