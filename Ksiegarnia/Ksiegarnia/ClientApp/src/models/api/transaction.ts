@@ -4,5 +4,6 @@ export default interface Transaction {
     id: string,
     date: string,
     books: Ebook[],
-    prize?: number
+    prize?: number,
+    type: string
 }

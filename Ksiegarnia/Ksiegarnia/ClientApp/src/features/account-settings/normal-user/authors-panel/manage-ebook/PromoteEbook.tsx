@@ -111,6 +111,8 @@ const PromoteEbook = (props: {
       endDate: convertedEndDate.toISOString(),
     };
 
+    console.log(request)
+
     EbookService.promote(props.ebookId, request)
       .then((response) => {
         console.log(response);
