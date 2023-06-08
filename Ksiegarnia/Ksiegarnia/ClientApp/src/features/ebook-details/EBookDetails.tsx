@@ -183,7 +183,7 @@ const EbookDetails = () => {
               justifyContent={{ xs: "start", lg: "end" }}
             >
               <Typography variant="h4">
-                <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
+                <EbookPrice authorId={ebook.author.id} price={ebook.prize} promotion={ebook.promotion} />
               </Typography>
             </Grid>
             {basketContext?.doShouldShowAddToBasket(ebook) && (

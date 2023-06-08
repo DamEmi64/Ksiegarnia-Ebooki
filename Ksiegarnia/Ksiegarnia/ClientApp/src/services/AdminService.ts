@@ -11,6 +11,7 @@ export interface CreateNotitifaction {
   status: NotificationStatus;
   creationDate: string;
   statusChangeDate: string;
+  type: string;
 }
 
 class AdminService {

@@ -60,7 +60,7 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
           <Grid item container justifyContent="center" columnGap={1}>
             <Typography variant="h6">Cena:</Typography>
             <Typography variant="h6" fontWeight="bold">
-              <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
+              <EbookPrice authorId={ebook.author.id} price={ebook.prize} promotion={ebook.promotion} />
             </Typography>
           </Grid>
           <Grid item container justifyContent="center">

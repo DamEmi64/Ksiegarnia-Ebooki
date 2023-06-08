@@ -91,7 +91,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
         alignItems="center"
       >
         <Typography variant="h4" textAlign="center">
-          <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
+          <EbookPrice authorId={ebook.author.id} price={ebook.prize} promotion={ebook.promotion} />
         </Typography>
       </Grid>
       <Grid

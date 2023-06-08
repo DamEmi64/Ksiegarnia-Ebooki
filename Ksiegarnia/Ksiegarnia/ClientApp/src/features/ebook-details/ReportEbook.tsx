@@ -48,7 +48,8 @@ const ReportEbook = (props: {ebookId: string}) => {
       description: descripton,
       status: NotificationStatus.Reported,
       creationDate: creationDate,
-      statusChangeDate: creationDate
+      statusChangeDate: creationDate,
+      type: "Ebook"
     }
 
     AdminService.createNotification(request)

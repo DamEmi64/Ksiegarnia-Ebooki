@@ -48,12 +48,15 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
       return ebook.prize;
     }
 
-    if (ebook.promotion?.isPremiumOnly && isUserPremium) {
-      return ebook.promotion.premiumPrize;
+    if (ebook.promotion?.isPremiumOnly) {
+      if(isUserPremium){
+        return ebook.promotion.premiumPrize;
+      }
     }
-
-    if (ebook.promotion.prize != 0) {
-      return ebook.promotion.prize;
+    else{
+      if (ebook.promotion.prize != 0) {
+        return ebook.promotion.prize;
+      }
     }
 
     return ebook.prize;
