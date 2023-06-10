@@ -47,6 +47,7 @@ namespace Infrastructure
             Paypal = builder.Configuration.GetSection("Paypal").Get<PaypalStruct>();
             FreeStorage = builder.Configuration.GetValue<int>("FreeStorage");
             FreeTimeDistinct = builder.Configuration.GetValue<int>("FreeTimeDistinct");
+            PrizeForDistinct = builder.Configuration.GetValue<int>("PrizeForDistinct");
         }
     }
 }
