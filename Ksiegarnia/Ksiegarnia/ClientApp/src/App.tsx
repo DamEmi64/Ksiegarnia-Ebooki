@@ -22,10 +22,10 @@ import axios from "axios";
 import Content from "./layouts/Content";
 import Navbar from "./layouts/Navbar";
 import EbookDetails from "./features/ebook-details/EBookDetails";
-import { plPL as corePlPL } from '@mui/material/locale';
-import { plPL } from '@mui/x-date-pickers/locales';
-import { plPL as dataGridPlPL } from '@mui/x-data-grid';
-import EbooksNotifications from "./features/account-settings/admin/EbooksNotifications";
+import { plPL as corePlPL } from "@mui/material/locale";
+import { plPL } from "@mui/x-date-pickers/locales";
+import { plPL as dataGridPlPL } from "@mui/x-data-grid";
+import Notifications from "./features/account-settings/admin/Notifications";
 import UsersManagement from "./features/account-settings/admin/UsersManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotificationProvider from "./context/NotificationContext";
@@ -40,10 +40,10 @@ import Notification from "./components/Notification";
 import Forbidden from "./pages/Forbidden";
 import Logout from "./features/account-settings/Logout";
 import UserManagement from "./features/account-settings/admin/UserManagement";
-import EbookNotificationView from "./features/account-settings/admin/EbookNotificationView";
+import NotificationView from "./features/account-settings/admin/NotificationView";
 
 axios.defaults.withCredentials = true;
-axios.defaults.headers['Content-Type'] = "application/json"
+axios.defaults.headers["Content-Type"] = "application/json";
 
 const theme = createTheme(
   {
@@ -120,7 +120,7 @@ function App() {
                 path="/account-settings"
                 element={
                   <ProtectedRoute requiresLogged={true}>
-                    <AccountSettings />
+                    <Outlet />
                   </ProtectedRoute>
                 }
               >
@@ -133,13 +133,30 @@ function App() {
                 </Route>
                 <Route path="transactions" element={<TransactionsHistory />} />
                 <Route path="premium" element={<PremiumAccount />} />
-                <Route path="users-managment" element={<Outlet />} >
+                <Route
+                  path="users-managment"
+                  element={
+                    <ProtectedRoute requiresLogged={true} requiresAdmin={true}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  }
+                >
                   <Route index element={<UsersManagement />} />
                   <Route path=":userId" element={<UserManagement />} />
                 </Route>
-                <Route path="ebooks-notifications" element={<Outlet />} >
-                  <Route index element={<EbooksNotifications />} />
-                  <Route path=":ebookNotificationId" element={<EbookNotificationView />} />
+                <Route
+                  path="notifications"
+                  element={
+                    <ProtectedRoute requiresLogged={true} requiresAdmin={true}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Notifications />} />
+                  <Route
+                    path=":notificationId"
+                    element={<NotificationView />}
+                  />
                 </Route>
                 <Route path="logout" element={<Logout />} />
               </Route>
@@ -168,6 +185,14 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Content>
+          <ins
+            className="adsbygoogle"
+            data-ad-client="ca-pub-7774799498286441"
+            data-ad-slot="9991008576"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+            style={{display: "block"}}
+          ></ins>
           <Footer />
         </Grid>
         <Notification />

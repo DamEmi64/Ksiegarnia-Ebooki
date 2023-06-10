@@ -1,5 +1,18 @@
 ﻿import axios from "axios";
 import { Role } from "../models/api/role";
+import Notification from "../models/api/notification";
+import { NotificationStatus } from "../models/api/notificationStatus";
+import UserDTO from "../models/api/userDTO";
+
+export interface CreateNotitifaction {
+  objectId: string;
+  description: string;
+  user: UserDTO;
+  status: NotificationStatus;
+  creationDate: string;
+  statusChangeDate: string;
+  type: string;
+}
 
 class AdminService {
   private api = `${process.env.REACT_APP_API}/Admin`;
@@ -13,11 +26,22 @@ class AdminService {
   }
 
   getNotificationById(notificationId: string) {
-    return axios.get(`${this.api}/Notification/${notificationId}`)
+    return axios.get(`${this.api}/Notification/${notificationId}`);
   }
 
   getAllNotifications() {
-    return axios.get(`${this.api}/Notification`)
+    return axios.get(`${this.api}/Notification`);
+  }
+
+  createNotification(request: CreateNotitifaction) {
+    return axios.post(`${this.api}/Notify`, request);
+  }
+
+  changeNotificationStatus(
+    notificationId: string,
+    status: NotificationStatus
+  ) {
+    return axios.post(`${this.api}/Notification/${notificationId}/${status}`);
   }
 }
 

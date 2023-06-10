@@ -5,6 +5,7 @@ import UserDTO from "../../../models/api/userDTO";
 import { Search } from "@mui/icons-material";
 import { GridColDef, DataGrid, GridRowParams, plPL } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
+import AccountSettings from "../../../pages/AccountSettings";
 
 const columns: GridColDef[] = [
   {
@@ -41,7 +42,7 @@ const UsersManagement = () => {
   const [users, setUsers] = React.useState<UserDTO[]>([]);
   const [phrase, setPhrase] = React.useState<string>("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     UserService.search(phrase).then((response) => {
@@ -50,44 +51,46 @@ const UsersManagement = () => {
   };
 
   return (
-    <Grid item container justifyContent="center" marginTop={-1}>
-      <Grid item xs={12} lg={10} container rowGap={3}>
-        <TextField
-          fullWidth
-          placeholder="Wpisz nick autora (min. 3 znaki)"
-          value={phrase}
-          onChange={(event: any) => setPhrase(event.target.value)}
-          InputProps={{
-            endAdornment: (
-              <IconButton onClick={handleSearch}>
-                <Search />
-              </IconButton>
-            ),
-          }}
-        />
-        <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={users}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            disableColumnFilter
-            disableColumnSelector
-            disableColumnMenu
-            pageSizeOptions={[5]}
-            localeText={plPL.components.MuiDataGrid.defaultProps.localeText}
-            onRowClick={(params: GridRowParams) => {
-                navigate(params.row.id)
+    <AccountSettings title="Dane Użytkowników">
+      <Grid item container justifyContent="center" marginTop={-1}>
+        <Grid item xs={12} lg={10} container rowGap={3}>
+          <TextField
+            fullWidth
+            placeholder="Wpisz nick autora (min. 3 znaki)"
+            value={phrase}
+            onChange={(event: any) => setPhrase(event.target.value)}
+            InputProps={{
+              endAdornment: (
+                <IconButton onClick={handleSearch}>
+                  <Search />
+                </IconButton>
+              ),
             }}
           />
-        </Box>
+          <Box sx={{ height: 400, width: "100%" }}>
+            <DataGrid
+              rows={users}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+              disableColumnFilter
+              disableColumnSelector
+              disableColumnMenu
+              pageSizeOptions={[5]}
+              localeText={plPL.components.MuiDataGrid.defaultProps.localeText}
+              onRowClick={(params: GridRowParams) => {
+                navigate(params.row.id);
+              }}
+            />
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </AccountSettings>
   );
 };
 

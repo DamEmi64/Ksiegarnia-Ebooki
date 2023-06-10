@@ -6,6 +6,7 @@ import UserService from "../../../services/UserService";
 import Loading from "../../../pages/Loading";
 import { Role } from "../../../models/api/role";
 import AdminService from "../../../services/AdminService";
+import AccountSettings from "../../../pages/AccountSettings";
 
 const Data = (props: { label: string; value: string }) => {
   return (
@@ -83,8 +84,7 @@ const UserManagement = () => {
 
   const handleChangeRole = (checked: boolean, role: Role) => {
     if (checked) {
-      AdminService.addRoleToUser(userData.id, role)
-      .then(() => {
+      AdminService.addRoleToUser(userData.id, role).then(() => {
         const newRole: RoleValue = {
           value: role,
           checked: true,
@@ -93,8 +93,7 @@ const UserManagement = () => {
         setUserRolesValues(newRoles);
       });
     } else {
-      AdminService.removeRoleFromUser(userData.id, role)
-      .then(() => {
+      AdminService.removeRoleFromUser(userData.id, role).then(() => {
         const newRoles = userRolesValues.filter(
           (roleValue: RoleValue) => roleValue.value != role
         );
@@ -104,53 +103,55 @@ const UserManagement = () => {
   };
 
   return (
-    <Grid item container justifyContent="center" rowGap={8}>
-      <Grid
-        item
-        xs={12}
-        lg={11}
-        container
-        justifyContent={{ xs: "center", md: "space-between" }}
-        rowGap={6}
-      >
-        <Data label={"Imię"} value={userData.firstName} />
-        <Data label={"Nazwisko"} value={userData.lastName} />
-        <Data label={"E-mail"} value={userData.email} />
-        <Data label={"Pseudonim"} value={userData.nick} />
-        <Data label={"Numer tel."} value={userData.phone} />
-        <Data label={"Wiek"} value={userData.age.toString()} />
-      </Grid>
-      <Grid item container direction="column" alignItems="center" rowGap={2}>
-        <Typography variant="h4">Role</Typography>
-        <Grid item container justifyContent="center" rowGap={2}>
-          <Grid
-            item
-            xs={11}
-            sm={8}
-            md={6}
-            lg={4}
-            container
-            direction="column"
-            rowGap={1}
-          >
-            {userRolesValues.map((roleValue: RoleValue, index: number) => (
-              <FormControlLabel
-                key={index}
-                control={
-                  <Checkbox
-                    checked={roleValue.checked}
-                    onChange={(event: any, checked: boolean) =>
-                      handleChangeRole(checked, roleValue.value)
-                    }
-                  />
-                }
-                label={roleValue.value}
-              />
-            ))}
+    <AccountSettings title={`Dane użytkownika ${userData.nick}`}>
+      <Grid item container justifyContent="center" rowGap={8}>
+        <Grid
+          item
+          xs={12}
+          lg={11}
+          container
+          justifyContent={{ xs: "center", md: "space-between" }}
+          rowGap={6}
+        >
+          <Data label={"Imię"} value={userData.firstName} />
+          <Data label={"Nazwisko"} value={userData.lastName} />
+          <Data label={"E-mail"} value={userData.email} />
+          <Data label={"Pseudonim"} value={userData.nick} />
+          <Data label={"Numer tel."} value={userData.phone} />
+          <Data label={"Wiek"} value={userData.age.toString()} />
+        </Grid>
+        <Grid item container direction="column" alignItems="center" rowGap={2}>
+          <Typography variant="h4">Role</Typography>
+          <Grid item container justifyContent="center" rowGap={2}>
+            <Grid
+              item
+              xs={11}
+              sm={8}
+              md={6}
+              lg={4}
+              container
+              direction="column"
+              rowGap={1}
+            >
+              {userRolesValues.map((roleValue: RoleValue, index: number) => (
+                <FormControlLabel
+                  key={index}
+                  control={
+                    <Checkbox
+                      checked={roleValue.checked}
+                      onChange={(event: any, checked: boolean) =>
+                        handleChangeRole(checked, roleValue.value)
+                      }
+                    />
+                  }
+                  label={roleValue.value}
+                />
+              ))}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </AccountSettings>
   );
 };
 

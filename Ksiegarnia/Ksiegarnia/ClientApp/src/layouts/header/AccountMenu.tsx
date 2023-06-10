@@ -3,54 +3,59 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { LinkProps } from "../../models/linkProps";
 import PersonIcon from "@mui/icons-material/Person";
+import { UserContext } from "../../context/UserContext";
+import { Role } from "../../models/api/role";
 
 export const normalUserlinks: LinkProps[] = [
   {
     title: "Dane konta",
-    url: "details",
+    url: "/account-settings/details",
   },
   {
     title: "Zakupione ebooki",
-    url: "owned-ebooks",
+    url: "/account-settings/owned-ebooks",
   },
   {
     title: "Historia zamówień",
-    url: "transactions",
+    url: "/account-settings/transactions",
   },
   {
     title: "Panel twórcy",
-    url: "authors-panel",
+    url: "/account-settings/authors-panel",
   },
   {
     title: "Konto premium",
-    url: "premium",
+    url: "/account-settings/premium",
   },
   {
     title: "Wyloguj",
-    url: "logout",
+    url: "/account-settings/logout",
   },
 ];
 
 export const adminLinks: LinkProps[] = [
   {
     title: "Dane konta",
-    url: "details",
+    url: "/account-settings/details",
   },
   {
     title: "Dane Użytkowników",
-    url: "users-managment",
+    url: "/account-settings/users-managment",
   },
   {
     title: "Przegląd zgłoszeń",
-    url: "ebooks-notifications",
+    url: "/account-settings/notifications",
   },
   {
     title: "Wyloguj",
-    url: "logout",
+    url: "/account-settings/logout",
   },
-]
+];
 
 const AccountMenu = () => {
+  const isUserAdmin = React.useContext(UserContext)?.containsRole(Role.Admin);
+  const links: LinkProps[] = !isUserAdmin ? normalUserlinks : adminLinks;
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -66,23 +71,28 @@ const AccountMenu = () => {
 
   const handleAccountSettings = (url: string) => {
     handleCloseMenu();
-    navigate(`/account-settings/${url}`);
+    navigate(url);
   };
 
   return (
     <React.Fragment>
       <IconButton onClick={handleClick}>
         <PersonIcon fontSize="large" style={{ color: "white" }} />
-        <Typography variant="h6" color="white" display={{xs: "none", md: "block"}} marginLeft={2}>
+        <Typography
+          variant="h6"
+          color="white"
+          display={{ xs: "none", md: "block" }}
+          marginLeft={2}
+        >
           Panel
         </Typography>
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
-        {normalUserlinks.map((link: LinkProps, index: number) => (
+        {links.map((link: LinkProps, index: number) => (
           <MenuItem key={index} onClick={() => handleAccountSettings(link.url)}>
             {link.title}
           </MenuItem>
-      ))}
+        ))}
       </Menu>
     </React.Fragment>
   );

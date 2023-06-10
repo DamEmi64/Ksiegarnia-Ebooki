@@ -1,4 +1,4 @@
-﻿export enum EbookNotificationStatus {
+﻿export enum NotificationStatus {
     Reported="Reported",
     Accepted="Accepted",
     Abandoned="Abandoned",

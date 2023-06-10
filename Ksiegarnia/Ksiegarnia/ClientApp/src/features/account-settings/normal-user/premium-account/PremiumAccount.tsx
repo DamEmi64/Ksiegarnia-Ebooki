@@ -9,6 +9,7 @@ import PremiumService from "../../../../services/PremiumService";
 import BuyPremiumDialog from "./BuyPremiumDialog";
 import PremiumAccountOrder from "./PremiumAccountOrder";
 import React from "react";
+import AccountSettings from "../../../../pages/AccountSettings";
 
 const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
@@ -145,89 +146,91 @@ const PremiumAccount = () => {
   };
 
   return (
-    <Grid item marginTop={-4} container direction="column" rowGap={8}>
-      <Grid item container direction="column" rowGap={2}>
-        <Grid item container columnGap={2} rowGap={1}>
-          <StatisticData
-            title="Status premium"
-            value={
-              premiumInfo?.isActive ? (
-                <Typography variant="h6" style={{ color: "#24FF00" }}>
-                  Aktywny
+    <AccountSettings title="Konto premium">
+      <Grid item marginTop={-4} container direction="column" rowGap={8}>
+        <Grid item container direction="column" rowGap={2}>
+          <Grid item container columnGap={2} rowGap={1}>
+            <StatisticData
+              title="Status premium"
+              value={
+                premiumInfo?.isActive ? (
+                  <Typography variant="h6" style={{ color: "#24FF00" }}>
+                    Aktywny
+                  </Typography>
+                ) : (
+                  <Typography variant="h6" style={{ color: "#EB4B36" }}>
+                    Nieaktywny
+                  </Typography>
+                )
+              }
+            />
+            {premiumInfo?.isActive ? (
+              <Button
+                className="premium-button button-rounded"
+                variant="contained"
+                onClick={() => setIsVisibleBuyPremiumDialog(true)}
+              >
+                Przedłuż
+              </Button>
+            ) : (
+              <Button
+                className="premium-button button-rounded"
+                variant="contained"
+                onClick={() => setIsVisibleBuyPremiumDialog(true)}
+              >
+                Zakup
+              </Button>
+            )}
+          </Grid>
+          <Grid item container>
+            <StatisticData
+              title="Wygasa dnia"
+              value={
+                <Typography variant="h6">
+                  {premiumInfo.isActive
+                    ? premiumInfo.endDate!.toLocaleDateString()
+                    : ""}
                 </Typography>
-              ) : (
-                <Typography variant="h6" style={{ color: "#EB4B36" }}>
-                  Nieaktywny
+              }
+            />
+          </Grid>
+          <Grid item container>
+            <StatisticData
+              title="Ostatni zakup"
+              value={
+                <Typography variant="h6">
+                  {premiumInfo.isActive
+                    ? premiumInfo.buyDate!.toLocaleDateString()
+                    : ""}
                 </Typography>
-              )
-            }
-          />
-          {premiumInfo?.isActive ? (
-            <Button
-              className="premium-button button-rounded"
-              variant="contained"
-              onClick={() => setIsVisibleBuyPremiumDialog(true)}
-            >
-              Przedłuż
-            </Button>
-          ) : (
-            <Button
-              className="premium-button button-rounded"
-              variant="contained"
-              onClick={() => setIsVisibleBuyPremiumDialog(true)}
-            >
-              Zakup
-            </Button>
-          )}
+              }
+            />
+          </Grid>
         </Grid>
-        <Grid item container>
-          <StatisticData
-            title="Wygasa dnia"
-            value={
-              <Typography variant="h6">
-                {premiumInfo.isActive
-                  ? premiumInfo.endDate!.toLocaleDateString()
-                  : ""}
-              </Typography>
-            }
-          />
+        <Grid item container justifyContent="center">
+          <Grid
+            item
+            xs={12}
+            lg={10}
+            container
+            justifyContent="space-between"
+            rowGap={2}
+          >
+            <BenefitInfo benefit="Zniżki na książki" />
+            <BenefitInfo benefit="Nielimitowana liczba dodanych ebooków" />
+            <BenefitInfo benefit="Darmowe wyróżnienia ebooka" />
+            <BenefitInfo benefit="Nieograniczona pojemność na ebooka" />
+          </Grid>
         </Grid>
-        <Grid item container>
-          <StatisticData
-            title="Ostatni zakup"
-            value={
-              <Typography variant="h6">
-                {premiumInfo.isActive
-                  ? premiumInfo.buyDate!.toLocaleDateString()
-                  : ""}
-              </Typography>
-            }
-          />
-        </Grid>
+        <BuyPremiumDialog
+          open={isVisibleBuyPremiumDialog}
+          handleAccept={handleBuyPremium}
+          handleDecline={() => {
+            setIsVisibleBuyPremiumDialog(false);
+          }}
+        />
       </Grid>
-      <Grid item container justifyContent="center">
-        <Grid
-          item
-          xs={12}
-          lg={10}
-          container
-          justifyContent="space-between"
-          rowGap={2}
-        >
-          <BenefitInfo benefit="Zniżki na książki" />
-          <BenefitInfo benefit="Nielimitowana liczba dodanych ebooków" />
-          <BenefitInfo benefit="Darmowe wyróżnienia ebooka" />
-          <BenefitInfo benefit="Nieograniczona pojemność na ebooka" />
-        </Grid>
-      </Grid>
-      <BuyPremiumDialog
-        open={isVisibleBuyPremiumDialog}
-        handleAccept={handleBuyPremium}
-        handleDecline={() => {
-          setIsVisibleBuyPremiumDialog(false);
-        }}
-      />
-    </Grid>
+    </AccountSettings>
   );
 };
 

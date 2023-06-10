@@ -9,8 +9,9 @@ import {
 } from "@mui/x-data-grid";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import EbookNotification from "../../../models/api/ebookNotification";
+import EbookNotification from "../../../models/api/notification";
 import AdminService from "../../../services/AdminService";
+import AccountSettings from "../../../pages/AccountSettings";
 
 const columns: GridColDef[] = [
   {
@@ -27,9 +28,7 @@ const columns: GridColDef[] = [
     headerAlign: "center",
     align: "center",
     renderCell: (params: any) => (
-      <Typography variant="h5">
-        {params.value.nick}
-      </Typography>
+      <Typography variant="h5">{params.value.nick}</Typography>
     ),
   },
   {
@@ -48,7 +47,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-const EbooksNotifications = () => {
+const Notifications = () => {
   const [ebooksNotifications, setEbooksNotifications] = React.useState<
     EbookNotification[]
   >([]);
@@ -58,37 +57,39 @@ const EbooksNotifications = () => {
   React.useEffect(() => {
     AdminService.getAllNotifications()
     .then((response) => {
-        setEbooksNotifications(response.data)
-    })
-  }, [])
+      setEbooksNotifications(response.data);
+    });
+  }, []);
 
   return (
-    <Grid item container justifyContent="center" marginTop={-1}>
-      <Grid item xs={12} lg={10} container>
-        <Box sx={{ height: 500, width: "100%" }}>
-          <DataGrid
-            rows={ebooksNotifications}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
+    <AccountSettings title="Przegląd zgłoszeń">
+      <Grid item container justifyContent="center" marginTop={-1}>
+        <Grid item xs={12} lg={10} container>
+          <Box sx={{ height: 500, width: "100%" }}>
+            <DataGrid
+              rows={ebooksNotifications}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
                 },
-              },
-            }}
-            disableColumnFilter
-            disableColumnSelector
-            disableColumnMenu
-            pageSizeOptions={[10]}
-            localeText={plPL.components.MuiDataGrid.defaultProps.localeText}
-            onRowClick={(params: GridRowParams) => {
-              navigate(params.row.id);
-            }}
-          />
-        </Box>
+              }}
+              disableColumnFilter
+              disableColumnSelector
+              disableColumnMenu
+              pageSizeOptions={[10]}
+              localeText={plPL.components.MuiDataGrid.defaultProps.localeText}
+              onRowClick={(params: GridRowParams) => {
+                navigate(params.row.id);
+              }}
+            />
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </AccountSettings>
   );
 };
 
-export default EbooksNotifications;
+export default Notifications;

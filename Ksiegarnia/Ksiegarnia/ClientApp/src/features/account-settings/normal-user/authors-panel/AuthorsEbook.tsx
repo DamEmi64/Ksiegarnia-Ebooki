@@ -11,42 +11,16 @@ import DistinctEbook from "./manage-ebook/DistinctEbook";
 import PromoteEbook from "./manage-ebook/PromoteEbook";
 import EbookPrice from "../../../../components/EbookPrice";
 import EbookImage from "../../../../components/EbookImage";
+import DeleteEbook from "./DeleteEbook";
 
 const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
   const [ebook, setEbook] = useState<Ebook>(props.ebook);
-  const [visibleDeleteConfirmation, setVisibleDeleteConfirmation] =
-    useState<boolean>(false);
-
-  const notificationContext = useContext(NotificationContext);
-
-  const DELETED_SUCCESSFULY_MESSAGE = "Usunięto ebooka";
-  const DELETED_FAILED_MESSAGE =
-    "Nie istnieje konto o takim adresie e-mail i/lub haśle";
 
   const navigate = useNavigate();
 
   useEffect(() => {
     setEbook(props.ebook);
   }, [props.ebook]);
-
-  const handleDelete = () => {
-    EbookService.delete(ebook.id)
-      .then(() => {
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: true,
-          message: DELETED_SUCCESSFULY_MESSAGE,
-        });
-        props.update();
-      })
-      .catch(() => {
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: false,
-          message: DELETED_FAILED_MESSAGE,
-        });
-      });
-  };
 
   return (
     <Grid
@@ -86,7 +60,7 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
           <Grid item container justifyContent="center" columnGap={1}>
             <Typography variant="h6">Cena:</Typography>
             <Typography variant="h6" fontWeight="bold">
-              <EbookPrice price={ebook.prize} promotion={ebook.promotion} />
+              <EbookPrice authorId={ebook.author.id} price={ebook.prize} promotion={ebook.promotion} />
             </Typography>
           </Grid>
           <Grid item container justifyContent="center">
@@ -120,24 +94,10 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
             </Grid>
           )}
           <Grid item xs={6} container justifyContent="center">
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              style={{ borderRadius: 10 }}
-              onClick={() => setVisibleDeleteConfirmation(true)}
-            >
-              Usuń
-            </Button>
+            <DeleteEbook ebookId={ebook.id} handleAccept={props.update} />
           </Grid>
         </Grid>
       </Grid>
-      <ConfirmationDialog
-        message="Czy na pewno chcesz usunąć ebooka?"
-        open={visibleDeleteConfirmation}
-        handleDecline={() => setVisibleDeleteConfirmation(false)}
-        handleAccept={handleDelete}
-      />
     </Grid>
   );
 };

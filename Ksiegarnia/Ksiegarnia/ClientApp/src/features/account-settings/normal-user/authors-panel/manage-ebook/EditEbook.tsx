@@ -343,7 +343,7 @@ const EditEbook = () => {
                 multiline: true,
                 rows: 20,
                 inputProps: {
-                  maxLength: 255
+                  maxLength: 1020
                 },
               }}
               isRequired={true}
