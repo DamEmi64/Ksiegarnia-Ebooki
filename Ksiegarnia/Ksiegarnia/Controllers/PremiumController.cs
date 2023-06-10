@@ -78,13 +78,14 @@ namespace Application.Controllers
                 };
 
 
-                var cancel = HttpContext.Request.Host + "//" + Url.Action("Finish", "Premium", values: new
+
+                var cancel = HttpContext.Request.Host + Url.Action("Finish", "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = false
                 }) ?? string.Empty;
 
-                var redirect = HttpContext.Request.Host + "//" + Url.Action("Finish", "Premium", values: new
+                var redirect = HttpContext.Request.Host + Url.Action("Finish", "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = true

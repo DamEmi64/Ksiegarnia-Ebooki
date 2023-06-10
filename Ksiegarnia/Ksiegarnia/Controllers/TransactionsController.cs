@@ -98,9 +98,10 @@ namespace Application.Controllers
                 {
                     throw new UserNotFoundException(userId);
                 }
+                
+                var cancel = HttpContext.Request.Host + Url.Action("FinishDistinct", "Transactions", values: new { id = userId, succeeded = false }) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + Url.Action("FinishDistinct", "Transactions", values: new { id = userId, succeeded = true }) ?? string.Empty;
 
-                var cancel = HttpContext.Request.Host + "//" + Url.Action("FinishDistinct", "Transactions", values: new { id = userId, succeeded = false }) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + "//" + Url.Action("FinishDistinct", "Transactions", values: new { id = userId, succeeded = true }) ?? string.Empty;
 
 
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
@@ -251,8 +252,9 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = HttpContext.Request.Host + "//" + Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + "//" + Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+                var cancel = HttpContext.Request.Host + Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+
 
                 var transactionDto = transaction.ToDTO();
 
