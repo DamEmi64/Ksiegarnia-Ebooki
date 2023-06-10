@@ -31,6 +31,11 @@ namespace Infrastructure
         public static int FreeTimeDistinct { get; set; }
 
         /// <summary>
+        ///     Prize for distinction
+        /// </summary>
+        public static decimal PrizeForDistinct { get; set; }
+
+        /// <summary>
         ///     Number of free books to add
         /// </summary>
         public static int FreeStorage { get; set; }

@@ -25,7 +25,6 @@ namespace Application.Controllers
         /// <summary>
         ///     Constructor
         /// </summary>
-
         /// <param name="userRepository"></param>
         /// <param name="notifyRepository"></param>
         /// <param name="eBookRepository"></param>
@@ -138,6 +137,20 @@ namespace Application.Controllers
             return HttpStatusCode.OK;
         }
 
+        /// <summary>
+        ///     Verify book
+        /// </summary>
+        /// <param name="id">Book id</param>
+        /// <param name="verifyName">Verification Data (name)</param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Ebook/{id}/verify")]
+        public async Task<HttpStatusCode> Verify(Guid id, [FromQuery] string verifyName)
+        {
+            await _eBookRepository.Verify(id, verifyName);
+            await _eBookRepository.SaveChanges();
+            return HttpStatusCode.OK;
+        }
 
         /// <summary>
         ///     Block Book  (ADMIN)

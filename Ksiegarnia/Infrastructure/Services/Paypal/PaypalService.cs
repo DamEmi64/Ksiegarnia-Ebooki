@@ -71,6 +71,47 @@ namespace Infrastructure.Services.Paypal
             }
         }
 
+        public IEnumerable<string> GetUri(string cancelUri, string redirectUri, string title, decimal cash, string? payee = null)
+        {
+            var context = GetAPIContext(GetAccessToken());
+            Payment payment;
+
+            if (!string.IsNullOrEmpty(payee))
+            {
+                payment = Task.Run(async () => await CreatePaymentForUser(context, redirectUri, cancelUri, payee, cash, title, Domain.Enums.Currency.PLN)).Result;
+
+                var links = payment.links.GetEnumerator();
+
+                _httpContextAccessor.HttpContext.Session.SetString("payment", payment.id);
+
+                while (links.MoveNext())
+                {
+                    var link = links.Current;
+                    if (link.rel.ToLower().Equals("approval_url"))
+                    {
+                        yield return link.href;
+                    }
+                }
+
+            }
+            else
+            {
+                payment = CreatePayment(context, redirectUri, cancelUri, ConfigurationConst.Paypal.Email, title, cash);
+
+                var links = payment.links.GetEnumerator();
+
+                while (links.MoveNext())
+                {
+                    var link = links.Current;
+                    if (link.rel.ToLower().Equals("approval_url"))
+                    {
+                        yield return link.href;
+                    }
+                }
+            }
+
+        }
+
         /// <summary>
         ///     Execute payment
         /// </summary>
@@ -125,7 +166,7 @@ namespace Infrastructure.Services.Paypal
                     currency = transaction.Currency.ToString(),
                     quantity = "1",
                     sku = "asd",
-                    price = Math.Round(prize,2).ToString(CultureInfo.InvariantCulture),
+                    price = Math.Round(prize, 2).ToString(CultureInfo.InvariantCulture),
                 });
 
             }
@@ -146,6 +187,68 @@ namespace Infrastructure.Services.Paypal
             transactionPaypal.Add(new Transaction()
             {
                 description = itemlist.items.Count > 1 ? "Zakup książek - ebookWorld" : "Zakup książki - ebookWorld",
+                invoice_number = Guid.NewGuid().ToString(),
+                amount = amount,
+                item_list = itemlist
+            });
+
+            var payment = new Payment()
+            {
+                payer = payer,
+                redirect_urls = urls,
+                intent = "sale",
+                transactions = transactionPaypal
+            };
+
+            return payment.Create(apiContext);
+        }
+
+        /// <summary>
+        ///     Create payment
+        /// </summary>
+        /// <param name="apiContext">api context</param>
+        /// <param name="redirectUri">redirect uri</param>
+        /// <param name="cancelUri">cancel uri</param>
+        /// <param name="transaction">Transaction</param>
+        /// <param name="commission">commision where 10 % is 0.1</param>
+        /// <returns></returns>
+        public Payment CreatePayment(APIContext apiContext, string redirectUri, string cancelUri, string payerUser, string title, decimal cash)
+        {
+            var payer = new Payer()
+            {
+                payment_method = "paypal"
+            };
+
+            var itemlist = new ItemList()
+            {
+                items = new List<Item>()
+            };
+
+            itemlist.items.Add(new Item()
+            {
+                name = title,
+                currency = "PLN",
+                quantity = "1",
+                sku = "asd",
+                price = Math.Round(cash, 2).ToString(CultureInfo.InvariantCulture),
+            });
+
+            var urls = new RedirectUrls()
+            {
+                cancel_url = cancelUri,
+                return_url = redirectUri
+            };
+
+            var amount = new Amount()
+            {
+                currency = "PLN",
+                total = Math.Round(cash, 2).ToString(CultureInfo.InvariantCulture)
+            };
+
+            var transactionPaypal = new List<Transaction>();
+            transactionPaypal.Add(new Transaction()
+            {
+                description = title,
                 invoice_number = Guid.NewGuid().ToString(),
                 amount = amount,
                 item_list = itemlist
@@ -209,6 +312,67 @@ namespace Infrastructure.Services.Paypal
             transactionPaypal.Add(new Transaction()
             {
                 description = $"Sprzedaż książki {book.Title}",
+                invoice_number = Guid.NewGuid().ToString(),
+                amount = amount,
+                item_list = itemlist
+            });
+
+            var payment = new Payment()
+            {
+                payee = payee,
+                redirect_urls = urls,
+                intent = "sale",
+                transactions = transactionPaypal
+            };
+
+            return payment.Create(apiContext);
+        }
+
+        /// <summary>
+        ///     Create payment
+        /// </summary>
+        /// <param name="apiContext">api context</param>
+        /// <param name="redirectUri">redirect uri</param>
+        /// <param name="cancelUri">cancel uri</param>
+        /// <returns></returns>
+        public async Task<Payment> CreatePaymentForUser(APIContext apiContext, string redirectUri, string cancelUri, string payeeUser, decimal cash, string title, Domain.Enums.Currency currencyEnum)
+        {
+
+            var payee = new Payee()
+            {
+                email = payeeUser
+
+            };
+
+            var itemlist = new ItemList()
+            {
+                items = new List<Item>()
+            };
+
+            itemlist.items.Add(new Item()
+            {
+                name = title,
+                currency = currencyEnum.ToString(),
+                quantity = "1",
+                sku = "asd"
+            });
+
+            var urls = new RedirectUrls()
+            {
+                cancel_url = cancelUri,
+                return_url = redirectUri
+            };
+
+            var amount = new Amount()
+            {
+                currency = currencyEnum.ToString(),
+                total = Math.Round(cash, 2).ToString(CultureInfo.InvariantCulture)
+            };
+
+            var transactionPaypal = new List<Transaction>();
+            transactionPaypal.Add(new Transaction()
+            {
+                description = title,
                 invoice_number = Guid.NewGuid().ToString(),
                 amount = amount,
                 item_list = itemlist
