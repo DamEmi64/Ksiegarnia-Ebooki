@@ -77,7 +77,6 @@ namespace Application.Controllers
                     EBookReaders = Enumerable.Empty<EBookReader>(),
                 };
 
-
                 var cancel = Url.Action(nameof(FinishTransaction), "Premium", values: new
                 {
                     id = transaction.Id,
