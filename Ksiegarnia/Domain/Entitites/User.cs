@@ -53,6 +53,11 @@ namespace Domain.Entitites
         public DateTime BirthDate { get; set; }
 
         /// <summary>
+        ///     Number of owned distinctions
+        /// </summary>
+        public int Distinctions { get; set; }
+
+        /// <summary>
         ///     Information about hiding personal data
         /// </summary>
         public HideInfo? HideInfo { get; set; }

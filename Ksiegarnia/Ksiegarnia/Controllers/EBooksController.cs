@@ -177,7 +177,7 @@ namespace Application.Controllers
                 throw new UserNotFoundException(string.Empty);
             }
 
-            if (book.Author != user || user.Publications?.Count(x => x.Distinction != null) > ConfigurationConst.FreeTimeDistinct)
+            if (book.Author != user || user.Publications?.Count(x => x.Distinction != null) > user.Distinctions)
             {
                 if (!(await _userRepository.CheckRole(user?.Id ?? "", Roles.PremiumUser) || await _userRepository.CheckRole(user?.Id ?? "", Roles.Admin)))
                 {
@@ -486,19 +486,6 @@ namespace Application.Controllers
             throw new BookNotFoundException(id);
         }
 
-        /// <summary>
-        ///     Verify book
-        /// </summary>
-        /// <param name="id">Book id</param>
-        /// <param name="verifyName">Verification Data (name)</param>
-        /// <returns></returns>
-        [HttpGet("/{id}/verify")]
-        public async Task<HttpStatusCode> Verify(Guid id, [FromQuery] string verifyName)
-        {
-            await _bookRepository.Verify(id, verifyName);
-            await _bookRepository.SaveChanges();
-            return HttpStatusCode.OK;
-        }
 
         private int CountFreeDistinctions(User? user)
         {

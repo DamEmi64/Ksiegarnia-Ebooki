@@ -20,6 +20,12 @@ namespace Application.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IEBookReaderRepository _eBookReaderRepository;
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="userRepository"></param>
+        /// <param name="paymentService"></param>
+        /// <param name="eBookReaderRepository"></param>
         public PremiumController(IUserRepository userRepository,
             IPaymentService paymentService,
             IEBookReaderRepository eBookReaderRepository)
@@ -38,7 +44,7 @@ namespace Application.Controllers
         /// <exception cref="BookNotFoundException"></exception>
         /// <exception cref="BookNotVerifiedException"></exception>
         [HttpPost("buy")]
-        public async Task<IActionResult> Buy([FromBody] PremiumInfoDto premiumData, [FromQuery] string currency)
+        public async Task<string> Buy([FromBody] PremiumInfoDto premiumData, [FromQuery] string currency)
         {
             if (ModelState.IsValid)
             {
@@ -71,12 +77,14 @@ namespace Application.Controllers
                     EBookReaders = Enumerable.Empty<EBookReader>(),
                 };
 
-                var cancel = Url.Action("Finish", "Premium", values: new
+
+                var cancel = HttpContext.Request.Host + "//" + Url.Action("Finish", "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = false
                 }) ?? string.Empty;
-                var redirect = Url.Action("Finish", "Premium", values: new
+
+                var redirect = HttpContext.Request.Host + "//" + Url.Action("Finish", "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = true
@@ -88,11 +96,11 @@ namespace Application.Controllers
 
                 if (!string.IsNullOrEmpty(url))
                 {
-                    return Redirect(url);
+                    return url;
                 }
             }
 
-            return BadRequest();
+            throw new TransactionFailedException();
         }
 
         /// <summary>

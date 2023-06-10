@@ -7,6 +7,7 @@ using Domain.DTOs;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
+using Infrastructure;
 
 namespace Application.Controllers
 {
@@ -77,6 +78,63 @@ namespace Application.Controllers
             {
                 throw new TransactionFailedException();
             }
+        }
+
+        /// <summary>
+        ///     Buy distinction
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
+        [HttpPost("distinct/buy")]
+        public async Task<string> BuyDistinct([FromBody] int numberOfDistinction, [FromQuery] string userId)
+        {
+            if (ModelState.IsValid)
+            {
+                var client = await _userRepository.Get(userId);
+
+                if (client == null)
+                {
+                    throw new UserNotFoundException(userId);
+                }
+
+                var cancel = HttpContext.Request.Host + "//" + Url.Action("FinishDistinct", "Transactions", values: new { id = userId, succeeded = false }) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + "//" + Url.Action("FinishDistinct", "Transactions", values: new { id = userId, succeeded = true }) ?? string.Empty;
+
+
+                var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(url))
+                {
+                    return url;
+                }
+            }
+
+            throw new TransactionFailedException();
+        }
+
+        /// <summary>
+        ///     Finish buying distinction
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ExceptionBase"></exception>
+        [HttpPost("FinishDistinct/{id}")]
+        public async Task<HttpStatusCode> FinishDistinct(string id, [FromQuery] bool successed, [FromQuery] int no)
+        {
+            if (successed)
+            {
+                var user = await _userRepository.Get(id);
+                
+                if (user != null)
+                {
+                    user.Distinctions += no;
+
+                    await _userRepository.Update(user);
+                }
+            }
+
+            return HttpStatusCode.OK;
         }
 
         private async Task<string> BuyViaToken(BuyerDto buyer, List<string> tokens)
@@ -193,8 +251,8 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
-                var redirect = Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+                var cancel = HttpContext.Request.Host + "//" + Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + "//" + Url.Action("Finish", "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
@@ -229,8 +287,8 @@ namespace Application.Controllers
             {
                 if (transaction != null)
                 {
-                    var cancel = Url.Action("FinishToUser", "Transactions", values: new { id = id, succeeded = false }) ?? string.Empty;
-                    var redirect = Url.Action("FinishToUser", "Transactions", values: new { id = id, succeeded = true }) ?? string.Empty;
+                    var cancel = HttpContext.Request.Host + "//" + Url.Action("FinishToUser", "Transactions", values: new { id = id, succeeded = false }) ?? string.Empty;
+                    var redirect = HttpContext.Request.Host + "//" + Url.Action("FinishToUser", "Transactions", values: new { id = id, succeeded = true }) ?? string.Empty;
 
                     var transactionDto = (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
 
@@ -354,7 +412,7 @@ namespace Application.Controllers
 
                 if (string.IsNullOrEmpty(userId))
                 {
-                    result = list.Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().OrderBy(x=>x.Date).ToList();
+                    result = list.Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author?.Id == authorId)).ToDTOs().OrderBy(x => x.Date).ToList();
                 }
             }
 
