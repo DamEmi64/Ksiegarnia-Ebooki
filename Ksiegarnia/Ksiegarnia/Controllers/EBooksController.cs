@@ -278,7 +278,8 @@ namespace Application.Controllers
             {
                 StartDate = promotion.StartDate ?? default,
                 EndDate = promotion.EndDate ?? default,
-                Prize = promotion.Prize
+                Prize = promotion.Prize,
+                OnlyForPremium = promotion.IsPremiumOnly
             };
 
             await _bookRepository.AddPromotion(book.Promotion);
