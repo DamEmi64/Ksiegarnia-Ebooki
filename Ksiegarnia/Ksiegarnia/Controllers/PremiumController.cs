@@ -78,17 +78,17 @@ namespace Application.Controllers
                 };
 
 
-                var cancel = HttpContext.Request.Host + Url.Action("Finish", "Premium", values: new
+                var cancel = Url.Action(nameof(FinishTransaction), "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = false
-                }) ?? string.Empty;
+                }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
-                var redirect = HttpContext.Request.Host + Url.Action("Finish", "Premium", values: new
+                var redirect = Url.Action(nameof(FinishTransaction), "Premium", values: new
                 {
                     id = transaction.Id,
                     succeeded = true
-                }) ?? string.Empty;
+                }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
