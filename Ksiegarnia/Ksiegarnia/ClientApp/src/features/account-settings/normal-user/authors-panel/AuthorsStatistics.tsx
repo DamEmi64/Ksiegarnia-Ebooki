@@ -27,6 +27,7 @@ interface UserTransactionsStats {
   numberOfSoldEbooks: number;
   earnedCash: number;
   earnedCashPerEbook: number;
+  numberOfAddedEbooks: number;
 }
 
 const AuthorsStatistics = () => {
@@ -37,6 +38,7 @@ const AuthorsStatistics = () => {
     numberOfSoldEbooks: 0,
     earnedCash: 0,
     earnedCashPerEbook: 0,
+    numberOfAddedEbooks: 0
   });
 
   React.useEffect(() => {
@@ -50,6 +52,7 @@ const AuthorsStatistics = () => {
           numberOfSoldEbooks == 0
             ? numberOfSoldEbooks
             : rawStatistics.earned_cash / numberOfSoldEbooks,
+        numberOfAddedEbooks: userContext ? userContext.user.numberOfAddedEbooks : 0
       });
     });
   }, []);

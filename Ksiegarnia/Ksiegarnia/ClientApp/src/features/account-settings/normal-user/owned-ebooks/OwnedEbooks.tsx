@@ -1,8 +1,4 @@
-import {
-  Grid,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Grid, IconButton, TextField } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import SelectPageSize from "../../../../components/SelectPageSize";
 import useScrollPosition from "../../../../components/useScrollPosition";
@@ -13,7 +9,7 @@ import Loading from "../../../../pages/Loading";
 import UserService from "../../../../services/UserService";
 import OwnedEbook from "./OwnedEbook";
 import { Search } from "@mui/icons-material";
-
+import AccountSettings from "../../../../pages/AccountSettings";
 
 const OwnedEbooks = () => {
   const userId = useContext(UserContext)?.user.data?.id;
@@ -27,6 +23,7 @@ const OwnedEbooks = () => {
   const numberOfPages = useRef<number>(0);
 
   useEffect(() => {
+    console.log("A")
     handleSearch();
   }, []);
 
@@ -51,7 +48,7 @@ const OwnedEbooks = () => {
       pageSize: actualPageSize.current,
     })
       .then((response) => {
-         console.log(response)
+        console.log(response);
         const data: PagedResponse = response.data;
         const newEbooks: Ebook[] = data.result;
         setEbooks((ebooks: Ebook[]) => [...ebooks, ...newEbooks]);
@@ -85,60 +82,62 @@ const OwnedEbooks = () => {
   };
 
   return (
-    <Grid
-      item
-      container
-      direction="column"
-      alignItems="center"
-      rowGap={6}
-      marginTop={-1}
-    >
+    <AccountSettings title="Zakupione ebooki">
       <Grid
         item
         container
-        direction="row"
-        justifyContent="space-between"
-        marginBottom={2}
-        rowGap={4}
+        direction="column"
+        alignItems="center"
+        rowGap={6}
+        marginTop={-1}
       >
-        <Grid item xs={12} lg={5} xl={7}>
-          <TextField
-            fullWidth
-            placeholder="Wpisz tytuł lub autora książki"
-            value={searchPhrase}
-            onChange={(event: any) => setSearchPhrase(event.target.value)}
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={handleSearchWithReplace}>
-                  <Search />
-                </IconButton>
-              ),
-            }}
-          />
-        </Grid>
         <Grid
           item
-          xs={12}
-          sm={10}
-          md={8}
-          lg={5}
-          xl={4}
           container
           direction="row"
-          alignItems="center"
+          justifyContent="space-between"
+          marginBottom={2}
+          rowGap={4}
         >
-          <SelectPageSize
-            pageSize={pageSize}
-            handleSetPageSize={handleSelectPageSize}
-          />
+          <Grid item xs={12} lg={5} xl={7}>
+            <TextField
+              fullWidth
+              placeholder="Wpisz tytuł lub autora książki"
+              value={searchPhrase}
+              onChange={(event: any) => setSearchPhrase(event.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearchWithReplace}>
+                    <Search />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={10}
+            md={8}
+            lg={5}
+            xl={4}
+            container
+            direction="row"
+            alignItems="center"
+          >
+            <SelectPageSize
+              pageSize={pageSize}
+              handleSetPageSize={handleSelectPageSize}
+            />
+          </Grid>
+        </Grid>
+        <Grid item container rowGap={6}>
+          {ebooks.map((ebook: Ebook) => (
+            <OwnedEbook key={ebook.id} ebook={ebook} />
+          ))}
         </Grid>
       </Grid>
-      <Grid item container rowGap={6}>
-        {ebooks.map((ebook: Ebook) => (
-          <OwnedEbook key={ebook.id} ebook={ebook} />
-        ))}
-      </Grid>
-    </Grid>
+    </AccountSettings>
   );
 };
 

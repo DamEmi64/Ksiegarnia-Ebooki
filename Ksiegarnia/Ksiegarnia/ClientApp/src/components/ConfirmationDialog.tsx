@@ -32,17 +32,17 @@ const ConfirmationDialog = (props: {
       <DialogContent>
         <Grid item marginBottom={2} container justifyContent="space-evenly">
           <Grid item xs={2}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="secondary"
-              onClick={props.handleDecline}
-            >
+            <Button fullWidth variant="contained" onClick={props.handleDecline}>
               Nie
             </Button>
           </Grid>
           <Grid item xs={2}>
-            <Button fullWidth variant="contained" onClick={props.handleAccept}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="secondary"
+              onClick={props.handleAccept}
+            >
               Tak
             </Button>
           </Grid>

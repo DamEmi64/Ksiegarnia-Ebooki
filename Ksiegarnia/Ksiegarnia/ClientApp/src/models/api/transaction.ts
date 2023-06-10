@@ -2,7 +2,8 @@
 
 export default interface Transaction {
     id: string,
-    dateTime: string,
+    date: string,
     books: Ebook[],
-    prize?: number
+    prize?: number,
+    type: string
 }

@@ -93,6 +93,10 @@ class EbookService {
     return axios.post(`${this.api}/${ebookId}/promote`, promotion)
   }
 
+  verify(ebookId: string){
+    return axios.get(`${process.env.REACT_APP_API}/${ebookId}/verify`);
+  }
+
   deletePromotion(ebookId: string){
     return axios.post(`${this.api}/${ebookId}/promote`, {})
   }

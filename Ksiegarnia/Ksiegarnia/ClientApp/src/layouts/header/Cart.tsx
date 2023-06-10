@@ -17,7 +17,7 @@ const Cart = (props: {fontColor?: string}) => {
           {basketContext?.ebooks.length} szt
         </Typography>
         <Typography variant="h6" color={props.fontColor ? props.fontColor : "white"}>
-          {basketContext?.totalPrice} zł
+          {basketContext?.totalPrice.toFixed(2)} zł
         </Typography>
       </Stack>
     </IconButton>
