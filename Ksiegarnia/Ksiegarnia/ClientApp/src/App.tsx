@@ -41,6 +41,7 @@ import Forbidden from "./pages/Forbidden";
 import Logout from "./features/account-settings/Logout";
 import UserManagement from "./features/account-settings/admin/UserManagement";
 import NotificationView from "./features/account-settings/admin/NotificationView";
+import TransactionMessage from "./features/transaction/TransationMessage";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
@@ -179,6 +180,14 @@ function App() {
               <Route path="/transaction" element={<Outlet />}>
                 <Route index element={<Basket />} />
               </Route>
+              <Route
+                path="Transactions/Finish/:transactionId"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <TransactionMessage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="contact" element={<Contact />} />
               <Route path="regulamin" element={<Regulamin />} />
               <Route path="forbidden" element={<Forbidden />} />
@@ -191,7 +200,7 @@ function App() {
             data-ad-slot="9991008576"
             data-ad-format="auto"
             data-full-width-responsive="true"
-            style={{display: "block"}}
+            style={{ display: "block" }}
           ></ins>
           <Footer />
         </Grid>

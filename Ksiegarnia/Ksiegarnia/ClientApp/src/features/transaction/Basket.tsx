@@ -168,7 +168,7 @@ const Basket = () => {
             message: SUCCESSFULY_SUBMITED_TRANSACTION,
           });
 
-          //window.location.href = paypalRedirect;
+          window.location.href = paypalRedirect;
         })
         .catch((error) => {
           console.log(error);
