@@ -37,8 +37,9 @@ const Data = (props: { label: string; value: string }) => {
   );
 };
 
-interface RoleValue {
+interface ExtendedRole {
   value: Role;
+  name: string;
   checked: boolean;
 }
 
@@ -46,7 +47,7 @@ const UserManagement = () => {
   const userId = useParams().userId;
 
   const [userData, setUserData] = React.useState<UserDTO>();
-  const [userRolesValues, setUserRolesValues] = React.useState<RoleValue[]>([]);
+  const [userRolesValues, setUserRolesValues] = React.useState<ExtendedRole[]>([]);
 
   const navigate = useNavigate();
 
@@ -61,17 +62,18 @@ const UserManagement = () => {
 
         setUserData(newUserData);
 
-        setUserRolesValues(
-          Object.keys(Role).map((role: string) => {
-            const roleEnum = Role[role as keyof typeof Role];
-            const isChecked = newUserData.roles.includes(roleEnum);
-
-            return {
-              value: roleEnum,
-              checked: isChecked,
-            };
-          })
-        );
+        setUserRolesValues([
+          {
+            value: Role.PremiumUser,
+            name: "Premium",
+            checked: newUserData.roles.includes(Role.PremiumUser),
+          },
+          {
+            value: Role.Admin,
+            name: "Admin",
+            checked: newUserData.roles.includes(Role.Admin),
+          },
+        ]);
       })
       .catch(() => {
         navigate("/not-found");
@@ -82,22 +84,25 @@ const UserManagement = () => {
     return <Loading />;
   }
 
-  const handleChangeRole = (checked: boolean, role: Role) => {
+  const findAndChangeRole = (role: Role, checked: boolean) => {
+    const newRoles = [...userRolesValues];
+
+    const toUpdateRole = newRoles.find((extendedRole: ExtendedRole) => extendedRole.value == role)
+    toUpdateRole!.checked = checked;
+
+    setUserRolesValues(newRoles);
+  }
+
+  const handleChangeRole = ( role: Role, checked: boolean) => {
     if (checked) {
-      AdminService.addRoleToUser(userData.id, role).then(() => {
-        const newRole: RoleValue = {
-          value: role,
-          checked: true,
-        };
-        const newRoles = [...userRolesValues, newRole];
-        setUserRolesValues(newRoles);
+      AdminService.addRoleToUser(userData.id, role)
+      .then(() => {
+        findAndChangeRole(role, checked)
       });
     } else {
-      AdminService.removeRoleFromUser(userData.id, role).then(() => {
-        const newRoles = userRolesValues.filter(
-          (roleValue: RoleValue) => roleValue.value != role
-        );
-        setUserRolesValues(newRoles);
+      AdminService.removeRoleFromUser(userData.id, role)
+      .then(() => {
+        findAndChangeRole(role, checked)
       });
     }
   };
@@ -133,18 +138,18 @@ const UserManagement = () => {
               direction="column"
               rowGap={1}
             >
-              {userRolesValues.map((roleValue: RoleValue, index: number) => (
+              {userRolesValues.map((roleValue: ExtendedRole, index: number) => (
                 <FormControlLabel
                   key={index}
                   control={
                     <Checkbox
                       checked={roleValue.checked}
                       onChange={(event: any, checked: boolean) =>
-                        handleChangeRole(checked, roleValue.value)
+                        handleChangeRole(roleValue.value, checked)
                       }
                     />
                   }
-                  label={roleValue.value}
+                  label={roleValue.name}
                 />
               ))}
             </Grid>

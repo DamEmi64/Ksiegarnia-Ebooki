@@ -44,34 +44,47 @@ class TransactionService {
     );
   };
 
-  handleTransactionByTokens = (userId: string, bookIds: string[]) => {
-    return EbookService.getGiftTokensFromEbooksList(bookIds)
-    .then((response) => {
-      let tokens: string[] = [];
-
-      response.forEach((resp: AxiosResponse<any, any>) => {
-        const firstToken = resp.data[2];
-        tokens = [...tokens, firstToken];
-      });
-
-      return axios.post(
-        `${this.api}/buy`,
-        {
-          buyerId: userId,
-          bookIds: bookIds,
+  finishTransaction = (transactionId: string, succeeded: boolean) => {
+    return axios.post(
+      `${this.api}/Finish/${transactionId}`,
+      {},
+      {
+        params: {
+          succeeded: succeeded,
         },
-        {
-          params: {
-            transactionType: TransactionType.TOKEN,
-            tokens: tokens,
-            currency: Currency.PLN,
+      }
+    );
+  };
+
+  handleTransactionByTokens = (userId: string, bookIds: string[]) => {
+    return EbookService.getGiftTokensFromEbooksList(bookIds).then(
+      (response) => {
+        let tokens: string[] = [];
+
+        response.forEach((resp: AxiosResponse<any, any>) => {
+          const firstToken = resp.data[2];
+          tokens = [...tokens, firstToken];
+        });
+
+        return axios.post(
+          `${this.api}/buy`,
+          {
+            buyerId: userId,
+            bookIds: bookIds,
           },
-          paramsSerializer: {
-            indexes: null, // by default: false
-          },
-        }
-      );
-    });
+          {
+            params: {
+              transactionType: TransactionType.TOKEN,
+              tokens: tokens,
+              currency: Currency.PLN,
+            },
+            paramsSerializer: {
+              indexes: null, // by default: false
+            },
+          }
+        );
+      }
+    );
   };
 }
 
