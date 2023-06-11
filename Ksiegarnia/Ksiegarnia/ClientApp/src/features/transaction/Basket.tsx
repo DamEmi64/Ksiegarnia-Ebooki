@@ -141,6 +141,7 @@ const Basket = () => {
       TransactionService.handleTransactionByTokens(userId!, basketEbooksIds)
         .then((response) => {
           console.log(response);
+          basketContext?.clear();
           notificationContext?.setNotification({
             isVisible: true,
             isSuccessful: true,
@@ -161,6 +162,7 @@ const Basket = () => {
         .then((response) => {
           const paypalRedirect: string = response.data;
           console.log(paypalRedirect)
+          basketContext?.clear();
 
           notificationContext?.setNotification({
             isVisible: true,
