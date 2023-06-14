@@ -2,17 +2,13 @@
 import { TransactionType } from "../models/api/transactionType";
 import { Currency } from "../models/api/currency";
 import EbookService from "./EbookService";
+import UserService from "./UserService";
 
 class TransactionService {
   private api = `${process.env.REACT_APP_API}/Transactions`;
 
   getUserStats = (userId: string) => {
-    return axios.get(`${this.api}/${userId}/summary`, {
-      params: {
-        page: 1,
-        pageSize: 1,
-      },
-    });
+    return axios.get(`${this.api}/${userId}/summary`);
   };
 
   getUserTransactions = (userId: string, page?: number, pageSize?: number) => {

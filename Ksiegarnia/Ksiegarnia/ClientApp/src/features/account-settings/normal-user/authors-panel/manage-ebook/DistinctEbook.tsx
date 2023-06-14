@@ -14,6 +14,8 @@ import FormService from "../../../../../services/FormService";
 import EbookService from "../../../../../services/EbookService";
 import { Distinction } from "../../../../../models/api/distinction";
 import { NotificationContext } from "../../../../../context/NotificationContext";
+import { UserContext } from "../../../../../context/UserContext";
+import Loading from "../../../../../pages/Loading";
 
 const DistinctEbook = (props: {
   ebookId: string;
@@ -25,6 +27,7 @@ const DistinctEbook = (props: {
   const [howLong, setHowLong] = React.useState<number>(0);
   const [howLongError, setHowLongError] = React.useState<string>("");
 
+  const userContext = useContext(UserContext);
   const notificationContext = React.useContext(NotificationContext);
 
   const SUCCESSFULY_MESSAGE = "Wyróżniono ebooka";
@@ -53,7 +56,7 @@ const DistinctEbook = (props: {
     })
       .then((response) => {
         console.log(response);
-        setOpen(false)
+        setOpen(false);
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: true,
@@ -65,6 +68,10 @@ const DistinctEbook = (props: {
         console.log(error);
       });
   };
+
+  if(!userContext){
+    return <Loading/>
+  }
 
   return (
     <React.Fragment>
@@ -114,15 +121,17 @@ const DistinctEbook = (props: {
                 }}
               />
               <Grid item container rowGap={2}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  className="premium-button"
-                  style={{ paddingTop: 10, paddingBottom: 10 }}
-                  onClick={() => handleDistinct(true)}
-                >
-                  Wykorzystaj darmowe wyróżnienie
-                </Button>
+                {userContext?.user.numberOfDistinctions > 0 && (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    className="premium-button"
+                    style={{ paddingTop: 10, paddingBottom: 10 }}
+                    onClick={() => handleDistinct(true)}
+                  >
+                    Wykorzystaj darmowe wyróżnienie
+                  </Button>
+                )}
                 <Button
                   fullWidth
                   variant="contained"
