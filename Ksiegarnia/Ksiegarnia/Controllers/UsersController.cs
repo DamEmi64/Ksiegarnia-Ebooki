@@ -236,7 +236,7 @@ namespace Application.Controllers
         {
             if (DateTime.UtcNow.Year - data.BirthDate.Year < 18)
             {
-                throw new ExceptionBase();
+                throw new ExceptionBase(HttpStatusCode.BadRequest, "Too young.");
             }
 
             try
@@ -296,6 +296,25 @@ namespace Application.Controllers
             await _userRepository.Update(user);
 
             return HttpStatusCode.OK;
+        }
+
+        /// <summary>
+        ///     Get user distinction
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Distinction")]
+        public async Task<object?> GetDistinction()
+        {
+            var user = await _userRepository.GetByNick(User?.Identity?.Name ?? string.Empty);
+
+            if (user != null)
+            {
+                var distinctions = user.Publications?.Where(x => x.Distinction != null && x.Distinction.StartDate.AddDays(x.Distinction.HowLong) < DateTime.Now).ToDTOs();
+
+                return new { Distinctions = distinctions, UsedDistinctions = distinctions.Count(), ownedDistinction = user.Distinctions };
+            }
+
+            return null;
         }
 
         /// <summary>

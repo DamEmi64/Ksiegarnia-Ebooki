@@ -29,12 +29,17 @@ namespace Domain.DTOs
     {
         public static GenreDto ToDTO(this Genre genre)
         {
-            return new GenreDto
+            if (genre != null)
             {
-                Description = genre.Description,
-                Id = genre.Id,
-                Name = genre.Name
-            };
+                return new GenreDto
+                {
+                    Description = genre.Description,
+                    Id = genre.Id,
+                    Name = genre.Name
+                };
+            }
+
+            return null;
         }
 
         public static IEnumerable<GenreDto> ToDTOs(this IEnumerable<Genre> genres)

@@ -50,7 +50,7 @@ namespace Application.Controllers
         {
             if (ModelState.IsValid)
             {
-                SendTokenDto userData  = new();
+                SendTokenDto userData = new();
                 var token = await RegisterAdmin(data.AdminEmail, data.AdminPassword);
 
                 if (!string.IsNullOrEmpty(data.PremiumEmail) && !string.IsNullOrEmpty(data.PremiumPassword))
@@ -81,7 +81,7 @@ namespace Application.Controllers
                         EBookReaders = new List<EBookReader>() {
                             new EBookReader() {
                             User = await _userRepository.Get(userData.Id),
-                            EBook = books.First() } 
+                            EBook = books.First() }
                         }
                     });
 
@@ -101,7 +101,9 @@ namespace Application.Controllers
         [HttpPost("url")]
         public string CheckUrl()
         {
-            return Url.Action("example");
+            var buf = Url.Action(nameof(GetErrorCode),"Debug", null, Request.Scheme);
+
+            return buf;
         }
 
         /// <summary>

@@ -19,5 +19,10 @@
         ///     Mode
         /// </summary>
         public string Mode { get; set; }
+
+        /// <summary>
+        ///     Paypal email
+        /// </summary>
+        public string Email { get; set; }
     }
 }

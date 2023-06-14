@@ -9,7 +9,7 @@ namespace Domain.Context
     /// <summary>
     ///     Context of database
     /// </summary>
-    public class KsiegarniaContext : IdentityDbContext<User,Role,string>
+    public class KsiegarniaContext : IdentityDbContext<User, Role, string>
     {
         public KsiegarniaContext(DbContextOptions<KsiegarniaContext> options)
             : base(options)
@@ -26,6 +26,7 @@ namespace Domain.Context
             new UserEntityConfiguration().Configure(builder.Entity<User>());
             new PromotionEntityConfiguration().Configure(builder.Entity<Promotion>());
             new ReviewEnitityConfiguration().Configure(builder.Entity<Review>());
+            new NotificationEntityConfiguration().Configure(builder.Entity<Notification>());
 
             base.OnModelCreating(builder);
         }
@@ -41,6 +42,8 @@ namespace Domain.Context
         public DbSet<Premium> Premiums { get; set; }
 
         public DbSet<Review> Reviews { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
 
     }
 }

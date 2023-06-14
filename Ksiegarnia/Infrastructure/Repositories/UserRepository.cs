@@ -223,6 +223,7 @@ namespace Infrastructure.Repositories
             user.PhoneNumber = userData.PhoneNumber;
             user.Nick = userData.Nick ?? string.Empty;
             user.BirthDate = userData.BirthDate;
+            user.Distinctions = ConfigurationConst.FreeTimeDistinct;
             await _userStore.SetUserNameAsync(user, userData.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, userData.Email, CancellationToken.None);
             try

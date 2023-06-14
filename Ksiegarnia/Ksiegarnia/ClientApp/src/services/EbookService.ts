@@ -31,6 +31,7 @@ export interface UpdateEbookProps {
   author: UserDTO;
   picture: string;
   prize: number;
+  content?: string;
 }
 
 class EbookService {

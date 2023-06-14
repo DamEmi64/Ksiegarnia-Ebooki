@@ -2,7 +2,9 @@
 import CategoriesContent from "../../../../../layouts/CategoriesContent";
 import Genre from "../../../../../models/api/genre";
 import React, { useContext, useEffect, useState } from "react";
-import EbookService from "../../../../../services/EbookService";
+import EbookService, {
+  UpdateEbookProps,
+} from "../../../../../services/EbookService";
 import Ebook from "../../../../../models/api/ebook";
 import { Grid, Typography, Button, IconButton } from "@mui/material";
 import BasicTextField from "../../../../../components/BasicTextField";
@@ -14,6 +16,8 @@ import { Close, Edit } from "@mui/icons-material";
 import FormService from "../../../../../services/FormService";
 import Loading from "../../../../../pages/Loading";
 import { NotificationContext } from "../../../../../context/NotificationContext";
+import ChooseFile from "../../../../../components/ChooseFile";
+import FileService from "../../../../../services/FileService";
 
 interface FormProps {
   title: string;
@@ -22,6 +26,7 @@ interface FormProps {
   pageNumber: number;
   picture: string;
   prize: number;
+  content?: string;
 }
 
 interface FormErrors {
@@ -109,9 +114,9 @@ const EditEbook = () => {
   useEffect(() => {
     EbookService.getById(ebookId)
       .then((response) => {
-        const gotEboot: Ebook = response.data;
-        setForm(gotEboot);
-        ebookAuthor = gotEboot.author;
+        const gotEbook: Ebook = response.data;
+        setForm({ ...gotEbook, content: "" });
+        ebookAuthor = gotEbook.author;
       })
       .catch((error) => {
         console.log(error);
@@ -177,9 +182,17 @@ const EditEbook = () => {
       return;
     }
 
-    console.log({ ...form, author: ebookAuthor });
+    const request: UpdateEbookProps = {
+      ...form,
+      picture: FileService.splitBase64(form.picture) as string,
+      author: ebookAuthor,
+    };
 
-    EbookService.update(ebookId, { ...form, author: ebookAuthor })
+    if (form.content) {
+      request.content = FileService.splitBase64(form.content);
+    }
+
+    EbookService.update(ebookId, request)
       .then(() => {
         navigate("../account-settings/authors-panel");
         notificationContext?.setNotification({
@@ -259,6 +272,12 @@ const EditEbook = () => {
                 formSize={10}
               />
             </EditableField>
+            <ChooseFile
+              label="Plik z ebookiem"
+              handleSelectFile={(file: string) => {
+                setForm({ ...form, content: file });
+              }}
+            />
             <EditableField
               nonEditableLabel="Kategoria"
               nonEditableValue={form.genre.name}
@@ -343,7 +362,7 @@ const EditEbook = () => {
                 multiline: true,
                 rows: 20,
                 inputProps: {
-                  maxLength: 1020
+                  maxLength: 1020,
                 },
               }}
               isRequired={true}
