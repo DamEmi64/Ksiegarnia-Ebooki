@@ -31,14 +31,14 @@ namespace Infrastructure
         public static int FreeTimeDistinct { get; set; }
 
         /// <summary>
+        ///     Prize for distinction
+        /// </summary>
+        public static decimal PrizeForDistinct { get; set; }
+
+        /// <summary>
         ///     Number of free books to add
         /// </summary>
         public static int FreeStorage { get; set; }
-
-        /// <summary>
-        ///     Prize for premium
-        /// </summary>
-        public static decimal PrizeForPremium { get; set; }
 
         public static void ConfigureConst(this WebApplicationBuilder builder)
         {
@@ -48,7 +48,6 @@ namespace Infrastructure
             FreeStorage = builder.Configuration.GetValue<int>("FreeStorage");
             FreeTimeDistinct = builder.Configuration.GetValue<int>("FreeTimeDistinct");
             PrizeForDistinct = builder.Configuration.GetValue<int>("PrizeForDistinct");
-            PrizeForPremium = builder.Configuration.GetValue<int>("PrizeForPremium");
         }
     }
 }
