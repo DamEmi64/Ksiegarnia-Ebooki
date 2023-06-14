@@ -87,7 +87,7 @@ const Login = () => {
             const numberOfDistinctions = responses[1].data.ownedDistinction
             const premiumData: PremiumCheck = responses[2].data;
 
-            let boughtEbooksIds: string[] = [];
+            const boughtEbooksIds: string[] = [];
 
             userTransactionsStats.buyed_books.result.forEach((transaction: Transaction) => {
               boughtEbooksIds.push(

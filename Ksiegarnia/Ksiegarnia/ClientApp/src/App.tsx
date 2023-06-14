@@ -41,7 +41,7 @@ import Forbidden from "./pages/Forbidden";
 import Logout from "./features/account-settings/Logout";
 import UserManagement from "./features/account-settings/admin/UserManagement";
 import NotificationView from "./features/account-settings/admin/NotificationView";
-import TransactionMessage from "./features/transaction/TransationMessage";
+import TransactionMessage from "./features/transaction/TransactionMessage";
 import EbooksVerifications from "./features/account-settings/admin/EbooksVerification";
 import EbookVerification from "./features/account-settings/admin/EbookVerification";
 

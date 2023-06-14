@@ -55,7 +55,7 @@ const TransactionMessage = () => {
         TransactionService.getUserStats(userId as string).then((response) => {
           const statistics: Statistics = response.data;
 
-          let newBoughtEbooksIds: string[] = [];
+          const newBoughtEbooksIds: string[] = [];
 
           statistics.buyed_books.result.forEach((transaction: Transaction) => {
             newBoughtEbooksIds.push(
