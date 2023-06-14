@@ -411,7 +411,7 @@ namespace Application.Controllers
             {
                 foreach (var book in transaction.Books)
                 {
-                    cash += book.Prize;
+                    cash += book.Prize ?? 0;
                 }
             }
 

@@ -7,40 +7,40 @@ namespace Domain.DTOs
         /// <summary>
         ///     Book Id
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.Empty;
         /// <summary>
         ///     Title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         ///     Genre
         /// </summary>
-        public GenreDto Genre { get; set; }
+        public GenreDto? Genre { get; set; }
 
         /// <summary>
         ///     Description
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         ///     PageNumber
         /// </summary>
-        public int PageNumber { get; set; }
+        public int? PageNumber { get; set; }
         /// <summary>
         /// User simplified data 
         /// </summary>
-        public UserDto Author { get; set; }
+        public UserDto? Author { get; set; }
 
         /// <summary>
         ///     Book picture / cover
         /// </summary>
-        public byte[] Picture { get; set; }
+        public byte[]? Picture { get; set; }
 
         /// <summary>
         ///     Prize
         /// </summary>
-        public decimal Prize { get; set; }
+        public decimal? Prize { get; set; }
 
         /// <summary>
         ///     Promotion
@@ -51,6 +51,16 @@ namespace Domain.DTOs
         ///     Distinction
         /// </summary>
         public DistinctionDto? Distinction { get; set; }
+
+        /// <summary>
+        ///     Verification status
+        /// </summary>
+        public string? VerificationStatus { get; set; }
+
+        /// <summary>
+        ///     Grade
+        /// </summary>
+        public decimal? Grade { get; set; }
     }
 
     /// <summary>
@@ -93,6 +103,30 @@ namespace Domain.DTOs
                 };
             }
 
+            decimal grade = 0;
+
+            if (eBook.Readers != null && eBook.Readers.Count > 0)
+            {
+                int i = 0;
+                foreach (var reader in eBook.Readers)
+                {
+                    var review = reader.Reviews.LastOrDefault(x => x.Reader.EBook.Id == eBook.Id);
+
+                    if (review != null)
+                    {
+                        i++;
+                        grade += review.Grade;
+                    }
+                }
+
+                if (i > 0)
+                {
+                    grade /= i;
+                }
+
+            }
+
+
             return new BookDto()
             {
                 Id = eBook.Id,
@@ -104,7 +138,9 @@ namespace Domain.DTOs
                 Prize = eBook.Prize,
                 Picture = eBook.Picture,
                 Promotion = promotion,
-                Distinction = distinction
+                Distinction = distinction,
+                VerificationStatus = eBook.Verification.ToString(),
+                Grade = grade
             };
         }
     }

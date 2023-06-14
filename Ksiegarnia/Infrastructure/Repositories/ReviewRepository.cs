@@ -29,19 +29,26 @@ namespace Infrastructure.Repositories
             if (bookId == Guid.Empty)
             {
                 return await _context.Set<Review>()
-                       .Include(x => x.Reader)
-                       .ThenInclude(x => x.User)
-                       .Include(x => x.Reader)
-                       .ThenInclude(x => x.EBook)
-                       .ThenInclude(x => x.Genre)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.User)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.EBook)
+                           .ThenInclude(x => x.Genre)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.EBook)
+                           .ThenInclude(x=>x.Author)
                         .ToListAsync();
             }
 
             return await _context.Set<Review>()
-                        .Include(x => x.Reader)
-                        .ThenInclude(x => x.User)
-                        .Include(x => x.Reader)
-                        .ThenInclude(x => x.EBook)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.User)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.EBook)
+                           .ThenInclude(x => x.Genre)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.EBook)
+                           .ThenInclude(x => x.Author)
                         .Where(x => x.Reader.EBook.Id == bookId).ToListAsync();
         }
 

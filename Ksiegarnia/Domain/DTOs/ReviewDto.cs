@@ -33,7 +33,7 @@ namespace Domain.DTOs
             {
                 Id = review.Id,
                 Date = review.Date,
-                Book = review.Reader.EBook.ToDTO(),
+                Book = review.Reader?.EBook.ToDTO(),
                 Reviewer = review.Reader.User.ToDTO(),
                 Opinion = review.Opinion,
                 Grade = review.Grade

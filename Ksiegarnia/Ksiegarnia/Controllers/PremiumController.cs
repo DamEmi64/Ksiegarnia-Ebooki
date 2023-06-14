@@ -2,6 +2,7 @@
 using Domain.Entitites;
 using Domain.Enums;
 using Domain.Repositories;
+using Infrastructure;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -84,7 +85,7 @@ namespace Application.Controllers
 
                 var transactionDto = transaction.ToDTO();
 
-                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1, false).FirstOrDefault();
+                var url = _paymentService.GetUri(cancel, redirect,$"Kupowanie premium na {premiumData.Days} dni", premiumData.Days * ConfigurationConst.PrizeForPremium).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
                 {
