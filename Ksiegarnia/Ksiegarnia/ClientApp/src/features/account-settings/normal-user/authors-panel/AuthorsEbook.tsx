@@ -12,6 +12,7 @@ import PromoteEbook from "./manage-ebook/PromoteEbook";
 import EbookPrice from "../../../../components/EbookPrice";
 import EbookImage from "../../../../components/EbookImage";
 import DeleteEbook from "./DeleteEbook";
+import { UserContext } from "../../../../context/UserContext";
 
 const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
   const [ebook, setEbook] = useState<Ebook>(props.ebook);

@@ -18,16 +18,18 @@ namespace Application.Controllers
     {
         private readonly ICopyLeaksService _copyLeaksService;
         private readonly IEBookRepository _eBookRepository;
+        private readonly ISmtpService _smtpService;
 
         /// <summary>
         ///     Controller
         /// </summary>
         /// <param name="copyLeaksService"></param>
         /// <param name="eBookRepository"></param>
-        public PlagiarismController(ICopyLeaksService copyLeaksService, IEBookRepository eBookRepository)
+        public PlagiarismController(ICopyLeaksService copyLeaksService, IEBookRepository eBookRepository, ISmtpService smtpService)
         {
             _copyLeaksService = copyLeaksService;
             _eBookRepository = eBookRepository;
+            _smtpService = smtpService;
         }
 
         /// <summary>
@@ -88,6 +90,11 @@ namespace Application.Controllers
                         throw new ExceptionBase(System.Net.HttpStatusCode.Conflict,
                             "PLAGIAT",
                             $"Wykryto plagiat na poziome {scanResults.Results.Score.AggregatedScore}");
+                    }
+                    else
+                    {
+                        book.Verification = Domain.Enums.VerificationType.Accepted;
+                        _smtpService.SendEmail($"Książka {book.Title} przeszła pozytywnie test antyplagiatowy i została dopuszczona do sprzedaży.", book.Author.Email);
                     }
                 }
             }

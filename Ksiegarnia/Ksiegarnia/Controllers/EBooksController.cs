@@ -48,6 +48,7 @@ namespace Application.Controllers
         /// <param name="year">publication year</param>
         /// <param name="maxPrize">Max Prize</param>
         /// <param name="minPrize">Min prize</param>
+        /// <param name="onlyVerified">show only verified</param>
         /// <param name="sort">Sorting order</param>
         /// <param name="page">Page</param>
         /// <returns>List of books</returns>
@@ -61,6 +62,7 @@ namespace Application.Controllers
                                                 [FromQuery] bool onlyOnPromotion = false,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
+                                                [FromQuery] bool onlyVerified= false,
                                                 [FromQuery] int page = 1)
         {
             var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName ?? string.Empty);
@@ -72,6 +74,11 @@ namespace Application.Controllers
             if (minPrize > 0)
             {
                 books = books.Where(x => x.Prize >= minPrize).ToList();
+            }
+
+            if (onlyVerified)
+            {
+                books = books.Where(x => x.Verification == VerificationType.Accepted).ToList();
             }
 
             if (!string.IsNullOrEmpty(phrase))
@@ -303,11 +310,6 @@ namespace Application.Controllers
             if (ebook == null)
             {
                 throw new BookNotFoundException(id.ToString() ?? String.Empty);
-            }
-
-            if (ebook.Verification != VerificationType.Accepted)
-            {
-                throw new BookNotVerifiedException();
             }
 
             return ebook.ToDTO();

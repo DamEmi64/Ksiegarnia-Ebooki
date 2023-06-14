@@ -58,7 +58,7 @@ namespace Infrastructure.Configuration
             app.UseExceptionHandler(a => a.Run(async context =>
             {
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-                var exception = exceptionHandlerPathFeature.Error;
+                 var exception = exceptionHandlerPathFeature.Error;
 
                 if (exception is ExceptionBase defaultException)
                 {

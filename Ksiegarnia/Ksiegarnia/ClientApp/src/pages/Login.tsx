@@ -15,6 +15,7 @@ import axios from "axios";
 import Ebook from "../models/api/ebook";
 import Statistics from "../models/api/statistics";
 import { BasketContext } from "../context/BasketContext";
+import Transaction from "../models/api/transaction";
 
 interface LoginForm {
   email: string;
@@ -78,23 +79,29 @@ const Login = () => {
         axios
           .all([
             TransactionService.getUserStats(userData.id),
+            UserService.getUserNumberOfDistinctions(),
             PremiumService.checkPremium(userData.id),
           ])
           .then((responses) => {
             const userTransactionsStats: Statistics = responses[0].data;
-            const premiumData: PremiumCheck = responses[1].data;
+            const numberOfDistinctions = responses[1].data.ownedDistinction
+            const premiumData: PremiumCheck = responses[2].data;
 
-            const boughtBooksIds: string[] =
-              userTransactionsStats.buyed_books.result.map(
-                (ebook: Ebook) => ebook.id
+            const boughtEbooksIds: string[] = [];
+
+            userTransactionsStats.buyed_books.result.forEach((transaction: Transaction) => {
+              boughtEbooksIds.push(
+                ...transaction.books.map((ebook: Ebook) => ebook.id)
               );
+            });
 
             userContext?.setAll({
               logged: true,
               data: response.data,
               isPremium: premiumData.isActive,
-              boughtEbooksIds: boughtBooksIds,
-              numberOfAddedEbooks: 0
+              boughtEbooksIds: boughtEbooksIds,
+              numberOfAddedEbooks: 0,
+              numberOfDistinctions: numberOfDistinctions
             });
 
             notificationContext?.setNotification({

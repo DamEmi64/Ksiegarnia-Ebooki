@@ -49,12 +49,17 @@ namespace Application.Controllers
 
             var grade = Decimal.Zero;
 
-            foreach (var review in reviews)
+            if (reviews != null && reviews.Count() > 0)
             {
-                if (reviews.LastOrDefault(x => x.Reader == review.Reader) == review)
+                foreach (var review in reviews)
                 {
-                    grade += review.Grade;
+                    if (reviews.LastOrDefault(x => x.Reader == review.Reader) == review)
+                    {
+                        grade += review.Grade;
+                    }
                 }
+
+                grade /= reviews.Count();
             }
 
             if (!string.IsNullOrEmpty(authorName))

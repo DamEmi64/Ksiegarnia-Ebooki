@@ -65,8 +65,6 @@ const NotificationView = () => {
       navigate("/not-found");
     }
 
-    return;
-
     AdminService.getNotificationById(notificationId as string)
       .then((response) => {
         setNotification(response.data);
@@ -77,7 +75,7 @@ const NotificationView = () => {
   }, []);
 
   if (!notification) {
-    //return <Loading />;
+    return <Loading />;
   }
 
   const isStatusEditable = () => {

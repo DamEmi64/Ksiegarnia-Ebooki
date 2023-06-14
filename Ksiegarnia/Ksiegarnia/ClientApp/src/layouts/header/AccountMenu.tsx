@@ -43,6 +43,10 @@ export const adminLinks: LinkProps[] = [
     url: "/account-settings/users-managment",
   },
   {
+    title: "Weryfikacja ebooków",
+    url: "/account-settings/ebooks-verification",
+  },
+  {
     title: "Przegląd zgłoszeń",
     url: "/account-settings/notifications",
   },

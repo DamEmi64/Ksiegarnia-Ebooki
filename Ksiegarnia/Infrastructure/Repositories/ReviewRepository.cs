@@ -34,6 +34,9 @@ namespace Infrastructure.Repositories
                            .Include(x => x.Reader)
                            .ThenInclude(x => x.EBook)
                            .ThenInclude(x => x.Genre)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.EBook)
+                           .ThenInclude(x=>x.Author)
                         .ToListAsync();
             }
 
@@ -43,6 +46,9 @@ namespace Infrastructure.Repositories
                            .Include(x => x.Reader)
                            .ThenInclude(x => x.EBook)
                            .ThenInclude(x => x.Genre)
+                           .Include(x => x.Reader)
+                           .ThenInclude(x => x.EBook)
+                           .ThenInclude(x => x.Author)
                         .Where(x => x.Reader.EBook.Id == bookId).ToListAsync();
         }
 

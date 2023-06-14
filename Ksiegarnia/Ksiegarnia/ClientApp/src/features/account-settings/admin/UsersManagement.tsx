@@ -45,6 +45,10 @@ const UsersManagement = () => {
   const navigate = useNavigate();
 
   const handleSearch = () => {
+    if(phrase.length < 3){
+      return;
+    }
+    
     UserService.search(phrase).then((response) => {
       setUsers(response.data);
     });

@@ -159,14 +159,14 @@ namespace Infrastructure.Services.Paypal
             foreach (var book in transaction.Books)
             {
                 var prize = book.Prize * commission / 100 + book.Prize;
-                currency += prize;
+                currency += prize ?? 0;
                 itemlist.items.Add(new Item()
                 {
                     name = book.Title,
                     currency = transaction.Currency.ToString(),
                     quantity = "1",
                     sku = "asd",
-                    price = Math.Round(prize, 2).ToString(CultureInfo.InvariantCulture),
+                    price = Math.Round(prize ?? 0, 2).ToString(CultureInfo.InvariantCulture),
                 });
 
             }
@@ -305,7 +305,7 @@ namespace Infrastructure.Services.Paypal
             var amount = new Amount()
             {
                 currency = currencyEnum.ToString(),
-                total = Math.Round(currency, 2).ToString(CultureInfo.InvariantCulture)
+                total = Math.Round(currency ?? 0, 2).ToString(CultureInfo.InvariantCulture)
             };
 
             var transactionPaypal = new List<Transaction>();
