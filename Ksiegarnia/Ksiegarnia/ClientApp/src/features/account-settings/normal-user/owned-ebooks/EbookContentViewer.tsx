@@ -7,7 +7,7 @@ import React from "react";
 
 const EbookContentViewer = () => {
 
-  const ebookId = useParams().id as string;
+  const ebookId = useParams().ebookId as string;
 
   const [content, setContent] = useState<string>();
 

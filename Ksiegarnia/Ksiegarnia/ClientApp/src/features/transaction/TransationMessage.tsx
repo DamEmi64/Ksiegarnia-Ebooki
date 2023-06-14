@@ -10,8 +10,15 @@ import { NotificationContext } from "../../context/NotificationContext";
 import Loading from "../../pages/Loading";
 import { CheckCircle, Error, Warning } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
+import { UserContext } from "../../context/UserContext";
+import Statistics from "../../models/api/statistics";
+import Ebook from "../../models/api/ebook";
+import Transaction from "../../models/api/transaction";
 
 const TransactionMessage = () => {
+  const userContext = useContext(UserContext);
+  const userId = userContext?.user.data?.id;
+
   const [searchParams] = useSearchParams();
 
   const transactionId = useParams().transactionId;
@@ -19,8 +26,6 @@ const TransactionMessage = () => {
 
   const [isFinalized, setIsFinalized] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
-
-  const notificationContext = useContext(NotificationContext);
 
   const navigate = useNavigate();
 
@@ -34,7 +39,7 @@ const TransactionMessage = () => {
 
     if (!succeededFromPaypal) {
       setIsFinalized(true);
-      setIsSuccess(false)
+      setIsSuccess(false);
       return;
     }
 
@@ -45,12 +50,26 @@ const TransactionMessage = () => {
       .then((response) => {
         console.log(response);
         setIsFinalized(true);
-        setIsSuccess(true)
+        setIsSuccess(true);
+
+        TransactionService.getUserStats(userId as string).then((response) => {
+          const statistics: Statistics = response.data;
+
+          let newBoughtEbooksIds: string[] = [];
+
+          statistics.buyed_books.result.forEach((transaction: Transaction) => {
+            newBoughtEbooksIds.push(
+              ...transaction.books.map((ebook: Ebook) => ebook.id)
+            );
+          });
+
+          userContext?.setBoughtEbooksIds(newBoughtEbooksIds);
+        });
       })
       .catch((error) => {
         console.log(error);
         setIsFinalized(true);
-        setIsSuccess(false)
+        setIsSuccess(false);
       });
   }, []);
 

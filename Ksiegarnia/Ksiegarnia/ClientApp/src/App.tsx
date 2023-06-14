@@ -42,6 +42,8 @@ import Logout from "./features/account-settings/Logout";
 import UserManagement from "./features/account-settings/admin/UserManagement";
 import NotificationView from "./features/account-settings/admin/NotificationView";
 import TransactionMessage from "./features/transaction/TransationMessage";
+import EbooksVerifications from "./features/account-settings/admin/EbooksVerification";
+import EbookVerification from "./features/account-settings/admin/EbookVerification";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
@@ -130,7 +132,7 @@ function App() {
                 <Route path="authors-panel" element={<AuthorsPanel />} />
                 <Route path="owned-ebooks" element={<Outlet />}>
                   <Route index element={<OwnedEbooks />} />
-                  <Route path=":id" element={<EbookContentViewer />} />
+                  <Route path=":ebookId" element={<EbookContentViewer />} />
                 </Route>
                 <Route path="transactions" element={<TransactionsHistory />} />
                 <Route path="premium" element={<PremiumAccount />} />
@@ -157,6 +159,24 @@ function App() {
                   <Route
                     path=":notificationId"
                     element={<NotificationView />}
+                  />
+                </Route>
+                <Route
+                  path="ebooks-verification"
+                  element={
+                    <ProtectedRoute requiresLogged={true} requiresAdmin={true}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<EbooksVerifications />} />
+                  <Route
+                    path=":ebookId"
+                    element={<EbookVerification />}
+                  />
+                  <Route
+                    path=":ebookId/content"
+                    element={<EbookContentViewer />}
                   />
                 </Route>
                 <Route path="logout" element={<Logout />} />

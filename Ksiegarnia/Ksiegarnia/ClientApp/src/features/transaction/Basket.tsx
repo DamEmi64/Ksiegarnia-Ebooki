@@ -18,6 +18,8 @@ import axios, { AxiosResponse } from "axios";
 import EbookService from "../../services/EbookService";
 import EbookPrice from "../../components/EbookPrice";
 import EbookImage from "../../components/EbookImage";
+import Statistics from "../../models/api/statistics";
+import Transaction from "../../models/api/transaction";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -91,7 +93,11 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
         alignItems="center"
       >
         <Typography variant="h4" textAlign="center">
-          <EbookPrice authorId={ebook.author.id} price={ebook.prize} promotion={ebook.promotion} />
+          <EbookPrice
+            authorId={ebook.author.id}
+            price={ebook.prize}
+            promotion={ebook.promotion}
+          />
         </Typography>
       </Grid>
       <Grid
@@ -148,12 +154,27 @@ const Basket = () => {
             message: SUCCESSFULY_SUBMITED_TRANSACTION,
           });
           navigate("/account-settings/transactions");
+          TransactionService.getUserStats(userId as string).then((response) => {
+            const statistics: Statistics = response.data;
+
+            let newBoughtEbooksIds: string[] = [];
+
+            statistics.buyed_books.result.forEach(
+              (transaction: Transaction) => {
+                newBoughtEbooksIds.push(
+                  ...transaction.books.map((ebook: Ebook) => ebook.id)
+                );
+              }
+            );
+
+            userContext.setBoughtEbooksIds(newBoughtEbooksIds)
+          });
         })
         .catch((error) => {
           console.log(error);
           notificationContext?.setNotification({
             isVisible: true,
-            isSuccessful: true,
+            isSuccessful: false,
             message: NOT_SUBMITED_TRANSACTION,
           });
         });
@@ -161,7 +182,7 @@ const Basket = () => {
       TransactionService.handleTransactionByPayPal(userId!, basketEbooksIds)
         .then((response) => {
           const paypalRedirect: string = response.data;
-          console.log(paypalRedirect)
+          console.log(paypalRedirect);
           basketContext?.clear();
 
           notificationContext?.setNotification({

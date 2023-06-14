@@ -8,6 +8,7 @@ export interface UserProps {
   isPremium: boolean;
   boughtEbooksIds: string[];
   numberOfAddedEbooks: number;
+  numberOfDistinctions: number;
 }
 
 export interface UserContextType {
@@ -17,6 +18,7 @@ export interface UserContextType {
   containsEbookId: (ebookId: string) => boolean;
   containsRole: (role: Role) => boolean;
   setNumberOfAddedEbooks: (value: number) => void;
+  setBoughtEbooksIds: (boughtEbooksIds: string[]) => void;
   setAll: (newData: UserProps) => void;
 }
 
@@ -36,6 +38,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         isPremium: false,
         boughtEbooksIds: [],
         numberOfAddedEbooks: 0,
+        numberOfDistinctions: 0
       };
     }
   });
@@ -51,6 +54,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         isPremium: false,
         boughtEbooksIds: [],
         numberOfAddedEbooks: 0,
+        numberOfDistinctions: 0
       });
     } else {
       setUser({ ...user, logged: logged });
@@ -76,6 +80,10 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     setUser({ ...user, numberOfAddedEbooks: value });
   };
 
+  const setBoughtEbooksIds = (boughtBooksIds: string[]) => {
+    setUser({...user, boughtEbooksIds: boughtBooksIds})
+  }
+
   const containsRole = (role: Role) => {
     if (!user.data) {
       return false;
@@ -92,6 +100,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         setAll,
         containsEbookId,
         setNumberOfAddedEbooks,
+        setBoughtEbooksIds,
         containsRole,
       }}
     >

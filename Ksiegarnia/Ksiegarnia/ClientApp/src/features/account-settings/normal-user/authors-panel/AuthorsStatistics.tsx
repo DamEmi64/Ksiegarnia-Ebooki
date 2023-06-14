@@ -3,6 +3,8 @@ import Statistics from "../../../../models/api/statistics";
 import React from "react";
 import TransactionService from "../../../../services/TransactionService";
 import { UserContext } from "../../../../context/UserContext";
+import axios from "axios";
+import UserService from "../../../../services/UserService";
 
 const StatisticData = (props: { title: string; value: string }) => {
   return (
@@ -28,6 +30,7 @@ interface UserTransactionsStats {
   earnedCash: number;
   earnedCashPerEbook: number;
   numberOfAddedEbooks: number;
+  numberOfDistinctions: number
 }
 
 const AuthorsStatistics = () => {
@@ -38,15 +41,18 @@ const AuthorsStatistics = () => {
     numberOfSoldEbooks: 0,
     earnedCash: 0,
     earnedCashPerEbook: 0,
-    numberOfAddedEbooks: 0
+    numberOfAddedEbooks: 0,
+    numberOfDistinctions: 0
   });
 
   React.useEffect(() => {
-    TransactionService.getUserStats(userId as string).then((response) => {
-      const rawStatistics: Statistics = response.data;
+    TransactionService.getUserStats(userId as string)
+    .then((response) => {
+      const rawStatistics: Statistics = response.data
       const numberOfSoldEbooks = rawStatistics.selled_book.all;
       setStats({
         numberOfSoldEbooks: numberOfSoldEbooks,
+        numberOfDistinctions: userContext ? userContext.user.numberOfDistinctions : 0,
         earnedCash: rawStatistics.earned_cash,
         earnedCashPerEbook:
           numberOfSoldEbooks == 0
@@ -54,7 +60,7 @@ const AuthorsStatistics = () => {
             : rawStatistics.earned_cash / numberOfSoldEbooks,
         numberOfAddedEbooks: userContext ? userContext.user.numberOfAddedEbooks : 0
       });
-    });
+    })
   }, []);
 
   return (
@@ -95,7 +101,7 @@ const AuthorsStatistics = () => {
           )}
           <StatisticData
             title="Pozostało darmowych wyróżnień:"
-            value={(5).toString()}
+            value={stats.numberOfDistinctions.toString()}
           />
         </Grid>
       </Grid>
