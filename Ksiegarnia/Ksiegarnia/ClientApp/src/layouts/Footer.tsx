@@ -16,13 +16,13 @@ const Footer = () => (
         <Typography>ul. Kościuszki 1c44-100 Gliwice</Typography>
         <Typography>tel. (32) 230-98-63</Typography>
         <Typography>
-          e-mail: <HiddenEmail email={"mail"} />
-          @ebookpoint.pl
+          e-mail: <HiddenEmail email={"ziwg-pwr"} />
+          @outlook.com
         </Typography>
         <Typography>redakcja:</Typography>
         <Typography>
-          <HiddenEmail email={"mail"} />
-          @ebookpoint.pl
+          <HiddenEmail email={"ziwg-pwr"} />
+          @outlook.com
         </Typography>
       </Grid>
     </footer>
