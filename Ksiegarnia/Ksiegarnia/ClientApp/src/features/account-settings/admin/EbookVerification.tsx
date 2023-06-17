@@ -11,6 +11,7 @@ import { PictureAsPdf } from "@mui/icons-material";
 import EbookPrice from "../../../components/EbookPrice";
 import AdminService from "../../../services/AdminService";
 import { NotificationContext } from "../../../context/NotificationContext";
+import EbookPlagiarismVerification from "./EbookPlagiarismVerification";
 
 const Data = (props: { label: string; value: string | React.ReactNode }) => {
   return (
@@ -157,6 +158,10 @@ const EbookVerification = () => {
           </Grid>
         </Grid>
         <BigData label="Opis" value={ebook.description} />
+        <BigData
+          label="System antyplagiatowy"
+          value={<EbookPlagiarismVerification ebook={ebook} />}
+        />
         <Grid item container justifyContent="center" columnGap={4}>
           <Grid item xs={4} sm={3} md={2} lg={1.5}>
             <Button fullWidth variant="contained" onClick={handleAccept}>
