@@ -19,6 +19,8 @@ namespace Infrastructure.Services.PlagiatSystem
         private CopyleaksIdentityApi _IdentityClient { get; set; }
         private  HttpClient _HttpClient { get; set; }
 
+        private CopyLeaksResponse _submitResponse;
+
         public CopyLeaksService()
         {
             HttpClientHandler handler = new HttpClientHandler()
@@ -34,7 +36,6 @@ namespace Infrastructure.Services.PlagiatSystem
 
         public async Task Submit(PlagiarismDto plagiatData)
         {
-            
             var response = new CopyLeaksResponse()
             {
                 ScanId = plagiatData.BookId.ToString(),
@@ -49,7 +50,7 @@ namespace Infrastructure.Services.PlagiatSystem
                     await api.SubmitFileAsync(plagiatData.BookId.ToString(), new FileDocument
                     {
                         // The text to scan in base64 format
-                        Base64 = Convert.ToBase64String(plagiatData.Content),
+                        Base64 = plagiatData.Content,
                         // The file name is it will appear in the scan result
                         Filename = "text.txt",
                         PropertiesSection = GetScanProperties(plagiatData.BookId.ToString())
@@ -105,12 +106,7 @@ namespace Infrastructure.Services.PlagiatSystem
                 var clientApi = _APIClient;
                 var clientCredits = await clientApi.CreditBalanceAsync(loginResponse.Token).ConfigureAwait(false);
 
-                var submitResponse = new CopyLeaksResponse()
-                {
-                    Token = loginResponse.Token,
-                    ClientCredits = clientCredits,
-                };
-
+                ConfigurationConst.CopyLeak.CopyLeaksToken = loginResponse.Token;
             }
             catch (CopyleaksHttpException cfe)
             {

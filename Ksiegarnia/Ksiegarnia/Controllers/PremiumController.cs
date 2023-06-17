@@ -55,6 +55,11 @@ namespace Application.Controllers
                     throw new UserNotFoundException(premiumData.UserId);
                 }
 
+                if (premiumData.Days <= 0 )
+                {
+                    throw new ExceptionBase(HttpStatusCode.BadRequest, "Days is equal or less zero");
+                }
+
                 var currencyEnum = Currency.PLN;
 
                 if (Enum.TryParse(currency, out Currency currencyValue))
@@ -91,8 +96,8 @@ namespace Application.Controllers
                 }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
-
-                var url = _paymentService.GetUri(cancel, redirect, transactionDto, (decimal)0.1, false).FirstOrDefault();
+                
+                var url = _paymentService.GetUri(cancel, redirect, "Kupienie premium", premiumData.Days * ConfigurationConst.PrizeForPremium).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
                 {

@@ -36,6 +36,11 @@ namespace Infrastructure
         public static decimal PrizeForDistinct { get; set; }
 
         /// <summary>
+        ///     Prize for Premium
+        /// </summary>
+        public static decimal PrizeForPremium { get; set; }
+
+        /// <summary>
         ///     Number of free books to add
         /// </summary>
         public static int FreeStorage { get; set; }
@@ -48,6 +53,7 @@ namespace Infrastructure
             FreeStorage = builder.Configuration.GetValue<int>("FreeStorage");
             FreeTimeDistinct = builder.Configuration.GetValue<int>("FreeTimeDistinct");
             PrizeForDistinct = builder.Configuration.GetValue<int>("PrizeForDistinct");
+            PrizeForPremium = builder.Configuration.GetValue<decimal>("PrizeForPremium");
         }
     }
 }
