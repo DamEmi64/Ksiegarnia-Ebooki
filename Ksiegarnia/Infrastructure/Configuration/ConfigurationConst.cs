@@ -36,14 +36,14 @@ namespace Infrastructure
         public static decimal PrizeForDistinct { get; set; }
 
         /// <summary>
-        ///     Prize for Premium
-        /// </summary>
-        public static decimal PrizeForPremium { get; set; }
-
-        /// <summary>
         ///     Number of free books to add
         /// </summary>
         public static int FreeStorage { get; set; }
+
+        /// <summary>
+        ///     Premium prize
+        /// </summary>
+        public static decimal PrizeForPremium { get; set; }
 
         public static void ConfigureConst(this WebApplicationBuilder builder)
         {
