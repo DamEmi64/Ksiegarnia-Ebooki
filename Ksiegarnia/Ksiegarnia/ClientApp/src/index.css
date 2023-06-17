@@ -97,3 +97,15 @@ img{
 .distincted-ebook{
   border: 6px solid rgb(245, 222, 88) !important;
 }
+
+.react-pdf__Document{
+  width: 100% !important;
+  display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+.react-pdf__Page__canvas{
+  width: 100% !important;
+  height: "auto" !important;
+}

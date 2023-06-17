@@ -13,6 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import React from "react";
+import Regulations from "../../components/Regulations";
 
 const AcceptRegulamin = (props: {
   value: boolean;
@@ -60,32 +61,20 @@ const AcceptRegulamin = (props: {
       </FormControl>
       <Dialog
         fullWidth={true}
-        maxWidth="sm"
+        maxWidth="lg"
         open={open}
         onClose={handleClose}
         style={{ borderRadius: 12 }}
       >
         <IconButton
           onClick={handleClose}
-          style={{ position: "absolute", right: 12, top: 12 }}
+          style={{ position: "absolute", right: 12, top: 12, zIndex: 1000 }}
         >
           <Close fontSize="large" />
         </IconButton>
-        <DialogTitle
-          variant="h5"
-          textAlign="center"
-          marginTop={2}
-          marginBottom={6}
-        >
-          Regulamin serwisu
-        </DialogTitle>
         <DialogContent>
           <Grid item container justifyContent="center" marginBottom={6}>
-            <Grid item xs={8}>
-              <Typography variant="h6">
-                1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.{" "}
-              </Typography>
-            </Grid>
+            <Regulations />
           </Grid>
         </DialogContent>
       </Dialog>

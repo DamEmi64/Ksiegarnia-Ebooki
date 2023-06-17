@@ -3,6 +3,7 @@ import { TransactionType } from "../models/api/transactionType";
 import { Currency } from "../models/api/currency";
 import EbookService from "./EbookService";
 import UserService from "./UserService";
+import { Distinction } from "../models/api/distinction";
 
 class TransactionService {
   private api = `${process.env.REACT_APP_API}/Transactions`;
@@ -51,6 +52,21 @@ class TransactionService {
       }
     );
   };
+
+  buyDistinction = () => {
+    const numberOfDistinctions = 1
+    return axios.post(`${this.api}/distinct/buy`, numberOfDistinctions)
+  }
+
+  finishDistinctTransaction = (transactionId: string, succeeded: boolean) => {
+    const numberOfDistinctions = 1
+    return axios.post(`${this.api}/FinishDistinct/${transactionId}`, {}, {
+      params: {
+        successed: succeeded,
+        no: numberOfDistinctions
+      }
+    })
+  }
 
   handleTransactionByTokens = (userId: string, bookIds: string[]) => {
     return EbookService.getGiftTokensFromEbooksList(bookIds).then(

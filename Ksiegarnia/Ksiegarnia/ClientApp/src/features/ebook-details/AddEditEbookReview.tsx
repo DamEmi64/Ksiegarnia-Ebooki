@@ -95,7 +95,7 @@ const AddEditEbookReview = (props: {
     };
 
     if (props.review) {
-      ReviewService.update(userData.id, request)
+      ReviewService.update(props.review.id, request)
       .then((response) => {
         console.log(response)
         notificationContext?.setNotification({
