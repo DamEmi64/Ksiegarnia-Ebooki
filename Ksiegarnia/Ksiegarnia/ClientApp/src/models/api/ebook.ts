@@ -1,4 +1,5 @@
 ﻿import { Distinction } from "./distinction";
+import { EbookAcceptance } from "./ebookAcceptance";
 import Genre from "./genre";
 import { Promotion } from "./promotion";
 import UserDTO from "./userDTO";
@@ -13,5 +14,7 @@ export default interface Ebook{
     picture: string,
     prize: number,
     promotion?: Promotion,
-    distinction?: Distinction
+    distinction?: Distinction,
+    verificationStatus: EbookAcceptance,
+    grade: number
 }

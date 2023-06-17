@@ -160,7 +160,7 @@ const EbookDetails = () => {
               value={ebook.author.firstName + " " + ebook.author.lastName}
             />
             <Data label="Kategoria" value={ebook.genre.name} />
-            <Data label="Ocena" value={<Rate value={4.5} />} />
+            <Data label="Ocena" value={<Rate value={ebook.grade} />} />
             <Data label="Stron" value={ebook.pageNumber} />
             <Data label="Format" value={<PictureAsPdf fontSize="large" />} />
           </Grid>
@@ -197,7 +197,6 @@ const EbookDetails = () => {
           </Grid>
         </Grid>
         <BigData label="Opis" value={ebook.description} />
-        <BigData label="Oceny" value={<EbookGrades />} />
         <EbooksReviews ebook={ebook} />
         <EbooksSlider title="Polecane" sort={EbookSortOptions.BestSeller} />
       </Grid>

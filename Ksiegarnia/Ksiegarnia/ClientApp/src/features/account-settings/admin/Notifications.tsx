@@ -12,24 +12,34 @@ import { useNavigate } from "react-router-dom";
 import EbookNotification from "../../../models/api/notification";
 import AdminService from "../../../services/AdminService";
 import AccountSettings from "../../../pages/AccountSettings";
+import {
+  StatusNameColorMapping,
+  statusNameColorMappings,
+} from "./NotificationStatusSelector";
 
 const columns: GridColDef[] = [
+  {
+    field: "type",
+    headerName: "Typ",
+    flex: 1,
+    headerAlign: "center",
+    align: "center",
+  },
   {
     field: "status",
     headerName: "Status",
     flex: 1,
     headerAlign: "center",
     align: "center",
-  },
-  {
-    field: "user",
-    headerName: "Autor",
-    flex: 1,
-    headerAlign: "center",
-    align: "center",
-    renderCell: (params: any) => (
-      <Typography variant="h5">{params.value.nick}</Typography>
-    ),
+    renderCell: (params: any) => {
+      const foundStatus = statusNameColorMappings.find(
+        (status: StatusNameColorMapping) => status.status === params.value
+      ) as StatusNameColorMapping;
+
+      return (
+        <Typography color={foundStatus.color}>{foundStatus.name}</Typography>
+      );
+    },
   },
   {
     field: "creationDate",
@@ -37,6 +47,9 @@ const columns: GridColDef[] = [
     flex: 1,
     headerAlign: "center",
     align: "center",
+    renderCell: (params: any) => (
+      <>{new Date(params.value).toLocaleDateString()}</>
+    ),
   },
   {
     field: "statusChangeDate",
@@ -44,6 +57,9 @@ const columns: GridColDef[] = [
     flex: 1,
     headerAlign: "center",
     align: "center",
+    renderCell: (params: any) => (
+      <>{new Date(params.value).toLocaleDateString()}</>
+    ),
   },
 ];
 
@@ -55,9 +71,9 @@ const Notifications = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    AdminService.getAllNotifications()
-    .then((response) => {
+    AdminService.getAllNotifications().then((response) => {
       setEbooksNotifications(response.data);
+      console.log(response.data);
     });
   }, []);
 
