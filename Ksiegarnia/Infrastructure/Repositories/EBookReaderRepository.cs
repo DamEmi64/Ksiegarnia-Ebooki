@@ -39,6 +39,7 @@ namespace Infrastructure.Repositories
             return (await _context.Set<EBookReader>()
                     .Include(x=>x.EBook)
                     .ThenInclude(x=>x.Author)
+                    .Include(x=>x.Reviews)
                     .Include(x => x.EBook)
                     .ThenInclude(x => x.Genre)
                     .FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
