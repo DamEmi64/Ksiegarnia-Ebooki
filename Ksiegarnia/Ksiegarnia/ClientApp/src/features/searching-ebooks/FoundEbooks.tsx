@@ -37,7 +37,8 @@ const FoundEbooks = () => {
         phrase: phraseFromParams ? phraseFromParams : undefined,
         genre: genreFromParams ? genreFromParams : undefined,
         minPrize: minPriceFromParams ? (minPriceFromParams as unknown as number) : undefined,
-        maxPrize: maxPriceFromParams ? (maxPriceFromParams as unknown as number) : undefined
+        maxPrize: maxPriceFromParams ? (maxPriceFromParams as unknown as number) : undefined,
+        onlyVerified: true
       }
     }
 

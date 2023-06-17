@@ -79,7 +79,7 @@ const BasketEbookView = (props: { ebook: Ebook }) => {
             <Typography variant="h6" fontWeight="bold">
               {ebook.genre.name}
             </Typography>
-            <Rate value={5} />
+            <Rate value={ebook.grade} />
           </Grid>
         </Grid>
       </Grid>

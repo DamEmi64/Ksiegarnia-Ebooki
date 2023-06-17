@@ -69,7 +69,7 @@ const BasicEbookView = (props: {
         </Typography>
       </Grid>
       <Grid item container justifyContent="center">
-        <Rate value={5} />
+        <Rate value={ebook.grade} />
       </Grid>
       {(props.showAddToCart && basketContext?.doShouldShowAddToBasket(ebook)) && (
         <Button

@@ -19,6 +19,7 @@ export interface UserContextType {
   containsRole: (role: Role) => boolean;
   setNumberOfAddedEbooks: (value: number) => void;
   setBoughtEbooksIds: (boughtEbooksIds: string[]) => void;
+  setNumberOfDistinctions: (value: number) => void;
   setAll: (newData: UserProps) => void;
 }
 
@@ -80,6 +81,10 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     setUser({ ...user, numberOfAddedEbooks: value });
   };
 
+  const setNumberOfDistinctions = (value: number) => {
+    setUser({ ...user, numberOfDistinctions: value });
+  };
+
   const setBoughtEbooksIds = (boughtBooksIds: string[]) => {
     setUser({...user, boughtEbooksIds: boughtBooksIds})
   }
@@ -101,6 +106,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         containsEbookId,
         setNumberOfAddedEbooks,
         setBoughtEbooksIds,
+        setNumberOfDistinctions,
         containsRole,
       }}
     >
