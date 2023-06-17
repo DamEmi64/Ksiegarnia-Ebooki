@@ -63,15 +63,33 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const [page, setPage] = useState<number>(0);
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
   const [numberOfReviews, setNumberOfReviews] = useState<number>(0);
-  const pageSize = 10;
+  const pageSize = 5;
 
   const [isAddingReview, setIsAddingReview] = useState<boolean>(false);
 
   useEffect(() => {
-    handleSearch();
+    if(page > 1){
+      handleSearch()
+    }
+    else{
+      handleSearchWithReplace();
+    }
   }, [page]);
 
   const handleSearch = () => {
+    ReviewService.getEbookReviews(props.ebook.id, page, pageSize).then(
+      (response) => {
+        console.log(response.data)
+        const pagedResponse: PagedResponse = response.data;
+        setReviews([...reviews, ...pagedResponse.result]);
+        setPage(pagedResponse.page);
+        setNumberOfPages(pagedResponse.number_of_pages);
+        setNumberOfReviews(pagedResponse.all);
+      }
+    );
+  };
+
+  const handleSearchWithReplace = () => {
     ReviewService.getEbookReviews(props.ebook.id, page, pageSize).then(
       (response) => {
         console.log(response.data)
@@ -82,7 +100,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
         setNumberOfReviews(pagedResponse.all);
       }
     );
-  };
+  }
 
   return (
     <Grid item container direction="column" rowGap={1} marginBottom={2}>
@@ -104,7 +122,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
           ) : (
             <AddEditEbookReview
               ebook={props.ebook}
-              handleUpdate={() => console.log("Updated")}
+              handleUpdate={handleSearchWithReplace}
               handleClose={() => setIsAddingReview(false)}
             />
           ))}
@@ -114,7 +132,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
               key={index}
               ebook={props.ebook}
               review={review}
-              handleUpdate={handleSearch}
+              handleUpdate={handleSearchWithReplace}
             />
           ))}
           {page < numberOfPages && (

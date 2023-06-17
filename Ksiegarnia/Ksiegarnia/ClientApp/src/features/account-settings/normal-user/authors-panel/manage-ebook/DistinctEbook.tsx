@@ -16,6 +16,9 @@ import { Distinction } from "../../../../../models/api/distinction";
 import { NotificationContext } from "../../../../../context/NotificationContext";
 import { UserContext } from "../../../../../context/UserContext";
 import Loading from "../../../../../pages/Loading";
+import UserService from "../../../../../services/UserService";
+import TransactionService from "../../../../../services/TransactionService";
+import { TransactionContext } from "../../../../../context/TransactionContext";
 
 const DistinctEbook = (props: {
   ebookId: string;
@@ -28,9 +31,15 @@ const DistinctEbook = (props: {
   const [howLongError, setHowLongError] = React.useState<string>("");
 
   const userContext = useContext(UserContext);
+  const transactionContext = useContext(TransactionContext)
   const notificationContext = React.useContext(NotificationContext);
 
   const SUCCESSFULY_MESSAGE = "Wyróżniono ebooka";
+  const FAILED_MESSAGE = "Nie udało się wyróżnic ebooka";
+
+  if (!userContext) {
+    return <Loading />;
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -45,17 +54,13 @@ const DistinctEbook = (props: {
     return true;
   };
 
-  const handleDistinct = (isSelectedFreeDistinction: boolean) => {
-    if (!validateForm()) {
-      return;
-    }
+  const handleFreeDistinct = (distinction: Distinction) => {
+    EbookService.distinct(props.ebookId, distinction)
+    .then((response) => {
+      UserService.getUserNumberOfDistinctions().then((response) => {
+        const numberOfDistinctions = response.data.ownedDistinction;
+        userContext.setNumberOfDistinctions(numberOfDistinctions);
 
-    EbookService.distinct(props.ebookId, {
-      startDate: new Date().toISOString(),
-      howLong: howLong,
-    })
-      .then((response) => {
-        console.log(response);
         setOpen(false);
         notificationContext?.setNotification({
           isVisible: true,
@@ -63,15 +68,46 @@ const DistinctEbook = (props: {
           message: SUCCESSFULY_MESSAGE,
         });
         props.update();
-      })
-      .catch((error) => {
-        console.log(error);
       });
-  };
-
-  if(!userContext){
-    return <Loading/>
+    })
+    .catch((error) => {
+      console.log(error)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: false,
+        message: FAILED_MESSAGE,
+      });
+    });
   }
+
+  const handlePaidDistinct = (distinction: Distinction) => {
+    TransactionService.buyDistinction()
+    .then((response) => {
+      transactionContext?.setDistinctionDetails({
+        ...distinction,
+        ebookId: props.ebookId
+      })
+      console.log(response)
+    })
+  }
+
+  const handleDistinct = (isSelectedFreeDistinction: boolean) => {
+    if (!validateForm()) {
+      return;
+    }
+
+    const request: Distinction = {
+      startDate: new Date().toISOString(),
+      howLong: howLong,
+    }
+
+    if (isSelectedFreeDistinction) {
+     handleFreeDistinct(request)
+    }
+    else{
+      handlePaidDistinct(request)
+    }
+  };
 
   return (
     <React.Fragment>

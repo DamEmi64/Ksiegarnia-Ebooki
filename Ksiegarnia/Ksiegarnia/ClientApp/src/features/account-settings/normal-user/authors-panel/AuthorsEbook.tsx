@@ -65,7 +65,7 @@ const AuthorsEbook = (props: { ebook: Ebook; update: () => void }) => {
             </Typography>
           </Grid>
           <Grid item container justifyContent="center">
-            <Rate value={5} />
+            <Rate value={ebook.grade} />
           </Grid>
           <Grid item xs={6} container justifyContent="center" marginTop={1}>
             <Button

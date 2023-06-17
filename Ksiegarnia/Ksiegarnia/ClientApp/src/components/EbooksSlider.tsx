@@ -61,7 +61,7 @@ const EbooksSlider = (props: {
   useEffect(() => {
     const searchCriteria = props.ebookSearchCriteria;
     EbookService.search({
-      ebookSearchCriteria: searchCriteria,
+      ebookSearchCriteria: { ...searchCriteria, onlyVerified: true },
       sort: props.sort,
       page: page,
       pageSize: pageSize,

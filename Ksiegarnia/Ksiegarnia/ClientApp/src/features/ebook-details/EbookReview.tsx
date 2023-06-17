@@ -51,7 +51,7 @@ const EbookReview = (props: {
   };
 
   const handleDelete = () => {
-    ReviewService.delete("1")
+    ReviewService.delete(review.id)
       .then((response) => {
         console.log(response);
         notificationContext?.setNotification({
@@ -80,7 +80,7 @@ const EbookReview = (props: {
         <Typography variant="h6" fontWeight="bold">
           {review.reviewer.nick}
         </Typography>
-        <Typography variant="h6">{review.date}</Typography>
+        <Typography variant="h6">{new Date(review.date).toLocaleDateString()}</Typography>
         {(isUserAdmin || userId === review.reviewer.id) && (
           <React.Fragment>
             <IconButton

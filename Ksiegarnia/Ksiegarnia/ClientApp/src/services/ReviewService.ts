@@ -29,8 +29,8 @@ class ReviewService {
         return axios.post(this.api, request)
     }
 
-    update(userId: string, request: CreateEditReview){
-        return axios.post(`${this.api}/${userId}`, request)
+    update(reviewId: string, request: CreateEditReview){
+        return axios.put(`${this.api}/${reviewId}`, request)
     }
 
     delete(reviewId: string){

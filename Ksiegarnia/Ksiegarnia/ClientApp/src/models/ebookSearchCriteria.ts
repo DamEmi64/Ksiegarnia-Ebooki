@@ -5,5 +5,6 @@
     minPrize?: number,
     maxPrize?: number,
     onlyOnPromotion?: boolean,
+    onlyVerified?: boolean,
     year?: number
 }
