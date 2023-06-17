@@ -22,7 +22,10 @@ const EbookPlagiarismVerification = (props: { ebook: Ebook }) => {
   };
 
   const handleCheckPlagiarismCheck = () => {
-    console.log("A")
+    PlagiarismService.checkResults(props.ebook.id)
+    .then((response) => {
+      console.log(response)
+    })
   };
 
   return (

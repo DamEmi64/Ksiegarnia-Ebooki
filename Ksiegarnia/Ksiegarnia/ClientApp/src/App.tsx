@@ -214,14 +214,6 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Content>
-          <ins
-            className="adsbygoogle"
-            data-ad-client="ca-pub-7774799498286441"
-            data-ad-slot="9991008576"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-            style={{ display: "block" }}
-          ></ins>
           <Footer />
         </Grid>
         <Notification />
