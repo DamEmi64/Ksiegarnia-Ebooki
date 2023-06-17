@@ -72,19 +72,24 @@ namespace Domain.DTOs
         /// <param name="user">User</param>
         /// <param name="roles">User roles</param>
         /// <returns></returns>
-        public static UserDto ToDTO(this User user, IEnumerable<string>? roles = null)
+        public static UserDto? ToDTO(this User user, IEnumerable<string>? roles = null)
         {
-            return new UserDto()
+            if (user != null)
             {
-                FirstName = user.FirstName,
-                Email = user.Email,
-                Id = user.Id,
-                LastName = user.LastName,
-                Nick = user.Nick,
-                Phone = user.PhoneNumber,
-                Age = (int)(DateTime.UtcNow - user.BirthDate).TotalDays / 365,
-                Roles = roles
-            };
+                return new UserDto()
+                {
+                    FirstName = user.FirstName,
+                    Email = user.Email,
+                    Id = user.Id,
+                    LastName = user.LastName,
+                    Nick = user.Nick,
+                    Phone = user.PhoneNumber,
+                    Age = (int)(DateTime.UtcNow - user.BirthDate).TotalDays / 365,
+                    Roles = roles
+                };
+            }
+
+            return null;
         }
     }
 }

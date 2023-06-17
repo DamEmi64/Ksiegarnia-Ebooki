@@ -33,17 +33,22 @@ namespace Domain.DTOs
 
     public static class TransactionConvert
     {
-        public static TransactionDto ToDTO(this Transaction transaction)
+        public static TransactionDto? ToDTO(this Transaction transaction)
         {
 
-            return new TransactionDto()
+            if (transaction != null)
             {
-                Books = transaction.EBookReaders?.GetBooks() ?? Array.Empty<BookDto>(),
-                Buyer = transaction.EBookReaders?.FirstOrDefault()?.User.ToDTO() ?? null,
-                Currency = transaction.Currency,
-                Date = transaction.DateTime,
-                Id = transaction.Id
-            };
+                return new TransactionDto()
+                {
+                    Books = transaction.EBookReaders?.GetBooks() ?? Array.Empty<BookDto>(),
+                    Buyer = transaction.EBookReaders?.FirstOrDefault()?.User.ToDTO() ?? null,
+                    Currency = transaction.Currency,
+                    Date = transaction.DateTime,
+                    Id = transaction.Id
+                };
+            }
+
+            return null;
         }
 
         public static IEnumerable<TransactionDto> ToDTOs(this IEnumerable<Transaction> transactions)
