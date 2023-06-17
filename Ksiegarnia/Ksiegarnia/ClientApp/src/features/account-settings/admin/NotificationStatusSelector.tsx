@@ -13,13 +13,13 @@ import { NotificationStatus } from "../../../models/api/notificationStatus";
 import React from "react";
 import AdminService from "../../../services/AdminService";
 
-interface StatusNameColorMapping {
+export interface StatusNameColorMapping {
   status: NotificationStatus;
   name: string;
   color: string;
 }
 
-const statusNameColorMappings: StatusNameColorMapping[] = [
+export const statusNameColorMappings: StatusNameColorMapping[] = [
   {
     status: NotificationStatus.Reported,
     name: "Utworzone",
@@ -33,7 +33,7 @@ const statusNameColorMappings: StatusNameColorMapping[] = [
   {
     status: NotificationStatus.Accepted,
     name: "Zaakceptowane",
-    color: "yellow",
+    color: "mediumblue",
   },
   {
     status: NotificationStatus.Completed,
@@ -51,18 +51,12 @@ const NotificationStatusSelector = (props: {
   notificationId: string;
   value: NotificationStatus;
 }) => {
-  const [status, setStatus] = React.useState<NotificationStatus>(
-    props.value
-  );
+  const [status, setStatus] = React.useState<NotificationStatus>(props.value);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newSelectedStatus: string = event.target.value;
     const enumStatus =
-      NotificationStatus[
-        newSelectedStatus as keyof typeof NotificationStatus
-      ];
-
-    return;
+      NotificationStatus[newSelectedStatus as keyof typeof NotificationStatus];
 
     AdminService.changeNotificationStatus(
       props.notificationId,
@@ -73,7 +67,13 @@ const NotificationStatusSelector = (props: {
   };
 
   return (
-    <Grid item container alignItems="center" justifyContent="space-between" columnGap={2}>
+    <Grid
+      item
+      container
+      alignItems="center"
+      justifyContent="space-between"
+      columnGap={2}
+    >
       <Grid item>
         <Typography variant="h6" display="inline" marginRight={2}>
           Status
@@ -85,7 +85,9 @@ const NotificationStatusSelector = (props: {
             {statusNameColorMappings.map(
               (statusMapping: StatusNameColorMapping, index: number) => (
                 <MenuItem key={index} value={statusMapping.status}>
-                  {statusMapping.name}
+                  <Typography color={statusMapping.color}>
+                    {statusMapping.name}
+                  </Typography>
                 </MenuItem>
               )
             )}

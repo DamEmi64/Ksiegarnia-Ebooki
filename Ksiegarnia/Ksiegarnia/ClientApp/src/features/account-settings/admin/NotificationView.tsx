@@ -33,30 +33,10 @@ const Data = (props: { label: string; value: string }) => {
 
 const newDate = new Date().toISOString();
 
-const mockedNotification: Notification = {
-  id: "1",
-  objectId: "2",
-  user: {
-    id: "1",
-    firstName: "Kamil",
-    lastName: "Dywan",
-    email: "kamil@mail.com",
-    nick: "kamil",
-    phone: "111222333",
-    age: 22,
-    roles: [Role.User],
-  },
-  description: "aAAAAAAA",
-  status: NotificationStatus.Reported,
-  creationDate: newDate,
-  statusChangeDate: newDate,
-};
-
 const NotificationView = () => {
   const notificationId = useParams().notificationId;
 
-  const [notification, setNotification] =
-    React.useState<Notification>(mockedNotification);
+  const [notification, setNotification] = React.useState<Notification>();
 
   const navigate = useNavigate();
 
@@ -67,6 +47,7 @@ const NotificationView = () => {
 
     AdminService.getNotificationById(notificationId as string)
       .then((response) => {
+        console.log(response.data)
         setNotification(response.data);
       })
       .catch(() => {
@@ -79,7 +60,7 @@ const NotificationView = () => {
   }
 
   const isStatusEditable = () => {
-    switch (mockedNotification.status) {
+    switch (notification.status) {
       case NotificationStatus.Reported:
       case NotificationStatus.Accepted:
         return true;
@@ -90,28 +71,28 @@ const NotificationView = () => {
 
   return (
     <AccountSettings
-      title={`Zgłoszenie użytkownika ${mockedNotification.user.nick}`}
+      title={`Zgłoszenie dotyczące ebooka`}
     >
       <Grid item container rowGap={8}>
         <Grid item xs={12} lg={4} container direction="column" rowGap={6}>
           {!isStatusEditable() ? (
-            <Data label={"Status"} value={mockedNotification.status} />
+            <Data label={"Status"} value={notification.status} />
           ) : (
             <NotificationStatusSelector
-              notificationId={mockedNotification.id}
-              value={mockedNotification.status}
+              notificationId={notification.id}
+              value={notification.status}
             />
           )}
           <Data
             label={"Data utworzenia"}
             value={new Date(
-              mockedNotification.creationDate
+              notification.creationDate
             ).toLocaleDateString()}
           />
           <Data
             label={"Data modyfikacji"}
             value={new Date(
-              mockedNotification.statusChangeDate
+              notification.statusChangeDate
             ).toLocaleDateString()}
           />
         </Grid>
@@ -119,11 +100,11 @@ const NotificationView = () => {
           <Typography variant="h5" marginBottom={2} fontWeight="bold">
             Opis
           </Typography>
-          <Typography variant="h6">{mockedNotification.description}</Typography>
+          <Typography variant="h6">{notification.description}</Typography>
         </Grid>
         <Button
           variant="contained"
-          href={`/Ebook/${mockedNotification.id}`}
+          href={`/Ebook/${notification.id}`}
           target="_blank"
           style={{marginTop: -12}}
         >
