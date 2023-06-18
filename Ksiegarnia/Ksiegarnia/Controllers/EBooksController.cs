@@ -62,7 +62,7 @@ namespace Application.Controllers
                                                 [FromQuery] bool onlyOnPromotion = false,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
-                                                [FromQuery] VerificationType? verificationType= null,
+                                                [FromQuery] VerificationType? verificationType = null,
                                                 [FromQuery] int page = 1)
         {
             var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName ?? string.Empty);
@@ -184,7 +184,7 @@ namespace Application.Controllers
                 throw new UserNotFoundException(string.Empty);
             }
 
-            if (book.Author != user || user.Publications?.Count(x => x.Distinction != null) > user.Distinctions)
+            if (book.Author != user || user.Distinctions <= 0)
             {
                 if (!(await _userRepository.CheckRole(user?.Id ?? "", Roles.PremiumUser) || await _userRepository.CheckRole(user?.Id ?? "", Roles.Admin)))
                 {
@@ -208,6 +208,8 @@ namespace Application.Controllers
             };
 
             await _bookRepository.AddDistinction(book.Distinction);
+
+            book.Author.Distinctions--;
 
             await _bookRepository.SaveChanges();
 
@@ -493,13 +495,7 @@ namespace Application.Controllers
 
         private int CountFreeDistinctions(User? user)
         {
-            switch (user?.Premium?.DaysToFinishPremium)
-            {
-                case 30: return 1;
-                case 60: return 2;
-                case 90: return 3;
-                default: return 0;
-            }
+            return user?.Premium?.DaysToFinishPremium / 30 ?? 0;
         }
     }
 }
