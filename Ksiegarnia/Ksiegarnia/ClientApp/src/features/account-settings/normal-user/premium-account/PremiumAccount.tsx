@@ -78,7 +78,7 @@ const PremiumAccount = () => {
     return <Loading />;
   }
 
-  const handleBuyPremium = (numberOfDays: number) => {
+  const handleBuyPremium = (numberOfDays: number, price: number) => {
     const newBuyDate = new Date();
     const newEndDate = premiumInfo.endDate
       ? premiumInfo.endDate
@@ -90,6 +90,7 @@ const PremiumAccount = () => {
       userId: userId,
       buyDate: newBuyDate.toISOString(),
       days: numberOfDays,
+      prize: price,
     })
       .then((response) => {
         const paypalRedirect: string = response.data;

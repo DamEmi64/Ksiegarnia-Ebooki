@@ -3,16 +3,16 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const container = document.getElementById('root');
+const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
+const container = document.getElementById("root");
 const root = createRoot(container!);
 
 root.render(
-    <BrowserRouter basename={baseUrl ? baseUrl : undefined}>
-        <App />
-    </BrowserRouter>
+  <BrowserRouter basename={baseUrl ? baseUrl : undefined}>
+    <App />
+  </BrowserRouter>
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -5,6 +5,7 @@ export interface BuyPremiumRequest {
   userId: string;
   buyDate: string;
   days: number;
+  prize: number;
 }
 
 class PremiumService {
@@ -16,8 +17,8 @@ class PremiumService {
     });
   }
 
-  finishPremiumTransaction(transactionId: string, succeeded: boolean){
-    return axios.post(`${this.api}/Finish/${transactionId}`)
+  finishPremiumTransaction(transactionId: string, succeeded: boolean) {
+    return axios.post(`${this.api}/Finish/${transactionId}`);
   }
 
   checkPremium(userId: string) {

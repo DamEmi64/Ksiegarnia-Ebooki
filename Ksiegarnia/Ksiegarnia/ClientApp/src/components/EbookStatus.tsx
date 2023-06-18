@@ -11,17 +11,17 @@ export interface EbookStatusNameColorMapping {
 export const ebookStatusesNameColorMappings: EbookStatusNameColorMapping[] = [
   {
     status: EbookAcceptance.Accepted,
-    name: "Zaakceptowane",
+    name: "Zaakceptowany",
     color: "#10CE00",
   },
   {
     status: EbookAcceptance.Verifing,
-    name: "W trakcie weryfikacji",
+    name: "Weryfikowany",
     color: "orange",
   },
   {
     status: EbookAcceptance.Rejected,
-    name: "Odrzucone",
+    name: "Odrzucony",
     color: "FF0000",
   },
 ];

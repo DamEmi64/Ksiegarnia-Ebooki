@@ -64,6 +64,22 @@ const AuthorsEbooks = () => {
     });
   };
 
+  const handleUpdate = () => {
+    UserService.getPublishedEbooks({
+      userId: userId,
+      authorId: userId,
+      phrase: searchPhrase,
+      page: page.current,
+      pageSize: actualPageSize.current,
+    }).then((response) => {
+      const data: PagedResponse = response.data;
+      const newEbooks: Ebook[] = data.result;
+      setEbooks(newEbooks);
+      numberOfPages.current = data.number_of_pages;
+      setNumberOfEbooks(data.all);
+    });
+  }
+
   const handleSearch = () => {
     page.current = 1;
     UserService.getPublishedEbooks({
@@ -78,7 +94,7 @@ const AuthorsEbooks = () => {
       setEbooks(newEbooks);
       numberOfPages.current = data.number_of_pages;
       setNumberOfEbooks(data.all);
-      userContext.setNumberOfAddedEbooks(data.all);
+      userContext.setNumberOfAddedEbooks(data.all)
     });
   };
 
@@ -145,7 +161,7 @@ const AuthorsEbooks = () => {
       </Grid>
       <Grid item container rowGap={6} marginTop={2}>
         {ebooks.map((ebook: Ebook) => (
-          <AuthorsEbook key={ebook.id} ebook={ebook} update={handleSearch} />
+          <AuthorsEbook key={ebook.id} ebook={ebook} update={handleUpdate} />
         ))}
       </Grid>
     </Grid>

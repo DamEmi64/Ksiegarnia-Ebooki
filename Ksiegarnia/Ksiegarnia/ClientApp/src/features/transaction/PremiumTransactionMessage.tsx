@@ -46,6 +46,7 @@ const PremiumTransactionMessage = () => {
       succeededFromPaypal === "true"
     )
       .then((response) => {
+        console.log(response)
         userContext?.setIsPremium(true);
 
         setIsFinalized(true);
