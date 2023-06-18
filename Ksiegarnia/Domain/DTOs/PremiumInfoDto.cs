@@ -21,5 +21,10 @@
         ///     Days to finish premium
         /// </summary>
         public int Days { get; set; }
+
+        /// <summary>
+        /// Prize     
+        /// </summary>
+        public decimal Prize { get; set; }
     }
 }
