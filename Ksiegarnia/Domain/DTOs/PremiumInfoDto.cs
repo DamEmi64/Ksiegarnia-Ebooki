@@ -1,4 +1,6 @@
-﻿namespace Domain.DTOs
+﻿using Domain.Entitites;
+
+namespace Domain.DTOs
 {
     public class PremiumInfoDto
     {
@@ -26,5 +28,23 @@
         /// Prize     
         /// </summary>
         public decimal Prize { get; set; }
+    }
+
+    public static class PremiumConvert
+    {
+        public static PremiumInfoDto? ToDTO(this Premium? premium)
+        {
+
+            if (premium != null)
+            {
+                return new PremiumInfoDto()
+                {
+                    BuyDate = premium.StartDate,
+                    Days = premium.DaysToFinishPremium,
+                };
+            }
+
+            return null;
+        }
     }
 }
