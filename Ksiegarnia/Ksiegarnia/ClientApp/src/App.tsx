@@ -44,6 +44,7 @@ import NotificationView from "./features/account-settings/admin/NotificationView
 import TransactionMessage from "./features/transaction/TransactionMessage";
 import EbooksVerifications from "./features/account-settings/admin/EbooksVerification";
 import EbookVerification from "./features/account-settings/admin/EbookVerification";
+import PremiumTransactionMessage from "./features/transaction/PremiumTransactionMessage";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
@@ -82,11 +83,11 @@ const theme = createTheme(
 
 const ContextProviders = (props: { children: React.ReactNode }) => {
   return (
-    <NotificationProvider>
-      <UserProvider>
+    <UserProvider>
+      <NotificationProvider>
         <BasketProvider>{props.children}</BasketProvider>
-      </UserProvider>
-    </NotificationProvider>
+      </NotificationProvider>
+    </UserProvider>
   );
 };
 
@@ -170,10 +171,7 @@ function App() {
                   }
                 >
                   <Route index element={<EbooksVerifications />} />
-                  <Route
-                    path=":ebookId"
-                    element={<EbookVerification />}
-                  />
+                  <Route path=":ebookId" element={<EbookVerification />} />
                   <Route
                     path=":ebookId/content"
                     element={<EbookContentViewer />}
@@ -208,20 +206,20 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="Premium/Finish/:transactionId"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <PremiumTransactionMessage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="contact" element={<Contact />} />
               <Route path="regulamin" element={<Regulamin />} />
               <Route path="forbidden" element={<Forbidden />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Content>
-          <ins
-            className="adsbygoogle"
-            data-ad-client="ca-pub-7774799498286441"
-            data-ad-slot="9991008576"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-            style={{ display: "block" }}
-          ></ins>
           <Footer />
         </Grid>
         <Notification />

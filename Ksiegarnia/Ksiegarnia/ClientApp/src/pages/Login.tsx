@@ -79,13 +79,11 @@ const Login = () => {
         axios
           .all([
             TransactionService.getUserStats(userData.id),
-            UserService.getUserNumberOfDistinctions(),
             PremiumService.checkPremium(userData.id),
           ])
           .then((responses) => {
             const userTransactionsStats: Statistics = responses[0].data;
-            const numberOfDistinctions = responses[1].data.ownedDistinction
-            const premiumData: PremiumCheck = responses[2].data;
+            const premiumData: PremiumCheck = responses[1].data;
 
             const boughtEbooksIds: string[] = [];
 
@@ -101,7 +99,7 @@ const Login = () => {
               isPremium: premiumData.isActive,
               boughtEbooksIds: boughtEbooksIds,
               numberOfAddedEbooks: 0,
-              numberOfDistinctions: numberOfDistinctions
+              numberOfDistinctions: 0
             });
 
             notificationContext?.setNotification({

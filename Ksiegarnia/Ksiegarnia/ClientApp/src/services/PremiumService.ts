@@ -5,6 +5,7 @@ export interface BuyPremiumRequest {
   userId: string;
   buyDate: string;
   days: number;
+  prize: number;
 }
 
 class PremiumService {
@@ -14,6 +15,10 @@ class PremiumService {
     return axios.post(`${this.api}/buy`, request, {
       params: { currency: "PLN" },
     });
+  }
+
+  finishPremiumTransaction(transactionId: string, succeeded: boolean) {
+    return axios.post(`${this.api}/Finish/${transactionId}`);
   }
 
   checkPremium(userId: string) {

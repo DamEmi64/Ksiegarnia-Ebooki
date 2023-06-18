@@ -10,6 +10,7 @@ import Ebook from "../../../models/api/ebook";
 import EbookService from "../../../services/EbookService";
 import { EbookSortOptions } from "../../../models/ebookSortOptions";
 import PagedResponse from "../../../models/api/pagedResponse";
+import { EbookAcceptance } from "../../../models/api/ebookAcceptance";
 
 const columns: GridColDef[] = [
   {

@@ -13,6 +13,7 @@ import EbookService from "../services/EbookService";
 import EbookSearchCriteria from "../models/ebookSearchCriteria";
 import PagedResponse from "../models/api/pagedResponse";
 import useWindowResize from "./useWindowResize";
+import { EbookAcceptance } from "../models/api/ebookAcceptance";
 
 const EbooksSlider = (props: {
   title: string;
@@ -61,7 +62,10 @@ const EbooksSlider = (props: {
   useEffect(() => {
     const searchCriteria = props.ebookSearchCriteria;
     EbookService.search({
-      ebookSearchCriteria: { ...searchCriteria, onlyVerified: true },
+      ebookSearchCriteria: {
+        ...searchCriteria,
+        verificationType: EbookAcceptance.Accepted,
+      },
       sort: props.sort,
       page: page,
       pageSize: pageSize,

@@ -27,10 +27,11 @@ const DistinctEbook = (props: {
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const [howLong, setHowLong] = React.useState<number>(0);
+  const [howLong, setHowLong] = React.useState<number>(1);
   const [howLongError, setHowLongError] = React.useState<string>("");
 
   const userContext = useContext(UserContext);
+  const userId = userContext?.user.data?.id
   const transactionContext = useContext(TransactionContext)
   const notificationContext = React.useContext(NotificationContext);
 
@@ -57,18 +58,14 @@ const DistinctEbook = (props: {
   const handleFreeDistinct = (distinction: Distinction) => {
     EbookService.distinct(props.ebookId, distinction)
     .then((response) => {
-      UserService.getUserNumberOfDistinctions().then((response) => {
-        const numberOfDistinctions = response.data.ownedDistinction;
-        userContext.setNumberOfDistinctions(numberOfDistinctions);
-
-        setOpen(false);
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: true,
-          message: SUCCESSFULY_MESSAGE,
-        });
-        props.update();
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_MESSAGE,
       });
+      handleClose()
+      userContext.setNumberOfDistinctions(userContext.user.numberOfDistinctions - 1)
+      props.update()
     })
     .catch((error) => {
       console.log(error)
@@ -81,13 +78,20 @@ const DistinctEbook = (props: {
   }
 
   const handlePaidDistinct = (distinction: Distinction) => {
-    TransactionService.buyDistinction()
+    TransactionService.buyDistinction(userId as string)
     .then((response) => {
+      console.log(response)
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_MESSAGE,
+      });
       transactionContext?.setDistinctionDetails({
         ...distinction,
         ebookId: props.ebookId
       })
-      console.log(response)
+      handleClose()
+      props.update()
     })
   }
 
@@ -139,23 +143,13 @@ const DistinctEbook = (props: {
           variant="h5"
           textAlign="center"
           marginTop={2}
-          marginBottom={6}
+          marginBottom={4}
         >
-          Wyróżnienie ebooka
+          Wyróżnienie ebooka (1 tydz.)
         </DialogTitle>
         <DialogContent>
           <Grid item container justifyContent="center" marginBottom={3}>
             <Grid item xs={11} md={8} container rowGap={4}>
-              <BasicTextField
-                label="Czas trwania (tyg.)"
-                settings={{ type: "number" }}
-                value={howLong.toString()}
-                errorMessage={howLongError}
-                handleChange={(value: string) => {
-                  setHowLong(+value);
-                  setHowLongError("");
-                }}
-              />
               <Grid item container rowGap={2}>
                 {userContext?.user.numberOfDistinctions > 0 && (
                   <Button
