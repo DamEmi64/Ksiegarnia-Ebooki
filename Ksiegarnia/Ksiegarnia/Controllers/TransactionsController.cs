@@ -99,8 +99,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(userId);
                 }
                 
-                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
+                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }) ?? string.Empty;
 
 
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
@@ -251,8 +251,8 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
@@ -287,8 +287,8 @@ namespace Application.Controllers
             {
                 if (transaction != null)
                 {
-                    var cancel = Url.Action(nameof(FinishSendingCashToUser), "Transactions", values: new { id = id, succeeded = false }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
-                    var redirect = Url.Action(nameof(FinishSendingCashToUser), "Transactions", values: new { id = id, succeeded = true }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
+                    var cancel = Url.Action(nameof(FinishSendingCashToUser), "Transactions", values: new { id = id, succeeded = false }) ?? string.Empty;
+                    var redirect = Url.Action(nameof(FinishSendingCashToUser), "Transactions", values: new { id = id, succeeded = true }) ?? string.Empty;
 
                     var transactionDto = (await _eBookReaderRepository.GetTransaction(id)).ToDTO();
 
