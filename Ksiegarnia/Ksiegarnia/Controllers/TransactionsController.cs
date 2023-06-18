@@ -103,6 +103,7 @@ namespace Application.Controllers
                 var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }) ?? string.Empty;
 
 
+
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
