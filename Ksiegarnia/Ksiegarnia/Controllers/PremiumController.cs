@@ -56,7 +56,7 @@ namespace Application.Controllers
                     throw new UserNotFoundException(premiumData.UserId);
                 }
 
-                if (premiumData.Days <= 0 )
+                if (premiumData.Days <= 0)
                 {
                     throw new ExceptionBase(HttpStatusCode.BadRequest, "Days is equal or less zero");
                 }
@@ -97,8 +97,7 @@ namespace Application.Controllers
                 }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
-
-                var url = _paymentService.GetUri(cancel, redirect, "Kupienie premium", premiumData.Days * ConfigurationConst.PrizeForPremium).FirstOrDefault();
+                var url = _paymentService.GetUri(cancel, redirect, "Kupienie premium", premiumData.Prize).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
                 {
