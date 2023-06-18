@@ -63,7 +63,6 @@ const DistinctTransactionMessage = () => {
 
         EbookService.distinct(distinctionDetails.ebookId, distinctionDetails)
           .then(() => {
-            userContext?.setNumberOfDistinctions(userContext.user.numberOfDistinctions - 1);
             setIsFinalized(true);
             setIsSuccess(true);
           })

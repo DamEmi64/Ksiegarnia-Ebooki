@@ -35,10 +35,10 @@ const premiumPlans: PremiumPlan[] = [
 const BuyPremiumDialog = (props: {
   open: boolean;
   handleDecline: () => void;
-  handleAccept: (numberOfDays: number) => void;
+  handleAccept: (numberOfDays: number, price: number) => void;
 }) => {
-  const handleAccept = (numberOfDays: number) => {
-    props.handleAccept(numberOfDays);
+  const handleAccept = (numberOfDays: number, price: number) => {
+    props.handleAccept(numberOfDays, price);
   };
 
   const PremiumPlanView = (props: { premiumPlan: PremiumPlan }) => {
@@ -50,7 +50,9 @@ const BuyPremiumDialog = (props: {
           <Button
             fullWidth
             className="premium-button button-rounded"
-            onClick={() => handleAccept(premiumPlan.duration * 30)}
+            onClick={() =>
+              handleAccept(premiumPlan.duration * 30, premiumPlan.price)
+            }
             style={{ padding: "12px 16px" }}
           >
             <Grid container alignItems="center">
