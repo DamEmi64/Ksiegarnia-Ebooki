@@ -2,6 +2,7 @@
 import { Grid } from "@mui/material";
 import FoundEbooks from "../features/searching-ebooks/FoundEbooks";
 import React from "react";
+import HorizontalAd from "../components/HorizontalAd";
 
 const SearchEbooks = () => (
   <Grid container justifyContent="center" rowGap={4}>
@@ -23,6 +24,7 @@ const SearchEbooks = () => (
       </Grid>
     </Grid>
     <Grid item xs={0} xl={1.5} display={{ xs: "flex", md: "none" }}></Grid>
+    <HorizontalAd/>
   </Grid>
 );
 

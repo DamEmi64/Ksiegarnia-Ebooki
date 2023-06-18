@@ -54,6 +54,7 @@ const ReportEbook = (props: {ebookId: string}) => {
 
     AdminService.createNotification(request)
     .then(() => {
+      handleClose()
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,

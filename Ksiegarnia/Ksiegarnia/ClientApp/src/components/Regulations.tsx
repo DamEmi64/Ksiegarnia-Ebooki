@@ -60,7 +60,7 @@ const Regulations = (props: { scaleMultiplier?: number }) => {
   };
 
   return (
-    <Grid item container width="100%">
+    <Grid item container width="100%" justifyContent="center">
       <Document
         file={{ url: regulationsURL }}
         onLoadSuccess={onDocumentLoadSuccess}

@@ -1,6 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import UserDTO from "../models/api/userDTO";
 import { Role } from "../models/api/role";
+import UserService from "../services/UserService";
 
 export interface UserProps {
   logged: boolean;
@@ -20,6 +21,7 @@ export interface UserContextType {
   setNumberOfAddedEbooks: (value: number) => void;
   setBoughtEbooksIds: (boughtEbooksIds: string[]) => void;
   setNumberOfDistinctions: (value: number) => void;
+  setIsPremium: (newIsPremium: boolean) => void;
   setAll: (newData: UserProps) => void;
 }
 
@@ -39,13 +41,14 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         isPremium: false,
         boughtEbooksIds: [],
         numberOfAddedEbooks: 0,
-        numberOfDistinctions: 0
+        numberOfDistinctions: 0,
       };
     }
   });
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
+    console.log(user)
   }, [user]);
 
   const setLogged = (logged: boolean) => {
@@ -55,7 +58,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         isPremium: false,
         boughtEbooksIds: [],
         numberOfAddedEbooks: 0,
-        numberOfDistinctions: 0
+        numberOfDistinctions: 0,
       });
     } else {
       setUser({ ...user, logged: logged });
@@ -86,8 +89,12 @@ const UserProvider = (props: { children: React.ReactNode }) => {
   };
 
   const setBoughtEbooksIds = (boughtBooksIds: string[]) => {
-    setUser({...user, boughtEbooksIds: boughtBooksIds})
-  }
+    setUser({ ...user, boughtEbooksIds: boughtBooksIds });
+  };
+
+  const setIsPremium = (newIsPremium: boolean) => {
+    setUser({ ...user, isPremium: newIsPremium });
+  };
 
   const containsRole = (role: Role) => {
     if (!user.data) {
@@ -107,6 +114,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         setNumberOfAddedEbooks,
         setBoughtEbooksIds,
         setNumberOfDistinctions,
+        setIsPremium,
         containsRole,
       }}
     >
