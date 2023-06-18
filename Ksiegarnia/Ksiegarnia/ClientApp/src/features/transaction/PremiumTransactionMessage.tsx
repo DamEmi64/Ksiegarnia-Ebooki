@@ -1,26 +1,18 @@
-﻿import React, { useContext } from "react";
-import TransactionService from "../../services/TransactionService";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { NotificationContext } from "../../context/NotificationContext";
-import Loading from "../../pages/Loading";
-import { CheckCircle, Error, Warning } from "@mui/icons-material";
+﻿import { CheckCircle, Error } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
-import { UserContext } from "../../context/UserContext";
-import Statistics from "../../models/api/statistics";
-import Ebook from "../../models/api/ebook";
-import Transaction from "../../models/api/transaction";
-import EbookService from "../../services/EbookService";
-import {
+import React, { useContext } from "react";
+import { useSearchParams, useParams, useNavigate } from "react-router-dom";
+import TransactionContext, {
   DistinctionDetails,
-  TransactionContext,
 } from "../../context/TransactionContext";
+import { UserContext } from "../../context/UserContext";
+import Loading from "../../pages/Loading";
+import EbookService from "../../services/EbookService";
+import TransactionService from "../../services/TransactionService";
+import PremiumService from "../../services/PremiumService";
+import PremiumCheck from "../../models/api/premiumCheck";
 
-const DistinctTransactionMessage = () => {
+const PremiumTransactionMessage = () => {
   const userContext = useContext(UserContext);
   const userId = userContext?.user.data?.id;
 
@@ -29,15 +21,13 @@ const DistinctTransactionMessage = () => {
   const transactionId = useParams().transactionId;
   const succeededFromPaypal = searchParams.get("succeeded");
 
-  const transactionContext = useContext(TransactionContext);
-
   const [isFinalized, setIsFinalized] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const SUCCESFUL_MESSAGE =
-    "Transakcja zakończyła się pomyślnie - wyróżniono ebooka";
+    "Transakcja zakończyła się pomyślnie - zakupiono premium";
   const FAILED_MESSAGE = "Wystąpił błąd podczas finalizowania transakcji";
 
   React.useEffect(() => {
@@ -51,25 +41,15 @@ const DistinctTransactionMessage = () => {
       return;
     }
 
-    TransactionService.finishDistinctTransaction(
+    PremiumService.finishPremiumTransaction(
       transactionId as string,
       succeededFromPaypal === "true"
     )
       .then((response) => {
-        console.log(response);
+        userContext?.setIsPremium(true);
 
-        const distinctionDetails: DistinctionDetails = transactionContext
-          ?.transaction.distinctionDetails as DistinctionDetails;
-
-        EbookService.distinct(distinctionDetails.ebookId, distinctionDetails)
-          .then(() => {
-            userContext?.setNumberOfDistinctions(userContext.user.numberOfDistinctions - 1);
-            setIsFinalized(true);
-            setIsSuccess(true);
-          })
-          .catch((error) => {
-            throw error;
-          });
+        setIsFinalized(true);
+        setIsSuccess(true);
       })
       .catch((error) => {
         console.log(error);
@@ -78,7 +58,7 @@ const DistinctTransactionMessage = () => {
       });
   }, []);
 
-  if (!isFinalized || !userContext) {
+  if (!isFinalized) {
     return <Loading />;
   }
 
@@ -102,4 +82,4 @@ const DistinctTransactionMessage = () => {
   );
 };
 
-export default DistinctTransactionMessage;
+export default PremiumTransactionMessage;

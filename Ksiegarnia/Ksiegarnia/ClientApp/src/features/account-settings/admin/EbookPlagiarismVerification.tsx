@@ -5,6 +5,7 @@ import PlagiarismService from "../../../services/PlagiarismService";
 import EbookService from "../../../services/EbookService";
 import React from "react";
 import EbookStatus from "../../../components/EbookStatus";
+import FileService from "../../../services/FileService";
 
 const EbookPlagiarismVerification = (props: { ebook: Ebook }) => {
   const [ebookContent, setEbookContent] = React.useState<string>("");
@@ -22,7 +23,10 @@ const EbookPlagiarismVerification = (props: { ebook: Ebook }) => {
   };
 
   const handleCheckPlagiarismCheck = () => {
-    console.log("A")
+    PlagiarismService.checkResults(props.ebook.id)
+    .then((response) => {
+      console.log(response)
+    })
   };
 
   return (

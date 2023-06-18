@@ -21,6 +21,7 @@ import EbookImage from "../../components/EbookImage";
 import ReportEbook from "./ReportEbook";
 import { Role } from "../../models/api/role";
 import DeleteEbook from "../account-settings/normal-user/authors-panel/DeleteEbook";
+import HorizontalAd from "../../components/HorizontalAd";
 
 const Data = (props: { label: string; value: string | React.ReactNode }) => {
   return (
@@ -200,6 +201,7 @@ const EbookDetails = () => {
         <EbooksReviews ebook={ebook} />
         <EbooksSlider title="Polecane" sort={EbookSortOptions.BestSeller} />
       </Grid>
+      <HorizontalAd/>
     </CategoriesContent>
   );
 };

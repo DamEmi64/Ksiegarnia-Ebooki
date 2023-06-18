@@ -20,6 +20,7 @@ import EbookPrice from "../../components/EbookPrice";
 import EbookImage from "../../components/EbookImage";
 import Statistics from "../../models/api/statistics";
 import Transaction from "../../models/api/transaction";
+import HorizontalAd from "../../components/HorizontalAd";
 
 const BasketEbookView = (props: { ebook: Ebook }) => {
   const ebook = props.ebook;
@@ -264,6 +265,7 @@ const Basket = () => {
           </Grid>
         )}
       </Grid>
+      <HorizontalAd/>
     </Grid>
   );
 };

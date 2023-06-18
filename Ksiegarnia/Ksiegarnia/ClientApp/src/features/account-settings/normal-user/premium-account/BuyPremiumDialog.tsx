@@ -13,30 +13,30 @@ interface PremiumPlan {
   price: number;
 }
 
+const premiumPlans: PremiumPlan[] = [
+  {
+    duration: 1,
+    price: 49.99,
+  },
+  {
+    duration: 3,
+    price: 119.99,
+  },
+  {
+    duration: 6,
+    price: 259.99,
+  },
+  {
+    duration: 12,
+    price: 419.99,
+  },
+];
+
 const BuyPremiumDialog = (props: {
   open: boolean;
   handleDecline: () => void;
   handleAccept: (numberOfDays: number) => void;
 }) => {
-  const premiumPlans: PremiumPlan[] = [
-    {
-      duration: 1,
-      price: 49.99,
-    },
-    {
-      duration: 3,
-      price: 119.99,
-    },
-    {
-      duration: 6,
-      price: 259.99,
-    },
-    {
-      duration: 12,
-      price: 419.99,
-    },
-  ];
-
   const handleAccept = (numberOfDays: number) => {
     props.handleAccept(numberOfDays);
   };
@@ -60,9 +60,8 @@ const BuyPremiumDialog = (props: {
                   {premiumPlan.duration == 1
                     ? "miesiąc"
                     : premiumPlan.duration < 5
-                        ? "miesiące"
-                        : "miesięcy"
-                  }
+                    ? "miesiące"
+                    : "miesięcy"}
                 </Typography>
               </Grid>
               <Grid item xs={6}>

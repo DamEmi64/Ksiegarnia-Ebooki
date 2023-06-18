@@ -10,6 +10,7 @@ import BuyPremiumDialog from "./BuyPremiumDialog";
 import PremiumAccountOrder from "./PremiumAccountOrder";
 import React from "react";
 import AccountSettings from "../../../../pages/AccountSettings";
+import { NotificationContext } from "../../../../context/NotificationContext";
 
 const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
@@ -28,30 +29,6 @@ const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   );
 };
 
-const premiumHistories: PremiumHistory[] = [
-  {
-    id: "1",
-    type: 1,
-    fromDate: new Date().toLocaleDateString(),
-    toDate: new Date().toLocaleDateString(),
-    prize: 50,
-  },
-  {
-    id: "2",
-    type: 3,
-    fromDate: new Date().toLocaleDateString(),
-    toDate: new Date().toLocaleDateString(),
-    prize: 100,
-  },
-  {
-    id: "3",
-    type: 6,
-    fromDate: new Date().toLocaleDateString(),
-    toDate: new Date().toLocaleDateString(),
-    prize: 150,
-  },
-];
-
 interface PremiumInfoProps {
   isActive: boolean;
   userId: string;
@@ -67,7 +44,12 @@ const PremiumAccount = () => {
   const [isVisibleBuyPremiumDialog, setIsVisibleBuyPremiumDialog] =
     useState<boolean>(false);
 
-  const handleCheckPremium = () => {
+  const notificationContext = React.useContext(NotificationContext);
+
+  const NOT_SUBMITED_TRANSACTION = "Nie udało się złożyć zamówienia";
+  const SUCCESSFULY_SUBMITED_TRANSACTION = "Udało się złożyć zamówienie";
+
+  useEffect(() => {
     PremiumService.checkPremium(userId as string).then((response) => {
       const premiumInfoData: PremiumCheck = response.data;
 
@@ -90,10 +72,6 @@ const PremiumAccount = () => {
         endDate: endDate,
       });
     });
-  };
-
-  useEffect(() => {
-    handleCheckPremium();
   }, []);
 
   if (!userId || !premiumInfo) {
@@ -114,6 +92,17 @@ const PremiumAccount = () => {
       days: numberOfDays,
     })
       .then((response) => {
+        const paypalRedirect: string = response.data;
+        console.log(paypalRedirect);
+
+        notificationContext?.setNotification({
+          isVisible: true,
+          isSuccessful: true,
+          message: SUCCESSFULY_SUBMITED_TRANSACTION,
+        });
+
+        window.location.href = paypalRedirect;
+
         console.log(response);
         setPremiumInfo({
           ...premiumInfo,
