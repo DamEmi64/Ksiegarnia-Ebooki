@@ -48,6 +48,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
+    console.log(user)
   }, [user]);
 
   const setLogged = (logged: boolean) => {

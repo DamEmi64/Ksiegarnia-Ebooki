@@ -31,7 +31,6 @@ interface UserTransactionsStats {
   earnedCash: number;
   earnedCashPerEbook: number;
   numberOfAddedEbooks: number;
-  numberOfDistinctions: number;
 }
 
 const AuthorsStatistics = () => {
@@ -43,10 +42,7 @@ const AuthorsStatistics = () => {
     earnedCash: 0,
     earnedCashPerEbook: 0,
     numberOfAddedEbooks: 0,
-    numberOfDistinctions: 0,
   });
-
-  const [a, setA] = React.useState<number>(0);
 
   React.useEffect(() => {
     axios
@@ -68,21 +64,10 @@ const AuthorsStatistics = () => {
           numberOfAddedEbooks: userContext
             ? userContext.user.numberOfAddedEbooks
             : 0,
-          numberOfDistinctions: numberOfDistinctions,
         });
         userContext?.setNumberOfDistinctions(numberOfDistinctions);
       });
   }, []);
-
-  React.useEffect(() => {
-    console.log(userContext?.user.numberOfDistinctions)
-    setStats({
-      ...stats,
-      numberOfDistinctions: userContext
-        ? userContext?.user.numberOfDistinctions
-        : 0,
-    });
-  }, [userContext?.user.numberOfDistinctions]);
 
   if (!userContext) {
     return <Loading />;
@@ -126,7 +111,7 @@ const AuthorsStatistics = () => {
           )}
           <StatisticData
             title="Pozostało darmowych wyróżnień:"
-            value={stats.numberOfDistinctions.toString()}
+            value={userContext.user.numberOfDistinctions.toString()}
           />
         </Grid>
       </Grid>

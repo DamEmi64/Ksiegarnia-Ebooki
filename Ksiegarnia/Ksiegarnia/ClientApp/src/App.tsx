@@ -83,11 +83,11 @@ const theme = createTheme(
 
 const ContextProviders = (props: { children: React.ReactNode }) => {
   return (
-    <NotificationProvider>
-      <UserProvider>
+    <UserProvider>
+      <NotificationProvider>
         <BasketProvider>{props.children}</BasketProvider>
-      </UserProvider>
-    </NotificationProvider>
+      </NotificationProvider>
+    </UserProvider>
   );
 };
 
@@ -171,10 +171,7 @@ function App() {
                   }
                 >
                   <Route index element={<EbooksVerifications />} />
-                  <Route
-                    path=":ebookId"
-                    element={<EbookVerification />}
-                  />
+                  <Route path=":ebookId" element={<EbookVerification />} />
                   <Route
                     path=":ebookId/content"
                     element={<EbookContentViewer />}
