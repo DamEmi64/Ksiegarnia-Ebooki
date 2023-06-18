@@ -40,11 +40,6 @@ namespace Infrastructure
         /// </summary>
         public static int FreeStorage { get; set; }
 
-        /// <summary>
-        ///     Premium prize
-        /// </summary>
-        public static decimal PrizeForPremium { get; set; }
-
         public static void ConfigureConst(this WebApplicationBuilder builder)
         {
             CopyLeak = builder.Configuration.GetSection("CopyLeak").Get<CopyLeakStruct>();
@@ -52,8 +47,7 @@ namespace Infrastructure
             Paypal = builder.Configuration.GetSection("Paypal").Get<PaypalStruct>();
             FreeStorage = builder.Configuration.GetValue<int>("FreeStorage");
             FreeTimeDistinct = builder.Configuration.GetValue<int>("FreeTimeDistinct");
-            PrizeForDistinct = builder.Configuration.GetValue<int>("PrizeForDistinct");
-            PrizeForPremium = builder.Configuration.GetValue<decimal>("PrizeForPremium");
+            PrizeForDistinct = builder.Configuration.GetValue<decimal>("PrizeForDistinct");
         }
     }
 }
