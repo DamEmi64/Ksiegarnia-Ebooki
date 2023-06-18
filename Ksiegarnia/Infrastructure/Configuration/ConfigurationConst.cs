@@ -40,6 +40,11 @@ namespace Infrastructure
         /// </summary>
         public static int FreeStorage { get; set; }
 
+        /// <summary>
+        ///     Premium prize
+        /// </summary>
+        public static decimal PrizeForPremium { get; set; }
+
         public static void ConfigureConst(this WebApplicationBuilder builder)
         {
             CopyLeak = builder.Configuration.GetSection("CopyLeak").Get<CopyLeakStruct>();
