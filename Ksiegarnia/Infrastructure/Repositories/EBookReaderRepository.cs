@@ -29,6 +29,7 @@ namespace Infrastructure.Repositories
                         .Include(x => x.User)
                         .Include(x => x.EBook)
                         .ThenInclude(x=>x.Author)
+                        .Include(x => x.Reviews)
                         .Include(x => x.EBook)
                         .ThenInclude(x => x.Genre)
                         .FirstOrDefaultAsync(x => x.User.Id == userId && x.EBook.Id == bookdId);
@@ -39,6 +40,7 @@ namespace Infrastructure.Repositories
             return (await _context.Set<EBookReader>()
                     .Include(x=>x.EBook)
                     .ThenInclude(x=>x.Author)
+                    .Include(x=>x.Reviews)
                     .Include(x => x.EBook)
                     .ThenInclude(x => x.Genre)
                     .FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
@@ -57,6 +59,8 @@ namespace Infrastructure.Repositories
                     .ThenInclude(z => z.Genre)
                     .Include(x => x.EBookReaders)
                     .ThenInclude(y => y.User)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.Reviews)
                     .Where(x => x.EBookReaders.Any(y => y.User.Id == id));
             }
             return _context.Set<Transaction>()
@@ -67,7 +71,9 @@ namespace Infrastructure.Repositories
                     .ThenInclude(y => y.EBook)
                     .ThenInclude(z => z.Genre)
                     .Include(x => x.EBookReaders)
-                    .ThenInclude(y => y.User);
+                    .ThenInclude(y => y.User)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.Reviews);
         }
 
         public void Remove(Transaction transaction)

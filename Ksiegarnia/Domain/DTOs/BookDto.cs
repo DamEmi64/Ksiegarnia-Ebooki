@@ -108,9 +108,9 @@ namespace Domain.DTOs
             if (eBook.Readers != null && eBook.Readers.Count > 0)
             {
                 int i = 0;
-                foreach (var reader in eBook.Readers)
+                foreach (var reader in eBook.Readers.Where(x=>x.Reviews!= null && x.Reviews.Count>0))
                 {
-                    var review = reader.Reviews.LastOrDefault(x => x.Reader.EBook.Id == eBook.Id);
+                    var review = reader.Reviews.LastOrDefault(x => x.Reader?.EBook?.Id == eBook.Id);
 
                     if (review != null)
                     {

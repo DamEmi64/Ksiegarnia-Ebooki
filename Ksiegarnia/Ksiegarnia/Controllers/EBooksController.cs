@@ -62,7 +62,7 @@ namespace Application.Controllers
                                                 [FromQuery] bool onlyOnPromotion = false,
                                                 [FromQuery] decimal? maxPrize = 0,
                                                 [FromQuery] decimal? minPrize = 0,
-                                                [FromQuery] bool onlyVerified= false,
+                                                [FromQuery] VerificationType? verificationType= null,
                                                 [FromQuery] int page = 1)
         {
             var books = await _bookRepository.GetEBooks(genre?.ToList() ?? null, year?.ToList() ?? null, authorName ?? string.Empty);
@@ -76,9 +76,9 @@ namespace Application.Controllers
                 books = books.Where(x => x.Prize >= minPrize).ToList();
             }
 
-            if (onlyVerified)
+            if (verificationType != null)
             {
-                books = books.Where(x => x.Verification == VerificationType.Accepted).ToList();
+                books = books.Where(x => x.Verification == verificationType).ToList();
             }
 
             if (!string.IsNullOrEmpty(phrase))
@@ -423,6 +423,7 @@ namespace Application.Controllers
                 if (eBook.Content != null)
                 {
                     book.Content = Convert.FromBase64String(eBook.Content);
+                    book.Verification = VerificationType.Verifing;
                 }
 
                 if (eBook.Description != null)
