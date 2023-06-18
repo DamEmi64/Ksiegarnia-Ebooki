@@ -44,6 +44,7 @@ import NotificationView from "./features/account-settings/admin/NotificationView
 import TransactionMessage from "./features/transaction/TransactionMessage";
 import EbooksVerifications from "./features/account-settings/admin/EbooksVerification";
 import EbookVerification from "./features/account-settings/admin/EbookVerification";
+import PremiumTransactionMessage from "./features/transaction/PremiumTransactionMessage";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
@@ -205,6 +206,14 @@ function App() {
                 element={
                   <ProtectedRoute requiresLogged={true}>
                     <TransactionMessage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="Premium/Finish/:transactionId"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <PremiumTransactionMessage />
                   </ProtectedRoute>
                 }
               />

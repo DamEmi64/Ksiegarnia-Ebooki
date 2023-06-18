@@ -20,6 +20,7 @@ export interface UserContextType {
   setNumberOfAddedEbooks: (value: number) => void;
   setBoughtEbooksIds: (boughtEbooksIds: string[]) => void;
   setNumberOfDistinctions: (value: number) => void;
+  setIsPremium: (newIsPremium: boolean) => void;
   setAll: (newData: UserProps) => void;
 }
 
@@ -89,6 +90,10 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     setUser({...user, boughtEbooksIds: boughtBooksIds})
   }
 
+  const setIsPremium = (newIsPremium: boolean) => {
+    setUser({...user, isPremium: newIsPremium});
+  };
+
   const containsRole = (role: Role) => {
     if (!user.data) {
       return false;
@@ -107,6 +112,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         setNumberOfAddedEbooks,
         setBoughtEbooksIds,
         setNumberOfDistinctions,
+        setIsPremium,
         containsRole,
       }}
     >

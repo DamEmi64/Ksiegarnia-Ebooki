@@ -16,6 +16,10 @@ class PremiumService {
     });
   }
 
+  finishPremiumTransaction(transactionId: string, succeeded: boolean){
+    return axios.post(`${this.api}/Finish/${transactionId}`)
+  }
+
   checkPremium(userId: string) {
     return axios.get(`${this.api}/${userId}/Check`);
   }

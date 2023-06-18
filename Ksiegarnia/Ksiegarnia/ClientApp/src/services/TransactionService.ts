@@ -53,20 +53,28 @@ class TransactionService {
     );
   };
 
-  buyDistinction = () => {
-    const numberOfDistinctions = 1
-    return axios.post(`${this.api}/distinct/buy`, numberOfDistinctions)
-  }
+  buyDistinction = (userId: string) => {
+    const numberOfDistinctions = 1;
+    return axios.post(`${this.api}/distinct/buy`, numberOfDistinctions, {
+      params: {
+        userId: userId,
+      },
+    });
+  };
 
   finishDistinctTransaction = (transactionId: string, succeeded: boolean) => {
-    const numberOfDistinctions = 1
-    return axios.post(`${this.api}/FinishDistinct/${transactionId}`, {}, {
-      params: {
-        successed: succeeded,
-        no: numberOfDistinctions
+    const numberOfDistinctions = 1;
+    return axios.post(
+      `${this.api}/FinishDistinct/${transactionId}`,
+      {},
+      {
+        params: {
+          successed: succeeded,
+          no: numberOfDistinctions,
+        },
       }
-    })
-  }
+    );
+  };
 
   handleTransactionByTokens = (userId: string, bookIds: string[]) => {
     return EbookService.getGiftTokensFromEbooksList(bookIds).then(

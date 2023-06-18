@@ -1,10 +1,12 @@
-﻿export default interface EbookSearchCriteria {
+﻿import { EbookAcceptance } from "./api/ebookAcceptance";
+
+export default interface EbookSearchCriteria {
     authorName?: string,
     phrase?: string,
     genre?: string[],
     minPrize?: number,
     maxPrize?: number,
     onlyOnPromotion?: boolean,
-    onlyVerified?: boolean,
+    verificationType?: EbookAcceptance,
     year?: number
 }

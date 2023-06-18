@@ -31,6 +31,7 @@ const DistinctEbook = (props: {
   const [howLongError, setHowLongError] = React.useState<string>("");
 
   const userContext = useContext(UserContext);
+  const userId = userContext?.user.data?.id
   const transactionContext = useContext(TransactionContext)
   const notificationContext = React.useContext(NotificationContext);
 
@@ -57,17 +58,11 @@ const DistinctEbook = (props: {
   const handleFreeDistinct = (distinction: Distinction) => {
     EbookService.distinct(props.ebookId, distinction)
     .then((response) => {
-      UserService.getUserNumberOfDistinctions().then((response) => {
-        const numberOfDistinctions = response.data.ownedDistinction;
-        userContext.setNumberOfDistinctions(numberOfDistinctions);
-
-        setOpen(false);
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: true,
-          message: SUCCESSFULY_MESSAGE,
-        });
-        props.update();
+      userContext.setNumberOfDistinctions(userContext.user.numberOfDistinctions - 1);
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_MESSAGE,
       });
     })
     .catch((error) => {
@@ -81,12 +76,18 @@ const DistinctEbook = (props: {
   }
 
   const handlePaidDistinct = (distinction: Distinction) => {
-    TransactionService.buyDistinction()
+    TransactionService.buyDistinction(userId as string)
     .then((response) => {
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULY_MESSAGE,
+      });
       transactionContext?.setDistinctionDetails({
         ...distinction,
         ebookId: props.ebookId
       })
+      setOpen(false);
       console.log(response)
     })
   }
