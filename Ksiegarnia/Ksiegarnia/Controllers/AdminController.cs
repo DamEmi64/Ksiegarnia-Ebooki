@@ -21,6 +21,7 @@ namespace Application.Controllers
         private readonly INotifyRepository _notifyRepository;
         private readonly IEBookRepository _eBookRepository;
         private readonly ISmtpService _smtpService;
+        private readonly IEBookRepository _bookRepository;
 
         /// <summary>
         ///     Constructor
@@ -29,12 +30,13 @@ namespace Application.Controllers
         /// <param name="notifyRepository"></param>
         /// <param name="eBookRepository"></param>
         /// <param name="smtpService"></param>
-        public AdminController(IUserRepository userRepository, INotifyRepository notifyRepository, IEBookRepository eBookRepository, ISmtpService smtpService)
+        public AdminController(IUserRepository userRepository, INotifyRepository notifyRepository, IEBookRepository eBookRepository, ISmtpService smtpService, IEBookRepository bookRepository)
         {
             _userRepository = userRepository;
             _notifyRepository = notifyRepository;
             _eBookRepository = eBookRepository;
             _smtpService = smtpService;
+            _bookRepository = bookRepository;
         }
 
         /// <summary>
@@ -88,6 +90,26 @@ namespace Application.Controllers
             }
 
             return notify;
+        }
+
+        /// <summary>
+        ///     Get Ebook content by id
+        /// </summary>
+        /// <param name="id">Ebook Id</param>
+        /// <returns>Ebook content</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="BookNotVerifiedException">When book is not verified...</exception>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("books/{id}/read")]
+        public async Task<byte[]> Read(Guid? id)
+        {
+            var ebook = await _bookRepository.Get(id ?? Guid.Empty);
+            if (ebook == null)
+            {
+                throw new BookNotFoundException(id.ToString() ?? string.Empty);
+            }
+
+            return ebook.Content;
         }
 
         /// <summary>

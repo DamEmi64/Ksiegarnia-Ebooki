@@ -26,6 +26,10 @@ namespace Domain.DTOs
         public UserDto? Buyer { get; set; }
 
         /// <summary>
+        ///     Premium info
+        /// </summary>
+        public PremiumInfoDto? Premium { get; set; }
+        /// <summary>
         ///     Transaction Book
         /// </summary>
         public IEnumerable<BookDto> Books { get; set; }
@@ -43,6 +47,7 @@ namespace Domain.DTOs
                     Books = transaction.EBookReaders?.GetBooks() ?? Array.Empty<BookDto>(),
                     Buyer = transaction.EBookReaders?.FirstOrDefault()?.User.ToDTO() ?? null,
                     Currency = transaction.Currency,
+                    Premium = transaction.Premium.ToDTO(),
                     Date = transaction.DateTime,
                     Id = transaction.Id
                 };

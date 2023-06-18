@@ -99,8 +99,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(userId);
                 }
                 
-                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
+                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
 
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();

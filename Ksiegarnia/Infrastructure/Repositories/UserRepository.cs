@@ -378,6 +378,7 @@ namespace Infrastructure.Repositories
         public async Task Update(User user)
         {
             await _userManager.UpdateAsync(user);
+            _context.SaveChanges();
         }
 
         private async Task CreateRolesIfNotExists()
