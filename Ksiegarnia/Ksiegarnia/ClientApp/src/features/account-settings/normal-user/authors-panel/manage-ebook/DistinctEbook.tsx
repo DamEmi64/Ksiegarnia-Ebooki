@@ -80,7 +80,9 @@ const DistinctEbook = (props: {
   const handlePaidDistinct = (distinction: Distinction) => {
     TransactionService.buyDistinction(userId as string)
     .then((response) => {
+      const paypalRedirect = response.data
       console.log(response)
+      
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
@@ -92,6 +94,8 @@ const DistinctEbook = (props: {
       })
       handleClose()
       props.update()
+
+      window.location.href = paypalRedirect;
     })
   }
 

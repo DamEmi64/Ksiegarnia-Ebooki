@@ -1,6 +1,14 @@
-﻿import React from "react"
+﻿import React, { useEffect } from "react";
 
 const HorizontalAd = () => {
+  useEffect(() => {
+    if (!process.env.NODE_ENV || process.env.NODE_ENV !== "production") {
+      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
+        {}
+      );
+    }
+  }, []);
+
   return (
     <ins
       className="adsbygoogle"
@@ -8,7 +16,7 @@ const HorizontalAd = () => {
       data-ad-slot="9991008576"
       data-ad-format="auto"
       data-full-width-responsive="true"
-      style={{ display: "block" }}
+      style={{ display: "block", width: "100%" }}
     ></ins>
   );
 };

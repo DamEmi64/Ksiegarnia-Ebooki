@@ -6,10 +6,14 @@ import Loading from "../../../../pages/Loading";
 import React from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import useWindowResize from "../../../../components/useWindowResize";
+import { UserContext } from "../../../../context/UserContext";
+import { Role } from "../../../../models/api/role";
+import AdminService from "../../../../services/AdminService";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const EbookContentViewer = () => {
+  const isUserAdmin = React.useContext(UserContext)?.containsRole(Role.Admin)
   const ebookId = useParams().ebookId as string;
 
   const [content, setContentElement] = useState<string>();
@@ -43,9 +47,16 @@ const EbookContentViewer = () => {
   const [pageScale, setPageScale] = React.useState<number>(getPageScale());
 
   useEffect(() => {
-    EbookService.getContentById(ebookId).then((response) => {
-      setContentElement(response.data);
-    });
+    if(!isUserAdmin){
+      EbookService.getContentById(ebookId).then((response) => {
+        setContentElement(response.data);
+      });
+    }
+    else{
+      AdminService.getEbookContent(ebookId).then((response) => {
+        setContentElement(response.data)
+      })
+    }
   }, []);
 
   useEffect(() => {
