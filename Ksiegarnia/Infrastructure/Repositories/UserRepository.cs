@@ -234,7 +234,6 @@ namespace Infrastructure.Repositories
                 {
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    await _userManager.ConfirmEmailAsync(user, code);
                     await AddRole(user.Id, Roles.User);
                     return new()
                     {
