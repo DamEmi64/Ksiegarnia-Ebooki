@@ -87,7 +87,6 @@ namespace Domain.DTOs
                     IsPremiumOnly = eBook.Promotion?.OnlyForPremium ?? false,
                     StartDate = eBook.Promotion?.StartDate ?? default,
                     EndDate = eBook.Promotion?.EndDate ?? default,
-                    PremiumPrize = eBook.Promotion?.PremiumPrize ?? default,
                     Prize = eBook.Promotion?.Prize ?? default
                 };
             }

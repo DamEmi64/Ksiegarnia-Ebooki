@@ -38,6 +38,8 @@ namespace Infrastructure.Repositories
         public async Task<Transaction?> GetTransaction(Guid id)
         {
             return (await _context.Set<EBookReader>()
+                    .Include(x => x.Transaction)
+                    .ThenInclude(x => x.Premium)
                     .Include(x=>x.EBook)
                     .ThenInclude(x=>x.Author)
                     .Include(x=>x.Reviews)
@@ -51,6 +53,7 @@ namespace Infrastructure.Repositories
             if (string.IsNullOrEmpty(id))
             {
                 return _context.Set<Transaction>()
+                    .Include(x => x.Premium)
                     .Include(x => x.EBookReaders)
                     .ThenInclude(y => y.EBook)
                     .ThenInclude(z => z.Author)
@@ -64,6 +67,7 @@ namespace Infrastructure.Repositories
                     .Where(x => x.EBookReaders.Any(y => y.User.Id == id));
             }
             return _context.Set<Transaction>()
+                    .Include(x => x.Premium)
                     .Include(x => x.EBookReaders)
                     .ThenInclude(y => y.EBook)
                     .ThenInclude(z => z.Author)

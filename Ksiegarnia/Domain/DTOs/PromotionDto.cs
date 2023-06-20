@@ -46,7 +46,6 @@ namespace Domain.DTOs
                 StartDate = promotion.StartDate,
                 EndDate = promotion.EndDate,
                 Prize = promotion.Prize,
-                PremiumPrize = promotion.PremiumPrize,
                 IsPremiumOnly = promotion.OnlyForPremium
             };
         }

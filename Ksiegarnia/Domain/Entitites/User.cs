@@ -61,5 +61,10 @@ namespace Domain.Entitites
         ///     Information about hiding personal data
         /// </summary>
         public HideInfo? HideInfo { get; set; }
+
+        /// <summary>
+        ///     Inside wallet
+        /// </summary>
+        public decimal Wallet { get; set; }
     }
 }

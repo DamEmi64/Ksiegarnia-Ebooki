@@ -16,6 +16,11 @@ namespace Domain.Enums
         ///     Payment via paypal
         /// </summary>
         [JsonProperty("Paypal")]
-        Paypal
+        Paypal,
+        /// <summary>
+        ///     Payment via wallet
+        /// </summary>
+        [JsonProperty("Wallet")]
+        Wallet
     }
 }
