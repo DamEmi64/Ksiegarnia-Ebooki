@@ -10,8 +10,6 @@ namespace Domain.EntityConfiguration
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Prize).HasPrecision(5, 2);
-            builder.Property(x => x.PremiumPrize).HasPrecision(5, 2);
-
         }
     }
 }

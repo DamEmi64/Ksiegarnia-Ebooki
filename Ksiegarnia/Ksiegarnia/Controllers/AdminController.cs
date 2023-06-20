@@ -223,7 +223,6 @@ namespace Application.Controllers
         /// <param name="id">user id</param>
         /// <param name="role">user snew role</param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
         [HttpPut("User/{id}/{role}")]
         public async Task<HttpStatusCode> AddRole(string id, Roles role)
         {
@@ -247,7 +246,6 @@ namespace Application.Controllers
         /// <param name="id">user id</param>
         /// <param name="role">user snew role</param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
         [HttpDelete("User/{id}/{role}")]
         public async Task<HttpStatusCode> RemoveRole(string id, Roles role)
         {

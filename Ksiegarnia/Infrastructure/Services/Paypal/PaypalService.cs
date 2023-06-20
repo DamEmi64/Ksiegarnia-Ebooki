@@ -158,18 +158,39 @@ namespace Infrastructure.Services.Paypal
 
             foreach (var book in transaction.Books)
             {
-                var prize = book.Prize * commission / 100 + book.Prize;
-                currency += prize ?? 0;
+                var prize = Decimal.Zero;
+
+                if (book.Promotion != null && book.Promotion.EndDate > DateTime.Now)
+                {
+                    prize = book.Promotion.Prize;
+                }
+                else
+                {
+                    prize = Math.Round(book.Prize.Value);
+                }
+
+                currency += prize;
                 itemlist.items.Add(new Item()
                 {
                     name = book.Title,
                     currency = transaction.Currency.ToString(),
                     quantity = "1",
                     sku = "asd",
-                    price = Math.Round(prize ?? 0, 2).ToString(CultureInfo.InvariantCulture),
+                    price = Math.Round(prize, 2).ToString(CultureInfo.InvariantCulture),
                 });
 
             }
+
+            itemlist.items.Add(new Item()
+            {
+                name = "Prowizja",
+                currency  = Domain.Enums.Currency.PLN.ToString(),
+                quantity = "1",
+                sku = "asd",
+                price = Math.Round(currency*commission, 2).ToString(CultureInfo.InvariantCulture),
+            });
+
+            currency += currency * commission;
 
             var urls = new RedirectUrls()
             {

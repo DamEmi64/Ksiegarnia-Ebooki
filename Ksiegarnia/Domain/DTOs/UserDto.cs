@@ -46,6 +46,11 @@ namespace Domain.DTOs
         ///     User roles
         /// </summary>
         public IEnumerable<string>? Roles { get; set; }
+
+        /// <summary>
+        ///     User wallet
+        /// </summary>
+        public decimal Wallet { get; set; }
     }
 
     /// <summary>
@@ -85,7 +90,8 @@ namespace Domain.DTOs
                     Nick = user.Nick,
                     Phone = user.PhoneNumber,
                     Age = (int)(DateTime.UtcNow - user.BirthDate).TotalDays / 365,
-                    Roles = roles
+                    Roles = roles,
+                    Wallet = user.Wallet
                 };
             }
 

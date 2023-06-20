@@ -44,5 +44,7 @@ namespace Infrastructure.Exceptions
         RegisterFailed,
         [JsonProperty("TokenNotFound")]
         TokenNotFound,
+        [JsonProperty("NotEnoughCashInWallet")]
+        NotEnoughCashInWallet
     }
 }

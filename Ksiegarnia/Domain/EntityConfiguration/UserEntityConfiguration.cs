@@ -27,6 +27,7 @@ namespace Domain.EntityConfiguration
             builder.Property(e => e.LockoutEnabled);
             builder.Property(e => e.LockoutEnd);
             builder.Property(e => e.TwoFactorEnabled);
+            builder.Property(x => x.Wallet).HasPrecision(5, 2);
             builder.Property(e => e.FirstName).IsRequired();
             builder.HasMany(x => x.EBooks).WithOne(x => x.User).OnDelete(DeleteBehavior.Cascade);
         }

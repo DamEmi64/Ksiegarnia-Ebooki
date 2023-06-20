@@ -17,8 +17,6 @@
 
         public bool OnlyForPremium { get; set; }
 
-        public decimal PremiumPrize { get; set; }
-
         public Guid BookId { get; set; }
     }
 }
