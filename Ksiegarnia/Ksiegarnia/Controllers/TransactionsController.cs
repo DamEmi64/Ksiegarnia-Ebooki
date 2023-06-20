@@ -99,7 +99,7 @@ namespace Application.Controllers
                 {
                     throw new UserNotFoundException(userId);
                 }
-
+                
                 var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }) ?? string.Empty;
                 var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }) ?? string.Empty;
 

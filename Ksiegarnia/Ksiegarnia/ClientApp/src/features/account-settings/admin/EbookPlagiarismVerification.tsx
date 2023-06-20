@@ -6,12 +6,13 @@ import EbookService from "../../../services/EbookService";
 import React from "react";
 import EbookStatus from "../../../components/EbookStatus";
 import FileService from "../../../services/FileService";
+import AdminService from "../../../services/AdminService";
 
 const EbookPlagiarismVerification = (props: { ebook: Ebook }) => {
   const [ebookContent, setEbookContent] = React.useState<string>("");
 
   React.useEffect(() => {
-    EbookService.getContentById(props.ebook.id).then((response) => {
+    AdminService.getEbookContent(props.ebook.id).then((response) => {
       setEbookContent(response.data);
     });
   }, []);

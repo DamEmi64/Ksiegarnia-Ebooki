@@ -1,7 +1,7 @@
 ﻿import { Grid, Paper, Typography } from "@mui/material";
 import { LinkProps } from "../models/linkProps";
-import { Link } from "react-router-dom";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const LinksSidePanel = (props: { title: string; links: LinkProps[] }) => (
   <Grid item container justifyContent="stretch">

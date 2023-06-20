@@ -3,6 +3,7 @@ import { IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BasketContext } from "../../context/BasketContext";
+import useWindowResize from "../../components/useWindowResize";
 
 const Cart = (props: {fontColor?: string}) => {
   const basketContext = React.useContext(BasketContext)?.basket;
@@ -12,7 +13,7 @@ const Cart = (props: {fontColor?: string}) => {
   return (
     <IconButton onClick={() => navigate("/transaction")}>
       <ShoppingCartOutlined fontSize="large" style={{ color: props.fontColor ? props.fontColor : "white" }} />
-      <Stack marginLeft={2}>
+      <Stack marginLeft={2} display={{xs: "none", sm: "block"}}>
         <Typography variant="h6" color={props.fontColor ? props.fontColor : "white"} textAlign="start">
           {basketContext?.ebooks.length} szt
         </Typography>
