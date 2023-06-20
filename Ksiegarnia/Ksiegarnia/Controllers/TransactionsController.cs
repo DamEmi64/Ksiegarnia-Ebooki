@@ -412,8 +412,8 @@ namespace Application.Controllers
 
             };
 
-            var cancel = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
-            var redirect = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+            var cancel = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = false, cash = sendCash.Cash }) ?? string.Empty;
+            var redirect = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = true, cash = sendCash.Cash }) ?? string.Empty;
 
             var url = _paymentService.GetUri(cancel, redirect, $"Wypłata pieniędzy {sendCash.Cash}", sendCash.Cash, sendCash.UserId).FirstOrDefault();
 
@@ -438,7 +438,7 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpGet("SendCashFinish/{id}")]
-        public async Task<HttpStatusCode> FinishSendingCash(Guid id, [FromQuery] bool succeeded = false)
+        public async Task<HttpStatusCode> FinishSendingCash(Guid id, [FromBody] decimal cash = 0, [FromQuery] bool succeeded = false)
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
@@ -447,6 +447,12 @@ namespace Application.Controllers
                 if (transaction != null)
                 {
                     transaction.Finished = true;
+
+                    var client = await _userRepository.Get(transaction.BuyerId);
+
+                    client.Wallet -= cash;
+
+                    await _userRepository.Update(client);
 
                     await _eBookReaderRepository.SaveChanges();
                 }
