@@ -6,8 +6,8 @@
   Menu,
   MenuItem,
   Button,
-  Link,
   Grid,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import logo from "../../assets/logo.png";
@@ -15,8 +15,11 @@ import { UserContext } from "../../context/UserContext";
 import AccountMenu from "./AccountMenu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Cart from "./Cart";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchEbooksByPhrase from "./SearchEbooksByPhrase";
+import { ArrowDownward, ExpandMore } from "@mui/icons-material";
+import ThemeMode from "./ThemeMode";
+import ChangeFontSize from "./ChangeFontSize";
 
 const Header = () => {
   const isUserLogged = React.useContext(UserContext)?.user.logged;
@@ -29,9 +32,11 @@ const Header = () => {
           display: { xs: "none", lg: "flex" },
           justifyContent: "end",
           alignItems: "center",
+          paddingLeft: "40px",
+          paddingRight: "40px",
         }}
       >
-        <Link href="/">
+        <Link to="/">
           <img src={logo} height="55" width="197" />
         </Link>
         <Grid
@@ -68,13 +73,21 @@ const Header = () => {
                 <Button
                   className="premium-button button-rounded"
                   variant="contained"
-                  href="account-settings/premium"
                 >
-                  Premium
+                  <Typography
+                    component={Link}
+                    to="account-settings/premium"
+                    fontWeight="bold"
+                    fontSize={13}
+                  >
+                    Premium
+                  </Typography>
                 </Button>
               </React.Fragment>
             )}
             <Cart />
+            <ChangeFontSize />
+            <ThemeMode />
           </Grid>
         </Grid>
       </Box>
@@ -107,10 +120,14 @@ const Header = () => {
         }}
       >
         <Grid item container justifyContent="space-between" alignItems="center">
-          <Link href="/">
-            <img src={logo} height="55" width="197" />
+          <Link to="/">
+            <img src={logo} height="42" width="150" />
           </Link>
-          <Cart />
+          <Grid item xs={6} container justifyContent="end" columnGap={2}>
+            <Cart />
+            <ChangeFontSize/>
+            <ThemeMode/>
+          </Grid>
         </Grid>
         <Grid
           item
@@ -119,8 +136,9 @@ const Header = () => {
           justifyContent="space-around"
           alignItems="center"
           columnGap={2}
+          rowGap={2}
         >
-          <Grid item flexGrow={1}>
+          <Grid item xs={9}>
             <SearchEbooksByPhrase />
           </Grid>
           {isUserLogged ? (
@@ -150,9 +168,9 @@ const Header = () => {
       <AppBar
         position="static"
         color="secondary"
-        style={{ padding: "20px 40px" }}
+        style={{ padding: "20px 20px" }}
       >
-        <Toolbar>
+        <Toolbar disableGutters>
           <WideScreenMenu />
           <SmallScreenMenu />
         </Toolbar>

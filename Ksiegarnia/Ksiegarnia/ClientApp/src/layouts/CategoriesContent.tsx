@@ -2,6 +2,7 @@
   Box,
   Button,
   Grid,
+  IconButton,
   Menu,
   MenuItem,
   Typography,
@@ -12,6 +13,7 @@ import { useEffect, useState } from "react";
 import GenreService from "../services/GenreService";
 import Genre from "../models/api/genre";
 import React from "react";
+import { ArrowLeft } from "@mui/icons-material";
 
 const CategoriesContent = (props: { children: React.ReactNode }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -67,19 +69,14 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
             lg: "none",
             justifyContent: "stretch",
             marginTop: 40,
-            left: 20,
             zIndex: 100,
           },
           position: "fixed",
         }}
       >
-        <Button
-          variant="contained"
-          onClick={handleClick}
-          style={{ padding: "5px 20px" }}
-        >
-          <Typography variant="h5">Kategorie</Typography>
-        </Button>
+        <IconButton onClick={handleClick}>
+          <ArrowLeft fontSize="large"/>
+        </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
           {[
             genres.map((genre: Genre) => (
@@ -94,7 +91,7 @@ const CategoriesContent = (props: { children: React.ReactNode }) => {
   };
 
   return (
-    <Grid container justifyContent="center" columnGap={6}>
+    <Grid container justifyContent="center" columnGap={{md: 8}}>
       <Grid
         item
         xs={1}

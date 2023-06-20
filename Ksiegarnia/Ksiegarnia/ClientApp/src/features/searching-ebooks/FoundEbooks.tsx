@@ -118,7 +118,7 @@ const FoundEbooks = () => {
             handleSetSort={handleSetSort}
           />
         </Grid>
-        <Grid item xs={12} lg={5} xl={4}>
+        <Grid item xs={12} lg={5} xl={3}>
           <SelectPageSize
             pageSize={searchEbooksProps.pageSize ? searchEbooksProps.pageSize  : 12}
             handleSetPageSize={handleSelectPageSize}
