@@ -2,7 +2,6 @@
   Box,
   Grid,
   IconButton,
-  Link,
   Menu,
   MenuItem,
   Typography,
@@ -10,7 +9,7 @@
 import { LinkProps } from "../models/linkProps";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EbookSearchCategories } from "../models/ebookSearchCategories";
 
 const links: LinkProps[] = [
@@ -99,7 +98,7 @@ const WideScreenNavbar = () => {
         className="links-panel"
       >
         {links.map((link: LinkProps, index: number) => (
-          <Typography key={index} variant="h6" component={Link} href={link.url}>
+          <Typography key={index} variant="h6" component={Link} to={link.url}>
             {link.title}
           </Typography>
         ))}

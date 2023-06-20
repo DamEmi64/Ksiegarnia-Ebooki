@@ -133,7 +133,9 @@ const TransactionRow = (props: {
             Data: {new Date(transaction.date).toLocaleDateString()},
           </Typography>
           <Typography variant="h6">
-            Liczba ebooków: {transaction.books.length}
+            {transaction.books.length > 0
+              ? `Liczba ebooków: ${transaction.books.length}`
+              : `Zakup premium`}
           </Typography>
         </Grid>
         <Grid item>
