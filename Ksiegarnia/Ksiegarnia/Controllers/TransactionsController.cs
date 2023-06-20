@@ -448,7 +448,6 @@ namespace Application.Controllers
                 {
                     transaction.Finished = true;
 
-
                     var client = await _userRepository.Get(transaction.BuyerId);
 
                     client.Wallet -= cash;
