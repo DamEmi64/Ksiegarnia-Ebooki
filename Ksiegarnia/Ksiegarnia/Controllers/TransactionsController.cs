@@ -171,6 +171,8 @@ namespace Application.Controllers
                 }
             }
 
+            sum += sum * ConfigurationConst.Commission;
+
             if (sum > client.Wallet)
             {
                 throw new WalletIsNotEnoughException();
