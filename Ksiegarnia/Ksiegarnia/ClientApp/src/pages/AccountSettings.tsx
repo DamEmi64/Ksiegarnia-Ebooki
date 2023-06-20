@@ -1,4 +1,4 @@
-﻿import { Box, Button, Grid, Menu, MenuItem, Typography } from "@mui/material";
+﻿import { Box, Button, Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import LinksSidePanel from "../layouts/LinksSidePanel";
 import { LinkProps } from "../models/linkProps";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import React from "react";
 import { adminLinks, normalUserlinks } from "../layouts/header/AccountMenu";
 import { UserContext } from "../context/UserContext";
 import { Role } from "../models/api/role";
+import { ArrowLeft } from "@mui/icons-material";
 
 const AccountSettings = (props: {title: string, children: React.ReactNode}) => {
 
@@ -47,19 +48,14 @@ const AccountSettings = (props: {title: string, children: React.ReactNode}) => {
             lg: "none",
             justifyContent: "stretch",
             marginTop: 40,
-            left: 20,
             zIndex: 100,
           },
           position: "fixed",
         }}
       >
-        <Button
-          variant="contained"
-          onClick={handleClick}
-          style={{ padding: "5px 20px" }}
-        >
-          <Typography variant="h5">Panel</Typography>
-        </Button>
+        <IconButton onClick={handleClick}>
+          <ArrowLeft fontSize="large"/>
+        </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
           {[
             links.map((link: LinkProps, index: number) => (
@@ -102,7 +98,7 @@ const AccountSettings = (props: {title: string, children: React.ReactNode}) => {
           {props.children}
         </Grid>
       </Grid>
-      <Grid item xs={1} lg={1.5}></Grid>
+      <Grid item xs={1} lg={1.5} display={{ xs: "flex", md: "none" }}></Grid>
     </Grid>
   );
 };

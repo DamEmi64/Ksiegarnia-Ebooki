@@ -6,7 +6,7 @@ import React from "react";
 import Header from "./layouts/header/Header";
 import Footer from "./layouts/Footer";
 import { ThemeProvider } from "@emotion/react";
-import { createTheme, CssBaseline, Grid } from "@mui/material";
+import { createTheme, CssBaseline, Grid, Theme } from "@mui/material";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -45,57 +45,126 @@ import TransactionMessage from "./features/transaction/TransactionMessage";
 import EbooksVerifications from "./features/account-settings/admin/EbooksVerification";
 import EbookVerification from "./features/account-settings/admin/EbookVerification";
 import PremiumTransactionMessage from "./features/transaction/PremiumTransactionMessage";
+import PreferenceProvider, {
+  PreferencesContext,
+} from "./context/PreferencesContext";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
 
-const theme = createTheme(
-  {
-    palette: {
-      primary: {
-        main: "#0A3F5C",
-        dark: "#1470a3",
-      },
-      secondary: {
-        main: "#EB4B36",
-      },
-      info: {
-        main: "#87CEEB",
-      },
-      success: {
-        main: "#10CE00",
-      },
-    },
-    typography: {
-      fontSize: 13,
-      fontWeightLight: 300,
-      fontWeightRegular: 400,
-      fontWeightMedium: 500,
-      button: {
-        textTransform: "none",
-      },
-    },
-  },
-  corePlPL,
-  plPL,
-  dataGridPlPL
-);
-
 const ContextProviders = (props: { children: React.ReactNode }) => {
   return (
     <UserProvider>
-      <NotificationProvider>
-        <BasketProvider>{props.children}</BasketProvider>
-      </NotificationProvider>
+      <PreferenceProvider>
+        <NotificationProvider>
+          <BasketProvider>{props.children}</BasketProvider>
+        </NotificationProvider>
+      </PreferenceProvider>
     </UserProvider>
+  );
+};
+
+const ManageTheme = (props: { children: React.ReactNode }) => {
+  const preferences = React.useContext(PreferencesContext)?.preferences;
+
+  const [theme, setTheme] = React.useState<any>(
+    createTheme(
+      {
+        palette: {
+          mode: !preferences?.isDarkMode ? "light" : "dark",
+          primary: {
+            main: "#0A3F5C",
+            dark: "#1470a3",
+          },
+          secondary: {
+            main: "#EB4B36",
+            dark: "#1470a3",
+          },
+          info: {
+            main: "#87CEEB",
+          },
+          success: {
+            main: "#10CE00",
+          },
+        },
+        typography: {
+          fontSize: preferences?.fontSize,
+          fontWeightLight: 300,
+          fontWeightRegular: 400,
+          fontWeightMedium: 500,
+          button: {
+            textTransform: "none",
+          },
+        },
+      },
+      corePlPL,
+      plPL,
+      dataGridPlPL
+    )
+  );
+
+  React.useEffect(() => {
+    setTheme(
+      createTheme(
+        {
+          palette: {
+            mode: !preferences?.isDarkMode ? "light" : "dark",
+            primary: {
+              main: "#0A3F5C",
+              dark: "#1470a3",
+            },
+            secondary: {
+              main: "#EB4B36",
+              dark: "#1470a3",
+            },
+            info: {
+              main: "#87CEEB",
+            },
+            success: {
+              main: "#10CE00",
+            },
+          },
+          typography: {
+            fontSize: preferences?.fontSize,
+            fontWeightLight: 300,
+            fontWeightRegular: 400,
+            fontWeightMedium: 500,
+            button: {
+              textTransform: "none",
+            },
+            allVariants: {
+              color: !preferences?.isDarkMode ? "black" : "#ffffff"
+            }
+          },
+          components: {
+            MuiGrid: {
+              styleOverrides: {
+                root: preferences?.isDarkMode
+                  ? { backgroundColor: "#121212" }
+                  : {},
+              },
+            },
+          },
+        },
+        corePlPL,
+        plPL,
+        dataGridPlPL
+      )
+    );
+  }, [preferences]);
+
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
+    </React.Fragment>
   );
 };
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <ContextProviders>
+    <ContextProviders>
+      <ManageTheme>
         <Grid container direction="column" justifyContent="center">
           <Header />
           <Navbar />
@@ -223,8 +292,8 @@ function App() {
           <Footer />
         </Grid>
         <Notification />
-      </ContextProviders>
-    </ThemeProvider>
+      </ManageTheme>
+    </ContextProviders>
   );
 }
 

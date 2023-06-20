@@ -81,7 +81,7 @@ const BasicEbookView = (props: {
             fontSize="large"
             style={{ color: "white", marginRight: 6 }}
           />
-          <Typography variant="h6" display="inline">
+          <Typography variant="h6" display="inline" color="white">
             <EbookPrice authorId={ebook.author.id} price={ebook.prize} promotion={ebook.promotion} />
           </Typography>
         </Button>

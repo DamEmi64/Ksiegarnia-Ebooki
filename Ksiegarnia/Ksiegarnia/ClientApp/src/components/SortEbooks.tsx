@@ -80,7 +80,7 @@ const SortEbooks = (props: {
       <Typography variant="h6" display="inline" marginTop={-1}>
         Sortuj wg:
       </Typography>
-      <Grid item xs={7}>
+      <Grid item flexGrow={1}>
         <FormControl fullWidth>
           <Select value={props.sortValue} onChange={handleChangeSize}>
             {sortNameMappings.map((sortNameMapping: SortNameMapping) => (

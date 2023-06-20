@@ -24,7 +24,7 @@ const SelectPageSize = (props: {
       <Typography variant="h6" display="inline" marginTop={-1}>
         Pokaż na stronie:
       </Typography>
-      <Grid item xs={6}>
+      <Grid item flexGrow={1}>
         <FormControl fullWidth>
           <Select value={props.pageSize.toString()} onChange={handleChangeSize}>
             {pageSizes.map((size: number) => (
