@@ -133,17 +133,24 @@ const ManageTheme = (props: { children: React.ReactNode }) => {
               textTransform: "none",
             },
             allVariants: {
-              color: !preferences?.isDarkMode ? "black" : "#ffffff"
+              color: !preferences?.isDarkMode ? "rgba(0, 0, 0, 1)" : "#ffffff"
             }
           },
           components: {
             MuiGrid: {
               styleOverrides: {
                 root: preferences?.isDarkMode
-                  ? { backgroundColor: "#121212" }
+                  ? { backgroundColor: "rgba(0, 0, 0, 1)" }
                   : {},
               },
             },
+            MuiPaper: {
+              styleOverrides: {
+                root: preferences?.isDarkMode
+                  ? { backgroundColor: "rgba(0, 0, 0, 1)", backgroundImage: "none" }
+                  : {},
+              },
+            }
           },
         },
         corePlPL,
