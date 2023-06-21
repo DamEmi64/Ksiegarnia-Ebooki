@@ -125,14 +125,14 @@ const TransactionRow = (props: {
           justifyContent="space-evenly"
           alignItems="center"
         >
-          <Typography variant="h6">Zamówienie nr. {props.index},</Typography>
-          <Typography variant="h6">
+          <Typography variant="h6" color="white">Zamówienie nr. {props.index},</Typography>
+          <Typography variant="h6" color="white">
             Łączna kwota: {transactionAmout.toFixed(2)} zł,
           </Typography>
-          <Typography variant="h6">
+          <Typography variant="h6" color="white">
             Data: {new Date(transaction.date).toLocaleDateString()},
           </Typography>
-          <Typography variant="h6">
+          <Typography variant="h6" color="white">
             {transaction.books.length > 0
               ? `Liczba ebooków: ${transaction.books.length}`
               : `Zakup premium`}
@@ -214,7 +214,7 @@ const TransactionEbookView = (props: { ebook: Ebook }) => {
             <Typography variant="h6" fontWeight="bold">
               {ebook.genre.name}
             </Typography>
-            <Rate value={5} />
+            <Rate value={ebook.grade} />
           </Grid>
         </Grid>
       </Grid>
