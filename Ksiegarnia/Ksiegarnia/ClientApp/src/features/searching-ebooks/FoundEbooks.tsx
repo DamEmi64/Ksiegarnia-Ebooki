@@ -23,6 +23,8 @@ const FoundEbooks = () => {
   })
   const actualEbooksProps = useRef<SearchEbookProps>(searchEbooksProps)
 
+  const initializedRef = useRef<boolean>(false) 
+
   useEffect(() => {
     const phraseFromParams = searchParams.get("phrase")
     const genreFromParams = searchParams.getAll("genre");
@@ -59,16 +61,21 @@ const FoundEbooks = () => {
 
     actualEbooksProps.current = newSearchEbooksProps
     setSearchEbooksProps(newSearchEbooksProps)
+
+    initializedRef.current = true
   }, [searchParams])
 
   useEffect(() => {
-    handleSearch();
+    if(initializedRef.current){
+      handleSearch();
+    }
   }, [searchEbooksProps]);
 
   const handleSearch = () => {
     EbookService.search(actualEbooksProps.current)
     .then((response) => {
       const pagedResponse: PagedResponse = response.data;
+      console.log(pagedResponse.all)
       setEbooks(pagedResponse.result);
       setNumberOfPages(pagedResponse.number_of_pages)
     });

@@ -28,8 +28,8 @@ const Login = () => {
   const notificationContext = useContext(NotificationContext);
 
   const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie";
-  const LOGGED_FAILED_MESSAGE =
-    "Nie istnieje konto o takim adresie e-mail i/lub haśle";
+  const INVALID_DATA_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle";
+  const NOT_CONFIRMED_MESSAGE = "Konto jest niepotwierdzone";
 
   const initForm: LoginForm = {
     email: "",
@@ -113,11 +113,20 @@ const Login = () => {
           });
       })
       .catch((error) => {
-        notificationContext?.setNotification({
-          isVisible: true,
-          isSuccessful: false,
-          message: LOGGED_FAILED_MESSAGE,
-        });
+        if(error.response.data.error.includes("not found")){
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: INVALID_DATA_MESSAGE,
+          });
+        }
+        else{
+          notificationContext?.setNotification({
+            isVisible: true,
+            isSuccessful: false,
+            message: NOT_CONFIRMED_MESSAGE,
+          });
+        }
       });
   };
 

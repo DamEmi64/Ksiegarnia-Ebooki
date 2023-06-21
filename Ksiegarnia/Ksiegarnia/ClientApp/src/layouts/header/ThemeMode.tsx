@@ -5,9 +5,7 @@ import { DarkMode, LightMode } from "@mui/icons-material";
 
 const ThemeMode = () => {
   const preferencesContext = React.useContext(PreferencesContext);
-  const isDarkMode = preferencesContext?.preferences.isDarkMode;
-
-  console.log(preferencesContext?.preferences);
+  const isDarkMode = preferencesContext?.preferences.isDarkMode;  
 
   return (
     <IconButton onClick={() => preferencesContext?.setIsDarkMode(!isDarkMode)}>

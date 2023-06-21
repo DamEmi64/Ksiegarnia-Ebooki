@@ -12,6 +12,19 @@ class TransactionService {
     return axios.get(`${this.api}/${userId}/summary`);
   };
 
+  sendCash = (userId: string, cash: number) => {
+    console.log({
+      userId: userId,
+      cash: cash,
+      currency: "PLN"
+    })
+    return axios.post(`${this.api}`, {
+      userId: userId,
+      cash: cash,
+      currency: "PLN"
+    });
+  };
+
   getUserTransactions = (userId: string, page?: number, pageSize?: number) => {
     return axios.get(this.api, {
       params: {

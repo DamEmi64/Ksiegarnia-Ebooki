@@ -144,7 +144,7 @@ const Basket = () => {
       (ebook: Ebook) => ebook.id
     );
 
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "production") {
       TransactionService.handleTransactionByTokens(userId!, basketEbooksIds)
         .then((response) => {
           console.log(response);
