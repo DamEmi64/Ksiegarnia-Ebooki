@@ -141,6 +141,7 @@ namespace Application.Controllers
 
                 await _userRepository.AddRole(user.Id, Roles.PremiumUser);
 
+
                 await _userRepository.Update(user);
             }
 
@@ -165,10 +166,10 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            if (await _userRepository.CheckRole(id, Roles.PremiumUser))
-            {
-                var premium = await _userRepository.GetPremium(user.Id);
+            var premium = await _userRepository.GetPremium(user.Id);
 
+            if (await _userRepository.CheckRole(id, Roles.PremiumUser) || premium != null)
+            {
                 if (premium != null)
                 {
                     var isExpired = premium.StartDate.AddDays(premium.DaysToFinishPremium) < DateTime.UtcNow;
@@ -176,6 +177,11 @@ namespace Application.Controllers
                     if (isExpired)
                     {
                         await _userRepository.RemoveRole(user.Id, Roles.PremiumUser);
+                    }
+                    else if (!(await _userRepository.CheckRole(id, Roles.PremiumUser)))
+                    {
+                        await _userRepository.AddRole(user.Id, Roles.PremiumUser);
+                        await _userRepository.Update(user);
                     }
 
                     return new PremiumInfoDto()
