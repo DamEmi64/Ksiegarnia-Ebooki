@@ -17,8 +17,15 @@ class PremiumService {
     });
   }
 
-  finishPremiumTransaction(transactionId: string, succeeded: boolean) {
-    return axios.post(`${this.api}/Finish/${transactionId}`);
+  finishPremiumTransaction(transactionId: string, succeeded: boolean, paymentId: string, token: string, payerId: string) {
+    return axios.post(`${this.api}/Finish/${transactionId}`, {}, {
+      params: {
+        succeeded: succeeded,
+          paymentId: paymentId,
+          token: token,
+          PayerID: payerId
+      }
+    });
   }
 
   checkPremium(userId: string) {

@@ -21,17 +21,17 @@ const EbookPlagiarismVerification = (props: { ebook: Ebook }) => {
   React.useEffect(() => {
     AdminService.getEbookContent(props.ebook.id).then((response) => {
       setEbookContent(response.data);
-      notificationContext?.setNotification({
-        isVisible: true,
-        isSuccessful: true,
-        message: SUCCESSFULLY_SUBMITED
-      })
     });
   }, []);
 
   const handleSubmitPlagiarismCheck = () => {
     PlagiarismService.submit(props.ebook.id, ebookContent).then((response) => {
       console.log(response);
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFULLY_SUBMITED
+      })
     });
   };
 

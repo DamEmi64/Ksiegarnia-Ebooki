@@ -34,7 +34,7 @@ const TransactionProvider = (props: { children: React.ReactNode }) => {
         JSON.parse(savedTransactionStr);
       return savedTransaction;
     } else {
-      return initialTransaction;
+      return {...initialTransaction};
     }
   });
 
@@ -43,7 +43,7 @@ const TransactionProvider = (props: { children: React.ReactNode }) => {
   }, [transaction]);
 
   const setDistinctionDetails = (distinctionDetails: DistinctionDetails) => {
-    setDistinctionDetails(distinctionDetails);
+    setTransaction({...transaction, distinctionDetails: distinctionDetails});
   };
 
   const clearDistinctionDetails = () => {

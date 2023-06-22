@@ -1,4 +1,5 @@
 ﻿export enum TransactionType{
     TOKEN="Token",
-    PAYPAL="Paypal"
+    PAYPAL="Paypal",
+    WALLET="Wallet"
 }

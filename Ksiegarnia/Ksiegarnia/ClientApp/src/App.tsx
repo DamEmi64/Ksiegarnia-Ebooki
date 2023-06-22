@@ -48,6 +48,9 @@ import PremiumTransactionMessage from "./features/transaction/PremiumTransaction
 import PreferenceProvider, {
   PreferencesContext,
 } from "./context/PreferencesContext";
+import ConfirmedEmailMessage from "./pages/ConfirmedEmailMessage";
+import DistinctTransactionMessage from "./features/transaction/DistinctTransactionMessage";
+import TransactionProvider from "./context/TransactionContext";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
@@ -57,7 +60,9 @@ const ContextProviders = (props: { children: React.ReactNode }) => {
     <UserProvider>
       <PreferenceProvider>
         <NotificationProvider>
-          <BasketProvider>{props.children}</BasketProvider>
+          <TransactionProvider>
+            <BasketProvider>{props.children}</BasketProvider>
+          </TransactionProvider>
         </NotificationProvider>
       </PreferenceProvider>
     </UserProvider>
@@ -133,8 +138,8 @@ const ManageTheme = (props: { children: React.ReactNode }) => {
               textTransform: "none",
             },
             allVariants: {
-              color: !preferences?.isDarkMode ? "rgba(0, 0, 0, 1)" : "#ffffff"
-            }
+              color: !preferences?.isDarkMode ? "rgba(0, 0, 0, 1)" : "#ffffff",
+            },
           },
           components: {
             MuiGrid: {
@@ -147,10 +152,13 @@ const ManageTheme = (props: { children: React.ReactNode }) => {
             MuiPaper: {
               styleOverrides: {
                 root: preferences?.isDarkMode
-                  ? { backgroundColor: "rgba(0, 0, 0, 1)", backgroundImage: "none" }
+                  ? {
+                      backgroundColor: "rgba(0, 0, 0, 1)",
+                      backgroundImage: "none",
+                    }
                   : {},
               },
-            }
+            },
           },
         },
         corePlPL,
@@ -283,10 +291,26 @@ function App() {
                 }
               />
               <Route
+                path="Transactions/FinishDistinct/:transactionId"
+                element={
+                  <ProtectedRoute requiresLogged={true}>
+                    <DistinctTransactionMessage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="Premium/Finish/:transactionId"
                 element={
                   <ProtectedRoute requiresLogged={true}>
                     <PremiumTransactionMessage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="Users/ConfirmEmail"
+                element={
+                  <ProtectedRoute requiresLogged={false}>
+                    <ConfirmedEmailMessage />
                   </ProtectedRoute>
                 }
               />

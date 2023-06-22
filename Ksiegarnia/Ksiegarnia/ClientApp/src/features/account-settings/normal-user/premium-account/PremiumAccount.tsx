@@ -148,15 +148,7 @@ const PremiumAccount = () => {
                 )
               }
             />
-            {premiumInfo?.isActive ? (
-              <Button
-                className="premium-button button-rounded"
-                variant="contained"
-                onClick={() => setIsVisibleBuyPremiumDialog(true)}
-              >
-                Przedłuż
-              </Button>
-            ) : (
+            {!premiumInfo?.isActive && (
               <Button
                 className="premium-button button-rounded"
                 variant="contained"
