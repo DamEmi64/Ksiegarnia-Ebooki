@@ -54,13 +54,16 @@ class TransactionService {
     );
   };
 
-  finishTransaction = (transactionId: string, succeeded: boolean) => {
+  finishTransaction = (transactionId: string, succeeded: boolean, paymentId: string, token: string, payerId: string) => {
     return axios.post(
       `${this.api}/Finish/${transactionId}`,
       {},
       {
         params: {
           succeeded: succeeded,
+          paymentId: paymentId,
+          token: token,
+          PayerID: payerId
         },
       }
     );
@@ -75,7 +78,7 @@ class TransactionService {
     });
   };
 
-  finishDistinctTransaction = (transactionId: string, succeeded: boolean) => {
+  finishDistinctTransaction = (transactionId: string, succeeded: boolean, paymentId: string, token: string, payerId: string) => {
     const numberOfDistinctions = 1;
     return axios.post(
       `${this.api}/FinishDistinct/${transactionId}`,
@@ -84,6 +87,9 @@ class TransactionService {
         params: {
           successed: succeeded,
           no: numberOfDistinctions,
+          paymentId: paymentId,
+          token: token,
+          PayerID: payerId
         },
       }
     );

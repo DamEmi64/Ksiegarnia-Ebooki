@@ -20,6 +20,9 @@ const PremiumTransactionMessage = () => {
 
   const transactionId = useParams().transactionId;
   const succeededFromPaypal = searchParams.get("succeeded");
+  const paymentId = searchParams.get("paymentId");
+  const token = searchParams.get("token");
+  const payerId = searchParams.get("PayerID");
 
   const [isFinalized, setIsFinalized] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
@@ -43,7 +46,10 @@ const PremiumTransactionMessage = () => {
 
     PremiumService.finishPremiumTransaction(
       transactionId as string,
-      succeededFromPaypal === "true"
+      succeededFromPaypal === "true",
+      paymentId as string,
+      token as string,
+      payerId as string
     )
       .then((response) => {
         console.log(response)
