@@ -32,9 +32,9 @@ const Header = () => {
           display: { xs: "none", lg: "flex" },
           justifyContent: "end",
           alignItems: "center",
-          paddingLeft: "40px",
-          paddingRight: "40px",
         }}
+        paddingLeft={{lg: "30px", xl: "40px"}}
+        paddingRight={{lg: "30px", xl: "40px"}}
       >
         <Link to="/">
           <img src={logo} height="55" width="197" />
@@ -46,17 +46,17 @@ const Header = () => {
           justifyContent="space-around"
           alignItems="center"
         >
-          <Grid item lg={6} xl={7} marginLeft={6}>
+          <Grid item lg={4.5} xl={6} marginLeft={{lg: 3, xl: 6}}>
             <SearchEbooksByPhrase />
           </Grid>
           <Grid
             item
-            lg={5}
-            xl={4}
+            lg={6.7}
+            xl={5.5}
             container
             justifyContent="end"
             alignItems="center"
-            columnGap={3}
+            columnGap={{lg: 1.5, xl: 3}}
           >
             {!isUserLogged ? (
               <React.Fragment>
@@ -123,7 +123,7 @@ const Header = () => {
           <Link to="/">
             <img src={logo} height="42" width="150" />
           </Link>
-          <Grid item xs={6} container justifyContent="end" columnGap={2}>
+          <Grid item xs={5} container justifyContent="end" columnGap={2}>
             <Cart />
             <ChangeFontSize/>
             <ThemeMode/>

@@ -105,12 +105,6 @@ const PremiumAccount = () => {
         window.location.href = paypalRedirect;
 
         console.log(response);
-        setPremiumInfo({
-          ...premiumInfo,
-          isActive: true,
-          buyDate: newBuyDate,
-          endDate: newEndDate,
-        });
         setIsVisibleBuyPremiumDialog(false);
       })
       .catch((error) => {

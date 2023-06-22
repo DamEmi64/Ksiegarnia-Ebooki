@@ -11,10 +11,10 @@ const Footer = () => (
         marginBottom={5}
         marginLeft={{ xs: 2, sm: 12 }}
       >
-        <Typography>&copy; PWr 1991-2023</Typography>
-        <Typography>PWr.pl sp. z o.o.</Typography>
-        <Typography>ul. Kościuszki 1c44-100 Gliwice</Typography>
-        <Typography>tel. (32) 230-98-63</Typography>
+        <Typography>&copy; PWr 2023</Typography>
+        <Typography>Ebookworld sp. z o.o.</Typography>
+        <Typography>ul. Kościuszki 12-345 Gliwice</Typography>
+        <Typography>tel. (12) 345-67-89</Typography>
         <Typography>
           e-mail: <HiddenEmail email={"ziwg-pwr"} />
           @outlook.com

@@ -6,8 +6,9 @@ import { UserContext } from "../../../../context/UserContext";
 import axios from "axios";
 import UserService from "../../../../services/UserService";
 import Loading from "../../../../pages/Loading";
+import SendCash from "./SendCash";
 
-const StatisticData = (props: { title: string; value: string }) => {
+const StatisticData = (props: { title: string; value: React.ReactNode }) => {
   return (
     <Grid
       item
@@ -97,6 +98,15 @@ const AuthorsStatistics = () => {
             value={stats.earnedCash.toString() + " zł"}
           />
           <StatisticData
+            title="Portfel:"
+            value={
+              <React.Fragment>
+                {(userContext.user.data?.wallet as number).toString() + " zł"}
+                <SendCash />
+              </React.Fragment>
+            }
+          />
+          <StatisticData
             title="Średni przychód na książkę:"
             value={stats.earnedCashPerEbook.toString() + " zł"}
           />
@@ -111,7 +121,7 @@ const AuthorsStatistics = () => {
           )}
           <StatisticData
             title="Pozostało darmowych wyróżnień:"
-            value={userContext.user.numberOfDistinctions.toString()}
+            value={userContext.user.numberOfDistinctions?.toString()}
           />
         </Grid>
       </Grid>

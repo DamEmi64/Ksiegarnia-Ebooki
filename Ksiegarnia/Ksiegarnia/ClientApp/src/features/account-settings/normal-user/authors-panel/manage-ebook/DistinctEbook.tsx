@@ -36,6 +36,7 @@ const DistinctEbook = (props: {
   const notificationContext = React.useContext(NotificationContext);
 
   const SUCCESSFULY_MESSAGE = "Wyróżniono ebooka";
+  const SUCCESSFULY_PLACED_TRANSACTION_MESSAGE = "Złożono zamówienie";
   const FAILED_MESSAGE = "Nie udało się wyróżnic ebooka";
 
   if (!userContext) {
@@ -86,7 +87,7 @@ const DistinctEbook = (props: {
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
-        message: SUCCESSFULY_MESSAGE,
+        message: SUCCESSFULY_PLACED_TRANSACTION_MESSAGE,
       });
       transactionContext?.setDistinctionDetails({
         ...distinction,

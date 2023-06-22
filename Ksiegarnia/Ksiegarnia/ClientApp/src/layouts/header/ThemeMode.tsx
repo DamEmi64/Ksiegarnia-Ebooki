@@ -1,13 +1,11 @@
-﻿import { IconButton, useTheme } from "@mui/material";
+﻿import { Box, IconButton, useTheme } from "@mui/material";
 import React from "react";
 import { PreferencesContext } from "../../context/PreferencesContext";
 import { DarkMode, LightMode } from "@mui/icons-material";
 
 const ThemeMode = () => {
   const preferencesContext = React.useContext(PreferencesContext);
-  const isDarkMode = preferencesContext?.preferences.isDarkMode;
-
-  console.log(preferencesContext?.preferences)
+  const isDarkMode = preferencesContext?.preferences.isDarkMode;  
 
   return (
     <IconButton onClick={() => preferencesContext?.setIsDarkMode(!isDarkMode)}>

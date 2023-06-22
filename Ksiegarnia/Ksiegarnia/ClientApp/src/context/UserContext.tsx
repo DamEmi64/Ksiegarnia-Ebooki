@@ -22,6 +22,7 @@ export interface UserContextType {
   setBoughtEbooksIds: (boughtEbooksIds: string[]) => void;
   setNumberOfDistinctions: (value: number) => void;
   setIsPremium: (newIsPremium: boolean) => void;
+  setWallet: (newWallet: number) => void;
   setAll: (newData: UserProps) => void;
 }
 
@@ -48,7 +49,6 @@ const UserProvider = (props: { children: React.ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
-    console.log(user)
   }, [user]);
 
   const setLogged = (logged: boolean) => {
@@ -96,6 +96,10 @@ const UserProvider = (props: { children: React.ReactNode }) => {
     setUser({ ...user, isPremium: newIsPremium });
   };
 
+  const setWallet = (newWallet: number) => {
+    setUser({ ...user, data: { ...user.data, wallet: newWallet } as UserDTO });
+  };
+
   const containsRole = (role: Role) => {
     if (!user.data) {
       return false;
@@ -115,6 +119,7 @@ const UserProvider = (props: { children: React.ReactNode }) => {
         setBoughtEbooksIds,
         setNumberOfDistinctions,
         setIsPremium,
+        setWallet,
         containsRole,
       }}
     >

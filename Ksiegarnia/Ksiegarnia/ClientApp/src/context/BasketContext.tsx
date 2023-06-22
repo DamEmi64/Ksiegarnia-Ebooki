@@ -50,7 +50,7 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
 
     if (ebook.promotion?.isPremiumOnly) {
       if(isUserPremium){
-        return ebook.promotion.premiumPrize;
+        return ebook.promotion.prize;
       }
     }
     else{

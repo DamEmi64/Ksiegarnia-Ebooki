@@ -48,7 +48,8 @@ const EbookVerification = () => {
 
   const notificationContext = React.useContext(NotificationContext);
 
-  const SUCCESSFUL_MESSAGE = "Zatwierdzono ebooka";
+  const SUCCESSFUL_APPROVED_MESSAGE = "Zatwierdzono ebooka";
+  const SUCCESSFUL_DECLINED_MESSAGE = "Odrzucono ebooka";
 
   const navigate = useNavigate();
 
@@ -67,14 +68,26 @@ const EbookVerification = () => {
   }, []);
 
   const handleAccept = () => {
-    EbookService.verify(ebookId as string).then((response) => {
+    AdminService.verify(ebookId as string).then((response) => {
       notificationContext?.setNotification({
         isVisible: true,
         isSuccessful: true,
-        message: SUCCESSFUL_MESSAGE,
+        message: SUCCESSFUL_APPROVED_MESSAGE,
       });
+      goBack()
     });
   };
+
+  const handleReject = () => {
+    AdminService.block(ebookId as string).then((response) => {
+      notificationContext?.setNotification({
+        isVisible: true,
+        isSuccessful: true,
+        message: SUCCESSFUL_DECLINED_MESSAGE,
+      });
+      goBack()
+    });
+  }
 
   const goBack = () => {
     navigate("../");
@@ -173,6 +186,15 @@ const EbookVerification = () => {
               fullWidth
               variant="contained"
               color="secondary"
+              onClick={handleReject}
+            >
+              Odrzuć
+            </Button>
+          </Grid>
+          <Grid item xs={4} sm={3} md={2} lg={1.5}>
+            <Button
+              fullWidth
+              variant="contained"
               onClick={goBack}
             >
               Anuluj
