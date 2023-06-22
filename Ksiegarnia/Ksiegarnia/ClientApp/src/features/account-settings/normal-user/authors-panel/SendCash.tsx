@@ -62,7 +62,7 @@ const SendCash = () => {
         setIsVisible(false);
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: false,
@@ -74,13 +74,15 @@ const SendCash = () => {
 
   return (
     <React.Fragment>
-      <Button
-        variant="contained"
-        onClick={() => setIsVisible(true)}
-        style={{ marginLeft: 12 }}
-      >
-        Wypłać
-      </Button>
+      {userContext.user.data?.wallet as number > 0 && (
+        <Button
+          variant="contained"
+          onClick={() => setIsVisible(true)}
+          style={{ marginLeft: 12 }}
+        >
+          Wypłać
+        </Button>
+      )}
       <Dialog
         fullWidth={true}
         maxWidth="sm"

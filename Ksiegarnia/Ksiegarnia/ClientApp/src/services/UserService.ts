@@ -144,6 +144,15 @@ class UserService {
     );
   }
 
+  confirmEmail(userId: string, token: string) {
+    return axios.get(`${this.api}/ConfirmEmail`, {
+      params: {
+        id: userId,
+        token: token
+      }
+    })
+  }
+
   getOwnedEbooks(props: GetOwnedEbooksProps) {
     return axios.get(`${this.api}/${props.userId}/ebooks`, {
       params: {

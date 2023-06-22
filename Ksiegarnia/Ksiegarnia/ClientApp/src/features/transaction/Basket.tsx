@@ -144,7 +144,7 @@ const Basket = () => {
       (ebook: Ebook) => ebook.id
     );
 
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "production") {
       TransactionService.handleTransactionByTokens(userId!, basketEbooksIds)
         .then((response) => {
           console.log(response);
@@ -198,7 +198,7 @@ const Basket = () => {
           console.log(error);
           notificationContext?.setNotification({
             isVisible: true,
-            isSuccessful: true,
+            isSuccessful: false,
             message: NOT_SUBMITED_TRANSACTION,
           });
         });
