@@ -103,8 +103,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(userId);
                 }
 
-                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
 
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
 
@@ -137,8 +137,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(sendCash.UserId);
                 }
 
-                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
 
                 var url = _paymentService.GetUri(cancel, redirect, "Doładowanie portfela", sendCash.Cash).FirstOrDefault();
 
@@ -485,7 +485,7 @@ namespace Application.Controllers
             var redirect = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = true, cash = sendCash.Cash }, Request.Scheme, Request.Host.Value) ?? string.Empty;
 
 
-            _smtpService.SendEmail($"Wypłata środków: User:{user.Email}\nCash:{sendCash.Cash}",ConfigurationConst.SMTP.Email,"WYPŁATA");
+            _smtpService.SendEmail($"Wypłata środków: User:{user.Email}\nCash:{sendCash.Cash}", ConfigurationConst.SMTP.Email, "WYPŁATA");
             //var url = _paymentService.GetUri(cancel, redirect, $"Wypłata pieniędzy {sendCash.Cash}", sendCash.Cash, user.Email).FirstOrDefault();
 
             return;
