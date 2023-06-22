@@ -370,6 +370,8 @@ namespace Application.Controllers
 
                             book.Author.Wallet += book.Prize;
                         }
+
+                        await _userRepository.Update(book.Author);
                     }
 
                     transaction.Finished = true;
