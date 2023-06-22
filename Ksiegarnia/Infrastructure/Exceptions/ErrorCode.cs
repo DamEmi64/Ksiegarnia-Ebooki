@@ -45,6 +45,10 @@ namespace Infrastructure.Exceptions
         [JsonProperty("TokenNotFound")]
         TokenNotFound,
         [JsonProperty("NotEnoughCashInWallet")]
-        NotEnoughCashInWallet
+        NotEnoughCashInWallet,
+        [JsonProperty("ConfirmEmailFailed")]
+        ConfirmEmailFailed,
+        [JsonProperty("UserNotDeleted")]
+        UserNotDeleted,
     }
 }

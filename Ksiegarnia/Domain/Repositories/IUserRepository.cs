@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs;
 using Domain.Entitites;
 using Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 namespace Domain.Repositories
@@ -10,6 +11,9 @@ namespace Domain.Repositories
         Task<List<User>> GetUsers();
 
         Task<bool> CheckPassword(string password, string id);
+
+
+        Task<Premium> GetPremium(string userId);
 
         Task<User> Get(ClaimsPrincipal claimsPrincipal);
 
@@ -27,7 +31,7 @@ namespace Domain.Repositories
 
         Task<SendTokenDto> GeneratePasswordToken(string name);
 
-        Task Remove(string id);
+        Task<IdentityResult?> Remove(string id);
 
         Task AddRole(string id, Roles role);
 
@@ -37,7 +41,7 @@ namespace Domain.Repositories
 
         Task RemoveRole(string id, Roles roles);
 
-        Task Confirm(string id, string token);
+        Task<IdentityResult?> Confirm(string id, string token);
 
         Task<SendTokenDto> ChangeEmailToken(string id, string newEmail);
 

@@ -12,6 +12,7 @@ namespace Tests.Controllers.TransactionController
         private readonly Guid transactionId = Guid.NewGuid();
 
         private Mock<IPaymentService> _paymentService => new();
+        private Mock<ISmtpService> _smtpService => new();
         [Fact]
         public async Task Failed_TransactionNotFoundException_empty()
         {
@@ -33,7 +34,7 @@ namespace Tests.Controllers.TransactionController
             var bookRepository = new Mock<IEBookRepository>().Object;
             var userRepository = new Mock<IUserRepository>().Object;
 
-            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<TransactionNotFoundException>(async () => await controller.Details(Guid.Empty));
         }
@@ -58,7 +59,7 @@ namespace Tests.Controllers.TransactionController
             var bookRepository = new Mock<IEBookRepository>().Object;
             var userRepository = new Mock<IUserRepository>().Object;
 
-            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<TransactionNotFoundException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -84,7 +85,7 @@ namespace Tests.Controllers.TransactionController
             var bookRepository = new Mock<IEBookRepository>().Object;
             var userRepository = new Mock<IUserRepository>().Object;
 
-            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository.Object, bookRepository, userRepository, _paymentService.Object,_smtpService.Object);
 
             var result = await controller.Details(transactionId);
             Assert.NotNull(result);
