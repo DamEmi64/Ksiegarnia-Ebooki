@@ -449,9 +449,9 @@ namespace Infrastructure.Repositories
             return false;
         }
 
-        public async Task<Premium> GetPremium(string userId)
+        public async Task<Premium?> GetPremium(string userId)
         {
-            return await _context.Set<Premium>().FirstOrDefaultAsync(x => x.UserId == userId);
+            return await _context.Set<Premium>().Include(x=>x.User).FirstOrDefaultAsync(x => x.User.Id == userId);
         }
     }
 }

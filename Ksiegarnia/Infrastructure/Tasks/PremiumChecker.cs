@@ -30,9 +30,11 @@ namespace Infrastructure.Tasks
 
                 foreach (var user in users)
                 {
-                    if (user.Premium != null)
+                    var premium = await userRepository.GetPremium(user.Id);
+
+                    if (premium != null)
                     {
-                        var isExpired = user.Premium.StartDate.AddDays(user.Premium.DaysToFinishPremium) < DateTime.UtcNow;
+                        var isExpired = premium.StartDate.AddDays(premium.DaysToFinishPremium) < DateTime.UtcNow;
 
                         if (isExpired)
                         {

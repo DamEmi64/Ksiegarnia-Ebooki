@@ -13,7 +13,7 @@ namespace Domain.Repositories
         Task<bool> CheckPassword(string password, string id);
 
 
-        Task<Premium> GetPremium(string userId);
+        Task<Premium?> GetPremium(string userId);
 
         Task<User> Get(ClaimsPrincipal claimsPrincipal);
 

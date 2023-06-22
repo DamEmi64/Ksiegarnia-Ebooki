@@ -79,7 +79,7 @@ namespace Application.Controllers
                         StartDate = premiumData.BuyDate,
                         DaysToFinishPremium = premiumData.Days,
                         Id = Guid.NewGuid(),
-                        UserId = premiumData.UserId
+                        User = client
                     },
                     EBookReaders = Enumerable.Empty<EBookReader>(),
                 };
@@ -139,8 +139,6 @@ namespace Application.Controllers
                     throw new UserNotFoundException(transaction.BuyerId);
                 }
 
-                user.Premium = transaction.Premium;
-
                 await _userRepository.AddRole(user.Id, Roles.PremiumUser);
 
                 await _userRepository.Update(user);
@@ -169,11 +167,11 @@ namespace Application.Controllers
 
             if (await _userRepository.CheckRole(id, Roles.PremiumUser))
             {
-                var premium = _userRepository.GetPremium(user.Id);
+                var premium = await _userRepository.GetPremium(user.Id);
 
                 if (premium != null)
                 {
-                    var isExpired = user.Premium.StartDate.AddDays(user.Premium.DaysToFinishPremium) < DateTime.UtcNow;
+                    var isExpired = premium.StartDate.AddDays(premium.DaysToFinishPremium) < DateTime.UtcNow;
 
                     if (isExpired)
                     {
@@ -182,8 +180,8 @@ namespace Application.Controllers
 
                     return new PremiumInfoDto()
                     {
-                        BuyDate = user.Premium.StartDate,
-                        Days = user.Premium.DaysToFinishPremium,
+                        BuyDate = premium.StartDate,
+                        Days = premium.DaysToFinishPremium,
                         IsActive = !isExpired,
                         UserId = user.Id
                     };
