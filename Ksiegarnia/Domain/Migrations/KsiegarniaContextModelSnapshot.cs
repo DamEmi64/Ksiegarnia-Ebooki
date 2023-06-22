@@ -228,10 +228,11 @@ namespace Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Premiums");
                 });
@@ -603,6 +604,15 @@ namespace Domain.Migrations
                 });
 
             modelBuilder.Entity("Domain.Entitites.Notification", b =>
+                {
+                    b.HasOne("Domain.Entitites.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entitites.Premium", b =>
                 {
                     b.HasOne("Domain.Entitites.User", "User")
                         .WithMany()
