@@ -250,6 +250,7 @@ namespace Application.Controllers
                     _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
                 }
 
+                await _userRepository.Confirm(user.Id, user.Token);
             }
             catch (Exception)
             {
