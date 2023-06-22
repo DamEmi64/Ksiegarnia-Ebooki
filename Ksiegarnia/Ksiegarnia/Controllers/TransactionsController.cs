@@ -106,8 +106,6 @@ namespace Application.Controllers
                 var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
                 var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
 
-
-
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(url))
@@ -117,6 +115,63 @@ namespace Application.Controllers
             }
 
             throw new TransactionFailedException();
+        }
+
+        /// <summary>
+        ///     Wallet - send cash
+        /// </summary>
+        /// <param name="sendCash">cash info</param>
+        /// <returns>Status code</returns>
+        /// <exception cref="BookNotFoundException">When book not found...</exception>
+        /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
+        /// <exception cref="UserNotFoundException">When user not found...</exception>
+        [HttpPost("wallet")]
+        public async Task<string> BuyDistinct([FromBody] SendCashDto sendCash)
+        {
+            if (ModelState.IsValid)
+            {
+                var client = await _userRepository.Get(sendCash.UserId);
+
+                if (client == null)
+                {
+                    throw new UserNotFoundException(sendCash.UserId);
+                }
+
+                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+
+                var url = _paymentService.GetUri(cancel, redirect, "Doładowanie portfela", sendCash.Cash).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(url))
+                {
+                    return url;
+                }
+            }
+
+            throw new TransactionFailedException();
+        }
+
+        /// <summary>
+        ///     Finish sending cash to wallet
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ExceptionBase"></exception>
+        [HttpPost("FinishWallet/{id}")]
+        public async Task<HttpStatusCode> FinishWallet(string id, [FromQuery] bool successed, [FromBody] decimal cash)
+        {
+            if (successed)
+            {
+                var user = await _userRepository.Get(id);
+
+                if (user != null)
+                {
+                    user.Wallet += cash;
+
+                    await _userRepository.Update(user);
+                }
+            }
+
+            return HttpStatusCode.OK;
         }
 
         /// <summary>

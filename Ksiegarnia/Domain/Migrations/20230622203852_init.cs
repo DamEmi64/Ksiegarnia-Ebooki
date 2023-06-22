@@ -53,6 +53,23 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.cs
+                name: "Premiums",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DaysToFinishPremium = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Premiums", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+========
+>>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.cs
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -108,6 +125,30 @@ namespace Domain.Migrations
                         column: x => x.HideInfoId,
                         principalTable: "HideInfo",
                         principalColumn: "Id");
+<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.cs
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BuyerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false),
+                    PremiumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Finished = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Premiums_PremiumId",
+                        column: x => x.PremiumId,
+                        principalTable: "Premiums",
+                        principalColumn: "Id");
+========
+>>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -253,6 +294,8 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.cs
+========
                 name: "Premiums",
                 columns: table => new
                 {
@@ -272,6 +315,7 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+>>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.cs
                 name: "Distinction",
                 columns: table => new
                 {
@@ -453,11 +497,14 @@ namespace Domain.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.cs
+========
                 name: "IX_Premiums_UserId",
                 table: "Premiums",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+>>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.cs
                 name: "IX_Promotions_BookId",
                 table: "Promotions",
                 column: "BookId",
@@ -537,9 +584,12 @@ namespace Domain.Migrations
                 name: "Premiums");
 
             migrationBuilder.DropTable(
+<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.cs
+========
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+>>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.cs
                 name: "HideInfo");
         }
     }
