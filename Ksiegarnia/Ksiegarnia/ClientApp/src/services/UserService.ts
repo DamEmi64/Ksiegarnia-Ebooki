@@ -59,8 +59,8 @@ class UserService {
     return axios.get(this.api);
   }
 
-  getUserNumberOfDistinctions(){
-    return axios.get(`${this.api}/Distinction`)
+  getUserNumberOfDistinctions() {
+    return axios.get(`${this.api}/Distinction`);
   }
 
   register(request: RegisterProps) {

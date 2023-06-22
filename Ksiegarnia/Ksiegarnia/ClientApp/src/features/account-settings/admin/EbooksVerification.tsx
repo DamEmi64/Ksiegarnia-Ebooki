@@ -60,6 +60,9 @@ const EbooksVerification = () => {
 
   const handleSearch = () => {
     EbookService.search({
+      ebookSearchCriteria: {
+        verificationType: EbookAcceptance.Verifing
+      },
       sort: EbookSortOptions.DescByDate,
       page: paginationModel.page + 1,
       pageSize: paginationModel.pageSize,

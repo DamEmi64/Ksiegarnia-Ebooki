@@ -29,6 +29,18 @@ class AdminService {
     return axios.get(`${this.api}/books/${ebookId}/read`);
   }
 
+  verify(ebookId: string){
+    return axios.get(`${this.api}/Ebook/${ebookId}/verify`, {
+      params: {
+        verifyName: "Ebook"
+      }
+    });
+  }
+
+  block(ebookId: string){
+    return axios.post(`${this.api}/Ebook/${ebookId}/block`);
+  }
+
   getNotificationById(notificationId: string) {
     return axios.get(`${this.api}/Notification/${notificationId}`);
   }

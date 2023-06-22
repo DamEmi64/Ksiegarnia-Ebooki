@@ -21,7 +21,6 @@ interface FormProps {
   startDate: Date;
   endDate: Date;
   prize: number;
-  premiumPrize: number;
   isPremiumOnly: boolean;
 }
 
@@ -47,7 +46,6 @@ const PromoteEbook = (props: {
     startDate: new Date(),
     endDate: new Date(),
     prize: props.ebookPrize,
-    premiumPrize: props.ebookPrize,
     isPremiumOnly: false,
   });
 
@@ -73,20 +71,6 @@ const PromoteEbook = (props: {
     else if(form.prize >= props.ebookPrize){
       passedValidation = false;
       newErrors.prize = "Promocja powinna obniżyć cenę";
-    }
-
-    if (form.premiumPrize <= 0) {
-      passedValidation = false;
-      newErrors.premiumPrize = FormService.requiredMessage;
-    }
-    else if(form.prize >= props.ebookPrize){
-      passedValidation = false;
-      newErrors.prize = "Promocja powinna obniżyć cenę";
-    } 
-    else if (form.premiumPrize > form.prize) {
-      passedValidation = false;
-      newErrors.premiumPrize =
-        "Cena dla promocji premium nie może być wyższa niż dla zwykłej promocji";
     }
 
     setErrors(newErrors);
@@ -213,21 +197,6 @@ const PromoteEbook = (props: {
                 handleChange={(value: string) => {
                   setForm({ ...form, prize: +value });
                   setErrors({ ...errors, prize: "" });
-                }}
-              />
-              <BasicTextField
-                label="Cena premium"
-                settings={{
-                  type: "number",
-                  InputProps: {
-                    inputProps: { min: props.ebookPrize, max: form.prize },
-                  },
-                }}
-                value={form.premiumPrize.toString()}
-                errorMessage={errors.premiumPrize}
-                handleChange={(value: string) => {
-                  setForm({ ...form, premiumPrize: +value });
-                  setErrors({ ...errors, premiumPrize: "" });
                 }}
               />
               <CustomCheckbox

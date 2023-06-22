@@ -8,5 +8,6 @@ export default interface UserDTO {
     email: string,
     phone: string,
     age: number,
-    roles: Role[]
+    roles: Role[],
+    wallet?: number
 }

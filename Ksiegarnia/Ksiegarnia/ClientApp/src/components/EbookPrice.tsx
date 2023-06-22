@@ -14,7 +14,7 @@ const EbookPrice = (props: { authorId: string; price: number; promotion?: Promot
         return (
           <React.Fragment>
             <del>{price.toFixed(2)} zł</del> {" "}
-            {promotion.premiumPrize.toFixed(2)}
+            {promotion.prize.toFixed(2)}
           </React.Fragment>
         );
       }
