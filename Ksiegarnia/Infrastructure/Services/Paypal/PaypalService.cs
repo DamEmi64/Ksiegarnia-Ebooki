@@ -117,13 +117,13 @@ namespace Infrastructure.Services.Paypal
         /// </summary>
         /// <param name="paymentId"></param>
         /// <returns></returns>
-        public bool Execute(string paymentId)
+        public bool Execute(string paymentId, string payerId)
         {
             var context = GetAPIContext(GetAccessToken());
 
             var paymentExe = new PaymentExecution()
             {
-                payer_id = _httpContextAccessor.HttpContext.Session.GetString("payment")
+                payer_id = payerId,
             };
             var payment = new Payment()
             {

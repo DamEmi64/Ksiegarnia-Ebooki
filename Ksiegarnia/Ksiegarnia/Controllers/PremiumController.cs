@@ -121,13 +121,13 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpPost("Finish/{id}")]
-        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false)
+        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "", [FromQuery] bool succeeded = false)
         {
             if (succeeded)
             {
                 var transaction = await _eBookReaderRepository.GetTransaction(id);
 
-                if (transaction == null)
+                if (transaction != null && _paymentService.Execute(paymentId, PayerID))
                 {
                     throw new TransactionNotFoundException();
                 }

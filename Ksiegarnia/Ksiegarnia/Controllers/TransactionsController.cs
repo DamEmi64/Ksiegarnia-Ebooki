@@ -156,10 +156,10 @@ namespace Application.Controllers
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ExceptionBase"></exception>
-        [HttpPost("FinishWallet/{id}")]
-        public async Task<HttpStatusCode> FinishWallet(string id, [FromQuery] bool successed, [FromBody] decimal cash)
+        [HttpGet("FinishWallet/{id}")]
+        public async Task<HttpStatusCode> FinishWallet(string id, [FromQuery] bool successed, [FromBody] decimal cash, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
-            if (successed)
+            if (successed && _paymentService.Execute(paymentId, PayerID))
             {
                 var user = await _userRepository.Get(id);
 
@@ -179,10 +179,10 @@ namespace Application.Controllers
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ExceptionBase"></exception>
-        [HttpPost("FinishDistinct/{id}")]
-        public async Task<HttpStatusCode> FinishDistinct(string id, [FromQuery] bool successed, [FromQuery] int no)
+        [HttpGet("FinishDistinct/{id}")]
+        public async Task<HttpStatusCode> FinishDistinct(string id, [FromQuery] bool successed, [FromQuery] int no, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
-            if (successed)
+            if (successed && _paymentService.Execute(paymentId, PayerID))
             {
                 var user = await _userRepository.Get(id);
 
@@ -377,8 +377,8 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }, Request.Protocol, Request.Host.Value) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }, Request.Protocol, Request.Host.Value) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }, Request.Scheme, Request.Host.Value) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }, Request.Scheme, Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
@@ -404,14 +404,14 @@ namespace Application.Controllers
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
-        [HttpPost("Finish/{id}")]
-        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false)
+        [HttpGet("Finish/{id}")]
+        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
             if (succeeded)
             {
-                if (transaction != null)
+                if (transaction != null && _paymentService.Execute(paymentId, PayerID))
                 {
                     foreach (var book in transaction.EBookReaders.Select(x => x.EBook))
                     {
@@ -502,13 +502,13 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpGet("SendCashFinish/{id}")]
-        public async Task<HttpStatusCode> FinishSendingCash(Guid id, [FromBody] decimal cash = 0, [FromQuery] bool succeeded = false)
+        public async Task<HttpStatusCode> FinishSendingCash(Guid id, [FromBody] decimal cash = 0, [FromQuery] bool succeeded = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
             if (succeeded)
             {
-                if (transaction != null)
+                if (transaction != null && _paymentService.Execute(paymentId, PayerID))
                 {
                     transaction.Finished = true;
 
