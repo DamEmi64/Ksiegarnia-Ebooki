@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(KsiegarniaContext))]
-    [Migration("20230622210117_init")]
+    [Migration("20230622211418_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
