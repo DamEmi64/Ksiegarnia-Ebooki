@@ -43,11 +43,6 @@ namespace Domain.Entitites
         public virtual List<EBookReader> EBooks { get; set; } = new();
 
         /// <summary>
-        ///     Premium
-        /// </summary>
-        public Premium? Premium { get; set; }
-
-        /// <summary>
         ///     User birth date
         /// </summary>
         public DateTime BirthDate { get; set; }

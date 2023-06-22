@@ -192,7 +192,7 @@ namespace Application.Controllers
                 }
                 else
                 {
-                    if (await _userRepository.CheckRole(user?.Id ?? string.Empty, Roles.PremiumUser) && CountFreeDistinctions(user) < user?.Publications?.Count(x => x.Promotion != null))
+                    if (await _userRepository.CheckRole(user?.Id ?? string.Empty, Roles.PremiumUser) && (await CountFreeDistinctions(user)) < user?.Publications?.Count(x => x.Promotion != null))
                     {
                         throw new PremiumBonusUsedException();
                     }
@@ -493,9 +493,9 @@ namespace Application.Controllers
         }
 
 
-        private int CountFreeDistinctions(User? user)
+        private async Task<int> CountFreeDistinctions(User? user)
         {
-            return user?.Premium?.DaysToFinishPremium / 30 ?? 0 + user.Distinctions;
+            return (await _userRepository.GetPremium(user.Id))?.DaysToFinishPremium / 30 ?? 0 + user.Distinctions;
         }
     }
 }
