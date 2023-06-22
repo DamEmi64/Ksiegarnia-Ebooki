@@ -26,5 +26,13 @@ namespace Infrastructure.Services.Interfaces
         /// <returns></returns>
         IEnumerable<string> GetUri(string cancelUri, string redirectUri, string title, decimal cash, string? payee = null);
 
+        /// <summary>
+        ///     Execute payment
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <param name="payerId"></param>
+        /// <returns></returns>
+        public bool Execute(string paymentId, string payerId);
+
     }
 }
