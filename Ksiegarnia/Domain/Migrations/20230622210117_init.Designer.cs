@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(KsiegarniaContext))]
-<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.Designer.cs
-    [Migration("20230622203852_init")]
-========
-    [Migration("20230622200833_init")]
->>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.Designer.cs
+    [Migration("20230622210117_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,12 +230,7 @@ namespace Domain.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-<<<<<<<< HEAD:Ksiegarnia/Domain/Migrations/20230622203852_init.Designer.cs
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-========
                         .HasColumnType("nvarchar(450)");
->>>>>>>> master:Ksiegarnia/Domain/Migrations/20230622200833_init.Designer.cs
 
                     b.HasKey("Id");
 

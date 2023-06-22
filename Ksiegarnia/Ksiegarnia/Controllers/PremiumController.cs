@@ -79,7 +79,7 @@ namespace Application.Controllers
                         StartDate = premiumData.BuyDate,
                         DaysToFinishPremium = premiumData.Days,
                         Id = Guid.NewGuid(),
-                        UserId = client.Id
+                        User = client
                     },
                     EBookReaders = Enumerable.Empty<EBookReader>(),
                 };
