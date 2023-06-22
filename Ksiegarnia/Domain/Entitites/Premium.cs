@@ -7,5 +7,7 @@
         public DateTime StartDate { get; set; } = DateTime.Now;
 
         public int DaysToFinishPremium { get; set; } = 0;
+
+        public string UserId { get; set; }
     }
 }

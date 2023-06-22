@@ -163,10 +163,10 @@ namespace Infrastructure.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task Remove(string id)
+        public async Task<IdentityResult> Remove(string id)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
-            await _userManager.DeleteAsync(user);
+            return await _userManager.DeleteAsync(user);
         }
 
         /// <summary>
@@ -279,14 +279,16 @@ namespace Infrastructure.Repositories
         /// <param name="id"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task Confirm(string id, string token)
+        public async Task<IdentityResult?> Confirm(string id, string token)
         {
             var user = await _userStore.FindByIdAsync(id, CancellationToken.None);
 
             if (user != null)
             {
-                await _userManager.ConfirmEmailAsync(user, token);
+                return await _userManager.ConfirmEmailAsync(user, token);
             }
+
+            return null;
         }
 
         /// <summary>
@@ -445,6 +447,11 @@ namespace Infrastructure.Repositories
             }
 
             return false;
+        }
+
+        public async Task<Premium> GetPremium(string userId)
+        {
+            return await _context.Set<Premium>().FirstOrDefaultAsync(x => x.UserId == userId);
         }
     }
 }

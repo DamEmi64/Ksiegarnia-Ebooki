@@ -15,6 +15,7 @@ namespace Tests.Controllers.TransactionController
         private readonly Guid bookId = Guid.NewGuid();
         private readonly string userId = "TEST";
         private Mock<IPaymentService> _paymentService => new();
+        private Mock<ISmtpService> _smtpService => new();
 
         [Fact]
 
@@ -38,7 +39,7 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = userId
             };
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, string.Empty));
         }
@@ -64,7 +65,7 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = userId
             };
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<BookNotFoundException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -91,7 +92,7 @@ namespace Tests.Controllers.TransactionController
             };
 
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.Buy(buyerDto, Domain.Enums.TransactionType.Paypal, string.Empty));
         }
@@ -117,7 +118,7 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = Guid.NewGuid().ToString()
             };
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<UserNotFoundException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -143,7 +144,7 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = userId
             };
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
 
             Assert.ThrowsAsync<BookNotVerifiedException>(async () => await controller.Details(Guid.NewGuid()));
         }
@@ -171,10 +172,10 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = userId
             };
 
-         //   _paymentService.Setup(x=>x.GetUri("","",transaction))
+            //   _paymentService.Setup(x=>x.GetUri("","",transaction))
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
-            controller.Url = urlhelper.Object;
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
+              controller.Url = urlhelper.Object;
             var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Token, string.Empty);
             Assert.NotNull(result);
         }
@@ -202,7 +203,7 @@ namespace Tests.Controllers.TransactionController
                 BuyerId = userId
             };
 
-            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object);
+            var controller = new TransactionsController(bookReaderRepository, bookRepository.Object, userRepository.Object, _paymentService.Object, _smtpService.Object);
             controller.Url = urlhelper.Object;
             var result = await controller.Buy(buyerDto, Domain.Enums.TransactionType.Token, "EUR");
             Assert.NotNull(result);

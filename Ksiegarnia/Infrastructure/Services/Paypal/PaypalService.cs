@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using PayPal.Api;
 using System.Globalization;
 
@@ -82,7 +83,6 @@ namespace Infrastructure.Services.Paypal
 
                 var links = payment.links.GetEnumerator();
 
-                _httpContextAccessor.HttpContext.Session.SetString("payment", payment.id);
 
                 while (links.MoveNext())
                 {
@@ -146,7 +146,12 @@ namespace Infrastructure.Services.Paypal
         {
             var payer = new Payer()
             {
-                payment_method = "paypal"
+                payment_method = "paypal",
+                payer_info = new PayerInfo()
+                {
+                    country_code="PL",
+                    email = ConfigurationConst.Paypal.Email
+                }
             };
 
             var itemlist = new ItemList()
@@ -362,8 +367,18 @@ namespace Infrastructure.Services.Paypal
             var payee = new Payee()
             {
                 email = payeeUser
+            };
+
+            var payer = new Payer()
+            {
+                payment_method = "paypal",
+                payer_info = new PayerInfo()
+                {
+                    email = ConfigurationConst.Paypal.Email
+                }
 
             };
+
 
             var itemlist = new ItemList()
             {
@@ -375,7 +390,8 @@ namespace Infrastructure.Services.Paypal
                 name = title,
                 currency = currencyEnum.ToString(),
                 quantity = "1",
-                sku = "asd"
+                sku = "asd",
+                price = cash.ToString()
             });
 
             var urls = new RedirectUrls()
@@ -402,10 +418,13 @@ namespace Infrastructure.Services.Paypal
             var payment = new Payment()
             {
                 payee = payee,
+                payer = payer,
                 redirect_urls = urls,
                 intent = "sale",
                 transactions = transactionPaypal
             };
+
+            var str = payment.ConvertToJson();
 
             return payment.Create(apiContext);
         }

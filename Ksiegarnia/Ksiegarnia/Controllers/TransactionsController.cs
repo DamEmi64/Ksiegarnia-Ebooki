@@ -22,6 +22,7 @@ namespace Application.Controllers
         private readonly IEBookRepository _eBookRepository;
         private readonly IUserRepository _userRepository;
         private readonly IPaymentService _paymentService;
+        private readonly ISmtpService _smtpService;
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -32,12 +33,14 @@ namespace Application.Controllers
         public TransactionsController(IEBookReaderRepository repository,
                                         IEBookRepository eBookRepository,
                                         IUserRepository userRepository,
-                                        IPaymentService paymentService)
+                                        IPaymentService paymentService,
+                                        ISmtpService smtpService)
         {
             _eBookReaderRepository = repository;
             _eBookRepository = eBookRepository;
             _userRepository = userRepository;
             _paymentService = paymentService;
+            _smtpService = smtpService;
         }
 
         /// <summary>
@@ -99,9 +102,9 @@ namespace Application.Controllers
                 {
                     throw new UserNotFoundException(userId);
                 }
-                
-                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }) ?? string.Empty;
-                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }) ?? string.Empty;
+
+                var cancel = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
+                var redirect = HttpContext.Request.Host + Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
 
 
 
@@ -319,8 +322,8 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }, Request.Protocol, Request.Host.Value) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }, Request.Protocol, Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
@@ -403,7 +406,7 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpPost("")]
-        public async Task<string> SendCash(Guid id, [FromBody] SendCashDto sendCash)
+        public async Task SendCash([FromBody] SendCashDto sendCash)
         {
             var transaction = new Transaction()
             {
@@ -414,19 +417,21 @@ namespace Application.Controllers
 
             };
 
-            var cancel = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = false, cash = sendCash.Cash }) ?? string.Empty;
-            var redirect = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = true, cash = sendCash.Cash }) ?? string.Empty;
+            var user = await _userRepository.Get(sendCash.UserId);
 
-            var url = _paymentService.GetUri(cancel, redirect, $"Wypłata pieniędzy {sendCash.Cash}", sendCash.Cash, sendCash.UserId).FirstOrDefault();
-
-            if (!string.IsNullOrEmpty(url))
+            if (user == null)
             {
-                await _eBookReaderRepository.Add(transaction);
-                await _eBookReaderRepository.SaveChanges();
-                return url;
+                throw new UserNotFoundException(sendCash.UserId);
             }
 
-            throw new ExceptionBase(HttpStatusCode.BadRequest, "Transaction failed");
+            var cancel = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = false, cash = sendCash.Cash }, Request.Scheme, Request.Host.Value) ?? string.Empty;
+            var redirect = Url.Action(nameof(FinishSendingCash), "Transactions", values: new { id = transaction.Id, succeeded = true, cash = sendCash.Cash }, Request.Scheme, Request.Host.Value) ?? string.Empty;
+
+
+            _smtpService.SendEmail($"Wypłata środków: User:{user.Email}\nCash:{sendCash.Cash}",ConfigurationConst.SMTP.Email,"WYPŁATA");
+            //var url = _paymentService.GetUri(cancel, redirect, $"Wypłata pieniędzy {sendCash.Cash}", sendCash.Cash, user.Email).FirstOrDefault();
+
+            return;
         }
 
 

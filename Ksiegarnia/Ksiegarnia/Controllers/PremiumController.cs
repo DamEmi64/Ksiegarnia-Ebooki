@@ -78,7 +78,8 @@ namespace Application.Controllers
                     {
                         StartDate = premiumData.BuyDate,
                         DaysToFinishPremium = premiumData.Days,
-                        Id = Guid.NewGuid()
+                        Id = Guid.NewGuid(),
+                        UserId = premiumData.UserId
                     },
                     EBookReaders = Enumerable.Empty<EBookReader>(),
                 };
@@ -128,7 +129,7 @@ namespace Application.Controllers
 
                 if (transaction == null)
                 {
-                    throw new ExceptionBase(HttpStatusCode.NotFound, "Transaction not found");
+                    throw new TransactionNotFoundException();
                 }
 
                 var user = await _userRepository.Get(transaction.BuyerId);
@@ -168,7 +169,9 @@ namespace Application.Controllers
 
             if (await _userRepository.CheckRole(id, Roles.PremiumUser))
             {
-                if (user.Premium != null)
+                var premium = _userRepository.GetPremium(user.Id);
+
+                if (premium != null)
                 {
                     var isExpired = user.Premium.StartDate.AddDays(user.Premium.DaysToFinishPremium) < DateTime.UtcNow;
 

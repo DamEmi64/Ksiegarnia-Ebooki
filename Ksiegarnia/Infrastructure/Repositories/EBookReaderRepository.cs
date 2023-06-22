@@ -37,15 +37,17 @@ namespace Infrastructure.Repositories
 
         public async Task<Transaction?> GetTransaction(Guid id)
         {
-            return (await _context.Set<EBookReader>()
-                    .Include(x => x.Transaction)
-                    .ThenInclude(x => x.Premium)
-                    .Include(x=>x.EBook)
+            return (await _context.Set<Transaction>()
+                    .Include(x => x.Premium)
+                    .Include(x=>x.EBookReaders)
+                    .ThenInclude(x=>x.EBook)
                     .ThenInclude(x=>x.Author)
-                    .Include(x=>x.Reviews)
-                    .Include(x => x.EBook)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(x=>x.Reviews)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(x => x.EBook)
                     .ThenInclude(x => x.Genre)
-                    .FirstOrDefaultAsync(x => x.Id == id))?.Transaction;
+                    .FirstOrDefaultAsync(x => x.Id == id));
         }
 
         public IEnumerable<Transaction> GetTransactions(string id)

@@ -162,7 +162,7 @@ namespace Application.Controllers
 
             review.Opinion = reviewDto.Opinion;
             review.Date = reviewDto.Date;
-            review.Opinion = reviewDto.Opinion;
+            review.Grade = reviewDto.Grade;
 
             await _reviewsRepository.SaveChanges();
 
