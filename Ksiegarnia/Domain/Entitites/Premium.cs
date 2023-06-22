@@ -8,6 +8,6 @@
 
         public int DaysToFinishPremium { get; set; } = 0;
 
-        public User User { get; set; }
+        public string UserId { get; set; }
     }
 }

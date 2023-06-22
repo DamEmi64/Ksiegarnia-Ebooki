@@ -53,6 +53,20 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Premiums",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DaysToFinishPremium = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Premiums", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -107,6 +121,27 @@ namespace Domain.Migrations
                         name: "FK_AspNetUsers_HideInfo_HideInfoId",
                         column: x => x.HideInfoId,
                         principalTable: "HideInfo",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BuyerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false),
+                    PremiumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Finished = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Premiums_PremiumId",
+                        column: x => x.PremiumId,
+                        principalTable: "Premiums",
                         principalColumn: "Id");
                 });
 
@@ -253,25 +288,6 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Premiums",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DaysToFinishPremium = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Premiums", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Premiums_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Distinction",
                 columns: table => new
                 {
@@ -311,27 +327,6 @@ namespace Domain.Migrations
                         principalTable: "Ebooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Transactions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BuyerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    PremiumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Finished = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Premiums_PremiumId",
-                        column: x => x.PremiumId,
-                        principalTable: "Premiums",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -453,11 +448,6 @@ namespace Domain.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Premiums_UserId",
-                table: "Premiums",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Promotions_BookId",
                 table: "Promotions",
                 column: "BookId",
@@ -531,13 +521,13 @@ namespace Domain.Migrations
                 name: "Transactions");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Genre");
 
             migrationBuilder.DropTable(
                 name: "Premiums");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "HideInfo");
