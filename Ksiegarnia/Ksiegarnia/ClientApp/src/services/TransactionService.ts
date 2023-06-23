@@ -16,12 +16,29 @@ class TransactionService {
     console.log({
       userId: userId,
       cash: cash,
-      currency: "PLN"
-    })
+      currency: "PLN",
+    });
     return axios.post(`${this.api}`, {
       userId: userId,
       cash: cash,
-      currency: "PLN"
+      currency: "PLN",
+    });
+  };
+
+  finishSendCash = (
+    transactionId: string,
+    succeeded: boolean,
+    paymentId: string,
+    token: string,
+    payerId: string
+  ) => {
+    return axios.get(`${this.api}/SendCashFinish/${transactionId}`, {
+      params: {
+        succeeded: succeeded,
+        paymentId: paymentId,
+        token: token,
+        PayerID: payerId,
+      },
     });
   };
 
@@ -54,7 +71,13 @@ class TransactionService {
     );
   };
 
-  finishTransaction = (transactionId: string, succeeded: boolean, paymentId: string, token: string, payerId: string) => {
+  finishTransaction = (
+    transactionId: string,
+    succeeded: boolean,
+    paymentId: string,
+    token: string,
+    payerId: string
+  ) => {
     return axios.post(
       `${this.api}/Finish/${transactionId}`,
       {},
@@ -63,7 +86,7 @@ class TransactionService {
           succeeded: succeeded,
           paymentId: paymentId,
           token: token,
-          PayerID: payerId
+          PayerID: payerId,
         },
       }
     );
@@ -78,7 +101,13 @@ class TransactionService {
     });
   };
 
-  finishDistinctTransaction = (transactionId: string, succeeded: boolean, paymentId: string, token: string, payerId: string) => {
+  finishDistinctTransaction = (
+    transactionId: string,
+    succeeded: boolean,
+    paymentId: string,
+    token: string,
+    payerId: string
+  ) => {
     const numberOfDistinctions = 1;
     return axios.post(
       `${this.api}/FinishDistinct/${transactionId}`,
@@ -89,7 +118,7 @@ class TransactionService {
           no: numberOfDistinctions,
           paymentId: paymentId,
           token: token,
-          PayerID: payerId
+          PayerID: payerId,
         },
       }
     );

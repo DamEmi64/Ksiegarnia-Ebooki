@@ -53,6 +53,7 @@ const SendCash = () => {
 
     TransactionService.sendCash(userId as string, cash)
       .then((response) => {
+        console.log(response)
         userContext.setWallet(walletSize - cash);
         notificationContext?.setNotification({
           isVisible: true,
