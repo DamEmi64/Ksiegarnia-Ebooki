@@ -137,8 +137,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(sendCash.UserId);
                 }
 
-                var cancel = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, successed = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, successed = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
 
                 var url = _paymentService.GetUri(cancel, redirect, "Doładowanie portfela", sendCash.Cash).FirstOrDefault();
 
