@@ -28,7 +28,7 @@ export const ebookStatusesNameColorMappings: EbookStatusNameColorMapping[] = [
 
 const EbookStatus = (props: { verificationStatus: EbookAcceptance }) => {
   return (
-    <Grid item container columnGap={2}>
+    <Grid item container columnGap={1}>
       <Typography variant="h5" display="inline">
         Status:
       </Typography>

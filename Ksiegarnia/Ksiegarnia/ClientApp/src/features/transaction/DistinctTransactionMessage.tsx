@@ -67,6 +67,8 @@ const DistinctTransactionMessage = () => {
         const distinctionDetails: DistinctionDetails = transactionContext
           ?.transaction.distinctionDetails as DistinctionDetails;
 
+        console.log(distinctionDetails)
+
         EbookService.distinct(distinctionDetails.ebookId, distinctionDetails)
           .then(() => {
             setIsFinalized(true);
