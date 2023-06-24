@@ -44,22 +44,19 @@ const BasketProvider = (props: { children: React.ReactNode }) => {
   }, [basket]);
 
   const getEbookPrice = (ebook: Ebook) => {
-    if (!ebook.promotion) {
-      return ebook.prize;
-    }
 
     if (ebook.promotion?.isPremiumOnly) {
       if(isUserPremium){
-        return ebook.promotion.prize;
+        return (ebook.promotion.prize + ebook.promotion.prize * 0.1);
       }
     }
     else{
-      if (ebook.promotion.prize != 0) {
-        return ebook.promotion.prize;
+      if (ebook.promotion && ebook.promotion.prize != 0) {
+        return (ebook.promotion.prize + ebook.promotion.prize * 0.1);
       }
     }
 
-    return ebook.prize;
+    return (ebook.prize + ebook.prize * 0.1);
   };
 
   const addEbook = (newEbook: Ebook) => {

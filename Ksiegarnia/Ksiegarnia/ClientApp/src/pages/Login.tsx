@@ -113,6 +113,7 @@ const Login = () => {
           });
       })
       .catch((error) => {
+        console.log(error)
         if(error.response.data.error.includes("not found")){
           notificationContext?.setNotification({
             isVisible: true,

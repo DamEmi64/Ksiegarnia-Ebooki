@@ -45,7 +45,7 @@ class TransactionService {
   getUserTransactions = (userId: string, page?: number, pageSize?: number) => {
     return axios.get(this.api, {
       params: {
-        userId,
+        userId: userId,
         page,
         pageSize,
       },
