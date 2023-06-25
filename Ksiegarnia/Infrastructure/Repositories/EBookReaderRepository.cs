@@ -50,9 +50,9 @@ namespace Infrastructure.Repositories
                     .FirstOrDefaultAsync(x => x.Id == id));
         }
 
-        public IEnumerable<Transaction> GetTransactions(string id)
+        public IEnumerable<Transaction> GetTransactions(string id, bool isAuthor = false)
         {
-            if (string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id) && !isAuthor)
             {
                 return _context.Set<Transaction>()
                     .Include(x => x.Premium)
@@ -68,6 +68,24 @@ namespace Infrastructure.Repositories
                     .ThenInclude(y => y.Reviews)
                     .Where(x => x.EBookReaders.Any(y => y.User.Id == id));
             }
+
+            if (!string.IsNullOrEmpty(id) && isAuthor)
+            {
+                return _context.Set<Transaction>()
+                    .Include(x => x.Premium)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.EBook)
+                    .ThenInclude(z => z.Author)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.EBook)
+                    .ThenInclude(z => z.Genre)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.User)
+                    .Include(x => x.EBookReaders)
+                    .ThenInclude(y => y.Reviews)
+                    .Where(x => x.EBookReaders.Any(y => y.EBook.Author.Id == id));
+            }
+
             return _context.Set<Transaction>()
                     .Include(x => x.Premium)
                     .Include(x => x.EBookReaders)
@@ -87,6 +105,20 @@ namespace Infrastructure.Repositories
             _context.Set<EBookReader>().RemoveRange(transaction.EBookReaders ?? new List<EBookReader>());
 
             _context.Set<Transaction>().Remove(transaction);
+        }
+
+        public void CleanTransaction(Transaction transaction)
+        {
+            if (transaction.EBookReaders != null)
+            {
+                _context.Set<EBookReader>().RemoveRange(transaction.EBookReaders ?? new List<EBookReader>());
+            }
+
+            if (transaction.Premium != null)
+            {
+                _context.Set<Premium>().Remove(transaction.Premium);
+            }
+
         }
 
         public async Task SaveChanges()

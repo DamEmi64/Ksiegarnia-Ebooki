@@ -185,6 +185,11 @@ namespace Infrastructure.Repositories
                 throw new Exception("User not found");
             }
 
+            if (!user.EmailConfirmed)
+            {
+                throw new Exception("Email not confirmed");
+            }
+
             var result = await _signInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: false);
             if (result.Succeeded)
             {
@@ -196,7 +201,12 @@ namespace Infrastructure.Repositories
                 throw new Exception("User not blocked");
             }
 
-            throw new Exception("Login Failed");
+            if (result.IsNotAllowed)
+            {
+                throw new Exception("User not allowed");
+            }
+
+            throw new Exception("Login failed");
         }
 
         /// <summary>

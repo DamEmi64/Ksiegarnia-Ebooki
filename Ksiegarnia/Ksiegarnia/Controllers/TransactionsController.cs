@@ -103,8 +103,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(userId);
                 }
 
-                var cancel = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, succeeded = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, successed = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, successed = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
 
                 var url = _paymentService.GetUri(cancel, redirect, "Zakup wyróżnień", numberOfDistinction * ConfigurationConst.PrizeForDistinct).FirstOrDefault();
 
@@ -137,8 +137,8 @@ namespace Application.Controllers
                     throw new UserNotFoundException(sendCash.UserId);
                 }
 
-                var cancel = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, succeeded = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, successed = false, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishWallet), "Transactions", values: new { id = sendCash.UserId, successed = true, cash = sendCash.Cash }, Request.Scheme) ?? string.Empty;
 
                 var url = _paymentService.GetUri(cancel, redirect, "Doładowanie portfela", sendCash.Cash).FirstOrDefault();
 
@@ -180,7 +180,7 @@ namespace Application.Controllers
         /// <returns></returns>
         /// <exception cref="ExceptionBase"></exception>
         [HttpGet("FinishDistinct/{id}")]
-        public async Task<HttpStatusCode> FinishDistinct(string id, [FromQuery] bool successed, [FromQuery] int no, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
+        public async Task<IActionResult> FinishDistinct(string id, [FromQuery] bool successed, [FromQuery] int no, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
             if (successed && _paymentService.Execute(paymentId, PayerID))
             {
@@ -192,9 +192,25 @@ namespace Application.Controllers
 
                     await _userRepository.Update(user);
                 }
+
+                return Redirect(new UriBuilder()
+                {
+                    Scheme = Request.Scheme,
+                    Host = Request.Host.Host,
+                    Port = Request.Host.Port ?? -1,
+                    Path = "TransactionEnd",
+                    Query = "success=true"
+                }.ToString());
             }
 
-            return HttpStatusCode.OK;
+            return Redirect(new UriBuilder()
+            {
+                Scheme = Request.Scheme,
+                Host = Request.Host.Host,
+                Port = Request.Host.Port ?? -1,
+                Path = "TransactionEnd",
+                Query = "success=false"
+            }.ToString());
         }
 
         private async Task<string> BuyViaWallet(BuyerDto buyer)
@@ -377,8 +393,8 @@ namespace Application.Controllers
                     EBookReaders = readers
                 };
 
-                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = false }, Request.Scheme, Request.Host.Value) ?? string.Empty;
-                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeeded = true }, Request.Scheme, Request.Host.Value) ?? string.Empty;
+                var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeessed = false }, Request.Scheme, Request.Host.Value) ?? string.Empty;
+                var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeessed = true }, Request.Scheme, Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
 
@@ -405,11 +421,11 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpGet("Finish/{id}")]
-        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] bool succeeded = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
+        public async Task<IActionResult> FinishTransaction(Guid id, [FromQuery] bool succeessed = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
-            if (succeeded)
+            if (succeessed)
             {
                 if (transaction != null && _paymentService.Execute(paymentId, PayerID))
                 {
@@ -432,10 +448,29 @@ namespace Application.Controllers
                     transaction.Finished = true;
 
                     await _eBookReaderRepository.SaveChanges();
+
+                    return Redirect(new UriBuilder()
+                    {
+                        Scheme = Request.Scheme,
+                        Host = Request.Host.Host,
+                        Port = Request.Host.Port ?? -1,
+                        Path = "TransactionEnd",
+                        Query = "success=true"
+                    }.ToString());
                 }
                 else
                 {
-                    throw new ExceptionBase(HttpStatusCode.BadRequest, "Transaction failed");
+                    _eBookReaderRepository.CleanTransaction(transaction);
+                    await _eBookReaderRepository.SaveChanges();
+
+                    return Redirect(new UriBuilder()
+                    {
+                        Scheme = Request.Scheme,
+                        Host = Request.Host.Host,
+                        Port = Request.Host.Port ?? -1,
+                        Path = "TransactionEnd",
+                        Query = "success=false"
+                    }.ToString());
                 }
 
                 await _eBookReaderRepository.SaveChanges();
@@ -449,7 +484,14 @@ namespace Application.Controllers
                 }
             }
 
-            return HttpStatusCode.OK;
+            return Redirect(new UriBuilder()
+            {
+                Scheme = Request.Scheme,
+                Host = Request.Host.Host,
+                Port = Request.Host.Port ?? -1,
+                Path = "TransactionEnd",
+                Query = "success=false"
+            }.ToString());
         }
 
 
@@ -502,7 +544,7 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpGet("SendCashFinish/{id}")]
-        public async Task<HttpStatusCode> FinishSendingCash(Guid id, [FromBody] decimal cash = 0, [FromQuery] bool succeeded = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
+        public async Task<IActionResult> FinishSendingCash(Guid id, [FromBody] decimal cash = 0, [FromQuery] bool succeeded = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
@@ -526,6 +568,15 @@ namespace Application.Controllers
                 }
 
                 await _eBookReaderRepository.SaveChanges();
+
+                return Redirect(new UriBuilder()
+                {
+                    Scheme = Request.Scheme,
+                    Host = Request.Host.Host,
+                    Port = Request.Host.Port ?? -1,
+                    Path = "TransactionEnd",
+                    Query = "success=true"
+                }.ToString());
             }
             else
             {
@@ -534,9 +585,16 @@ namespace Application.Controllers
                     _eBookReaderRepository.Remove(transaction);
                     await _eBookRepository.SaveChanges();
                 }
-            }
 
-            return HttpStatusCode.OK;
+                return Redirect(new UriBuilder()
+                {
+                    Scheme = Request.Scheme,
+                    Host = Request.Host.Host,
+                    Port = Request.Host.Port ?? -1,
+                    Path = "TransactionEnd",
+                    Query = "success=false"
+                }.ToString());
+            }
         }
 
         /// <summary>
@@ -547,24 +605,20 @@ namespace Application.Controllers
         /// <param name="pageSize">page size</param>
         /// <returns></returns>
         [HttpGet("{id}/summary")]
-        public object GetSummary(string id,
-                    [FromQuery] int page = 1,
-                    [FromQuery] int pageSize = 100)
+        public object GetSummary(string id)
         {
             var buying = _eBookReaderRepository.GetTransactions(id).ToDTOs().ToList();
 
             var buyingCash = GetCash(buying);
 
-            var selling = _eBookReaderRepository.GetTransactions(string.Empty)
-                            .Where(x => x.EBookReaders != null && x.EBookReaders.Any(x => x.EBook?.Author.Id == id)).ToDTOs().ToList();
-
+            var selling = _eBookReaderRepository.GetTransactions(id, true).ToDTOs().ToList();
             var sellingCash = GetCash(selling);
 
             return new
             {
-                buyed_books = Paging(buying, page, pageSize),
+                buyed_books = buying,
                 cash_spend_on_buying = buyingCash,
-                selled_book = Paging(selling, page, pageSize),
+                selled_book = selling,
                 earned_cash = sellingCash
             };
         }
