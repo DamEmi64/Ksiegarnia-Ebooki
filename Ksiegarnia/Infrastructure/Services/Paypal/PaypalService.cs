@@ -1,9 +1,11 @@
 ﻿using Domain.DTOs;
+using Domain.Repositories;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using PayPal.Api;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Services.Paypal
 {
@@ -13,11 +15,11 @@ namespace Infrastructure.Services.Paypal
     public partial class PaypalService : IPaymentService
     {
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
 
-        public PaypalService(IHttpContextAccessor httpContextAccessor)
+        public PaypalService(IUserRepository userRepository)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -42,8 +44,6 @@ namespace Infrastructure.Services.Paypal
 
                         var links = payment.links.GetEnumerator();
 
-                        _httpContextAccessor.HttpContext.Session.SetString("payment", payment.id);
-
                         while (links.MoveNext())
                         {
                             var link = links.Current;
@@ -56,7 +56,7 @@ namespace Infrastructure.Services.Paypal
                 }
                 else
                 {
-                    payment = CreatePayment(context, redirectUri, cancelUri, transaction, commission);
+                    payment = Task.Run(async() => await CreatePayment(context, redirectUri, cancelUri, transaction, commission)).Result;
 
                     var links = payment.links.GetEnumerator();
 
@@ -142,7 +142,7 @@ namespace Infrastructure.Services.Paypal
         /// <param name="transaction">Transaction</param>
         /// <param name="commission">commision where 10 % is 0.1</param>
         /// <returns></returns>
-        public Payment CreatePayment(APIContext apiContext, string redirectUri, string cancelUri, TransactionDto transaction, decimal commission)
+        public async Task<Payment> CreatePayment(APIContext apiContext, string redirectUri, string cancelUri, TransactionDto transaction, decimal commission)
         {
             var payer = new Payer()
             {
@@ -165,7 +165,11 @@ namespace Infrastructure.Services.Paypal
             {
                 var prize = Decimal.Zero;
 
-                if (book.Promotion != null && book.Promotion.EndDate > DateTime.Now)
+                if (book.Promotion != null && book.Promotion.EndDate > DateTime.Now && !book.Promotion.IsPremiumOnly)
+                {
+                    prize = book.Promotion.Prize;
+                }
+                else if (book.Promotion != null && book.Promotion.EndDate > DateTime.Now && book.Promotion.IsPremiumOnly && await _userRepository.CheckRole(transaction.Buyer.Id,Domain.Enums.Roles.PremiumUser))
                 {
                     prize = book.Promotion.Prize;
                 }

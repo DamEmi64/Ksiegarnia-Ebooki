@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs;
+using Domain.Repositories;
 using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -65,7 +66,7 @@ namespace Tests.Services
                 Id = Guid.NewGuid(),
             };
 
-            var paypal = new Infrastructure.Services.Paypal.PaypalService(httpAncestor.Object);
+            var paypal = new Infrastructure.Services.Paypal.PaypalService(new Mock<IUserRepository>().Object);
 
             var result =  paypal.GetUri("https://localhost:7270/", "https://localhost:7270/", transaction, 10, false).ToList();
 

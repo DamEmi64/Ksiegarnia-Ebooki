@@ -101,9 +101,16 @@ namespace Application.Controllers
         [HttpPost("url")]
         public string CheckUrl()
         {
-            var buf = Url.Action(nameof(GetErrorCode),"Debug", null, Request.Scheme);
+            var buf = new UriBuilder()
+            {
+                Scheme = Request.Scheme,
+                Host = Request.Host.Host,
+                Port = Request.Host.Port ?? -1,
+                Path = "TransactionEnd",
+                Query = "success=false"
+            };
 
-            return buf;
+            return buf.Uri.ToString();
         }
 
         /// <summary>

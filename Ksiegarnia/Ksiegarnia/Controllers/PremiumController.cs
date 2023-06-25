@@ -121,17 +121,17 @@ namespace Application.Controllers
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpPost("Finish/{id}")]
-        public async Task<HttpStatusCode> FinishTransaction(Guid id, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "", [FromQuery] bool succeeded = false)
+        public async Task<IActionResult> FinishTransaction(Guid id, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "", [FromQuery] bool succeeded = false)
         {
-            if (succeeded)
+            var transaction = await _eBookReaderRepository.GetTransaction(id);
+
+            if (transaction != null)
             {
-                var transaction = await _eBookReaderRepository.GetTransaction(id);
+                throw new TransactionNotFoundException();
+            }
 
-                if (transaction != null && _paymentService.Execute(paymentId, PayerID))
-                {
-                    throw new TransactionNotFoundException();
-                }
-
+            if (succeeded && _paymentService.Execute(paymentId, PayerID))
+            {
                 var user = await _userRepository.Get(transaction.BuyerId);
 
                 if (user == null)
@@ -143,9 +143,31 @@ namespace Application.Controllers
 
 
                 await _userRepository.Update(user);
+
+                return Redirect(new UriBuilder()
+                {
+                    Scheme = Request.Scheme,
+                    Host = Request.Host.Host,
+                    Port = Request.Host.Port ?? -1,
+                    Path = "TransactionEnd",
+                    Query = "success=true"
+                }.ToString());
+            }
+            else
+            {
+                _eBookReaderRepository.CleanTransaction(transaction);
+
+                await _eBookReaderRepository.SaveChanges();
             }
 
-            return HttpStatusCode.OK;
+            return Redirect(new UriBuilder()
+            {
+                Scheme = Request.Scheme,
+                Host = Request.Host.Host,
+                Port = Request.Host.Port ?? -1,
+                Path = "TransactionEnd",
+                Query = "success=false"
+            }.ToString());
         }
 
         /// <summary>
