@@ -12,6 +12,7 @@ const EbookRate = (props: {
     size="large"
     value={props.value}
     icon={<Star htmlColor="#0A3F5C" />}
+    precision={0.1}
     emptyIcon={<StarBorder htmlColor="#0A3F5C" />}
     onChange={(event, newValue) => {
       props.onChange ? props.onChange(newValue ? newValue : 0) : null;

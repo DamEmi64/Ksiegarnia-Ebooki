@@ -104,7 +104,7 @@ const NotificationView = () => {
         </Grid>
         <Button
           variant="contained"
-          href={`/Ebook/${notification.id}`}
+          href={`/Ebook/${notification.objectId}`}
           target="_blank"
           style={{marginTop: -12}}
         >

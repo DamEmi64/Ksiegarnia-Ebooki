@@ -102,7 +102,7 @@ namespace Application.Controllers
                 {
                     throw new UserNotFoundException(userId);
                 }
-
+                
                 var cancel = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, successed = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
                 var redirect = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, successed = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
 
@@ -111,7 +111,7 @@ namespace Application.Controllers
                 if (!string.IsNullOrEmpty(url))
                 {
                     return url;
-                }
+                
             }
 
             throw new TransactionFailedException();
@@ -392,7 +392,7 @@ namespace Application.Controllers
                     BuyerId = buyer.BuyerId,
                     EBookReaders = readers
                 };
-
+                
                 var cancel = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeessed = false }, Request.Scheme, Request.Host.Value) ?? string.Empty;
                 var redirect = Url.Action(nameof(FinishTransaction), "Transactions", values: new { id = transaction.Id, succeessed = true }, Request.Scheme, Request.Host.Value) ?? string.Empty;
 
@@ -422,6 +422,7 @@ namespace Application.Controllers
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpGet("Finish/{id}")]
         public async Task<IActionResult> FinishTransaction(Guid id, [FromQuery] bool succeessed = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
+
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 

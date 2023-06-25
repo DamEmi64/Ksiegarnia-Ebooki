@@ -8,52 +8,6 @@ import { Review } from "../../models/api/review";
 import ReviewService from "../../services/ReviewService";
 import PagedResponse from "../../models/api/pagedResponse";
 
-export interface MockReview {
-  date: string;
-  reviewer: string;
-  opinion: string;
-  reviewerId: string;
-  grade: number;
-}
-
-const movkedReviews: MockReview[] = [
-  {
-    date: new Date().toLocaleDateString(),
-    reviewer: "Adam Nowak",
-    opinion: "Dobry ebook",
-    reviewerId: "1536b03f-30f7-4d6d-9eb7-3a2fcefd4fae",
-    grade: 4.4,
-  },
-  {
-    date: new Date().toLocaleDateString(),
-    reviewer: "Jan Kowalski",
-    opinion: "Niezły ebook",
-    reviewerId: "2",
-    grade: 3,
-  },
-  {
-    date: new Date().toLocaleDateString(),
-    reviewer: "Michał Nowak",
-    opinion: "Wspaniały ebook",
-    reviewerId: "3",
-    grade: 5,
-  },
-  {
-    date: new Date().toLocaleDateString(),
-    reviewer: "Jan Nowak",
-    reviewerId: "4",
-    grade: 2.5,
-    opinion: "Niezbyt dobry ebook",
-  },
-  {
-    date: new Date().toLocaleDateString(),
-    reviewer: "Adam Kowalski",
-    opinion: "Ciekawy ebook",
-    reviewerId: "5",
-    grade: 4.8,
-  },
-];
-
 const EbooksReviews = (props: { ebook: Ebook }) => {
   const userContext = useContext(UserContext);
   const isUserLogged = userContext?.user.logged;
@@ -68,10 +22,9 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const [isAddingReview, setIsAddingReview] = useState<boolean>(false);
 
   useEffect(() => {
-    if(page > 1){
-      handleSearch()
-    }
-    else{
+    if (page > 1) {
+      handleSearch();
+    } else {
       handleSearchWithReplace();
     }
   }, [page]);
@@ -79,7 +32,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const handleSearch = () => {
     ReviewService.getEbookReviews(props.ebook.id, page, pageSize).then(
       (response) => {
-        console.log(response.data)
+        console.log(response.data);
         const pagedResponse: PagedResponse = response.data;
         setReviews([...reviews, ...pagedResponse.result]);
         setPage(pagedResponse.page);
@@ -92,7 +45,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
   const handleSearchWithReplace = () => {
     ReviewService.getEbookReviews(props.ebook.id, page, pageSize).then(
       (response) => {
-        console.log(response.data)
+        console.log(response.data);
         const pagedResponse: PagedResponse = response.data;
         setReviews(pagedResponse.result);
         setPage(pagedResponse.page);
@@ -100,7 +53,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
         setNumberOfReviews(pagedResponse.all);
       }
     );
-  }
+  };
 
   return (
     <Grid item container direction="column" rowGap={1} marginBottom={2}>
@@ -109,6 +62,7 @@ const EbooksReviews = (props: { ebook: Ebook }) => {
       </Typography>
       <Grid item container direction="column" rowGap={1}>
         {isUserLogged &&
+          userContext.containsEbookId(props.ebook.id) &&
           userId !== props.ebook.author.id &&
           (!isAddingReview ? (
             <Grid item marginBottom={2}>

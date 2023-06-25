@@ -198,7 +198,7 @@ const Basket = () => {
           console.log(error);
           notificationContext?.setNotification({
             isVisible: true,
-            isSuccessful: true,
+            isSuccessful: false,
             message: NOT_SUBMITED_TRANSACTION,
           });
         });

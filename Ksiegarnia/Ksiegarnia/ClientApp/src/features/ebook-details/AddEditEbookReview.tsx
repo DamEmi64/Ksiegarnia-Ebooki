@@ -8,7 +8,6 @@
 import React, { useContext, useState } from "react";
 import FormService from "../../services/FormService";
 import Rate from "../../components/EbookRate";
-import { MockReview } from "./EbooksReviews";
 import Ebook from "../../models/api/ebook";
 import ReviewService, { CreateEditReview } from "../../services/ReviewService";
 import { UserContext } from "../../context/UserContext";

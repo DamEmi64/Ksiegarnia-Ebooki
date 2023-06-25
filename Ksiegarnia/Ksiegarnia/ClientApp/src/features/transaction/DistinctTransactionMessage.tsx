@@ -28,6 +28,9 @@ const DistinctTransactionMessage = () => {
 
   const transactionId = useParams().transactionId;
   const succeededFromPaypal = searchParams.get("succeeded");
+  const paymentId = searchParams.get("paymentId");
+  const token = searchParams.get("token");
+  const payerId = searchParams.get("PayerID");
 
   const transactionContext = useContext(TransactionContext);
 
@@ -53,13 +56,18 @@ const DistinctTransactionMessage = () => {
 
     TransactionService.finishDistinctTransaction(
       transactionId as string,
-      succeededFromPaypal === "true"
+      succeededFromPaypal === "true",
+      paymentId as string,
+      token as string,
+      payerId as string
     )
       .then((response) => {
         console.log(response);
 
         const distinctionDetails: DistinctionDetails = transactionContext
           ?.transaction.distinctionDetails as DistinctionDetails;
+
+        console.log(distinctionDetails)
 
         EbookService.distinct(distinctionDetails.ebookId, distinctionDetails)
           .then(() => {

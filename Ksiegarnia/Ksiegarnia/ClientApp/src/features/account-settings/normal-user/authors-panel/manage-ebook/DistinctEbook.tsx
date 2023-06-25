@@ -19,6 +19,7 @@ import Loading from "../../../../../pages/Loading";
 import UserService from "../../../../../services/UserService";
 import TransactionService from "../../../../../services/TransactionService";
 import { TransactionContext } from "../../../../../context/TransactionContext";
+import { useNavigate } from "react-router-dom";
 
 const DistinctEbook = (props: {
   ebookId: string;
@@ -29,6 +30,7 @@ const DistinctEbook = (props: {
 
   const [howLong, setHowLong] = React.useState<number>(1);
   const [howLongError, setHowLongError] = React.useState<string>("");
+  const [paypalRedirect, setPaypalRedirect] = React.useState<string>("")
 
   const userContext = useContext(UserContext);
   const userId = userContext?.user.data?.id
@@ -38,6 +40,8 @@ const DistinctEbook = (props: {
   const SUCCESSFULY_MESSAGE = "Wyróżniono ebooka";
   const SUCCESSFULY_PLACED_TRANSACTION_MESSAGE = "Złożono zamówienie";
   const FAILED_MESSAGE = "Nie udało się wyróżnic ebooka";
+
+  const navigate = useNavigate()
 
   if (!userContext) {
     return <Loading />;
@@ -81,7 +85,7 @@ const DistinctEbook = (props: {
   const handlePaidDistinct = (distinction: Distinction) => {
     TransactionService.buyDistinction(userId as string)
     .then((response) => {
-      const paypalRedirect = response.data
+      const newPaypalRedirect = response.data
       console.log(response)
       
       notificationContext?.setNotification({
@@ -89,14 +93,16 @@ const DistinctEbook = (props: {
         isSuccessful: true,
         message: SUCCESSFULY_PLACED_TRANSACTION_MESSAGE,
       });
+
+      handleClose()
+      props.update()
+
       transactionContext?.setDistinctionDetails({
         ...distinction,
         ebookId: props.ebookId
       })
-      handleClose()
-      props.update()
 
-      window.location.href = paypalRedirect;
+      window.location.href = newPaypalRedirect;
     })
   }
 
