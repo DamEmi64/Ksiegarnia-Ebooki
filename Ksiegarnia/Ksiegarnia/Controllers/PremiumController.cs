@@ -150,7 +150,7 @@ namespace Application.Controllers
                     Host = Request.Host.Host,
                     Port = Request.Host.Port ?? -1,
                     Path = "TransactionEnd",
-                    Query = "success=true"
+                    Query = "success=true&type=premium"
                 }.ToString());
             }
             else
@@ -166,7 +166,7 @@ namespace Application.Controllers
                 Host = Request.Host.Host,
                 Port = Request.Host.Port ?? -1,
                 Path = "TransactionEnd",
-                Query = "success=false"
+                Query = "success=false&type=premium"
             }.ToString());
         }
 

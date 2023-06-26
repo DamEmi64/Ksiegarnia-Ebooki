@@ -199,7 +199,7 @@ namespace Application.Controllers
                     Host = Request.Host.Host,
                     Port = Request.Host.Port ?? -1,
                     Path = "TransactionEnd",
-                    Query = "success=true"
+                    Query = "success=true&type=distinct"
                 }.ToString());
             }
 
@@ -209,7 +209,7 @@ namespace Application.Controllers
                 Host = Request.Host.Host,
                 Port = Request.Host.Port ?? -1,
                 Path = "TransactionEnd",
-                Query = "success=false"
+                Query = "success=false&type=book"
             }.ToString());
         }
 
@@ -456,7 +456,7 @@ namespace Application.Controllers
                         Host = Request.Host.Host,
                         Port = Request.Host.Port ?? -1,
                         Path = "TransactionEnd",
-                        Query = "success=true"
+                        Query = "success=true&type=book"
                     }.ToString());
                 }
                 else
@@ -470,7 +470,7 @@ namespace Application.Controllers
                         Host = Request.Host.Host,
                         Port = Request.Host.Port ?? -1,
                         Path = "TransactionEnd",
-                        Query = "success=false"
+                        Query = "success=false&type=book"
                     }.ToString());
                 }
 
@@ -490,8 +490,7 @@ namespace Application.Controllers
                 Scheme = Request.Scheme,
                 Host = Request.Host.Host,
                 Port = Request.Host.Port ?? -1,
-                Path = "TransactionEnd",
-                Query = "success=false"
+                Query = "success=false&type=book"
             }.ToString());
         }
 
@@ -576,7 +575,7 @@ namespace Application.Controllers
                     Host = Request.Host.Host,
                     Port = Request.Host.Port ?? -1,
                     Path = "TransactionEnd",
-                    Query = "success=true"
+                    Query = "success=true&type=cash"
                 }.ToString());
             }
             else
@@ -593,7 +592,7 @@ namespace Application.Controllers
                     Host = Request.Host.Host,
                     Port = Request.Host.Port ?? -1,
                     Path = "TransactionEnd",
-                    Query = "success=false"
+                    Query = "success=false&type=cash"
                 }.ToString());
             }
         }
