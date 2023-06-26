@@ -502,7 +502,7 @@ namespace Application.Controllers
         /// <param name="token">Token</param>
         /// <returns></returns>
         [HttpGet("ConfirmEmail")]
-        public async Task EmailConfirm(string id, [FromQuery] string token)
+        public async Task<IActionResult> EmailConfirm(string id, [FromQuery] string token)
         {
             var result = await _userRepository.Confirm(id, token);
 
@@ -510,6 +510,14 @@ namespace Application.Controllers
             {
                 throw new ConfirmEmailFailedException(result.Errors.Select(x => x.Description));
             }
+
+            return Redirect(new UriBuilder()
+            {
+                Scheme = Request.Scheme,
+                Host = Request.Host.Host,
+                Port = 44489,
+                Path = "EmailConfirmed",
+            }.ToString());
         }
 
         private async Task<UserDto> HideData(UserDto userData, User user)
