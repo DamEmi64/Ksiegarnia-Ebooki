@@ -142,6 +142,10 @@ namespace Application.Controllers
                 await _userRepository.AddRole(user.Id, Roles.PremiumUser);
 
 
+                transaction.Finished = true;
+
+                await _eBookReaderRepository.SaveChanges();
+
                 await _userRepository.Update(user);
 
                 return Redirect(new UriBuilder()
