@@ -120,7 +120,7 @@ namespace Application.Controllers
         /// <exception cref="BookNotFoundException">When book not found...</exception>
         /// <exception cref="TransactionNotFoundException">When transaction not found...</exception>
         /// <exception cref="UserNotFoundException">When user not found...</exception>
-        [HttpPost("Finish/{id}")]
+        [HttpGet("Finish/{id}")]
         public async Task<IActionResult> FinishTransaction(Guid id, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "", [FromQuery] bool succeeded = false)
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
@@ -148,7 +148,7 @@ namespace Application.Controllers
                 {
                     Scheme = Request.Scheme,
                     Host = Request.Host.Host,
-                    Port = Request.Host.Port ?? -1,
+                    Port = 44489,
                     Path = "TransactionEnd",
                     Query = "success=true&type=premium"
                 }.ToString());
