@@ -293,7 +293,7 @@ function App() {
                 }
               />
               <Route
-                path="Users/ConfirmEmail"
+                path="EmailConfirmed"
                 element={
                   <ProtectedRoute requiresLogged={false}>
                     <ConfirmedEmailMessage />

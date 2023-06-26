@@ -1,5 +1,4 @@
 ﻿import React, { useContext } from "react";
-import { useSearchParams } from "react-router-dom";
 import Loading from "../../pages/Loading";
 import { CheckCircle, Error } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
@@ -10,7 +9,7 @@ import {
 } from "../../context/TransactionContext";
 
 const DistinctTransactionMessage = (props: { succeeded: boolean }) => {
-  
+
   const [succeeded, setSucceeded] = React.useState<boolean>(props.succeeded);
 
   const transactionContext = useContext(TransactionContext);

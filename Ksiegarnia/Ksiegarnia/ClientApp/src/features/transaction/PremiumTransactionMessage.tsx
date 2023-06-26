@@ -1,7 +1,6 @@
 ﻿import { CheckCircle, Error } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import React, { useContext } from "react";
-import { useSearchParams } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 
 const PremiumTransactionMessage = (props: {succeeded: boolean}) => {

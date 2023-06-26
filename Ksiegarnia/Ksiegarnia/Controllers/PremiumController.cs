@@ -99,11 +99,11 @@ namespace Application.Controllers
                 var transactionDto = transaction.ToDTO();
                 var url = _paymentService.GetUri(cancel, redirect, "Kupienie premium", premiumData.Prize).FirstOrDefault();
 
+                await _eBookReaderRepository.Add(transaction);
+                await _eBookReaderRepository.SaveChanges();
+
                 if (!string.IsNullOrEmpty(url))
                 {
-                    await _eBookReaderRepository.Add(transaction);
-                    await _eBookReaderRepository.SaveChanges();
-
                     return url;
                 }
             }
@@ -125,7 +125,7 @@ namespace Application.Controllers
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
-            if (transaction != null)
+            if (transaction == null)
             {
                 throw new TransactionNotFoundException();
             }
@@ -141,6 +141,10 @@ namespace Application.Controllers
 
                 await _userRepository.AddRole(user.Id, Roles.PremiumUser);
 
+
+                transaction.Finished = true;
+
+                await _eBookReaderRepository.SaveChanges();
 
                 await _userRepository.Update(user);
 
