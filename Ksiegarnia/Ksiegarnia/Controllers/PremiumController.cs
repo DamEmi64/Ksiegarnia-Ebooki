@@ -87,13 +87,13 @@ namespace Application.Controllers
                 var cancel = Url.Action(nameof(FinishTransaction), "Premium", values: new
                 {
                     id = transaction.Id,
-                    succeeded = false
+                    succeeded = false,
                 }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
                 var redirect = Url.Action(nameof(FinishTransaction), "Premium", values: new
                 {
                     id = transaction.Id,
-                    succeeded = true
+                    succeeded = true,
                 }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value) ?? string.Empty;
 
                 var transactionDto = transaction.ToDTO();
@@ -150,7 +150,7 @@ namespace Application.Controllers
                     Host = Request.Host.Host,
                     Port = Request.Host.Port ?? -1,
                     Path = "TransactionEnd",
-                    Query = "success=true"
+                    Query = "success=true&type=premium"
                 }.ToString());
             }
             else
@@ -164,9 +164,9 @@ namespace Application.Controllers
             {
                 Scheme = Request.Scheme,
                 Host = Request.Host.Host,
-                Port = Request.Host.Port ?? -1,
+                Port = 44489,
                 Path = "TransactionEnd",
-                Query = "success=false"
+                Query = "success=false&type=premium"
             }.ToString());
         }
 

@@ -32,6 +32,8 @@ namespace Infrastructure.Repositories
                         .Include(x => x.Reviews)
                         .Include(x => x.EBook)
                         .ThenInclude(x => x.Genre)
+                        .Include(x=>x.Transaction)
+                        .Where(x=>x.Transaction != null && x.Transaction.Finished)
                         .FirstOrDefaultAsync(x => x.User.Id == userId && x.EBook.Id == bookdId);
         }
 

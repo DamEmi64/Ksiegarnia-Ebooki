@@ -197,9 +197,9 @@ namespace Application.Controllers
                 {
                     Scheme = Request.Scheme,
                     Host = Request.Host.Host,
-                    Port = Request.Host.Port ?? -1,
+                    Port = 44489,
                     Path = "TransactionEnd",
-                    Query = "success=true"
+                    Query = "success=true&type=distinct"
                 }.ToString());
             }
 
@@ -207,9 +207,10 @@ namespace Application.Controllers
             {
                 Scheme = Request.Scheme,
                 Host = Request.Host.Host,
-                Port = Request.Host.Port ?? -1,
+                Port = 44489,
                 Path = "TransactionEnd",
-                Query = "success=false"
+                Query = "success=false&type=distinct"
+
             }.ToString());
         }
 
@@ -422,7 +423,6 @@ namespace Application.Controllers
         /// <exception cref="UserNotFoundException">When user not found...</exception>
         [HttpGet("Finish/{id}")]
         public async Task<IActionResult> FinishTransaction(Guid id, [FromQuery] bool succeessed = false, [FromQuery] string? paymentId = "", [FromQuery] string? token = "", [FromQuery] string? PayerID = "")
-
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
@@ -454,9 +454,9 @@ namespace Application.Controllers
                     {
                         Scheme = Request.Scheme,
                         Host = Request.Host.Host,
-                        Port = Request.Host.Port ?? -1,
+                        Port = 44489,
                         Path = "TransactionEnd",
-                        Query = "success=true"
+                        Query = "success=true&type=book"
                     }.ToString());
                 }
                 else
@@ -468,9 +468,9 @@ namespace Application.Controllers
                     {
                         Scheme = Request.Scheme,
                         Host = Request.Host.Host,
-                        Port = Request.Host.Port ?? -1,
+                        Port = 44489,
                         Path = "TransactionEnd",
-                        Query = "success=false"
+                        Query = "success=false&type=book"
                     }.ToString());
                 }
 
@@ -489,9 +489,8 @@ namespace Application.Controllers
             {
                 Scheme = Request.Scheme,
                 Host = Request.Host.Host,
-                Port = Request.Host.Port ?? -1,
-                Path = "TransactionEnd",
-                Query = "success=false"
+                Port = 44489,
+                Query = "success=false&type=book"
             }.ToString());
         }
 
@@ -574,9 +573,9 @@ namespace Application.Controllers
                 {
                     Scheme = Request.Scheme,
                     Host = Request.Host.Host,
-                    Port = Request.Host.Port ?? -1,
+                    Port = 44489,
                     Path = "TransactionEnd",
-                    Query = "success=true"
+                    Query = "success=true&type=cash"
                 }.ToString());
             }
             else
@@ -591,9 +590,9 @@ namespace Application.Controllers
                 {
                     Scheme = Request.Scheme,
                     Host = Request.Host.Host,
-                    Port = Request.Host.Port ?? -1,
+                    Port = 44489,
                     Path = "TransactionEnd",
-                    Query = "success=false"
+                    Query = "success=false&type=cash"
                 }.ToString());
             }
         }
