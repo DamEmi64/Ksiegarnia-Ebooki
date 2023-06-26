@@ -37,6 +37,7 @@ interface PremiumInfoProps {
 }
 
 const PremiumAccount = () => {
+  const userContext = useContext(UserContext);
   const userId = useContext(UserContext)?.user.data?.id;
 
   const [premiumInfo, setPremiumInfo] = useState<PremiumInfoProps>();
@@ -59,6 +60,7 @@ const PremiumAccount = () => {
           buyDate: undefined,
           endDate: undefined,
         });
+        userContext?.setIsPremium(false)
         return;
       }
 

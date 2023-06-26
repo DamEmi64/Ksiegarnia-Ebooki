@@ -55,7 +55,7 @@ const AuthorsStatistics = () => {
         console.log(responses[0].data)
         const rawStatistics: Statistics = responses[0].data;
         const numberOfDistinctions = responses[1].data.ownedDistinction;
-        const numberOfSoldEbooks = rawStatistics.selled_book.all;
+        const numberOfSoldEbooks = rawStatistics.selled_book.length;
         setStats({
           numberOfSoldEbooks: numberOfSoldEbooks,
           earnedCash: rawStatistics.earned_cash,

@@ -50,7 +50,9 @@ import PreferenceProvider, {
 } from "./context/PreferencesContext";
 import ConfirmedEmailMessage from "./pages/ConfirmedEmailMessage";
 import DistinctTransactionMessage from "./features/transaction/DistinctTransactionMessage";
-import TransactionProvider from "./context/TransactionContext";
+import TransactionProvider, {
+  TransactionContext,
+} from "./context/TransactionContext";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers["Content-Type"] = "application/json";
@@ -177,6 +179,8 @@ const ManageTheme = (props: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const transactionContext = React.useContext(TransactionContext);
+
   return (
     <ContextProviders>
       <ManageTheme>
@@ -283,18 +287,14 @@ function App() {
                 <Route index element={<Basket />} />
               </Route>
               <Route
-                path="Transactions/Finish/:transactionId"
+                path="TransactionEnd"
                 element={
                   <ProtectedRoute requiresLogged={true}>
-                    <TransactionMessage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="Transactions/FinishDistinct/:transactionId"
-                element={
-                  <ProtectedRoute requiresLogged={true}>
-                    <DistinctTransactionMessage />
+                    {transactionContext?.transaction.distinctionDetails ? (
+                      <DistinctTransactionMessage />
+                    ) : (
+                      <TransactionMessage />
+                    )}
                   </ProtectedRoute>
                 }
               />
