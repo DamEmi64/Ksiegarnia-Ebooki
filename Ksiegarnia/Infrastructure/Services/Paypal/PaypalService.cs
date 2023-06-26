@@ -119,18 +119,23 @@ namespace Infrastructure.Services.Paypal
         /// <returns></returns>
         public bool Execute(string paymentId, string payerId)
         {
-            var context = GetAPIContext(GetAccessToken());
-
-            var paymentExe = new PaymentExecution()
+            if (!string.IsNullOrWhiteSpace(payerId) && !string.IsNullOrWhiteSpace(paymentId))
             {
-                payer_id = payerId,
-            };
-            var payment = new Payment()
-            {
-                id = paymentId
-            };
+                var context = GetAPIContext(GetAccessToken());
 
-            return payment.Execute(context, paymentExe).state.ToLower().Equals("approved");
+                var paymentExe = new PaymentExecution()
+                {
+                    payer_id = payerId,
+                };
+                var payment = new Payment()
+                {
+                    id = paymentId
+                };
+
+                return payment.Execute(context, paymentExe).state.ToLower().Equals("approved");
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -146,12 +151,7 @@ namespace Infrastructure.Services.Paypal
         {
             var payer = new Payer()
             {
-                payment_method = "paypal",
-                payer_info = new PayerInfo()
-                {
-                    country_code="PL",
-                    email = ConfigurationConst.Paypal.Email
-                }
+                payment_method = "paypal"
             };
 
             var itemlist = new ItemList()
@@ -175,7 +175,7 @@ namespace Infrastructure.Services.Paypal
                 }
                 else
                 {
-                    prize = Math.Round(book.Prize.Value);
+                    prize = Math.Round(book.Prize.Value,2);
                 }
 
                 currency += prize;

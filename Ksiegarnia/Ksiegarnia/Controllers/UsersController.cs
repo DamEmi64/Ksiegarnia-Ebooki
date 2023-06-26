@@ -97,7 +97,7 @@ namespace Application.Controllers
                 throw new UserNotFoundException(id);
             }
 
-            var books = (await _eBookRepository.GetEBooks()).Where(x => x.Readers != null && x.Readers.Any(y => y.User.Id == user.Id)).ToList();
+            var books = (await _eBookRepository.GetEBooks()).Where(x => x.Readers != null && x.Readers.Any(y => y.User.Id == user.Id && y.Transaction != null && y.Transaction.Finished)).ToList();
 
             if (books == null)
             {
@@ -243,7 +243,7 @@ namespace Application.Controllers
             {
                 var user = await _userRepository.Register(data, data.Password ?? String.Empty);
                 var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
-                var callbackUrl = Url.Action("EmailConfirm", "Users", new { id = user.Id, token = token }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value);
+                var callbackUrl = Url.Action("EmailConfirm", "Users", new { id = user.Id, token = user.Token }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value);
 
                 if (!_environment.IsDevelopment())
                 {
