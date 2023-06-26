@@ -210,6 +210,7 @@ namespace Application.Controllers
                 Port = 44489,
                 Path = "TransactionEnd",
                 Query = "success=false&type=distinct"
+
             }.ToString());
         }
 
