@@ -14,6 +14,7 @@ import GenreService from "../services/GenreService";
 import Genre from "../models/api/genre";
 import React from "react";
 import { ArrowLeft } from "@mui/icons-material";
+import HorizontalAd from "../components/HorizontalAd";
 
 const CategoriesContent = (props: { children: React.ReactNode }) => {
   const [genres, setGenres] = useState<Genre[]>([]);

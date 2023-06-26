@@ -1,7 +1,5 @@
 ﻿import React, { useContext } from "react";
-import {
-  useSearchParams,
-} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Loading from "../../pages/Loading";
 import { CheckCircle, Error } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
@@ -11,12 +9,9 @@ import {
   TransactionContext,
 } from "../../context/TransactionContext";
 
-const DistinctTransactionMessage = () => {
-  const [searchParams] = useSearchParams();
-
-  const succeededFromPaypal = searchParams.get("success") === "true";
-
-  const [succeeded, setSucceeded] = React.useState<boolean>(succeededFromPaypal)
+const DistinctTransactionMessage = (props: { succeeded: boolean }) => {
+  
+  const [succeeded, setSucceeded] = React.useState<boolean>(props.succeeded);
 
   const transactionContext = useContext(TransactionContext);
 
@@ -35,16 +30,16 @@ const DistinctTransactionMessage = () => {
     const distinctionDetails: DistinctionDetails = transactionContext
       ?.transaction.distinctionDetails as DistinctionDetails;
 
-    console.log(distinctionDetails)
+    console.log(distinctionDetails);
 
     EbookService.distinct(distinctionDetails.ebookId, distinctionDetails)
       .then(() => {
-        transactionContext?.clearDistinctionDetails()
+        transactionContext?.clearDistinctionDetails();
         setIsFinalized(true);
       })
       .catch((error) => {
         console.log(error);
-        setSucceeded(false)
+        setSucceeded(false);
         setIsFinalized(true);
       });
   }, []);

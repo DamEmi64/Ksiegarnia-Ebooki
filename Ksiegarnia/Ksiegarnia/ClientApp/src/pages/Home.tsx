@@ -3,6 +3,7 @@ import CategoriesContent from "../layouts/CategoriesContent";
 import EbooksSlider from "../components/EbooksSlider";
 import { EbookSortOptions } from "../models/ebookSortOptions";
 import React from "react";
+import HorizontalAd from "../components/HorizontalAd";
 
 const Home = () => {
   const prevYear: number = new Date().getFullYear() - 1;
@@ -22,6 +23,7 @@ const Home = () => {
           ebookSearchCriteria={{ year: prevYear }}
         />
       </Grid>
+      <HorizontalAd/>
     </CategoriesContent>
   );
 };
