@@ -461,7 +461,8 @@ namespace Infrastructure.Repositories
 
         public async Task<Premium?> GetPremium(string userId)
         {
-            return await _context.Set<Premium>().Include(x=>x.User).FirstOrDefaultAsync(x => x.User.Id == userId);
+            return (await _context.Set<Transaction>().Include(x=>x.Premium).ThenInclude(x=>x.User).
+                FirstOrDefaultAsync(x => x.Finished && x.Premium != null && x.Premium.User.Id == userId))?.Premium ?? null;
         }
     }
 }

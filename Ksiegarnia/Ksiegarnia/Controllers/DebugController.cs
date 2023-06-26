@@ -105,7 +105,7 @@ namespace Application.Controllers
             {
                 Scheme = Request.Scheme,
                 Host = Request.Host.Host,
-                Port = Request.Host.Port ?? -1,
+                Port = 44489,
                 Path = "TransactionEnd",
                 Query = "success=false&type=book"
             };
