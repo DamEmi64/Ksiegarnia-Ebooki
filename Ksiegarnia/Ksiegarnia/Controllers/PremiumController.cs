@@ -125,7 +125,7 @@ namespace Application.Controllers
         {
             var transaction = await _eBookReaderRepository.GetTransaction(id);
 
-            if (transaction != null)
+            if (transaction == null)
             {
                 throw new TransactionNotFoundException();
             }
