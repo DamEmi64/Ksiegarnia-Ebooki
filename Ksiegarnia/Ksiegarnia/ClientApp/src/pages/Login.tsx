@@ -28,7 +28,7 @@ const Login = () => {
   const notificationContext = useContext(NotificationContext);
 
   const LOGGED_SUCCESSFULY_MESSAGE = "Zalogowano pomyślnie";
-  const INVALID_DATA_MESSAGE = "Nie istnieje konto o takim adresie e-mail i/lub haśle";
+  const INVALID_DATA_MESSAGE = "Nie istnieje konto o takim adresie e-mail lub haśle";
   const NOT_CONFIRMED_MESSAGE = "Konto jest niepotwierdzone";
 
   const initForm: LoginForm = {
@@ -87,7 +87,7 @@ const Login = () => {
 
             const boughtEbooksIds: string[] = [];
 
-            userTransactionsStats.buyed_books.result.forEach((transaction: Transaction) => {
+            userTransactionsStats.buyed_books.forEach((transaction: Transaction) => {
               boughtEbooksIds.push(
                 ...transaction.books.map((ebook: Ebook) => ebook.id)
               );

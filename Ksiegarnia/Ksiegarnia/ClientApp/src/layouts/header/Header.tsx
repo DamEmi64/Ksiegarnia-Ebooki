@@ -123,7 +123,7 @@ const Header = () => {
           <Link to="/">
             <img src={logo} height="42" width="150" />
           </Link>
-          <Grid item xs={5} container justifyContent="end" columnGap={2}>
+          <Grid item xs={5} sm={6} container justifyContent="end" columnGap={2}>
             <Cart />
             <ChangeFontSize/>
             <ThemeMode/>

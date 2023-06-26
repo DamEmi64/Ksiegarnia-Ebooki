@@ -21,63 +21,41 @@ const TransactionMessage = () => {
 
   const [searchParams] = useSearchParams();
 
-  const transactionId = useParams().transactionId;
-  const succeededFromPaypal = searchParams.get("succeeded");
-  const paymentId = searchParams.get("paymentId");
-  const token = searchParams.get("token");
-  const payerId = searchParams.get("PayerID");
+  const succeededFromPaypal = searchParams.get("success") === "true";
+
+  const [succeeded, setSucceeded] = React.useState<boolean>(succeededFromPaypal)
 
   const [isFinalized, setIsFinalized] = React.useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
-
-  const navigate = useNavigate();
 
   const SUCCESFUL_MESSAGE = "Transakcja zakończyła się pomyślnie";
   const FAILED_MESSAGE = "Wystąpił błąd podczas finalizowania transakcji";
 
   React.useEffect(() => {
-    if (!transactionId || succeededFromPaypal == null) {
-      navigate("/not-found");
-    }
-
-    if (!succeededFromPaypal) {
-      setIsFinalized(true);
-      setIsSuccess(false);
+    if(!succeeded){
+      setIsFinalized(true)
       return;
     }
 
-    TransactionService.finishTransaction(
-      transactionId as string,
-      succeededFromPaypal === "true",
-      paymentId as string,
-      token as string,
-      payerId as string
-    )
-      .then((response) => {
-        console.log(response);
-        setIsFinalized(true);
-        setIsSuccess(true);
+    TransactionService.getUserStats(userId as string).then((response) => {
+      const statistics: Statistics = response.data;
 
-        TransactionService.getUserStats(userId as string).then((response) => {
-          const statistics: Statistics = response.data;
+      const newBoughtEbooksIds: string[] = [];
 
-          const newBoughtEbooksIds: string[] = [];
-
-          statistics.buyed_books.result.forEach((transaction: Transaction) => {
-            newBoughtEbooksIds.push(
-              ...transaction.books.map((ebook: Ebook) => ebook.id)
-            );
-          });
-
-          userContext?.setBoughtEbooksIds(newBoughtEbooksIds);
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsFinalized(true);
-        setIsSuccess(false);
+      statistics.buyed_books.forEach((transaction: Transaction) => {
+        newBoughtEbooksIds.push(
+          ...transaction.books.map((ebook: Ebook) => ebook.id)
+        );
       });
-  }, []);
+
+      setIsFinalized(true)
+
+      userContext?.setBoughtEbooksIds(newBoughtEbooksIds);
+    })
+    .catch((error) => {
+      console.log(error)
+      setSucceeded(false)
+    })
+  }, [])
 
   if (!isFinalized) {
     return <Loading />;
@@ -91,13 +69,13 @@ const TransactionMessage = () => {
       justifyContent="center"
       alignItems="center"
     >
-      {!isSuccess ? (
+      {!succeeded ? (
         <Error fontSize="large" style={{ color: "#EB4B36" }} />
       ) : (
         <CheckCircle className="success" fontSize="large" />
       )}
       <Typography variant="h4" marginLeft={2}>
-        {isSuccess ? SUCCESFUL_MESSAGE : FAILED_MESSAGE}
+        {succeeded ? SUCCESFUL_MESSAGE : FAILED_MESSAGE}
       </Typography>
     </Grid>
   );

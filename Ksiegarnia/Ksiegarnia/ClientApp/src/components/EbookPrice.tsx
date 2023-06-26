@@ -13,7 +13,7 @@ const EbookPrice = (props: { authorId: string; price: number; promotion?: Promot
       if(isUserPremium){
         return (
           <React.Fragment>
-            <del>{price.toFixed(2)} zł</del> {" "}
+            <del>{(price + price * 0.1).toFixed(2)} zł</del> {" "}
             {(promotion.prize + promotion.prize * 0.1).toFixed(2)}
           </React.Fragment>
         );
@@ -23,7 +23,7 @@ const EbookPrice = (props: { authorId: string; price: number; promotion?: Promot
       if(promotion && promotion.prize != 0){
         return (
           <React.Fragment>
-            <del>{props.price.toFixed(2)} zł</del> {" "}
+            <del>{(price + price * 0.1).toFixed(2)} zł</del> {" "}
             {(promotion.prize + promotion.prize * 0.1).toFixed(2)}
           </React.Fragment>
         )
