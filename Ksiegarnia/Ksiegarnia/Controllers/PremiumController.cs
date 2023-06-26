@@ -98,12 +98,12 @@ namespace Application.Controllers
 
                 var transactionDto = transaction.ToDTO();
                 var url = _paymentService.GetUri(cancel, redirect, "Kupienie premium", premiumData.Prize).FirstOrDefault();
-
+                
+                await _eBookReaderRepository.Add(transaction);
+                await _eBookReaderRepository.SaveChanges();
+                
                 if (!string.IsNullOrEmpty(url))
                 {
-                    await _eBookReaderRepository.Add(transaction);
-                    await _eBookReaderRepository.SaveChanges();
-
                     return url;
                 }
             }
