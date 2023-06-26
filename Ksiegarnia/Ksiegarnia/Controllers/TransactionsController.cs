@@ -102,7 +102,6 @@ namespace Application.Controllers
                 {
                     throw new UserNotFoundException(userId);
                 }
-
                 var cancel = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, successed = false, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
                 var redirect = Url.Action(nameof(FinishDistinct), "Transactions", values: new { id = userId, successed = true, no = numberOfDistinction }, Request.Scheme) ?? string.Empty;
 
@@ -111,8 +110,8 @@ namespace Application.Controllers
                 if (!string.IsNullOrEmpty(url))
                 {
                     return url;
-
                 }
+
             }
 
             throw new TransactionFailedException();
