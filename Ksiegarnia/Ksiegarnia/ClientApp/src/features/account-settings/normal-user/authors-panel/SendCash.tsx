@@ -54,7 +54,7 @@ const SendCash = () => {
     TransactionService.sendCash(userId as string, cash)
       .then((response) => {
         console.log(response)
-        userContext.setWallet(walletSize - cash);
+        userContext.setWallet(+(walletSize - cash).toFixed(2));
         notificationContext?.setNotification({
           isVisible: true,
           isSuccessful: true,

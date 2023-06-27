@@ -24,7 +24,6 @@ const SearchEbooks = () => (
       </Grid>
     </Grid>
     <Grid item xs={0} xl={1.5} display={{ xs: "flex", md: "none" }}></Grid>
-    <HorizontalAd/>
   </Grid>
 );
 

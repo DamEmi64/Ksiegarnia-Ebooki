@@ -1,23 +1,27 @@
-﻿import React, { useEffect } from "react";
+﻿import { Box } from "@mui/material";
+import React, { useEffect } from "react";
+import horizontalAdImage from "../assets/horizontal-ad.jpg";
 
 const HorizontalAd = () => {
-  useEffect(() => {
-    if (!process.env.NODE_ENV || process.env.NODE_ENV !== "production") {
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
-        {}
-      );
-    }
-  }, []);
-
   return (
-    <ins
-      className="adsbygoogle"
-      data-ad-client="ca-pub-7774799498286441"
-      data-ad-slot="9991008576"
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-      style={{ display: "block", width: "100%" }}
-    ></ins>
+    <Box
+      sx={{
+        marginTop: {
+          xs: 10,
+        },
+      }}
+    >
+      <a
+        target="_blank"
+        href="https://www.amazon.pl/b?_encoding=UTF8&tag=ebookworld0e-21&linkCode=ur2&linkId=2bbd9a62812fe48da4cf5e6faf300b21&camp=247&creative=1211&node=20657313031"
+      >
+        <img
+          alt="Książki od amazona"
+          src={horizontalAdImage}
+          style={{ maxWidth: "100%", width: "auto", height: "100%" }}
+        />
+      </a>
+    </Box>
   );
 };
 

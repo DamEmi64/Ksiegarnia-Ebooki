@@ -391,10 +391,7 @@ namespace Application.Controllers
                     Verification = VerificationType.Verifing
                 };
 
-                if (_environment.IsDevelopment())
-                {
                     book.Verification = VerificationType.Accepted;
-                }
 
                 await _bookRepository.Add(book);
                 await _bookRepository.SaveChanges();

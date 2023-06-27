@@ -10,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import { EbookSearchCategories } from "../../models/ebookSearchCategories";
 import { EbookSortOptions } from "../../models/ebookSortOptions";
 import { EbookAcceptance } from "../../models/api/ebookAcceptance";
+import HorizontalAd from "../../components/HorizontalAd";
 
 const FoundEbooks = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
@@ -163,6 +164,7 @@ const FoundEbooks = () => {
         ))}
       </Grid>
       <CustomPagination/>
+      <HorizontalAd/>
     </Grid>
   );
 };

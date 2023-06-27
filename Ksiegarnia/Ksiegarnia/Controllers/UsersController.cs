@@ -245,10 +245,7 @@ namespace Application.Controllers
                 var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Token));
                 var callbackUrl = Url.Action("EmailConfirm", "Users", new { id = user.Id, token = user.Token }, HttpContext.Request.Scheme, HttpContext.Request.Host.Value);
 
-                if (!_environment.IsDevelopment())
-                {
                     _authService.SendEmail($"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>clicking here</a>.", user.Email);
-                }
 
                 // await _userRepository.Confirm(user.Id, user.Token);
             }
